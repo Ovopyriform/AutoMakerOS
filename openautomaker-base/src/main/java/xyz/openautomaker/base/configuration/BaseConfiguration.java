@@ -143,9 +143,6 @@ public class BaseConfiguration {
 
 	//TODO: This is fine for macos but windows we'll need to find where the class is and make the folder relative to the location.
 	public static Path getApplicationInstallDirectory(Class<?> classToCheck) {
-
-		LOGGER.info("CTH INFO LOCATION OF CLASS" + classToCheck.getProtectionDomain().getCodeSource().getLocation().getPath());
-
 		return OpenAutoMakerEnv.get().getApplicationPath();
 	}
 

@@ -292,9 +292,12 @@ public class OpenAutoMakerEnv {
 			userPaths.put(relativePath, userPath.resolve(relativePath));
 		});
 		
-		// If it's a packaged mac app, everything is in Contents
+		// If it's a packaged mac app, everything is in Contents.  jpackage.app-path -> /Applications/OpenAutoMaker.app/Contents/MacOS/OpenAutoMaker (Script executable)
 		if (isPackaged && getMachineType() == MachineType.MAC)
-			appPath = appPath.resolve("Contents");
+			appPath = appPath.subpath(0, appPath.getNameCount() - 2);
+		
+		LOGGER.info("Using App Path: " + appPath.toString());
+		LOGGER.info("Using Usr Path: " + userPath.toString());
 		
 		Path resourcePath = appPath.resolve(OPENAUTOMAKER);
 		applicationPaths = new HashMap<>();

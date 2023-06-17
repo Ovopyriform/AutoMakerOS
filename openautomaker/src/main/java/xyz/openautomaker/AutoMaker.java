@@ -169,8 +169,8 @@ public class AutoMaker extends Application implements AutoUpdateCompletionListen
 
 		try {
 			//AutoMakerEnvironment.get().getApplicationPath().resolve("AutoMaker.icns").toFile();
-			IcnsParser parser = IcnsParser.forFile(OpenAutoMakerEnv.get().getApplicationPath().resolve("AutoMaker.icns").toFile());
-			aboutStageBuilder = aboutStageBuilder.withImage(new Image(parser.getIconStream(IcnsType.ic08)));
+			IcnsParser parser = IcnsParser.forFile(OpenAutoMakerEnv.get().getApplicationPath().resolve("..").resolve("Resources").resolve("AutoMaker.icns").toFile());
+			aboutStageBuilder = aboutStageBuilder.withImage(new Image(parser.getIconStream(IcnsType.ICON)));
 		}
 		catch (IOException e) {
 			LOGGER.error("Couold not load ICNS");
