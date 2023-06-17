@@ -1,0 +1,10 @@
+package xyz.openautomaker.base.postprocessor.nouveau.nodes.providers;
+
+/**
+ *
+ * @author Ian
+ */
+public interface MovementProvider
+{
+    public Movement getMovement();
+}

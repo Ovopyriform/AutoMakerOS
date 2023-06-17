@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.Double?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.shape.Polygon?>
+<?import javafx.scene.shape.SVGPath?>
+
+<Group xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
+  <Group>
+    <Polygon fill="WHITE" points="24.999998092651367, 23.999998092651367, 20.02601432800293, 8.598821640014648, 18.249998092651367, 5.774999141693115, 5.999997615814209, 23.999998092651367" stroke="WHITE" />
+    <Polygon fill="#626363" layoutX="20.0" stroke="WHITE">
+      <points>
+        <Double fx:value="6.2" />
+        <Double fx:value="2.5" />
+        <Double fx:value="4.8" />
+        <Double fx:value="2.5" />
+        <Double fx:value="2.5" />
+        <Double fx:value="4.8" />
+        <Double fx:value="2.5" />
+        <Double fx:value="6.2" />
+      </points>
+    </Polygon>
+    <Polygon fill="WHITE" layoutY="-19.0" points="16.499998092651367, 25.249998092651367, 20.02601432800293, 28.999998092651367, 25.5, 23.2, 24.703550338745117, 23.703550338745117" />
+    <Polygon layoutX="-4.0" layoutY="-5.0" points="20.999998092651367, 19.749998092651367, 16.749998092651367, 21.749998092651367, 20.999998092651367, 23.999998092651367, 25.499998092651367, 21.749998092651367" stroke="BLACK" />
+    <Polygon layoutX="6.0" layoutY="8.0" points="12.999998092651367, 8.649999618530273, 10.999998092651367, 2.749998092651367, 9.249998092651367, 8.649999618530273, 10.999998092651367, 14.999998092651367" stroke="BLACK" />
+  </Group>
+  <SVGPath content="M2,26" stroke="#FFFFFF" />
+  <SVGPath content="M8,20" stroke="#FFFFFF" />
+  <SVGPath content="M27,1v26H1V1H27 M28,0H0v28h28V0L28,0z" stroke="#FFFFFF" />
+  <SVGPath content="M25.5,2.5v23h-23v-23H25.5 M26.5,1.5h-25v25h25V1.5L26.5,1.5z" stroke="#FFFFFF" />
+</Group>

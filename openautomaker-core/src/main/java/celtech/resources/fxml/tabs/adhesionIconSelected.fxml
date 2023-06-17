@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.shape.SVGPath?>
+
+<Group xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
+  <SVGPath content="M2,26" stroke="#FFFFFF" />
+  <SVGPath content="M8,20" fill="WHITE" stroke="#FFFFFF" />
+  <SVGPath content="M27,1v26H1V1H27 M28,0H0v28h28V0L28,0z" layoutX="2.0" layoutY="1.0" stroke="#FFFFFF" />
+  <SVGPath content="M25.5,2.5v23h-23v-23H25.5 M26.5,1.5h-25v25h25V1.5L26.5,1.5z" stroke="#FFFFFF" />
+   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="5.0" layoutX="1.0" layoutY="24.0" stroke="WHITE" strokeType="INSIDE" width="15.0" />
+   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="5.0" layoutX="25.0" layoutY="28.0" stroke="#626363" strokeType="INSIDE" width="5.0" />
+   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="5.0" layoutX="1.0" layoutY="28.0" stroke="#626363" strokeType="INSIDE" width="5.0" />
+   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="5.0" layoutX="8.0" layoutY="28.0" stroke="#626363" strokeType="INSIDE" width="15.0" />
+</Group>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>openautomaker-root-ui</artifactId>
+	<version>4.03.00</version>
+	<packaging>jar</packaging>
+
+	<name>OpenAutoMaker-Root UI</name>
+
+	<parent>
+		<artifactId>openautomaker-parent</artifactId>
+		<groupId>xyz.openautomaker</groupId>
+		<version>1.0</version>
+		<relativePath>../openautomaker-parent</relativePath>
+	</parent>
+
+	<properties>
+		<mainClass>xyz.openautomaker.root.ui.Main</mainClass>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<fork>true</fork>
+					<compilerArgs>
+						<arg>-Xlint</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<finalName>${project.artifactId}</finalName>
+					<archive>
+						<index>false</index>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib</classpathPrefix>
+							<mainClass>xyz.openautomaker.root.ui.Main</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.9</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib/</outputDirectory>
+							<useBaseVersion>false</useBaseVersion>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<!--
+        <dependency>
+            <groupId>org.scenicview</groupId>
+		<artifactId>ScenicView</artifactId>
+            <version>1.0.0</version>
+		</dependency>
+        -->
+        <dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-launcher</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.beust/jcommander -->
+		<dependency>
+			<groupId>com.beust</groupId>
+			<artifactId>jcommander</artifactId>
+			<version>1.72</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-fxml</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx-swing -->
+		<!-- https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
+		<dependency>
+			<groupId>org.controlsfx</groupId>
+			<artifactId>controlsfx</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jfxtras</groupId>
+			<artifactId>jfxtras-controls</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>xyz.openautomaker</groupId>
+			<artifactId>openautomaker-environment</artifactId>
+		</dependency>
+	</dependencies>
+
+</project>
