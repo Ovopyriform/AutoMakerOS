@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>openautomaker-test-environment</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<name>OpenAutoMaker Test Environment</name>
+
+	<parent>
+		<artifactId>openautomaker-parent</artifactId>
+		<groupId>xyz.openautomaker</groupId>
+		<version>1.0</version>
+		<relativePath>../openautomaker-parent</relativePath>
+	</parent>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-os-specific-files</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.basedir}/env/app/openautomaker</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/src/main/resources/os-specific/${os.detected.name}/openautomaker</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>env</directory>
+							<includes>
+								<include>**</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>${project.basedir}/src/main/resources/common</directory>
+				<targetPath>${project.basedir}/env/app</targetPath>
+			</resource>
+			<resource>
+				<directory>${project.basedir}/src/main/resources/usr</directory>
+				<targetPath>${project.basedir}/env/usr</targetPath>
+			</resource>
+		</resources>
+	</build>
+</project>

@@ -1,0 +1,2395 @@
+{
+	"headerSettings":
+	[	
+		{
+			"id":"firstLayerHeight_mm",
+			"settingName":"extrusion.firstLayerHeight",
+			"value":"0.3",
+			"valueType":"float",
+			"tooltip":"profileLibraryHelp.firstLayerHeight",
+			"unit":"misc.mm",
+			"perExtruder":false
+		},
+		{
+			"id":"layerHeight_mm",
+			"settingName":"extrusion.layerHeight",
+			"value":"0.2",
+			"valueType":"float",
+			"tooltip":"profileLibraryHelp.layerHeight",
+			"unit":"misc.mm",
+			"perExtruder":false
+		}
+	],
+	"tabs":
+	[
+		{
+			"tabName":"sidePanel_settings.shellTabTitle",
+			"fxmlIconName":"shellIcon",
+			"fxmlSelectedIconName":"shellIconSelected",
+			"settings":
+			[
+				{
+					"id":"numberOfPerimeters",
+					"settingName":"shell_settings.numberOfPerimeters",
+					"value":"2",
+					"valueType":"int",
+					"tooltip":"profileLibraryHelp.numberOfPerimeters",
+					"perExtruder":false
+				},
+
+				{
+					"id":"optimize_wall_printing_order",
+					"settingName":"shell_settings.optimizeWallPrintingOrder",
+					"value":"true",
+					"valueType":"boolean",
+					"tooltip":"profileLibraryHelp.optimizeWallPrintingOrder",
+					"perExtruder":false
+				},
+
+				{
+					"id":"inset_direction",
+					"settingName":"Wall Ordering",
+					"value":"outside_in",
+					"valueType":"option",
+					"tooltip":"Determines the order in which walls are printed. Printing outer walls earlier helps with dimensional accuracy, as faults from inner walls cannot propagate to the outside. However printing them later allows them to stack better when overhangs are printed.",
+					"perExtruder":false,
+					"options":
+					{
+						"inside_out": "Inside To Outside",
+                        			"outside_in": "Outside To Inside"
+					}
+				},
+
+
+				{	
+					"id":"alternate_extra_perimeter",
+					"settingName":"shell_settings.alternateExtraWalls",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"Prints an extra wall at every other layer. This way infill gets caught between these extra walls, resulting in stronger prints.",
+					"perExtruder":false
+
+				},
+				
+				{
+					"id":"min_wall_line_width",
+					"settingName":"Minimum Wall Line Width",
+					"value":"0.3",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"For thin structures around once or twice the nozzle size, the line widths need to be altered to adhere to the thickness of the model. This setting controls the minimum line width allowed for the walls. The minimum line widths inherently also determine the maximum line widths, since we transition from N to N+1 walls at some geometry thickness where the N walls are wide and the N+1 walls are narrow. The widest possible wall line is twice the Minimum Wall Line Width.",
+					"perExtruder":false
+				},
+				
+				
+				
+				{
+					"id":"wall_transition_length",
+					"settingName":"Wall Transition Length",
+					"value":"0.4",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"When transitioning between different numbers of walls as the part becomes thinner, a certain amount of space is allotted to split or join the wall lines.",
+					"perExtruder":false
+				},
+
+				{
+					"id":"wall_distribution_count",
+					"settingName":"Wall Distribution Count",
+					"value":"1",
+					"valueType":"int",
+					"tooltip":"The number of walls, counted from the center, over which the variation needs to be spread. Lower values mean that the outer walls don't change in width.",
+					"perExtruder":false
+				},
+
+
+				{
+					"id":"wall_transition_angle",
+					"settingName":"Wall Transitioning Threshold Angle",
+					"value":"10",
+					"valueType":"float",
+					"unit":"misc.deg",
+					"tooltip":"When to create transitions between even and odd numbers of walls. A wedge shape with an angle greater than this setting will not have transitions and no walls will be printed in the center to fill the remaining space. Reducing this setting reduces the number and length of these center walls, but may leave gaps or overextrude.",
+					"perExtruder":false
+				},
+
+				{
+					"id":"wall_transition_filter_distance",
+					"settingName":"Wall Transitioning Filter Distance",
+					"value":"100",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"If it would be transitioning back and forth between different numbers of walls in quick succession, don't transition at all. Remove transitions if they are closer together than this distance.",
+					"perExtruder":false
+				},
+
+
+
+				{
+					"id":"wall_transition_filter_deviation",
+					"settingName":"Wall Transitioning Filter Margin",
+					"value":"0.1",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"Prevent transitioning back and forth between one extra wall and one less. This margin extends the range of line widths which follow to [Minimum Wall Line Width - Margin, 2 * Minimum Wall Line Width + Margin]. Increasing this margin reduces the number of transitions, which reduces the number of extrusion starts/stops and travel time. However, large line width variation can lead to under- or overextrusion problems.",
+					"perExtruder":false
+				},	
+				{
+					"id":"wall_0_wipe_dist",
+					"settingName":"Outer Wall Wipe Distance",
+					"value":"0.2",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"Distance of a travel move inserted after the outer wall, to hide the Z seam better.",
+					"perExtruder":false					
+				},
+				{
+					"id":"wall_0_inset",
+					"settingName":"Outer Wall Inset",
+					"value":"0.0",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"Inset applied to the path of the outer wall. If the outer wall is smaller than the nozzle, and printed after the inner walls, use this offset to get the hole in the nozzle to overlap with the inner walls instead of the outside of the model.",
+					"perExtruder":false					
+				},				
+				{
+					"id":"min_feature_size",
+					"settingName":"Minimum Feature Size",
+					"value":"0.1",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"Minimum thickness of thin features. Model features that are thinner than this value will not be printed, while features thicker than the Minimum Feature Size will be widened to the Minimum Wall Line Width.",
+					"perExtruder":false
+				},		
+				
+				{
+					"id":"min_bead_width",
+					"settingName":"Minimum Thin Wall Line Width",
+					"value":"0.2",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"Width of the wall that will replace thin features (according to the Minimum Feature Size) of the model. If the Minimum Wall Line Width is thinner than the thickness of the feature, the wall will become as thick as the feature itself.",
+					"perExtruder":false
+				},
+				{
+					"id":"min_wall_line_width",
+					"settingName":"Minimum Wall Line Width",
+					"value":"0.3",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"For thin structures around once or twice the nozzle size, the line widths need to be altered to adhere to the thickness of the model. This setting controls the minimum line width allowed for the walls. The minimum line widths inherently also determine the maximum line widths, since we transition from N to N+1 walls at some geometry thickness where the N walls are wide and the N+1 walls are narrow. The widest possible wall line is twice the Minimum Wall Line Width.",
+					"perExtruder":false,
+					"children":
+					[
+					{
+						"id":"min_even_wall_line_width",
+						"settingName":"Minimum Even Wall Line Width",
+						"value":"0.3",
+						"valueType":"float",
+						"unit":"misc.mm",
+						"tooltip":"The minimum line width for normal polygonal walls. This setting determines at which model thickness we switch from printing a single thin wall line, to printing two wall lines. A higher Minimum Even Wall Line Width leads to a higher maximum odd wall line width. The maximum even wall line width is calculated as Outer Wall Line Width + 0.5 * Minimum Odd Wall Line Width.",
+						"perExtruder":false
+					},
+					{
+						"id":"wall_split_middle_threshold",
+						"settingName":"Split Middle Line Threshold",
+						"value":"50",
+						"valueType":"float",
+						"unit":"%",
+						"tooltip":"The smallest line width, as a factor of the normal line width, above which the middle line (if there is one) will be split into two. Reduce this setting to use more, thinner lines. Increase to use fewer, wider lines. Note that this applies -as if- the entire shape should be filled with wall, so the middle here refers to the middle of the object between two outer edges of the shape, even if there actually is fill or (other) skin in the print instead of wall.",
+						"perExtruder":false
+					},
+					{
+						"id":"min_odd_wall_line_width",
+						"settingName":"Minimum Odd Wall Line Width",
+						"value":"0.3",
+						"valueType":"float",
+						"unit":"misc.mm",
+						"tooltip":"The minimum line width for middle line gap filler polyline walls. This setting determines at which model thickness we switch from printing two wall lines, to printing two outer walls and a single central wall in the middle. A higher Minimum Odd Wall Line Width leads to a higher maximum even wall line width. The maximum odd wall line width is calculated as 2 * Minimum Even Wall Line Width.",
+						"perExtruder":false
+					},
+					{
+						"id":"wall_add_middle_threshold",
+						"settingName":"Add Middle Line Threshold",
+						"value":"75",
+						"valueType":"float",
+						"unit":"%",
+						"tooltip":"The smallest line width, as a factor of the normal line width, above which a middle line (if there wasn't one already) will be added. Reduce this setting to use more, thinner lines. Increase to use fewer, wider lines. Note that this applies -as if- the entire shape should be filled with wall, so the middle here refers to the middle of the object between two outer edges of the shape, even if there actually is fill or (other) skin in the print instead of wall.",
+						"perExtruder":false
+					}
+					]
+					},
+				{
+					"id":"z_seam_type",
+					"settingName":"shell_settings.zSeamAlignment",
+					"value":"sharpest_corner",
+					"valueType":"option",
+					"tooltip":"profileLibraryHelp.zSeamAlignment",
+					"perExtruder":false,
+					"options":
+					{
+						"back": "User Specified",
+						"shortest":"Shortest",
+						"random":"Random",
+						"sharpest_corner":"Sharpest Corner"
+					}
+
+				},
+				
+				{
+					"id":"z_seam_position",
+					"settingName":"Z Seam Position",
+					"value":"back",
+					"valueType":"option",
+					"tooltip": "The position near where to start printing each part in a layer.",
+					"perExtruder":false,
+					"options":
+					{
+						"backleft": "Back Left",
+                        			"back": "Back",
+                        			"backright": "Back Right",
+                        			"right": "Right",
+                        			"frontright": "Front Right",
+                        			"front": "Front",
+                        			"frontleft": "Front Left",
+                        			"left": "Left"
+					},
+				
+					"children":
+					[
+					{
+						"id":"z_seam_x",
+						"settingName":"shell_settings.zSeamX",
+                    				"value": "100",
+						"valueType":"float",
+						"unit":"misc.mm",
+						"tooltip":"The X coordinate of the position near where to start printing each part in a layer.",
+						"enabled": "z_seam_type == 'back'",
+                    				"limit_to_extruder": "wall_0_extruder_nr",
+                    				"settable_per_mesh": true,
+						"perExtruder":false
+					},
+					{
+						"id":"z_seam_y",
+						"settingName":"shell_settings.zSeamY",
+                    				"value": "100",
+						"valueType":"float",
+						"unit":"misc.mm",
+						"tooltip":"The X coordinate of the position near where to start printing each part in a layer.",
+						"enabled": "z_seam_type == 'back'",
+                    				"limit_to_extruder": "wall_0_extruder_nr",
+                    				"settable_per_mesh": true,
+						"perExtruder":false
+					}
+					]
+				},
+				{
+					"id":"z_seam_corner",
+					"settingName":"shell_settings.zSeamCornerPreference",
+					"value":"z_seam_corner_inner",
+					"valueType":"option",
+					"tooltip":"profileLibraryHelp.zSeamCornerPreference",
+					"perExtruder":false,
+					"options":
+					{
+						"z_seam-corner_none":"None",
+                      				"z_seam_corner_inner":"Hide Seam",
+						"z_seam-corner_outer":"Expose Seam",
+						"z_seam_corner_any":"Hide or Expose Seam",
+						"z_seam_corner_weighted": "Smart Hiding"
+					}
+				},
+				{
+					"id":"z_seam_relative",
+					"settingName":"shell_settings.enableZSeamRelative",
+                    			"value": "false",
+					"valueType":"boolean",
+					"unit":"misc.mm",
+					"tooltip":"When enabled, the z seam coordinates are relative to each part's centre. When disabled, the coordinates define an absolute position on the build plate.",
+					
+                    			
+                    			
+					"perExtruder":false
+				
+				},
+				{	
+					"id":"fill_outline_gaps",
+					"settingName":"shell_settings.enablePrintThinWalls",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"Print pieces of the model which are horizontally thinner than the nozzle size.",
+					"perExtruder":false
+
+				},
+				
+				{
+					"id":"xy_offset",
+					"settingName":"shell_settings.horizontalExpansion",
+					"value":"0",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"Amount of offset applied to all polygons in each layer. Positive values can compensate for too big holes; negative values can compensate for too small holes.",
+					"perExtruder":false
+				},
+				{
+					"id":"xy_offset_layer_0",
+					"settingName":"shell_settings.initialLayerHorizontalExpansion",
+					"value":"0",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"Amount of offset applied to all polygons in each layer. Positive values can compensate for too big holes; negative values can compensate for too small holes.",
+					"perExtruder":false	
+				},
+				
+				{
+					"id":"hole_xy_offset",
+					"settingName":"Hole Horizontal Expansion",
+					"value":"0",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"Amount of offset applied to all holes in each layer. Positive values increase the size of the holes, negative values reduce the size of the holes.",
+					"perExtruder":false	
+				},
+				{	
+					"id":"adaptive_layer_height_enabled",
+					"settingName":"shell_settings.enableAdaptiveLayers",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"profileLibraryHelp.layerHeight",
+					"perExtruder":false,
+					"children":
+				[	
+				
+				
+				{
+					"id":"adaptive_layer_height_variation",
+					"settingName":"shell_settings.adaptiveLayerMaxVariation",
+					"value":"0.1",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"The maximum allowed height different from the base layer height",
+					"perExtruder":false
+				},
+				{
+					"id":"adaptive_layer_height_variation_step",
+					"settingName":"shell_settings.adaptivelayersStepvariation",
+					"value":"0.01",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"The difference in height of the next layer height compared to the previous one.",
+					"perExtruder":false
+				},
+				{
+					"id":"adaptive_layer_height_threshold",
+					"settingName":"shell_settings.adaptiveLayersTopographyVariation",
+					"value":"200",
+					"valueType":"float",
+					"tooltip":"Horizontal target distance between two adjacent layers. Reducing this setting causes thinner layers to be used so bringing the edges of the layers closer together.",
+					"perExtruder":false
+				
+				}
+				]
+				}
+			]
+		},
+		{
+			"tabName":"Shell Settings - Bridging",
+			"fxmlIconName":"shellIcon",
+			"fxmlSelectedIconName":"shellIconSelected",
+			"settings":
+			[	
+				
+				{
+
+					"id":"bridge_settings_enabled",
+					"settingName":"advancedShell_settings.enableBridge",
+					"value":"true",
+					"valueType":"boolean",
+					"tooltip":"Detect bridges and modify print speed, flow and fan settings while bridges are printed.",
+					"perExtruder":false
+				},	
+			
+				
+				{
+					"id":"bridge_wall_speed",
+					"settingName":"advancedShell_settings.bridgeWallSpeed",
+					"value":"15",
+					"valueType":"float",
+					"tooltip":"The speed at which the bridge walls are printed.",
+					"unit":"misc.mmpersec",
+					"perExtruder":false
+				},
+				{
+					"id":"bridge_wall_min_length",
+					"settingName":"advancedShell_settings.minimumBridgeWallLength",
+					"value":"5",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"Unsupported walls shorter than this will be printed using the normal wall settings. Longer unsupported walls will be printed using the bridge wall settings.",
+					"perExtruder":false
+				},
+				{
+					"id":"bridge_skin_support_threshold",
+					"settingName":"advancedShell_settings.bridgeSkinSupportThreshold",
+					"value":"50",
+					"minimumValue":"0",
+					"maximumValue":"100",
+					"valueType":"float",
+					"tooltip":"If a skin region is supported for less than this percentage of its area, print it using the bridge settings. Otherwise it is printed using the normal skin settings.",
+					"unit":"misc.percent",
+					"perExtruder":false
+				},
+				{
+					"id":"bridge_sparse_infill_max_density",
+					"settingName":"Bridge Sparse Infill Max Density",
+					"value":"0",
+					"minimumValue":"0",
+					"valueType":"float",
+					"tooltip":"Maximum density of infill considered to be sparse. Skin over sparse infill is considered to be unsupported and so may be treated as a bridge skin.",
+					"unit":"misc.percent",
+					"perExtruder":false				
+				},
+				{
+					"id":"bridge_wall_coast",
+					"settingName":"advancedShell_settings.bridgeWallCoasting",
+					"value":"100",
+					"minimumValue":"0",
+					"maximumValue":"500",
+					"valueType":"float",
+					"tooltip":"This controls the distance the extruder should coast immediately before a bridge wall begins. Coasting before the bridge starts can reduce the pressure in the nozzle and may produce a flatter bridge.",
+					"unit":"misc.percent",
+					"perExtruder":false
+				},
+				{
+					"id":"bridge_wall_material_flow",
+					"settingName":"advancedShell_settings.bridgeWallFlow",
+					"value":"40",
+					"minimumValue":"5",
+					"maximumValue":"150",
+					"valueType":"float",
+					"tooltip":"When printing bridge walls, the amount of material extruded is multiplied by this value. Minimum value warning is 50, maximum 150",
+					"unit":"misc.percent",
+					"perExtruder":false
+				},
+				{
+					"id":"bridge_skin_material_flow",
+					"settingName":"advancedShell_settings.bridgeSkinFlow",
+					"value":"50",
+					"minimumValue":"5",
+					"maximumValue":"150",
+					"valueType":"float",
+					"tooltip":"When printing bridge walls, the amount of material extruded is multiplied by this value. Minimum value warning is 50, maximum 150",
+					"unit":"misc.percent",
+					"perExtruder":false
+				},
+				{
+					"id":"bridge_skin_density",
+					"settingName":"advancedShell_settings.bridgeSkinDensity",
+					"value":"100",
+					"minimumValue":"5",
+					"maximumValue":"100",
+					"valueType":"float",
+					"tooltip":"The density of the second bridge skin layer. Values less than 100 will increase the gaps between the skin lines.",
+					"unit":"misc.percent",
+					"perExtruder":false
+				},
+				{	
+					"id":"bridge_enable_more_layers",
+					"settingName":"advancedShell_settings.enableBridgeMultipleLayers",
+					"value":"true",
+					"valueType":"boolean",
+					"tooltip":"If enabled, the second and third layers above the air are printed using the following settings. Otherwise, those layers are printed using the normal settings.",
+					"perExtruder":false
+				},
+				{
+					"id":"bridge_skin_material_flow_2",
+					"settingName":"advancedShell_settings.bridgeSkinFlow2",
+					"value":"60",
+					"minimumValue":"5",
+					"maximumValue":"500",
+					"valueType":"float",
+					"tooltip":"When printing second layer bridge walls, the amount of material extruded is multiplied by this value. Minimum value warning is 50, maximum value warning is 150",
+					"unit":"misc.percent",
+					"perExtruder":false
+				},
+				{
+					"id":"bridge_skin_density_2",
+					"settingName":"advancedShell_settings.bridgeSkinDensity2",
+					"value":"100",
+					"minimumValue":"5",
+					"maximumValue":"500",
+					"valueType":"float",
+					"tooltip":"The density of the second bridge skin layer. Values less than 100 will increase the gaps between the skin lines.",
+					"unit":"misc.percent",
+					"perExtruder":false
+				},
+				{
+					"id":"bridge_skin_material_flow_3",
+					"settingName":"advancedShell_settings.bridgeSkinFlow3",
+					"value":"70",
+					"minimumValue":"5",
+					"maximumValue":"500",
+					"valueType":"float",
+					"tooltip":"When printing third layer bridge walls, the amount of material extruded is multiplied by this value. Minimum value warning is 50, maximum value warning is 150",
+					"unit":"misc.percent",
+					"perExtruder":false
+				},
+				{
+					"id":"bridge_skin_density_3",
+					"settingName":"advancedShell_settings.bridgeSkinDensity3",
+					"value":"100",
+					"minimumValue":"5",
+					"maximumValue":"100",
+					"valueType":"float",
+					"tooltip":"The density of the third bridge skin layer. Values less than 100 will increase the gaps between the skin lines.",
+					"unit":"misc.percent",
+					"perExtruder":false
+				}
+					
+				
+				
+			]
+
+		},
+		{
+			"tabName":"sidePanel_settings.top&bottomSurfacesTabTitle",
+			"fxmlIconName":"skinsIcon",
+			"fxmlSelectedIconName":"skinsIconSelected",
+			"settings":
+			[	
+				
+				
+				{
+				
+					"id":"roofing_layer_count",
+					"settingName":"Top Surace Skin Layers",
+					"value":0,
+					"valueType":"int",
+					"tooltip":"The number of top most skin layers. Usually only one top most layer is sufficient to generate higher quality top surfaces.",	
+					"unit":"misc.layers",
+					"perExtruder":false
+				},
+				{
+					"id":"roofing_pattern",
+					"settingName":"Top Surface Skin Directions",
+					"value":"lines",
+					"valueType":"option",
+					"tooltip":"The pattern of the top most layers.",
+					"perExtruder":false,
+					"options":
+					{	
+						"lines":"Lines",
+						"concentric":"Concentric",
+						"zigzag":"Zig Zag"
+					}
+				},
+				{
+					"id":"roofing_angles",
+					"settingName":"extrusion.roofAngles",
+					"value":"",
+					"valueType":"numbers",
+					"tooltip":"A list of integer line directions to use when the top/bottom layers use the lines or zig zag pattern. Elements from the list are used sequentially as the layers progress and when the end of the list is reached, it starts at the beginning again. The list items are separated by commas and the whole list is contained in square brackets. Default is an empty list which means use the traditional default angles (45 and 135 degrees).",
+					"unit":"misc.degrees",
+					"perExtruder":false
+
+				},
+				{
+
+					"id":"solidLayersAtTop",
+					"settingName":"extrusion.solidLayersTop",
+					"value":"3",
+					"valueType":"int",
+					"tooltip":"profileLibraryHelp.solidLayersTop",
+					"unit":"misc.layers",
+					"perExtruder":false
+				},
+				{
+					"id":"solidLayersAtBottom",
+					"settingName":"extrusion.solidLayersBottom",
+					"value":"3",
+					"valueType":"int",
+					"tooltip":"profileLibraryHelp.solidLayersBottom",
+					"unit":"misc.layers",
+					"perExtruder":false
+				},
+				{
+					"id":"top_bottom_pattern",
+					"settingName":"extrusion.topAndBottomPattern",
+					"value":"lines",
+					"valueType":"option",
+					"tooltip":"profileLibraryHelp.topAndBottomPattern",
+					"perExtruder":false,
+					"options":
+					{
+						"lines":"Lines",
+						"concentric":"Concentric",
+						"zigzag":"Zig Zag"
+					}
+				},
+				{
+					"id":"top_bottom_pattern_0",
+					"settingName":"Bottom Pattern Initial Layer",
+					"value":"lines",
+					"valueType":"option",
+					"tooltip":"profileLibraryHelp.solidLayersBottom",
+					"perExtruder":false,
+					"options":
+					{	
+						"lines":"Lines",
+						"concentric":"Concentric",
+						"zigzag":"Zig Zag"
+					}
+				},
+				{	
+					"id": "connect_skin_polygons",
+					"settingName":"Connect Top and Bottom Polygons",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip": "Connect top/bottom skin paths where they run next to each other. For the concentric pattern enabling this setting greatly reduces the travel time, but because the connections can happen midway over infill this feature can reduce the top surface quality.",
+					"perExtruder":false
+				
+				
+				},
+				
+				{	
+					"id": "skin_monotonic",
+					"settingName":"Monotonic Top/Bottom Order",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip": "Print top/bottom lines in an ordering that causes them to always overlap with adjacent lines in a single direction. This takes slightly more time to print, but makes flat surfaces look more consistent.",
+					"perExtruder":false
+				
+				
+				},
+				
+				{
+					"id":"skin_angles",
+					"settingName":"extrusion.skinAngles",
+					"value":"",
+					"valueType":"numbers",
+					"tooltip":"A list of integer line directions to use when the top/bottom layers use the lines or zig zag pattern. Elements from the list are used sequentially as the layers progress and when the end of the list is reached, it starts at the beginning again. The list items are separated by commas and the whole list is contained in square brackets. Default is an empty list which means use the traditional default angles (45 and 135 degrees).",
+					"unit":"misc.degrees",
+					"perExtruder":false
+				
+				},
+				{	
+					"id":"skin_no_small_gaps_heuristic",
+					"settingName":"No Skin in Z Gaps",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"When the model has small vertical gaps of only a few layers, there should normally be skin around those layers in the narrow space. Enable this setting to not generate skin if the vertical gap is very small. This improves printing time and slicing time, but technically leaves infill exposed to the air.",
+					"perExtruder":false
+				},
+				{
+					
+					"id":"skin_outline_count",
+					"settingName":"Extra Skin Wall Count",
+					"value":"1",
+					"valueType":"int",
+					"tooltip":"Replaces the outermost part of the top/bottom pattern with a number of concentric lines. Using one or two lines improves roofs that start on infill material.",
+					"perExtruder":false
+				},
+				
+				{	
+					"id":"ironing_enabled",
+					"settingName":"Enable Ironing",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"profileLibraryHelp.topAndBottomPattern",
+					"perExtruder":false
+				},
+				{	
+					"id":"ironing_only_highest_layer",
+					"settingName":"Iron Only Highest Layer",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"profileLibraryHelp.topAndBottomPattern",
+					"perExtruder":false
+				},
+				{
+					"id":"ironing_pattern",
+					"settingName":"Ironing Pattern",
+					"value":"zigzag",
+					"valueType":"option",
+					"tooltip":"profileLibraryHelp.topAndBottomPattern",
+					"perExtruder":false,
+					"options":
+					{	
+						"concentric":"Concentric",
+						"zigzag":"Zig Zag"
+					}
+				},
+				
+				{	
+					"id":"ironing_monotonic",
+					"settingName":"Monotonic Ironing Order",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"Print ironing lines in an ordering that causes them to always overlap with adjacent lines in a single direction. This takes slightly more time to print, but makes flat surfaces look more consistent.",
+					"perExtruder":false
+				},
+				
+				{	
+					"id":"ironing_line_spacing",
+					"settingName":"Ironing Line Spacing",
+					"value":"0.1",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"profileLibraryHelp.topAndBottomPattern",
+					"perExtruder":false
+				},
+				{
+					"id":"ironing_flow",
+					"settingName":"Ironing Flow",
+					"value":"10",
+					"minimumValue":"0",
+					"maximumValue":"50",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.fillDensity",
+					"unit":"misc.percent",
+					"perExtruder":false
+				},
+				{	
+					"id":"ironing_line_inset",
+					"settingName":"Ironing Inset",
+					"value":"0.35",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"profileLibraryHelp.topAndBottomPattern",
+					"perExtruder":false	
+				}	
+			]	
+		
+		},
+		{
+			"tabName":"sidePanel_settings.infillTabTitle",
+			"fxmlIconName":"infillIcon",
+			"fxmlSelectedIconName":"infillIconSelected",
+			"settings":
+			[	
+				
+				{
+					"id":"fillDensity_normalised",
+					"settingName":"extrusion.fillDensity",
+					"value":"20",
+					"minimumValue":"0",
+					"maximumValue":"100",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.fillDensity",
+					"unit":"%",
+					"perExtruder":false
+								
+				
+				},
+				{
+					"id":"fillPattern",
+					"settingName":"extrusion.fillPattern",
+					"value":"grid",
+					"valueType":"option",
+					"tooltip":"profileLibraryHelp.fillPattern",
+					"perExtruder":false,
+					"options":
+					{
+						"grid":"Grid",
+						"lines":"Lines",
+						"triangles":"Triangles",
+						"trihexagon":"Tri-Hexagon",
+						"cubic":"Cubic",
+						"cubicsubdiv":"Cubic Subdivision",
+						"tetrahedral":"Octet",
+						"quarter_cubic":"Quarter Cubic",
+						"concentric":"Concentric",
+						"zigzag":"Zig Zag",
+						"cross":"Cross",
+						"cross_3d":"Cross 3D",
+						"gyroid": "Gyroid",
+						"lightning": "Lightning"
+					}
+				},
+				{
+					"id":"fillDirection",
+					"settingName":"extrusion.fillDirection",
+					"value":"",
+					"valueType":"numbers",
+					"tooltip":"profileLibraryHelp.fillDirection",
+					"unit":"misc.degrees",
+					"perExtruder":false
+				},
+				{
+					"id":"infill_offset_x",
+					"settingName":"Infill Offset X",
+					"value":0,
+					"minimumValue":"0",
+					"valueType":"float",
+					"tooltip":"The infill pattern is moved this distance along the X axis.",
+					"unit":"misc.mm",
+					"perExtruder":false
+				},
+				{
+					"id":"infill_offset_y",
+					"settingName":"Infill Offset Y",
+					"value":0,
+					"minimumValue":"0",
+					"valueType":"float",
+					"tooltip":"The infill pattern is moved this distance along the Y axis.",
+					"unit":"misc.mm",
+					"perExtruder":false
+				},
+				{
+					"id":"infill_overlap",
+					"settingName":"Infill Overlap Percentage",
+					"value":10,
+					"minimumValue":"0",
+					"valueType":"float",
+					"tooltip":"The amount of overlap between the infill and the walls as a percentage of the infill line width. A slight overlap allows the walls to connect firmly to the infill.",
+					"unit":"%",
+					"perExtruder":false
+				},
+				{
+					"id":"skin_overlap",
+					"settingName":"Skin Overlap Percentage",
+					"value":5,
+					"valueType":"float",
+					"tooltip":"Adjust the amount of overlap between the walls and (the endpoints of) the skin-centerlines, as a percentage of the line widths of the skin lines and the innermost wall. A slight overlap allows the walls to connect firmly to the skin. Note that, given an equal skin and wall line-width, any percentage over 50% may already cause any skin to go past the wall, because at that point the position of the nozzle of the skin-extruder may already reach past the middle of the wall.",
+					"unit":"%",
+					"perExtruder":false
+				},
+				{
+					"id":"skin_overlap_mm",
+					"settingName":"Skin Overlap",
+					"value":0.02,
+					"valueType":"float",
+					"tooltip":"Adjust the amount of overlap between the walls and (the endpoints of) the skin-centerlines. A slight overlap allows the walls to connect firmly to the skin. Note that, given an equal skin and wall line-width, any value over half the width of the wall may already cause any skin to go past the wall, because at that point the position of the nozzle of the skin-extruder may already reach past the middle of the wall.",
+					"unit":"misc.mm",
+					"perExtruder":false
+				},
+				{
+					"id":"infill_wipe_dist",
+					"settingName":"Infil lWipe Distance",
+					"value":0.04,
+					"minimumValue":"0",
+					"valueType":"float",
+					"tooltip":"Distance of a travel move inserted after every infill line, to make the infill stick to the walls better. This option is similar to infill overlap, but without extrusion and only on one end of the infill line.",
+					"unit":"misc.mm",
+					"perExtruder":false
+				},
+				{
+					"id":"infillLayerThickness",
+					"settingName":"extrusion.infillLayerThickness",
+					"value":"1",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.infillLayerThickness",
+					"unit":"misc.layers",
+					"perExtruder":false
+
+				},
+				{
+					"id":"gradualInfillSteps",
+					"settingName":"extrusion.gradualInfill",
+					"value":"0",
+					"valueType":"int",
+					"tooltip":"profileLibraryHelp.gradualInfill",
+					"perExtruder":false
+				},
+				{
+					"id":"gradual_infill_step_height",
+					"settingName":"extrusion.gradualInfillStepHeight",
+					"value":"10",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.gradualInfillStepHeight",
+					"unit":"misc.mm",
+					"perExtruder":false
+				},
+				{
+					"id":"zig_zaggify_infill",
+					"settingName":"Connect Infill Lines",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"Connect the ends where the infill pattern meets the inner wall using a line which follows the shape of the inner wall. Enabling this setting can make the infill adhere to the walls better and reduce the effects of infill on the quality of vertical surfaces. Disabling this setting reduces the amount of material used.",
+					"perExtruder":false
+				},
+				{
+					"id":"infill_before_walls",
+					"settingName":"extrusion.infillBeforeWalls",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"profileLibraryHelp.infillBeforeWalls",
+					"perExtruder":false
+				},
+				{	
+					"id":"min_infill_area",
+					"settingName":"Minimum Infill Area",
+					"value":0,
+					"valueType":"float",
+					"tooltip":"Don't generate areas of infill smaller than this (use skin instead).",
+					"unit":"misc.mm",
+					"perExtruder":false
+				},
+				
+				
+				{	
+					"id":"lightning_infill_support_angle",
+					"settingName":"Lightning Infill Support Angle",
+					"value":40,
+					"valueType":"float",
+					"tooltip":"Determines when a lightning infill layer has to support anything above it. Measured in the angle given the thickness of a layer.",
+					"unit":"misc.deg",
+					"perExtruder":false,
+					"children":
+					[
+						{			
+						"id":"lightning_infill_overhang_angle",
+						"settingName":"Lightning Infill Overhang Angle",
+						"value":40,
+						"valueType":"float",
+						"tooltip":"Determines when a lightning infill layer has to support the model above it. Measured in the angle given the thickness.",
+						"unit":"misc.deg",
+						"perExtruder":false
+						},
+						{			
+						"id":"lightning_infill_prune_angle",
+						"settingName":"Lightning Infill Prune Angle",
+						"value":40,
+						"valueType":"float",
+						"tooltip":"The endpoints of infill lines are shortened to save on material. This setting is the angle of overhang of the endpoints of these lines.",
+						"unit":"misc.deg",
+						"perExtruder":false
+						},
+						{			
+						"id":"lightning_infill_straightening_angle",
+						"settingName":"Lightning Infill Straightening Angle",
+						"value":40,
+						"valueType":"float",
+						"tooltip":"The infill lines are straightened out to save on printing time. This is the maximum angle of overhang allowed across the length of the infill line.",
+						"unit":"misc.deg",
+						"perExtruder":false
+						}
+					]
+				},
+				
+				
+				
+				{	
+					"id":"skin_preshrink",
+					"settingName":"Skin Removal Width",
+					"value":0,
+					"valueType":"float",
+					"tooltip":"The largest width of skin areas which are to be removed. Every skin area smaller than this value will disappear. This can help in limiting the amount of time and material spent on printing top/bottom skin at slanted surfaces in the model.",
+					"unit":"misc.mm",
+					"perExtruder":false,
+					"children":
+					[
+						{	
+							"id":"top_skin_preshrink",
+							"settingName":"Top Skin Removal Width",
+							"value":0,
+							"valueType":"float",
+							"tooltip":"The largest width of top skin areas which are to be removed. Every skin area smaller than this value will disappear. This can help in limiting the amount of time and material spent on printing top skin at slanted surfaces in the model.",
+							"unit":"misc.mm",
+							"perExtruder":false
+						},
+						{
+
+							"id":"bottom_skin_preshrink",
+							"settingName":"Bottom Skin Removal Width",
+							"value":0,
+							"valueType":"float",
+							"tooltip":"The largest width of bottom skin areas which are to be removed. Every skin area smaller than this value will disappear. This can help in limiting the amount of time and material spent on printing bottom skin at slanted surfaces in the model.",
+							"unit":"misc.mm",
+							"perExtruder":false	
+						
+						}
+					]
+				
+				},
+				{	
+					"id":"expand_skins_expand_distance",
+					"settingName":"Skin Expand Distance",
+					"value":2.8,
+					"valueType":"float",
+					"tooltip":"The distance the skins are expanded into the infill. Higher values makes the skin attach better to the infill pattern and makes the walls on neighboring layers adhere better to the skin. Lower values save amount of material used.",
+					"unit":"misc.mm",
+					"perExtruder":false,
+					"children":
+					[
+						{	
+							"id":"top_skin_expand_distance",
+							"settingName":"Top Skin Expand Distance",
+							"value":0,
+							"valueType":"float",
+							"tooltip":"The distance the top skins are expanded into the infill. Higher values makes the skin attach better to the infill pattern and makes the walls on the layer above adhere better to the skin. Lower values save amount of material used.",
+							"unit":"misc.mm",
+							"perExtruder":false
+						},
+						{
+
+							"id":"bottom_skin_expand_distance",
+							"settingName":"Bottom Skin Expand Distance",
+							"value":2.8,
+							"valueType":"float",
+							"tooltip":"The distance the bottom skins are expanded into the infill. Higher values makes the skin attach better to the infill pattern and makes the skin adhere better to the walls on the layer below. Lower values save amount of material used.",
+							"unit":"misc.mm",
+							"perExtruder":false
+						}
+					]
+				},
+				{	
+					"id":"max_skin_angle_for_expansion",
+					"settingName":"Maximum Skin Angle For Expansion",
+					"value":90,
+					"valueType":"float",
+					"tooltip":"Top and/or bottom surfaces of your object with an angle larger than this setting, won't have their top/bottom skin expanded. This avoids expanding the narrow skin areas that are created when the model surface has a near vertical slope. An angle of 0° is horizontal, while an angle of 90° is vertical.",
+					"unit":"º",
+					"perExtruder":false,
+					"children":
+					[
+						{	
+							"id":"min_skin_width_for_expansion",
+							"settingName":"Minimum Skin Width for Expansion",
+							"value":2.24,
+							"valueType":"float",
+							"tooltip":"Skin areas narrower than this are not expanded. This avoids expanding the narrow skin areas that are created when the model surface has a slope close to the vertical.",
+							"unit":"º",
+							"perExtruder":false
+						}
+					]			
+				}
+			]
+		
+		},
+		{
+			"tabName":"sidePanel_settings.NozzleTab",
+			"fxmlIconName":"nozzlesIcon",
+			"settings":
+			[
+				{
+					"id":"firstLayerNozzle",
+					"settingName":"extrusion.firstLayer",
+					"value":"2",
+					"valueType":"nozzle",
+					"tooltip":"profileLibraryHelp.firstLayerExtrusionWidth",
+					"perExtruder":false,
+					"nonOverrideAllowed":true,
+
+					"children":
+					[
+						{
+							"id":"initial_layer_line_width_factor",
+							"settingName":"misc.multiplier",
+							"value":"125",
+							"valueType":"float",
+							"tooltip":"profileLibraryHelp.layer0LineWidthFactor",
+							"unit":"misc.percent",
+							"perExtruder":false
+						}
+					]
+
+				},
+				{
+					"id":"perimeterNozzle",
+					"settingName":"extrusion.perimeter",
+					"value":"2",
+					"valueType":"nozzle",
+					"tooltip":"profileLibraryHelp.perimeterExtrusionWidth",
+					"perExtruder":false,
+					"nonOverrideAllowed":true,
+					"children":
+					[
+						{
+							"id":"perimeterExtrusionWidth_mm",
+							"settingName":"misc.width",
+							"value":"0.4",
+							"valueType":"extrusion",
+							"tooltip":"profileLibraryHelp.perimeterExtrusionWidth",
+							"unit":"misc.mm",
+							"perExtruder":false
+						}
+					]
+				
+				
+				},
+				{
+					"id":"skinNozzle",
+					"settingName":"extrusion.skin",
+					"value":"2",
+					"valueType":"nozzle",
+					"tooltip":"profileLibraryHelp.infillExtrusionWidth",
+					"perExtruder":false,
+					"nonOverrideAllowed":true,
+					"children":
+					[
+						{
+							"id":"skinExtrusionWidth_mm",
+							"settingName":"misc.width",
+							"value":"0.4",
+							"valueType":"extrusion",
+							"tooltip":"profileLibraryHelp.infillExtrusionWidth",
+							"unit":"misc.mm",
+							"perExtruder":false
+						}
+					]
+				},
+				{
+					"id":"roofing_extruder_nr",
+					"settingName":"extrusion.topSurfaceSkin",
+					"value":"2",
+					"valueType":"nozzle",
+					"tooltip":"The extruder train used for printing the top most skin. This is used in multi-extrusion.",
+					"perExtruder":false,
+					"nonOverrideAllowed":true,
+					"children":
+					[
+						{
+							"id":"roofing_line_width",
+							
+							"settingName":"misc.width",
+							"value":"0.4",
+							"valueType":"extrusion",
+							"tooltip":"profileLibraryHelp.perimeterExtrusionWidth",
+							"unit":"misc.mm",
+							"perExtruder":false
+						}
+					]
+				},
+				{
+					"id":"fillNozzle",
+					"settingName":"extrusion.infill",
+					"value":"2",
+					"valueType":"nozzle",
+					"tooltip":"profileLibraryHelp.infillExtrusionWidth",
+					"perExtruder":false,
+					"nonOverrideAllowed":true,
+					"children":
+					[
+						{
+							"id":"fillExtrusionWidth_mm",
+							"settingName":"misc.width",
+							"value":"0.4",
+							"valueType":"extrusion",
+							"tooltip":"profileLibraryHelp.infillExtrusionWidth",
+							"unit":"misc.mm",
+							"perExtruder":false
+						}
+					]
+				},
+				{
+					"id":"supportNozzle",
+					"settingName":"extrusion.support",
+					"value":"0",
+					"valueType":"nozzle",
+					"tooltip":"profileLibraryHelp.supportExtrusionWidth",
+					"perExtruder":false,
+					"nonOverrideAllowed":true,
+					"children":
+					[
+						{
+							"id":"supportExtrusionWidth_mm",
+							"settingName":"misc.width",
+							"value":"0.5",
+							"valueType":"extrusion",
+							"tooltip":"profileLibraryHelp.supportExtrusionWidth",
+							"unit":"misc.mm",
+							"perExtruder":false
+						}
+					]
+				},
+				{
+					"id":"supportInterfaceNozzle",
+					"settingName":"extrusion.supportInterface",
+					"value":"0",
+					"valueType":"nozzle",
+					"tooltip":"profileLibraryHelp.supportInterface",
+					"perExtruder":false,
+					"nonOverrideAllowed":true,
+					"children":
+					[
+						{
+							"id":"supportInterfaceExtrusionWidth_mm",
+							"settingName":"misc.width",
+							"value":"0.5",
+							"valueType":"extrusion",
+							"tooltip":"profileLibraryHelp.supportExtrusionWidth",
+							"unit":"misc.mm",
+							"perExtruder":false
+						}
+					]
+				},
+
+				{
+					"id":"raftBrimNozzle",
+					"settingName":"extrusion.raftBrim",
+					"value":"0",
+					"valueType":"nozzle",
+					"tooltip":"profileLibraryHelp.raftBrim",
+					"perExtruder":false,
+					"nonOverrideAllowed":true
+				},
+				{
+					"id":"outerPerimeterNozzle",
+					"settingName":"extrusion.outerPerimeter",
+					"value":"2",
+					"valueType":"nozzle",
+					"tooltip":"profileLibraryHelp.perimeterExtrusionWidth",
+					"perExtruder":false,
+					"nonOverrideAllowed":true,
+					"children":
+					[
+						{
+							"id":"outerPerimeterExtrusionWidth_mm",
+							"settingName":"misc.width",
+							"value":"0.4",
+							"valueType":"extrusion",
+							"tooltip":"profileLibraryHelp.perimeterExtrusionWidth",
+							"unit":"misc.mm",
+							"perExtruder":false
+						}
+					]
+				},
+				{
+					"id":"innerPerimeterNozzle",
+					"settingName":"extrusion.innerPerimeter",
+					"value":"2",
+					"valueType":"nozzle",
+					"tooltip":"profileLibraryHelp.perimeterExtrusionWidth",
+					"perExtruder":false,
+					"nonOverrideAllowed":true,
+					"children":
+					[
+						{
+							"id":"innerPerimeterExtrusionWidth_mm",
+							"settingName":"misc.width",
+							"value":"0.4",
+							"valueType":"extrusion",
+							"tooltip":"profileLibraryHelp.perimeterExtrusionWidth",
+							"unit":"misc.mm",
+							"perExtruder":false
+						}
+					]
+				}
+
+			]
+		},
+		{
+			"tabName":"sidePanel_settings.ValveTab",
+			"fxmlIconName":"valvesIcon",
+			"settings":
+			[
+				{
+					"id":"ejectionVolume",
+					"settingName":"nozzle.ejectionVolume",
+					"value":"0.3",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.nozzleEjectionVolume",
+					"unit":"misc.mm3",
+					"perExtruder":true
+				},
+				{
+					"id":"partialBMinimum",
+					"settingName":"nozzle.partialOpenValue",
+					"value":"0.5",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.nozzlePartialOpen",
+					"unit":"%",
+					"perExtruder":true
+				
+				},
+				{
+					"id":"coastingEnable",
+					"settingName":"extrusion.coastingEnable",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"profileLibraryHelp.coastingEnable",
+					"perExtruder":false,
+					"children":
+				[
+					{
+						"id":"coastingVolume",
+						"settingName":"extrusion.coastingVolume",
+						"value":"0.064",
+						"valueType":"float",
+						"minimumValue":"0",
+						"tooltip":"profileLibraryHelp.coastingVolume",
+						"unit":"misc.mm3",
+						"perExtruder":false
+					},
+					{	
+						"id":"coastingMinVolume",
+						"settingName":"extrusion.coastingMinVolume",
+						"value":"0.8",
+						"valueType":"float",
+						"minimumValue":"0",
+						"tooltip":"profileLibraryHelp.coastingMinVolume",
+						"unit":"misc.mm3",
+						"perExtruder":false
+					},
+					{	
+						"id":"coastingSpeed",
+						"settingName":"extrusion.coastingSpeed",
+						"value":"90",
+						"valueType":"float",
+						"minimumValue":"0.0001",
+						"tooltip":"profileLibraryHelp.coastingSpeed",
+						"unit":"misc.percent",
+						"perExtruder":false
+					}
+				]
+				},
+				{
+					"id":"retraction_combing",
+					"settingName":"speed.retractionCombing",
+					"value":"all",
+					"valueType":"option",
+					"tooltip":"profileLibraryHelp.retractionCombing",
+					"perExtruder":false,
+					"options":
+					{
+						"off": "Off",
+						"all": "All",
+						"no_outer_surfaces": "Not on Outer Surface",
+						"noskin": "Not in Skin",
+						"infill": "Within Infill"
+					}
+				},
+				{
+					"id":"travel_retract_before_outer_wall",
+					"settingName":"nozzle.retractBeforeOuterWall",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"profileLibraryHelp.retractBeforeOuterWall",
+					"perExtruder":false
+				},
+				{
+					"id":"retraction_hop_enabled",
+					"settingName":"nozzle.retractionHopEnabled",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"profileLibraryHelp.retractionHopEnabled",
+					"perExtruder":true,
+					"children":
+					[
+					{	
+						"id":"retraction_hop",
+						"settingName":"nozzle.retractionHopHeight",
+						"value":"1",
+						"valueType":"float",
+						"tooltip":"profileLibraryHelp.retractionHopHeight",
+						"unit":"misc.mm",
+						"perExtruder":true
+					}
+					]
+				},
+				{
+					"id":"retraction_hop_only_when_collides",
+					"settingName":"Z Hop Only Over Printed Parts",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"Only perform a Z Hop when moving over printed parts which cannot be avoided by horizontal motion by Avoid Printed Parts when Traveling.",
+					"perExtruder":true
+				}
+				
+			]
+		},
+		{
+			"tabName":"sidePanel_settings.supportTab",
+			"fxmlIconName":"supportIcon",
+			"settings":
+			[
+			
+				{
+					"id":"supportOverhangThreshold_degrees",
+					"settingName":"support.overhangThreshold",
+					"value":"45",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportOverhangThreshold",
+					"unit":"misc.degrees",
+					"perExtruder":false
+				},
+				{
+					"id":"supportPattern",
+					"settingName":"support.supportPattern",
+					"value":"lines",
+					"valueType":"option",
+					"tooltip":"profileLibraryHelp.supportPattern",
+					"unit":"misc.degrees",
+					"perExtruder":false,
+					"options":
+					{
+						"lines":"Lines",
+						"grid":"Grid",
+						"triangles":"Triangles",
+						"concentric":"Concentric",
+						"zigzag":"Zig Zag",
+						"cross":"Cross"
+					}
+				},
+				{
+					"id":"supportPatternSpacing_mm",
+					"settingName":"support.patternSpacing",
+					"value":"2.0",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportPatternSpacing",
+					"unit":"misc.mm",
+					"perExtruder":false
+				},
+				{
+					"id":"supportInfillLayerThickness",
+					"settingName":"extrusion.supportInfillLayerThickness",
+					"value":"1",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportInfillLayerThickness",
+					"unit":"misc.layers",
+					"perExtruder":false
+				},
+				{
+					"id":"supportXYDistance_mm",
+					"settingName":"support.supportXYDistance",
+					"value":"0.7",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportXYDistance",
+					"unit":"misc.mm",
+					"perExtruder":false
+				},
+				{
+					"id":"support_top_distance",
+					"settingName":"support.supportZDistanceTop",
+					"value":"1",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportZDistanceTop",
+					"unit":"misc.layers",
+					"perExtruder":false
+				},
+				{
+					"id":"support_bottom_distance",
+					"settingName":"support.supportZDistanceBottom",
+					"value":"1",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportZDistanceBottom",
+					"unit":"misc.layers",
+					"perExtruder":false
+				},
+				{
+					"id":"support_infill_angle",
+					"settingName":"support.supportInfillAngle",
+					"value":"0",
+					"minimumValue":"0",
+					"maximumValue":"180",
+					"valueType":"int",
+					"tooltip":"profileLibraryHelp.supportInfillAngle",
+					"unit":"misc.degrees",
+					"perExtruder":false
+				},
+				{
+					"id":"support_wall_count",
+					"settingName":"support.supportWallCount",
+					"value":"0",
+					"valueType":"int",
+					"tooltip":"profileLibraryHelp.supportWallCount",
+					"perExtruder":false
+				},
+				{
+					"id":"zig_zaggify_support",
+					"settingName":"Connect Support Lines",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"Connect the ends of the support lines together. Enabling this setting can make your support more sturdy and reduce underextrusion, but it will cost more material.",
+					"perExtruder":false
+				},
+				{
+					"id":"support_brim_enable",
+					"settingName":"support.supportBrimEnable",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"profileLibraryHelp.supportBrimEnable",
+					"perExtruder":false
+				},
+				{
+					"id":"support_brim_line_count",
+					"settingName":"support.supportBrimLines",
+					"value":"10",
+					"valueType":"int",
+					"tooltip":"profileLibraryHelp.supportBrimLines",
+					"perExtruder":false
+				},
+
+					
+				{
+                        		"id":"support_line_distance",
+                            		"settingName":"Support Interface Line Distance",
+                            		"tooltip":"Distance between the printed support structure lines. This setting is calculated by the support density.",
+                            		"unit":"mm",
+                            		"valueType":"float",
+                            		"minimumValue":"0",
+                            		"value":2.0,
+                            	
+                            		"perExtruder":false
+                        	},
+                        	{
+                        		"id":"support_initial_layer_line_distance",
+                            		"settingName":"Initial Layer Support Line Distance",
+                            		"tooltip":"Distance between the printed initial layer support structure lines. This setting is calculated by the support density.",
+                            		"unit":"mm",
+                            		"valueType":"float",
+                            		"minimumValue":"0",
+                            		"value": 2.0,
+                            		"perExtruder":false				
+				},
+				{
+					"id":"enableSupportInterface",
+					"settingName":"support.enableSupportInterface",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"profileLibraryHelp.enableSupportInterface",
+					"perExtruder":false,
+					"children":
+					[
+					{
+						"id":"support_roof_enable",
+						"settingName":"Enable Roof Support",
+						"value":"false",
+						"valueType":"boolean",
+						"tooltip":"Generate a dense slab of material between the top of support and the model. This will create a skin between the model and support.",
+						"perExtruder":false
+					},
+					{
+						"id":"support_bottom_enable",
+						"settingName":"Enable Bottom Support",
+						"value":"false",
+						"valueType":"boolean",
+						"tooltip":"Generate a dense slab of material between the bottom of support and the model. This will create a skin between the model and support.",
+						"perExtruder":false
+					}
+					]	
+						
+				},
+				{
+					"id":"support_interface_height",
+					"settingName":"support.supportInterfaceHeight",
+					"value":"1",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportInterfaceHeight",
+					"unit":"misc.layers",
+					"perExtruder":false
+				},
+
+				{
+					"id":"support_interface_pattern",
+					"settingName":"support.supportInterfacePattern",
+					"value":"grid",
+					"valueType":"option",
+					"tooltip":"profileLibraryHelp.supportInterfacePattern",
+					"unit":"misc.degrees",
+					"perExtruder":false,
+					"options":
+					{
+						"lines":"Lines",
+						"grid":"Grid",
+						"triangles":"Triangles",
+						"concentric":"Concentric",
+						"zigzag":"Zig Zag"
+					}
+			
+				}
+			]
+		},
+		{
+			"tabName":"sidePanel_settings.advancedSupportTabTitle",
+			"fxmlIconName":"advancedSupportIcon",
+			"settings":
+			
+			[				
+				{	
+					"id":"support_type",
+					"settingName":"advancedSupport.supportPlacement",
+					"value":"everywhere",
+					"valueType":"option",
+					"tooltip":"profileLibraryHelp.supportPlacement",
+					"perExtruder":false,
+					"options":
+					{
+						"buildplate": "Touching Buildplate",
+                      				"everywhere": "Everywhere"
+				
+					}
+				},
+
+
+				{
+					"id":"support_tree_angle",
+					"settingName":"Tree Support Branch Angle",
+					"value":"40",
+					"minimumValue":"0",
+					"maximumValue":"90",
+					"valueType":"float",
+					"tooltip":"The angle of the branches. Use a lower angle to make them more vertical and more stable. Use a higher angle to be able to have more reach.",
+					"unit":"misc.degrees",
+					"perExtruder":true
+				},
+				{
+					"id":"support_tree_branch_distance",
+					"settingName":"Tree Support Branch Distance",
+					"value":"1",
+					"minimumValue":"0.001",
+					"valueType":"float",
+					"tooltip":"How far apart the branches need to be when they touch the model. Making this distance small will cause the tree support to touch the model at more points, causing better overhang but making support harder to remove.",
+					"unit":"misc.mm",
+					"perExtruder":true
+				},
+				{
+					"id":"support_tree_branch_diameter",
+					"settingName":"Tree Support Branch Diameter",
+					"value":"2",
+					"minimumValue":"0.001",
+					"valueType":"float",
+					"tooltip":"The diameter of the thinnest branches of tree support. Thicker branches are more sturdy. Branches towards the base will be thicker than this.",
+					"unit":"misc.mm",
+					"perExtruder":true
+				},
+				{
+					"id":"support_tree_branch_diameter_angle",
+					"settingName":"Tree Support Branch Diameter Angle",
+					"value":"5",
+					"minimumValue":"0",
+					"maximumValue":"89.9999",
+					"valueType":"float",
+					"tooltip":"The angle of the branches' diameter as they gradually become thicker towards the bottom. An angle of 0 will cause the branches to have uniform thickness over their length. A bit of an angle can increase stability of the tree support.",
+					"unit":"misc.degrees",
+					"perExtruder":true
+				},
+				{
+					"id":"support_tree_collision_resolution",
+					"settingName":"Tree Support Collision Resolution",
+					"value":"0.2",
+					"minimumValue":"0.001",
+					"valueType":"float",
+					"tooltip":"Resolution to compute collisions with to avoid hitting the model. Setting this lower will produce more accurate trees that fail less often, but increases slicing time dramatically.",
+					"unit":"misc.mm",
+					"perExtruder":true
+				},
+				{
+					"id":"support_tree_wall_thickness",
+					"settingName":"Tree Support Wall Thickness",
+					"value":"0.4",
+					"minimumValue":"0",
+					"valueType":"float",
+					"tooltip":"The thickness of the walls of the branches of tree support. Thicker walls take longer to print but don't fall over as easily.",
+					"unit":"misc.mm",
+					"perExtruder":true
+							
+				},		
+				{
+					"id":"support_tree_wall_count",
+					"settingName":"Tree Support Wall Line Count",
+					"value":"1",
+					"minimumValue":"0",
+					"valueType":"int",
+					"tooltip":"The number of walls of the branches of tree support. Thicker walls take longer to print but don't fall over as easily.",
+					"unit":"",
+					"perExtruder":true
+				},
+				{
+					"id":"gradual_support_infill_steps",
+					"settingName":"advancedSupport.gradualSupportInfill",
+					"value":"0",
+					"valueType":"int",
+					"tooltip":"profileLibraryHelp.gradualSupportInfill",
+					"perExtruder":false
+				},
+				{
+					"id":"gradual_support_infill_step_height",
+					"settingName":"advancedSupport.gradualSupportInfillStepHeight",
+					"value":"10",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.gradualSupportInfillStepHeight",
+					"unit":"misc.mm",
+					"perExtruder":false
+				},
+				{
+					"id":"limit_support_retractions",
+					"settingName":"advancedSupport.limitNozzleCloses",
+					"value":"true",
+					"valueType":"boolean",
+					"tooltip":"profileLibraryHelp.limitNozzleCloses",
+					"perExtruder":false
+				},
+				{
+					"id":"support_offset",
+					"settingName":"advancedSupport.supportOffHorizontalExpansion",
+					"value":"0.2",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportOffHorizontalExpansion",
+					"unit":"misc.mm",
+					"perExtruder":false
+				},
+				{
+					"id":"support_join_distance",
+					"settingName":"advancedSupport.supportJoinDistance",
+					"value":"2",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportJoinDistance",
+					"unit":"misc.mm",
+					"perExtruder":false
+				},
+				{
+					"id":"support_use_towers",
+					"settingName":"advancedSupport.supportUseTowers",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"profileLibraryHelp.supportUseTowers",
+					"perExtruder":false,
+					"children":
+					[
+				
+				{
+					"id":"support_tower_diameter",
+					"settingName":"advancedSupport.supportTowerDiameter",
+					"value":"3",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportTowerDiameter",
+					"unit":"misc.mm",
+					"perExtruder":false
+				},
+				{
+					"id":"support_minimal_diameter",
+					"settingName":"advancedSupport.supportTowerMinDiameter",
+					"value":"3",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportTowerMinDiameter",
+					"unit":"misc.mm",
+					"perExtruder":false
+				},
+				{
+					"id":"support_tower_roof_angle",
+					"settingName":"advancedSupport.supportTowerRoofAngle",
+					"value":"65",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportTowerRoofAngle",
+					"unit":"misc.degrees",
+					"perExtruder":false
+				}	
+					]
+				},
+				{	
+					"id":"support_conical_enabled",
+					"settingName":"Enable Conical Support",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"Experimental feature: Make support areas smaller at the bottom than at the overhang.",
+					"perExtruder":false,
+					"children":
+					[
+					{
+						"id":"support_conical_angle",
+						"settingName":"Conical Support Angle",
+						"value":"30",
+						"valueType":"float",
+						"tooltip":"The angle of the tilt of conical support. With 0 degrees being vertical, and 90 degrees being horizontal. Smaller angles cause the support to be more sturdy, but consist of more material. Negative angles cause the base of the support to be wider than the top.",
+						"minimumValue":"-90",
+						"maximumValue":"90",
+						"unit":"misc.degrees",
+						"perExtruder":false
+					},
+					{
+						"id":"support_conical_min_width",
+						"settingName":"Conical Support Minimum Width",
+						"value":"5.0",
+						"minimumValue":"0",
+						"valueType":"float",
+						"tooltip":"Minimum width to which the base of the conical support area is reduced. Small widths can lead to unstable support structures.",
+						"unit":"misc.mm",
+						"perExtruder":false
+					}
+					]
+				}
+				
+			]
+		},
+		
+		{
+			"tabName":"Adhesion",
+			"fxmlIconName":"adhesionIcon",
+			"settings":
+			[
+				{
+					"id":"adhesion_type",
+					"settingName":"Build Plate Adhesion Type",
+					"value":"brim",
+					"valueType":"option",
+					"tooltip":"Different options that help to improve both priming your extrusion and adhesion to the build plate. Brim adds a single layer flat area around the base of your model to prevent warping. Raft adds a thick grid with a roof below the model. Skirt is a line printed around the model, but not connected to the model.",
+					"unit":"misc.degrees",
+					"perExtruder":false,
+					"options":
+					{
+						"skirt": "Skirt",
+                        			"brim": "Brim",
+                        			"raft": "Raft",
+                        			"none": "None"
+					}
+				},
+				{
+					"id":"skirt_line_count",
+					"settingName":"Skirt Line Count",
+					"value":"1",
+					"valueType":"float",
+					"tooltip":"Multiple skirt lines help to prime your extrusion better for small models. Setting this to 0 will disable the skirt.",
+					"unit":"mm",
+					"perExtruder":false
+				},
+				{
+					"id":"skirt_gap",
+					"settingName":"Skirt Distance",
+					"value":"3",
+					"valueType":"float",
+					"tooltip":"The horizontal distance between the skirt and the first layer of the print.\nThis is the minimum distance. Multiple skirt lines will extend outwards from this distance.",
+					"unit":"mm",
+					"perExtruder":false
+				},
+				{
+					"id":"skirt_brim_minimal_length",
+					"settingName":"Skirt/Brim Minimum Length",
+					"value":"0",
+					"valueType":"float",
+					"tooltip":"The minimum length of the skirt or brim. If this length is not reached by all skirt or brim lines together, more skirt or brim lines will be added until the minimum length is reached. Note: If the line count is set to 0 this is ignored.",
+					"unit":"misc.mm",
+					"perExtruder":false
+				},
+				{
+					"id":"brim_width",
+					"settingName":"Brim Width",
+					"value":"0",
+					"valueType":"float",
+					"tooltip":"The distance from the model to the outermost brim line. A larger brim enhances adhesion to the build plate, but also reduces the effective print area.",
+					"unit":"mm",
+					"perExtruder":false
+				},
+				{
+					"id":"brim_line_count",
+					"settingName":"Brim Line Count",
+					"value":"0",
+					"valueType":"float",
+					"tooltip":"The number of lines used for a brim. More brim lines enhance adhesion to the build plate, but also reduces the effective print area.",
+					"unit":"mm",
+					"perExtruder":false
+				},
+				{
+					"id":"raftBaseLinewidth_mm",
+					"settingName":"support.raftBaseLinewidth",
+					"value":"1.00",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.raftBaseLinewidth",
+					"unit":"misc.mm",
+					"perExtruder":false
+				},
+				{
+					"id":"raftInterfaceLayers",
+					"settingName":"support.raftInterfaceLayers",
+					"value":"1",
+					"valueType":"int",
+					"tooltip":"profileLibraryHelp.raftInterfaceLayers",
+					"unit":"misc.layers",
+					"perExtruder":false
+				},
+				{
+					"id":"raftAirGapLayer0_mm",
+					"settingName":"support.raftAirGapLayer0",
+					"value":"0.250",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.raftAirGapLayer0",
+					"unit":"misc.mm",
+					"perExtruder":false
+				}
+			]
+
+		},
+		{
+			"tabName":"sidePanel_settings.speedTab",
+			"fxmlIconName":"speedIcon",
+			"settings":
+			[
+				{
+					"id":"firstLayerSpeed_mm_per_s",
+					"settingName":"speed.firstLayer",
+					"value":"8",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.firstLayerSpeed",
+					"unit":"misc.mmpersec",
+					"perExtruder":false
+				},
+				{
+					"id":"speed_slowdown_layers",
+					"settingName":"speed.numberOfSlowLayers",
+					"value":"2",
+					"valueType":"int",
+					"tooltip":"profileLibraryHelp.numberOfSlowLayers",
+					"unit":"misc.layers",
+					"perExtruder":false
+				},
+				{
+					"id":"speed_print",
+					"settingName":"speed.general",
+					"value":"40",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.generalSpeed",
+					"unit":"misc.mmpersec",
+					"perExtruder":false
+				},
+				{
+					"id":"perimeterSpeed_mm_per_s",
+					"settingName":"speed.perimeters",
+					"value":"30",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.perimeterSpeed",
+					"unit":"misc.mmpersec",
+					"perExtruder":false
+				},
+				{
+					"id":"externalPerimeterSpeed_mm_per_s",
+					"settingName":"speed.externalPerimeters",
+					"value":"30",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.externalPerimeterSpeed",
+					"unit":"misc.mmpersec",
+					"perExtruder":false
+				},
+				{
+					"id":"innerPerimeterSpeed_mm_per_s",
+					"settingName":"speed.innerPerimeters",
+					"value":"30",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.innerPerimeterSpeed",
+					"unit":"misc.mmpersec",
+					"perExtruder":false
+				},
+				{
+					"id":"speed_topbottom",
+					"settingName":"speed.topAndBottom",
+					"value":"30",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.topAndbottomSpeed",
+					"unit":"misc.mmpersec",
+					"perExtruder":false
+				},
+				{
+					"id":"speed_roofing",
+					"settingName":"speed.roofing",
+					"value":"25",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.roofingSpeed",
+					"unit":"misc.mmpersec",
+					"perExtruder":false
+				},
+				{
+					"id":"fillSpeed_mm_per_s",
+					"settingName":"speed.infill",
+					"value":"30",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.infillSpeed",
+					"unit":"misc.mmpersec",
+					"perExtruder":false
+				},
+				{
+					"id":"supportSpeed_mm_per_s",
+					"settingName":"speed.supportMaterial",
+					"value":"30",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportMaterialSpeed",
+					"unit":"misc.mmpersec",
+					"perExtruder":true
+				},
+				{
+					"id":"supportInfillSpeed_mm_per_s",
+					"settingName":"speed.supportInfill",
+					"value":"40",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportInfillSpeed",
+					"unit":"misc.mmpersec",
+					"perExtruder":true
+				},
+				{
+					"id":"supportInterfaceSpeed_mm_per_s",
+					"settingName":"speed.supportInterface",
+					"value":"40",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportInterfaceSpeed",
+					"unit":"misc.mmpersec",
+					"perExtruder":true
+				},
+				{
+					"id":"speed_support_roof",
+					"settingName":"speed.supportRoof",
+					"value":"40",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportRoof",
+					"unit":"misc.mmpersec",
+					"perExtruder":true
+				},
+				{
+					"id":"speed_support_bottom",
+					"settingName":"speed.supportBottom",
+					"value":"40",
+					"valueType":"float",
+					"tooltip":"profileLibraryHelp.supportInterfaceSpeed",
+					"unit":"misc.mmpersec",
+					"perExtruder":true
+				},
+				{
+					"id":"bridge_skin_speed",
+					"settingName":"Bridge First Layer Skin Speed",
+					"value":"12",
+					"minimumValue":"cool_min_speed",
+					"valueType":"float",
+					"tooltip":"The speed at which bridge second skin layer is printed - maximum value is 300",
+					"unit":"misc.mmpersec",
+					"perExtruder":false
+				},
+				{
+					"id":"bridge_skin_speed_2",
+					"settingName":"Bridge Second Layer Skin Speed",
+					"value":"15",
+					"minimumValue":"cool_min_speed",
+					"valueType":"float",
+					"tooltip":"The speed at which bridge second skin layer is printed - maximum value is 300",
+					"unit":"misc.mmpersec",
+					"perExtruder":false
+				},
+				{
+					"id":"bridge_skin_speed_3",
+					"settingName":"Bridge Third Layer Skin Speed",
+					"value":"20",
+					"minimumValue":"cool_min_speed",
+					"valueType":"float",
+					"tooltip":"The speed at which bridge third skin layer is printed - maximum value is 300",
+					"unit":"misc.mmpersec",
+					"perExtruder":false
+
+				},
+				{
+					"id":"jerk_travel_enabled",
+					"settingName":"Enable Travel Jerk",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"Use a separate jerk rate for travel moves. If disabled, travel moves will use the jerk value of the printed line at their destination",
+					"perExtruder":false
+				},
+				{
+					"id":"acceleration_travel_enabled",
+					"settingName":"Enable Travel Acceleration",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"Use a separate acceleration rate for travel moves. If disabled, travel moves will use the acceleration value of the printed line at their destination.",
+					"perExtruder":false
+				}
+					
+			]
+		
+		},
+		{
+			"tabName":"Special Modes & Magic Settings",
+			"fxmlIconName":"magicIcon",
+			"fxmlSelectedIconName":"magicIconSelected",
+			"settings":
+			[
+				
+				{
+				"id":"mold_enabled",
+				"settingName":"special_settings.enableMould",
+				"value":"false",
+				"valueType":"boolean",
+				"tooltip":"Print models as a mold, which can be cast in order to get a model which resembles the models on the build plate.",
+				"perExtruder":false,
+				"children":
+				[
+				
+				{
+					"id":"mold_width",
+					"settingName":"special_settings.miminmumMouldWidth",
+					"value":5,
+					"unit":"misc.mm",
+					"valueType":"float",
+					"tooltip":"The minimal distance between the ouside of the mold and the outside of the model.",
+					"perExtruder":false
+				},
+				{
+					"id":"mold_roof_height",
+					"settingName":"special_settings.mouldRoofHeight",
+					"value":0.5,
+					"unit":"misc.mm",
+					"valueType":"float",
+					"tooltip":"The height above horizontal parts in your model which to print mold.",
+					"perExtruder":false
+				},
+				{
+					"id":"mold_angle",
+					"settingName":"special_settings.mouldAngle",
+					"value":40,
+					"unit":"º",
+					"valueType":"float",
+					"tooltip":"The angle of overhang of the outer walls created for the mold. 0° will make the outer shell of the mold vertical, while 90° will make the outside of the model follow the contour of the model.",
+					"perExtruder":false
+				}
+				]
+				},
+				{
+				"id":"magic_fuzzy_skin_enabled",
+				"settingName":"special_settings.enableFuzzySkin",
+				"value":"false",
+				"valueType":"boolean",
+				"tooltip":"profileLibraryHelp.topAndBottomPattern",
+				"perExtruder":false,
+				"children":
+				[
+				
+				{	
+					"id":"magic_fuzzy_skin_outside_only",
+					"settingName":"special_settings.outsideFuzzySkin",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"profileLibraryHelp.topAndBottomPattern",
+					"perExtruder":false
+				},
+				{	
+					"id":"magic_fuzzy_skin_thickness",
+					"settingName":"special_settings.thicknessFuzzySkin",
+					"value":"0.3",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"profileLibraryHelp.topAndBottomPattern",
+					"perExtruder":false
+				},
+				{	
+					"id":"magic_fuzzy_skin_point_density",
+					"settingName":"special_settings.densityFuzzySkin",
+					"value":"1.25",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"profileLibraryHelp.topAndBottomPattern",
+					"perExtruder":false
+				},
+				{
+					"id":"magic_fuzzy_skin_point_dist",
+					"settingName":"special_settings.distanceFuzzySkin",
+					"value":"0.8",
+					"valueType":"float",
+					"unit":"misc.mm",
+					"tooltip":"profileLibraryHelp.topAndBottomPattern",
+					"perExtruder":false
+				}
+				]		
+				},
+				{
+					"id":"slicing_tolerance",
+					"settingName":"Slicing Tolerance",
+					"value":"middle",
+					"valueType":"option",
+					"tooltip":"Vertical tolerance in the sliced layers. The contours of a layer are normally generated by taking cross sections through the middle of each layer's thickness (Middle). Alternatively each layer can have the areas which fall inside of the volume throughout the entire thickness of the layer (Exclusive) or a layer has the areas which fall inside anywhere within the layer (Inclusive). Inclusive retains the most details, Exclusive makes for the best fit and Middle stays closest to the original surface.",
+					"options":
+					{
+						"middle": "Middle",
+                        			"exclusive": "Exclusive",
+                        			"inclusive": "Inclusive"
+					}
+				}
+		
+				
+			]
+					
+		},
+		{
+			"tabName":"sidePanel_settings.coolingTabTitle",
+			"fxmlIconName":"coolingIcon",
+			"settings":
+			[
+				{
+					"id":"enableCooling",
+					"settingName":"cooling.enableAutoCooling",
+					"value":"true",
+					"valueType":"boolean",
+					"tooltip":"profileLibraryHelp.enableAutoCooling",
+					"perExtruder":false
+				},
+				{
+					"id":"minFanSpeed_percent",
+					"settingName":"cooling.MinimumSpeed",
+					"value":"60:60",
+					"valueType":"int",
+					"tooltip":"profileLibraryHelp.minFanSpeed",
+					"perExtruder":true
+				},
+				{
+					"id":"maxFanSpeed_percent",
+					"settingName":"cooling.MaximumSpeed",
+					"value":"100:100",
+					"valueType":"int",
+					"tooltip":"profileLibraryHelp.maxFanSpeed",
+					"perExtruder":true
+				},
+				{
+					"id":"slowDownIfLayerTimeLessThan_secs",
+					"settingName":"cooling.slowFanIfBelow",
+					"value":"5:5",
+					"valueType":"int",
+					"tooltip":"profileLibraryHelp.slowFanLayerTimeBelow",
+					"unit":"misc.secs",
+					"perExtruder":true
+				},
+				{
+					"id":"cool_min_speed",
+					"settingName":"Minimum Speed",
+					"value":"10",
+					"minimumValue":"0",
+					"maximumValue":"100",
+					"valueType":"float",
+					"unit":"misc.mmpersec",
+					"tooltip":"profileLibraryHelp.minPrintSpeed",
+					"perExtruder":false
+				},
+				{
+					"id":"cool_lift_head",
+					"settingName":"Lift Head",
+					"value":"false",
+					"valueType":"boolean",
+					"tooltip":"profileLibraryHelp.liftHead",
+					"perExtruder":false
+				},
+				{
+					"id":"bridge_fan_speed",
+					"settingName":"Bridge Skin First Layer Fan Speed",
+					"value":"100",
+					"minimumValue":"0",
+					"maximumValue":"100",
+					"valueType":"float",
+					"tooltip":"The speed at which bridge skin regions are printed.",
+					"unit":"misc.percent",
+					"perExtruder":false
+				},
+				{
+					"id":"bridge_fan_speed_2",
+					"settingName":"Bridge Skin Second Layer Fan Speed",
+					"value":"100",
+					"minimumValue":"0",
+					"maximumValue":"100",
+					"valueType":"float",
+					"tooltip":"Percentage fan speed to use when printing second layer bridge walls and skin.",
+					"unit":"misc.percent",
+					"perExtruder":false
+				},
+				{
+					"id":"bridge_fan_speed_3",
+					"settingName":"Bridge Skin Third Layer Fan Speed",
+					"value":"100",
+					"minimumValue":"0",
+					"maximumValue":"100",
+					"valueType":"float",
+					"tooltip":"Percentage fan speed to use when printing third layer bridge walls and skin.",
+					"unit":"misc.percent",
+					"perExtruder":false
+				
+				}
+			]
+		}
+	],
+	"hiddenSettings":
+	[
+		
+		{
+			"id":"raftBaseThickness_mm",
+			"settingName":"",
+			"value":"0.3",
+			"valueType":"float",
+			"tooltip":"",
+			"perExtruder":false
+		
+		},
+		{
+			"id":"brimWidth_mm",
+			"settingName":"",
+			"value":"0",
+			"valueType":"int",
+			"tooltip":"",
+			"perExtruder":false
+		},
+
+		{
+			"id":"spiralPrint",
+			"settingName":"",
+			"value":"false",
+			"valueType":"boolean",
+			"tooltip":"",
+			"perExtruder":false
+
+		},
+
+		{
+			"id":"enableAdaptive",
+			"settingName":"",
+			"value":"false",
+			"valueType":"boolean",
+			"tooltip":"",
+			"perExtruder":false
+
+		},
+		
+		{
+			"id":"generateSupportMaterial",
+			"settingName":"",
+			"value":"false",
+			"valueType":"boolean",
+			"tooltip":"",
+			"perExtruder":false
+		},
+		{
+			"id":"supportGapEnabled",
+			"settingName":"",
+			"value":"false",
+			"valueType":"boolean",
+			"tooltip":"",
+			"perExtruder":false
+		},
+		
+				{
+					"id":"support_interface_density",
+					"settingName":"Support Interface Density",
+					"value":"100",
+					"valueType":"float",
+					"tooltip":"Adjusts the density of the roofs and floors of the support structure. A higher value results in better overhangs, but the supports are harder to remove.",
+					"unit":"%",
+					"perExtruder":true
+					
+				},		
+
+				{
+					"id":"supportTreeEnable",
+					"settingName":"",
+					"value":"normal",
+					"valueType":"option",
+					"tooltip":"",
+					"perExtruder":true,
+					"options":
+					{
+						"normal":"Normal",
+						"tree":"Tree"
+					}
+				},						
+
+				{	"id":"support_infill_rate",
+					"settingName":"Support Density",
+					"value":"15",
+					"minimumValue":"0",
+					"valueType":"float",
+					"tooltip":"Adjusts the density of the support structure. A higher value results in better overhangs, but the supports are harder to remove.",
+					"unit":"%",
+					"perExtruder":true
+				},
+				{
+					"id":"retraction_min_travel",
+					"settingName":"Retraction Minimum Travel",
+					"value":"0.5",
+					"minimumValue":"0",
+					"valueType":"float",
+					"tooltip":"The minimum distance of travel needed for a retraction to happen at all. This helps to get fewer retractions in a small area",
+					"unit":"misc.mm",
+					"perExtruder":true
+				}							
+
+                        	
+	]
+}

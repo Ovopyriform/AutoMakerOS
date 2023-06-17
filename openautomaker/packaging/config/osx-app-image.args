@@ -1,0 +1,11 @@
+--name ${project.name}
+--icon "${assets.os-specific}/icons/openautomaker.icns"
+--type app-image
+--dest "${project.build.directory}"
+--main-jar ${project.build.finalName}.jar
+--main-class ${mainClass}
+--input "${project.build.directory}/dependency"
+--app-version ${project.version}
+--temp "${project.build.directory}/installer-work"
+${macos.sign}
+${macos.sign.identity}

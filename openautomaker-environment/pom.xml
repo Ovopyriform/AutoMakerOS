@@ -1,0 +1,113 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>openautomaker-environment</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0-SNAPSHOT</version>
+
+	<name>OpenAutoMaker Environment</name>
+
+	<url>http://maven.apache.org</url>
+
+	<parent>
+		<artifactId>openautomaker-parent</artifactId>
+		<groupId>xyz.openautomaker</groupId>
+		<version>1.0</version>
+		<relativePath>../openautomaker-parent</relativePath>
+	</parent>
+	
+	<properties>
+		<dollar>$</dollar>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-launcher</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>xyz.openautomaker</groupId>
+			<artifactId>openautomaker-i18n</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>xyz.openautomaker</groupId>
+			<artifactId>openautomaker-test-environment</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>log4j2.xml</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>log4j2.xml</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>osx-specific</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<runtime.log.location>{user.home}/Library/Logs/OpenAutoMaker/openautomaker.log</runtime.log.location>
+			</properties>
+		</profile>
+		<profile>
+			<id>windows-specific</id>
+			<activation>
+				<os>
+					<family>windows</family>
+				</os>
+			</activation>
+			<properties>
+				<runtime.log.location>{jpackage.app-path}/logs/openautomaker.log</runtime.log.location>
+			</properties>
+		</profile>
+		<profile>
+			<id>linux-specific</id>
+			<activation>
+				<os>
+					<family>unix</family>
+					<name>Linux</name>
+				</os>
+			</activation>
+			<properties>
+				<runtime.log.location>/var/log/OpenAutoMaker/openautomaker.log</runtime.log.location>
+			</properties>
+		</profile>
+	</profiles>
+</project>
