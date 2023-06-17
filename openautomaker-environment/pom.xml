@@ -83,7 +83,7 @@
 				</os>
 			</activation>
 			<properties>
-				<runtime.log.location>{user.home}/Library/Logs/OpenAutoMaker/openautomaker.log</runtime.log.location>
+				<runtime.log.location><![CDATA[${sys:user.home}/Library/Logs/OpenAutoMaker/openautomaker.log]]></runtime.log.location>
 			</properties>
 		</profile>
 		<profile>
@@ -94,7 +94,7 @@
 				</os>
 			</activation>
 			<properties>
-				<runtime.log.location>{jpackage.app-path}/logs/openautomaker.log</runtime.log.location>
+				<runtime.log.location><![CDATA[${sys:jpackage.app-path}/logs/openautomaker.log]]></runtime.log.location>
 			</properties>
 		</profile>
 		<profile>
@@ -106,7 +106,7 @@
 				</os>
 			</activation>
 			<properties>
-				<runtime.log.location>/var/log/OpenAutoMaker/openautomaker.log</runtime.log.location>
+				<runtime.log.location><![CDATA[/var/log/OpenAutoMaker/openautomaker.log]]></runtime.log.location>
 			</properties>
 		</profile>
 	</profiles>
