@@ -2,8 +2,10 @@
 OpenAutoMaker is an updated version of the AutoMaker software for use with Robox 3D printers.  Use at your own risk.  It's an early release based on the latest AutoMaker.  
 
 Couple of things to note:
+* Intel based Macs only at the moment (working on it)
 * Root hasn't been updated yet.  This will work with the latest AutoMaker Root
 * GCode Viewer isn't included yet
+* UI probably a bit buggy
 
 Includes a few updates:
 * Code base-lined to JDK 17 LTS
