@@ -88,6 +88,8 @@ public class ControlStatusData
 				printerStatusEnumValue = printer.printerStatusProperty().get().name();
 				statusProcessed = true;
 				break;
+			default:
+				break;
 			}
 		}
 
