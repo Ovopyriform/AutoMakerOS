@@ -178,6 +178,7 @@ public class PrintJobStatusData {
 		//Print info
 		totalDurationSeconds = printer.getPrintEngine().totalDurationSecondsProperty().get();
 		if (printer.printerStatusProperty().get() == PrinterStatus.PRINTING_PROJECT) {
+			//TODO: What's all this about?!
 			if (lastPrintJobID == null || lastPrintJobID.equals(printer.getPrintEngine().printJobProperty().get())) {
 				lastPrintJobID = printer.getPrintEngine().printJobProperty().get().getJobUUID();
 				try {
