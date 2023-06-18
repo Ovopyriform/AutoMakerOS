@@ -7,16 +7,7 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +19,15 @@ import com.codahale.metrics.annotation.Timed;
 import celtech.roboxbase.comms.exceptions.RoboxCommsException;
 import celtech.roboxbase.comms.remote.Configuration;
 import celtech.roboxbase.comms.rx.FirmwareError;
-import io.dropwizard.jersey.params.BooleanParam;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
 import xyz.openautomaker.base.configuration.Macro;
@@ -415,7 +414,7 @@ public class PublicPrinterControlAPI
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/openDoor")
-	public boolean openDoor(@PathParam("printerID") String printerID, BooleanParam safetyOn)
+	public boolean openDoor(@PathParam("printerID") String printerID, Optional<Boolean> safetyOn)
 	{
 		if (Root.isResponding() && PrinterRegistry.getInstance() != null)
 		{
@@ -471,7 +470,7 @@ public class PublicPrinterControlAPI
 	@POST
 	@Timed
 	@Path("/cancel")
-	public void cancel(@PathParam("printerID") String printerID, BooleanParam safetyOn)
+	public void cancel(@PathParam("printerID") String printerID, Optional<Boolean> safetyOn)
 	{
 		if (Root.isResponding() && PrinterRegistry.getInstance() != null)
 		{
@@ -647,7 +646,7 @@ public class PublicPrinterControlAPI
 	@POST
 	@Timed
 	@Path("/purge")
-	public void purge(@PathParam("printerID") String printerID, BooleanParam safetyOn)
+	public void purge(@PathParam("printerID") String printerID, Optional<Boolean> safetyOn)
 	{
 		if (Root.isResponding())
 			doPurge(printerID, 0, 0, safetyOn.get());
@@ -677,7 +676,7 @@ public class PublicPrinterControlAPI
 	@POST
 	@Timed
 	@Path("/removeHead")
-	public void removeHead(@PathParam("printerID") String printerID, BooleanParam safetyOn)
+	public void removeHead(@PathParam("printerID") String printerID, Optional<Boolean> safetyOn)
 	{
 		if (Root.isResponding() && PrinterRegistry.getInstance() != null)
 		{

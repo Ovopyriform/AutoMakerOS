@@ -26,7 +26,7 @@ import xyz.openautomaker.base.configuration.hardwarevariants.PrinterType;
 public class UserPreferences
 {
 
-	private final ObjectProperty<SlicerType> slicerType = new SimpleObjectProperty<>(SlicerType.Cura);
+	private final ObjectProperty<SlicerType> slicerType = new SimpleObjectProperty<>(SlicerType.Cura4);
 	private final BooleanProperty safetyFeaturesOn = new SimpleBooleanProperty(true);
 	private String languageTag = "";
 	private final BooleanProperty showTooltips = new SimpleBooleanProperty(true);

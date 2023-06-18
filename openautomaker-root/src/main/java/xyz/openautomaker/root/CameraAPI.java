@@ -3,26 +3,25 @@ package xyz.openautomaker.root;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.codahale.metrics.annotation.Timed;
 
 import celtech.roboxbase.comms.remote.Configuration;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
-import xyz.openautomaker.root.comms.CameraCommsManager;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import xyz.openautomaker.base.configuration.BaseConfiguration;
 import xyz.openautomaker.base.configuration.fileRepresentation.CameraSettings;
 import xyz.openautomaker.base.utils.ScriptUtils;
 import xyz.openautomaker.environment.MachineType;
+import xyz.openautomaker.environment.OpenAutoMakerEnv;
+import xyz.openautomaker.root.comms.CameraCommsManager;
 /**
  *
  * @author Tony Aldhous
