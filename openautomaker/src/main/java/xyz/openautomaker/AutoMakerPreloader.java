@@ -27,8 +27,8 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import xyz.openautomaker.base.ApplicationFeature;
 import xyz.openautomaker.base.configuration.BaseConfiguration;
+import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -51,12 +51,6 @@ public class AutoMakerPreloader extends Preloader
 		// so it can get the version string. (Without this, BaseConfiguration.getApplicationVersion() returns null.)
 		BaseConfiguration.getApplicationInstallDirectory(AutoMaker.class);
 
-		// Enable all the pro version features.
-		BaseConfiguration.enableApplicationFeature(ApplicationFeature.LATEST_CURA_VERSION);
-		BaseConfiguration.enableApplicationFeature(ApplicationFeature.GCODE_VISUALISATION);
-		BaseConfiguration.enableApplicationFeature(ApplicationFeature.OFFLINE_PRINTER);
-		BaseConfiguration.enableApplicationFeature(ApplicationFeature.PRO_SPLASH_SCREEN);
-
 		this.preloaderStage = stage;
 		LOGGER.debug("show splash - start");
 		preloaderStage.toFront();
@@ -65,8 +59,7 @@ public class AutoMakerPreloader extends Preloader
 				new Image(getClass().getResourceAsStream(AUTOMAKER_ICON_64)),
 				new Image(getClass().getResourceAsStream(AUTOMAKER_ICON_32)));
 
-		String splashImageName = BaseConfiguration.isApplicationFeatureEnabled(ApplicationFeature.PRO_SPLASH_SCREEN)
-				? "Splash_AutoMakerPro.png" : "Splash_AutoMaker.png";
+		String splashImageName = "Splash_AutoMakerPro.png";
 		Image splashImage = new Image(getClass().getResourceAsStream(
 				ApplicationConfiguration.imageResourcePath + splashImageName));
 
@@ -84,12 +77,8 @@ public class AutoMakerPreloader extends Preloader
 		AnchorPane.setBottomAnchor(copyrightLabel, 38.0);
 		AnchorPane.setLeftAnchor(copyrightLabel, 21.0);
 
-		String versionString;
-		if(BaseConfiguration.isApplicationFeatureEnabled(ApplicationFeature.PRO_SPLASH_SCREEN)) {
-			versionString = BaseConfiguration.getApplicationVersion() + "_P";
-		} else {
-			versionString = BaseConfiguration.getApplicationVersion();
-		}
+		String versionString = OpenAutoMakerEnv.get().getVersion();
+
 		Text versionLabel = new Text("Version " + versionString);
 		versionLabel.getStyleClass().add("splashVersion");
 		AnchorPane.setBottomAnchor(versionLabel, 20.0);

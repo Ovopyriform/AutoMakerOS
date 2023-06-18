@@ -8,18 +8,12 @@
 
 	<name>OpenAutoMaker Environment</name>
 
-	<url>http://maven.apache.org</url>
-
 	<parent>
 		<artifactId>openautomaker-parent</artifactId>
 		<groupId>xyz.openautomaker</groupId>
 		<version>1.0</version>
 		<relativePath>../openautomaker-parent</relativePath>
 	</parent>
-	
-	<properties>
-		<dollar>$</dollar>
-	</properties>
 
 	<dependencies>
 		<dependency>

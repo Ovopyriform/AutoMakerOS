@@ -23,8 +23,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Color;
-import xyz.openautomaker.base.ApplicationFeature;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
 import xyz.openautomaker.base.configuration.Filament;
 import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
 import xyz.openautomaker.base.printerControl.model.Head;
@@ -38,12 +36,10 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class PreviewManager
-{
+public class PreviewManager {
 	private static final Logger LOGGER = LogManager.getLogger(PreviewManager.class.getName());
 
-	public enum PreviewState
-	{
+	public enum PreviewState {
 		CLOSED,
 		LOADING,
 		OPEN,
@@ -57,7 +53,7 @@ public class PreviewManager
 	private GCodePreviewExecutorService previewExecutor = new GCodePreviewExecutorService();
 	private GCodePreviewTask previewTask = null;
 
-	private final ChangeListener<Boolean> previewRunningListener =(observable, wasRunning, isRunning) -> {
+	private final ChangeListener<Boolean> previewRunningListener = (observable, wasRunning, isRunning) -> {
 		if (wasRunning && !isRunning) {
 			removePreview();
 		}
@@ -75,101 +71,81 @@ public class PreviewManager
 
 	private final ChangeListener<ApplicationMode> applicationModeChangeListener = (observable, oldValue, newValue) -> {
 		//LOGGER.info("printQualityChangeListener");
-		if (newValue == ApplicationMode.SETTINGS)
-		{
+		if (newValue == ApplicationMode.SETTINGS) {
 			autoStartAndUpdatePreview();
 		}
 	};
 
-	public PreviewManager()
-	{
+	public PreviewManager() {
 		//		if(BaseConfiguration.isWindows32Bit())
 		//		{
 		//			//LOGGER.info("Setting previewState to NOT_SUPPORTED");
 		//			previewState.set(PreviewState.NOT_SUPPORTED);
 		//		}
-		try
-		{
+		try {
 			ApplicationStatus.getInstance().modeProperty().addListener(applicationModeChangeListener);
-		} catch (Exception ex)
-		{
+		}
+		catch (Exception ex) {
 			LOGGER.error("Unexpected error in PreviewManager constructor", ex);
 		}
 	}
 
-	public ReadOnlyObjectProperty<PreviewState> previewStateProperty()
-	{
+	public ReadOnlyObjectProperty<PreviewState> previewStateProperty() {
 		return previewState;
 	}
 
-	public void previewAction(ActionEvent event)
-	{
+	public void previewAction(ActionEvent event) {
 		//LOGGER.info("previewAction");
-		if(BaseConfiguration.isApplicationFeatureEnabled(ApplicationFeature.GCODE_VISUALISATION)) {
-			if(previewState.get() != PreviewState.OPEN)
-			{
-				updatePreview();
-			}
-		}
+		if (previewState.get() != PreviewState.OPEN)
+			updatePreview();
 	}
 
-	public void setProjectAndPrinter(Project project, Printer printer)
-	{
-		if (currentProject != project)
-		{
-			if (currentProject != null && currentProject instanceof ModelContainerProject)
-			{
-				((ModelContainerProject)currentProject).getGCodeGenManager().getDataChangedProperty().removeListener(this.gCodePrepChangeListener);
-				((ModelContainerProject)currentProject).getGCodeGenManager().getPrintQualityProperty().removeListener(this.printQualityChangeListener);
+	public void setProjectAndPrinter(Project project, Printer printer) {
+		if (currentProject != project) {
+			if (currentProject != null && currentProject instanceof ModelContainerProject) {
+				((ModelContainerProject) currentProject).getGCodeGenManager().getDataChangedProperty().removeListener(this.gCodePrepChangeListener);
+				((ModelContainerProject) currentProject).getGCodeGenManager().getPrintQualityProperty().removeListener(this.printQualityChangeListener);
 			}
 
 			currentProject = project;
-			if (currentProject != null && currentProject instanceof ModelContainerProject)
-			{
-				((ModelContainerProject)currentProject).getGCodeGenManager().getDataChangedProperty().addListener(this.gCodePrepChangeListener);
-				((ModelContainerProject)currentProject).getGCodeGenManager().getPrintQualityProperty().addListener(this.printQualityChangeListener);
+			if (currentProject != null && currentProject instanceof ModelContainerProject) {
+				((ModelContainerProject) currentProject).getGCodeGenManager().getDataChangedProperty().addListener(this.gCodePrepChangeListener);
+				((ModelContainerProject) currentProject).getGCodeGenManager().getPrintQualityProperty().addListener(this.printQualityChangeListener);
 				if (previewState.get() == PreviewState.OPEN ||
 						previewState.get() == PreviewState.LOADING ||
-						previewState.get() == PreviewState.SLICE_UNAVAILABLE)
-				{
+						previewState.get() == PreviewState.SLICE_UNAVAILABLE) {
 					updatePreview();
 				}
-				else if (previewState.get() != PreviewState.NOT_SUPPORTED)
-				{
+				else if (previewState.get() != PreviewState.NOT_SUPPORTED) {
 					//LOGGER.info("Setting previewState to CLOSED");
 					previewState.set(PreviewState.CLOSED);
 				}
 			}
-			else
-			{
+			else {
 				clearPreview();
 			}
 		}
 	}
 
-	public void shutdown()
-	{
+	public void shutdown() {
 		removePreview();
 
 		if (currentProject != null && currentProject instanceof ModelContainerProject)
-			((ModelContainerProject)currentProject).getGCodeGenManager().getDataChangedProperty().removeListener(this.gCodePrepChangeListener);
+			((ModelContainerProject) currentProject).getGCodeGenManager().getDataChangedProperty().removeListener(this.gCodePrepChangeListener);
 		currentProject = null;
 
 		ApplicationStatus.getInstance().modeProperty().removeListener(applicationModeChangeListener);
 	}
 
-	private boolean modelIsSuitable()
-	{
+	private boolean modelIsSuitable() {
 		return (currentProject != null &&
 				currentProject instanceof ModelContainerProject &&
-				((ModelContainerProject)currentProject).getGCodeGenManager().modelIsSuitable());
+				((ModelContainerProject) currentProject).getGCodeGenManager().modelIsSuitable());
 	}
 
-	private void clearPreview()
-	{
+	private void clearPreview() {
 		//LOGGER.info("clearPreview");
-		if (previewTask != null)
-		{
+		if (previewTask != null) {
 			//LOGGER.info("Clearing preview");
 			previewTask.clearGCode();
 		}
@@ -179,11 +155,9 @@ public class PreviewManager
 	// Start and remove preview need to be synchronized so that
 	// the previewTask is started/stopped and the variable updated
 	// as a single transaction.
-	private synchronized void removePreview()
-	{
+	private synchronized void removePreview() {
 		//LOGGER.info("removingPreview");
-		if (previewTask != null)
-		{
+		if (previewTask != null) {
 			previewTask.runningProperty().removeListener(previewRunningListener);
 			previewTask.terminatePreview();
 			previewState.set(PreviewState.CLOSED);
@@ -225,35 +199,28 @@ public class PreviewManager
 		//LOGGER.info("startPreview done");
 	}
 
-	private void autoStartAndUpdatePreview()
-	{
+	private void autoStartAndUpdatePreview() {
 		//LOGGER.info("autoStartAndUpdatePreview");
 		if (previewState.get() == PreviewState.OPEN ||
 				previewState.get() == PreviewState.LOADING ||
 				previewState.get() == PreviewState.SLICE_UNAVAILABLE ||
-				(Lookup.getUserPreferences().isAutoGCodePreview() &&
-						BaseConfiguration.isApplicationFeatureEnabled(ApplicationFeature.GCODE_VISUALISATION)))
-		{
+				(Lookup.getUserPreferences().isAutoGCodePreview())) {
 			//LOGGER.info("autoStartAndUpdatePreview calling updatePreview");
 			updatePreview();
 		}
 	}
 
-	private void updatePreview()
-	{
+	private void updatePreview() {
 		boolean modelUnsuitable = !modelIsSuitable();
-		if (modelUnsuitable)
-		{
+		if (modelUnsuitable) {
 			//LOGGER.info("Model unsuitable: setting previewState to SLICE_UNAVAILABLE ...");
 			previewState.set(PreviewState.SLICE_UNAVAILABLE);
 			//LOGGER.info("... Model unsuitable: clearing preview ...");
 			clearPreview();
 			//LOGGER.info("... Model unsuitable done");
 		}
-		else
-		{
-			Runnable doUpdatePreview = () ->
-			{
+		else {
+			Runnable doUpdatePreview = () -> {
 				// Showing preview preview button.
 				//LOGGER.info("Setting previewState to LOADING");
 				previewState.set(PreviewState.LOADING);
@@ -263,13 +230,12 @@ public class PreviewManager
 					startPreview();
 				else
 					clearPreview();
-				ModelContainerProject mProject = (ModelContainerProject)currentProject;
+				ModelContainerProject mProject = (ModelContainerProject) currentProject;
 				//LOGGER.info("Waiting for prep result");
 				Optional<GCodeGeneratorResult> resultOpt = mProject.getGCodeGenManager().getPrepResult(currentProject.getPrintQuality());
 				//LOGGER.info("Got prep result - ifPresent() = " + Boolean.toString(resultOpt.isPresent()));
 				//LOGGER.info("                  isSuccess() = " + (resultOpt.isPresent() ? Boolean.toString(resultOpt.get().isSuccess()) : "---"));
-				if (resultOpt.isPresent() && resultOpt.get().isSuccess())
-				{
+				if (resultOpt.isPresent() && resultOpt.get().isSuccess()) {
 					//LOGGER.info("GCodePrepResult = " + resultOpt.get().getPostProcOutputFileName());
 
 					// Get tool colours.
@@ -277,29 +243,24 @@ public class PreviewManager
 					Color t1Colour = StandardColours.HIGHLIGHT_ORANGE;
 					String printerType = null;
 					Printer printer = Lookup.getSelectedPrinterProperty().get();
-					if (printer != null)
-					{
+					if (printer != null) {
 						printerType = printer.printerConfigurationProperty().get().getTypeCode();
 
 						Head head = printer.headProperty().get();
-						if (head != null)
-						{
+						if (head != null) {
 							// Assume we have at least one extruder.
 							Filament filamentInUse;
 							filamentInUse = printer.effectiveFilamentsProperty().get(0);
-							if (filamentInUse != null && filamentInUse != FilamentContainer.UNKNOWN_FILAMENT)
-							{
+							if (filamentInUse != null && filamentInUse != FilamentContainer.UNKNOWN_FILAMENT) {
 								Color colour = filamentInUse.getDisplayColour();
 								if (colour != null)
 									t0Colour = colour;
 							}
-							if (head.headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD)
-							{
+							if (head.headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD) {
 								t1Colour = t0Colour;
 								t0Colour = Color.ORANGE;
 								filamentInUse = printer.effectiveFilamentsProperty().get(1);
-								if (filamentInUse != null && filamentInUse != FilamentContainer.UNKNOWN_FILAMENT)
-								{
+								if (filamentInUse != null && filamentInUse != FilamentContainer.UNKNOWN_FILAMENT) {
 									Color colour = filamentInUse.getDisplayColour();
 									if (colour != null)
 										t0Colour = colour;
@@ -326,8 +287,7 @@ public class PreviewManager
 					previewState.set(PreviewState.OPEN);
 					//LOGGER.info("... OPEN done");
 				}
-				else
-				{
+				else {
 					// Failed.
 					//LOGGER.info("Failed - Setting previewState to SLICE_UNAVAILABLE ...");
 					previewState.set(PreviewState.SLICE_UNAVAILABLE);
