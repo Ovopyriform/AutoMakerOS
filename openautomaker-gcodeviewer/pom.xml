@@ -21,20 +21,6 @@
 		<lwjgl.version>3.2.3</lwjgl.version>
 	</properties>
 
-	<!--repositories>
-        <repository>
-            <id>sonatype-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases><enabled>false</enabled></releases>
-            <snapshots><enabled>true</enabled></snapshots>
-        </repository>
-        <repository>
-            <id>celtechRepo</id>
-            <name>CELTech releases</name>
-            <url>http://build.cel-robox.com:8080/artifactory/libs-release-local</url>
-        </repository>        
-    </repositories -->
-
 	<build>
 		<plugins>
 			<plugin>

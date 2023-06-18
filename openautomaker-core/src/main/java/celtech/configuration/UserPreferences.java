@@ -14,9 +14,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import xyz.openautomaker.base.ApplicationFeature;
 import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
 import xyz.openautomaker.base.configuration.SlicerType;
 import xyz.openautomaker.base.configuration.datafileaccessors.HeadContainer;
 import xyz.openautomaker.base.configuration.hardwarevariants.PrinterType;
@@ -77,22 +75,17 @@ public class UserPreferences
 
 	private final ChangeListener<Boolean> enableCustomPrinterChangeListener = (observable, oldValue, newValue) -> {
 		if(newValue)
-		{
-			if(BaseConfiguration.isApplicationFeatureEnabled(ApplicationFeature.OFFLINE_PRINTER))
-			{
-				RoboxCommsManager.getInstance().addDummyPrinter(true);
-			}
-		} else
-		{
+			RoboxCommsManager.getInstance().addDummyPrinter(true);
+		else
 			RoboxCommsManager.getInstance().removeAllDummyPrinters();
-		}
+
 		saveSettings();
 	};
 
 	private final ChangeListener<Boolean> enableAutoGCodePreviewChangeListener = (observable, oldValue, newValue) -> {
-		if (newValue && !BaseConfiguration.isApplicationFeatureEnabled(ApplicationFeature.GCODE_VISUALISATION)) {
-			autoGCodePreview.set(false);
-		}
+		//		if (newValue && !BaseConfiguration.isApplicationFeatureEnabled(ApplicationFeature.GCODE_VISUALISATION)) {
+		//			autoGCodePreview.set(false);
+		//		}
 		saveSettings();
 	};
 

@@ -12,8 +12,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.ListView;
-import xyz.openautomaker.base.ApplicationFeature;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
 import xyz.openautomaker.base.configuration.SlicerType;
 import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
@@ -23,7 +21,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  */
 public class SlicerTypePreference implements PreferencesInnerPanelController.Preference
 {
-	private static final Logger LOGGER = LogManager.getLogger(SlicerTypePreference.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final ComboBox<SlicerType> control;
 	private final UserPreferences userPreferences;
@@ -52,9 +50,6 @@ public class SlicerTypePreference implements PreferencesInnerPanelController.Pre
 			slicerTypes.add(slicerType);
 		}
 
-		//slicerTypes.add(SlicerType.Cura);
-		//slicerTypes.add(SlicerType.Cura4);
-
 		control.setItems(slicerTypes);
 		control.setPrefWidth(150);
 		control.setMinWidth(control.getPrefWidth());
@@ -67,20 +62,12 @@ public class SlicerTypePreference implements PreferencesInnerPanelController.Pre
 	public void updateValueFromControl()
 	{
 		if (!updating) {
+			// TODO: Sounds a bit funky.  Really need to do this?  Perhaps no auto debounce?
 			updating = true; // Prevent recursive calls.
 			SlicerType slicerType = control.getValue();
+
 			if(slicerType == null)
-			{
-				LOGGER.warn("SlicerType from Slicer setting is null. Setting to default Cura");
 				slicerType = SlicerType.Cura;
-			}
-			else if (slicerType == SlicerType.Cura4)
-			{
-				if(!BaseConfiguration.isApplicationFeatureEnabled(ApplicationFeature.LATEST_CURA_VERSION))
-				{
-					slicerType = SlicerType.Cura;
-				}
-			}
 
 			control.setValue(slicerType);
 			userPreferences.setSlicerType(slicerType);
