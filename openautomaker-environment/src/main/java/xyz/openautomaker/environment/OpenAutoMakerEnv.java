@@ -50,7 +50,7 @@ public class OpenAutoMakerEnv {
 	 *  |	+ Language
 	 *  |	|	+- Language*.properties
 	 *  |	+- lib (java)
-	 *  |	+- librxtxSerial.jnilib
+	 *  |	+- librxtxSerial.jnilib // This needs to change to JSerialCom  RXTX is about 10 years out of date.
 	 *  |	+- README
 	 *  |		+- colorFabSplash.jpg
 	 *  |		+- READEME_AutoMaker.html
