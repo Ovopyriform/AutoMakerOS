@@ -25,31 +25,25 @@ import xyz.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOv
  *
  * @author ianhudson
  */
-public class ShapeContainerProject extends Project
-{
+public class ShapeContainerProject extends Project {
 
 	private static final Logger LOGGER = LogManager.getLogger(ShapeContainerProject.class.getName());
 
-	public ShapeContainerProject()
-	{
+	public ShapeContainerProject() {
 		super();
 	}
 
 	@Override
-	protected void initialise()
-	{
+	protected void initialise() {
 	}
 
 	@Override
-	protected void save(Path basePath)
-	{
+	protected void save(Path basePath) {
 	}
 
 	@Override
-	public void addModel(ProjectifiableThing projectifiableThing)
-	{
-		if (projectifiableThing instanceof ShapeContainer)
-		{
+	public void addModel(ProjectifiableThing projectifiableThing) {
+		if (projectifiableThing instanceof ShapeContainer) {
 			ShapeContainer modelContainer = (ShapeContainer) projectifiableThing;
 			topLevelThings.add(modelContainer);
 			projectModified();
@@ -57,21 +51,17 @@ public class ShapeContainerProject extends Project
 		}
 	}
 
-	private void fireWhenModelAdded(ShapeContainer modelContainer)
-	{
-		for (ProjectChangesListener projectChangesListener : projectChangesListeners)
-		{
+	private void fireWhenModelAdded(ShapeContainer modelContainer) {
+		for (ProjectChangesListener projectChangesListener : projectChangesListeners) {
 			projectChangesListener.whenModelAdded(modelContainer);
 		}
 	}
 
 	@Override
-	public void removeModels(Set<ProjectifiableThing> projectifiableThings)
-	{
+	public void removeModels(Set<ProjectifiableThing> projectifiableThings) {
 		Set<ShapeContainer> modelContainers = (Set) projectifiableThings;
 
-		for (ShapeContainer modelContainer : modelContainers)
-		{
+		for (ShapeContainer modelContainer : modelContainers) {
 			assert modelContainer != null;
 		}
 
@@ -90,49 +80,39 @@ public class ShapeContainerProject extends Project
 	}
 
 	@Override
-	public void autoLayout()
-	{
+	public void autoLayout() {
 	}
 
 	@Override
-	public Set<ProjectifiableThing> getAllModels()
-	{
+	public Set<ProjectifiableThing> getAllModels() {
 		Set<ProjectifiableThing> allModelContainers = new HashSet<>();
-		for (ProjectifiableThing loadedModel : topLevelThings)
-		{
+		for (ProjectifiableThing loadedModel : topLevelThings) {
 			allModelContainers.add(loadedModel);
 		}
 		return allModelContainers;
 	}
 
 	@Override
-	protected void fireWhenModelsTransformed(Set<ProjectifiableThing> projectifiableThings)
-	{
-		for (ProjectChangesListener projectChangesListener : projectChangesListeners)
-		{
+	protected void fireWhenModelsTransformed(Set<ProjectifiableThing> projectifiableThings) {
+		for (ProjectChangesListener projectChangesListener : projectChangesListeners) {
 			projectChangesListener.whenModelsTransformed(projectifiableThings);
 		}
 	}
 
 	@Override
-	protected void fireWhenPrinterSettingsChanged(PrinterSettingsOverrides printerSettings)
-	{
+	protected void fireWhenPrinterSettingsChanged(PrinterSettingsOverrides printerSettings) {
 	}
 
 	@Override
-	protected void fireWhenTimelapseSettingsChanged(TimelapseSettingsData timelapseSettings)
-	{
+	protected void fireWhenTimelapseSettingsChanged(TimelapseSettingsData timelapseSettings) {
 	}
 
 	@Override
-	protected void load(ProjectFile projectFile, String basePath) throws ProjectLoadException
-	{
+	protected void load(ProjectFile projectFile, String basePath) throws ProjectLoadException {
 		suppressProjectChanged = true;
 
-		if (projectFile instanceof ShapeContainerProjectFile)
-		{
-			try
-			{
+		if (projectFile instanceof ShapeContainerProjectFile) {
+			try {
 				projectNameProperty.set(projectFile.getProjectName());
 				lastModifiedDate.set(projectFile.getLastModifiedDate());
 				lastPrintJobID = projectFile.getLastPrintJobID();
@@ -141,11 +121,11 @@ public class ShapeContainerProject extends Project
 
 				loadModels(basePath);
 
-			} catch (IOException ex)
-			{
+			}
+			catch (IOException ex) {
 				LOGGER.error("Failed to load project " + basePath, ex);
-			} catch (ClassNotFoundException ex)
-			{
+			}
+			catch (ClassNotFoundException ex) {
 				LOGGER.error("Failed to load project " + basePath, ex);
 			}
 		}
@@ -153,36 +133,31 @@ public class ShapeContainerProject extends Project
 		suppressProjectChanged = false;
 	}
 
-	private void loadModels(String basePath) throws IOException, ClassNotFoundException
-	{
+	private void loadModels(String basePath) throws IOException, ClassNotFoundException {
 		FileInputStream fileInputStream = new FileInputStream(basePath
 				+ ApplicationConfiguration.projectModelsFileExtension);
 		BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
 		ObjectInputStream modelsInput = new ObjectInputStream(bufferedInputStream);
 		int numModels = modelsInput.readInt();
 
-		for (int i = 0; i < numModels; i++)
-		{
+		for (int i = 0; i < numModels; i++) {
 			ShapeContainer modelContainer = (ShapeContainer) modelsInput.readObject();
 			addModel(modelContainer);
 		}
 	}
 
 	@Override
-	protected void checkNotAlreadyInGroup(Set<Groupable> modelContainers)
-	{
+	protected void checkNotAlreadyInGroup(Set<Groupable> modelContainers) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	public ModelGroup createNewGroupAndAddModelListeners(Set<Groupable> modelContainers)
-	{
+	public ModelGroup createNewGroupAndAddModelListeners(Set<Groupable> modelContainers) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	public void autoLayout(List<ProjectifiableThing> thingsToLayout)
-	{
+	public void autoLayout(List<ProjectifiableThing> thingsToLayout) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 }

@@ -10,12 +10,10 @@ import javafx.scene.shape.TriangleMesh;
  *
  * @author Ian
  */
-public class MeshSeparatorRunner implements Callable<List<TriangleMesh>>
-{
+public class MeshSeparatorRunner implements Callable<List<TriangleMesh>> {
 	private final TriangleMesh meshToSeparate;
 
-	public MeshSeparatorRunner(TriangleMesh mesh)
-	{
+	public MeshSeparatorRunner(TriangleMesh mesh) {
 		this.meshToSeparate = mesh;
 	}
 

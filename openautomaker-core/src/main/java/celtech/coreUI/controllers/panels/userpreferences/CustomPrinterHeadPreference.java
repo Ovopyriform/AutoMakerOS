@@ -20,15 +20,13 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author George Salter
  */
-public class CustomPrinterHeadPreference implements PreferencesInnerPanelController.Preference
-{
+public class CustomPrinterHeadPreference implements PreferencesInnerPanelController.Preference {
 	private final ComboBox<String> control;
 	private final UserPreferences userPreferences;
 
 	private final BiMap<String, String> headDisplayNameMap;
 
-	public CustomPrinterHeadPreference(UserPreferences userPreferences)
-	{
+	public CustomPrinterHeadPreference(UserPreferences userPreferences) {
 		this.userPreferences = userPreferences;
 
 		headDisplayNameMap = HashBiMap.create();
@@ -43,29 +41,24 @@ public class CustomPrinterHeadPreference implements PreferencesInnerPanelControl
 		control.setPrefWidth(200);
 		HeadContainer.getCompleteHeadList().forEach(headFile -> control.getItems().add(headFile.getTypeCode()));
 		control.getSelectionModel().selectedItemProperty()
-		.addListener((observable, oldValue, newValue) -> updateValueFromControl());
-		control.setConverter(new StringConverter<String>()
-		{
+				.addListener((observable, oldValue, newValue) -> updateValueFromControl());
+		control.setConverter(new StringConverter<String>() {
 			@Override
-			public String toString(String typeCode)
-			{
-				if(headDisplayNameMap.containsKey(typeCode))
-				{
+			public String toString(String typeCode) {
+				if (headDisplayNameMap.containsKey(typeCode)) {
 					return headDisplayNameMap.get(typeCode);
-				} else
-				{
+				}
+				else {
 					return typeCode;
 				}
 			}
 
 			@Override
-			public String fromString(String displayName)
-			{
-				if(headDisplayNameMap.containsValue(displayName))
-				{
+			public String fromString(String displayName) {
+				if (headDisplayNameMap.containsValue(displayName)) {
 					return headDisplayNameMap.inverse().get(displayName);
-				} else
-				{
+				}
+				else {
 					return displayName;
 				}
 			}
@@ -73,8 +66,7 @@ public class CustomPrinterHeadPreference implements PreferencesInnerPanelControl
 	}
 
 	@Override
-	public void updateValueFromControl()
-	{
+	public void updateValueFromControl() {
 		RoboxCommsManager comms = RoboxCommsManager.getInstance();
 
 		String headType = control.getSelectionModel().selectedItemProperty().get();
@@ -82,34 +74,29 @@ public class CustomPrinterHeadPreference implements PreferencesInnerPanelControl
 		comms.setDummyPrinterHeadType(headType);
 
 		Optional<DetectedDevice> dummyPrinterHandle = comms.getDummyPrinter(RoboxCommsManager.CUSTOM_CONNECTION_HANDLE);
-		if(dummyPrinterHandle.isPresent())
-		{
+		if (dummyPrinterHandle.isPresent()) {
 			comms.removeDummyPrinter(dummyPrinterHandle.get());
 			comms.addDummyPrinter(true);
 		}
 	}
 
 	@Override
-	public void populateControlWithCurrentValue()
-	{
+	public void populateControlWithCurrentValue() {
 		control.getSelectionModel().select(userPreferences.getCustomPrinterHead());
 	}
 
 	@Override
-	public Control getControl()
-	{
+	public Control getControl() {
 		return control;
 	}
 
 	@Override
-	public String getDescription()
-	{
+	public String getDescription() {
 		return OpenAutoMakerEnv.getI18N().t("preferences.printerHead");
 	}
 
 	@Override
-	public void disableProperty(ObservableValue<Boolean> disableProperty)
-	{
+	public void disableProperty(ObservableValue<Boolean> disableProperty) {
 		control.disableProperty().unbind();
 		control.disableProperty().bind(disableProperty);
 	}

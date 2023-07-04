@@ -8,27 +8,22 @@ import javafx.event.EventHandler;
  *
  * @author Ian
  */
-public class DismissableNotificationBar extends AppearingNotificationBar
-{
+public class DismissableNotificationBar extends AppearingNotificationBar {
 
-	private EventHandler<ActionEvent> dismissAction = new EventHandler<>()
-	{
+	private EventHandler<ActionEvent> dismissAction = new EventHandler<>() {
 		@Override
-		public void handle(ActionEvent t)
-		{
+		public void handle(ActionEvent t) {
 			startSlidingOutOfView();
 		}
 	};
 
-	public DismissableNotificationBar()
-	{
+	public DismissableNotificationBar() {
 		super();
 		actionButton.setVisible(true);
 		actionButton.setOnAction(dismissAction);
 	}
 
-	public DismissableNotificationBar(String buttonText)
-	{
+	public DismissableNotificationBar(String buttonText) {
 		super();
 		actionButton.setVisible(true);
 		actionButton.setOnAction(dismissAction);
@@ -36,32 +31,27 @@ public class DismissableNotificationBar extends AppearingNotificationBar
 	}
 
 	@Override
-	public void show()
-	{
+	public void show() {
 		Lookup.getNotificationDisplay().addNotificationBar(this);
 		startSlidingInToView();
 	}
 
 	@Override
-	public void finishedSlidingIntoView()
-	{
+	public void finishedSlidingIntoView() {
 	}
 
 	@Override
-	public void finishedSlidingOutOfView()
-	{
+	public void finishedSlidingOutOfView() {
 		Lookup.getNotificationDisplay().removeNotificationBar(this);
 	}
 
 	@Override
-	public boolean isSameAs(AppearingNotificationBar bar)
-	{
+	public boolean isSameAs(AppearingNotificationBar bar) {
 		boolean theSame = false;
 		if (this.getType() == bar.getType()
 				&& this.notificationDescription.getText().equals(bar.notificationDescription.getText())
 				&& this.notificationType == bar.notificationType
-				&& actionButton.getText().equals(bar.actionButton.getText()))
-		{
+				&& actionButton.getText().equals(bar.actionButton.getText())) {
 			theSame = true;
 		}
 
@@ -69,8 +59,7 @@ public class DismissableNotificationBar extends AppearingNotificationBar
 	}
 
 	@Override
-	public void destroyBar()
-	{
+	public void destroyBar() {
 		finishedSlidingOutOfView();
 	}
 }

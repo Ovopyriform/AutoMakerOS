@@ -21,10 +21,10 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  * ProjectHeader is not used except when loading legacy Project files.
+ * 
  * @author tony
  */
-public class ProjectHeader implements Serializable
-{
+public class ProjectHeader implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private final transient SimpleDateFormat formatter = new SimpleDateFormat("-hhmmss-ddMMYY");
@@ -33,8 +33,7 @@ public class ProjectHeader implements Serializable
 	private Path projectPath = null;
 	private final ObjectProperty<Date> lastModifiedDate = new SimpleObjectProperty<>();
 
-	public ProjectHeader()
-	{
+	public ProjectHeader() {
 		projectUUID = SystemUtils.generate16DigitID();
 		Date now = new Date();
 		projectNameProperty = new SimpleStringProperty(OpenAutoMakerEnv.getI18N().t("projectLoader.untitled")
@@ -44,8 +43,7 @@ public class ProjectHeader implements Serializable
 	}
 
 	private void writeObject(ObjectOutputStream out)
-			throws IOException
-	{
+			throws IOException {
 		out.writeUTF(projectUUID);
 		out.writeUTF(projectNameProperty.get());
 		out.writeUTF(projectPath.toString());
@@ -54,20 +52,17 @@ public class ProjectHeader implements Serializable
 	}
 
 	private void readObject(ObjectInputStream in)
-			throws IOException, ClassNotFoundException
-	{
+			throws IOException, ClassNotFoundException {
 		projectUUID = in.readUTF();
 		projectNameProperty = new SimpleStringProperty(in.readUTF());
 		projectPath = Paths.get(in.readUTF());
-		Object lastModifiedDate = new SimpleObjectProperty<>((Date)(in.readObject()));
-		Object lastSavedDate = new SimpleObjectProperty<>((Date)(in.readObject()));
+		Object lastModifiedDate = new SimpleObjectProperty<>((Date) (in.readObject()));
+		Object lastSavedDate = new SimpleObjectProperty<>((Date) (in.readObject()));
 	}
 
 	private void readObjectNoData()
-			throws ObjectStreamException
-	{
+			throws ObjectStreamException {
 
 	}
-
 
 }

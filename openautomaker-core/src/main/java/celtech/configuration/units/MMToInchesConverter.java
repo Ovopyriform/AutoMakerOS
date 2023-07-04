@@ -4,8 +4,7 @@ package celtech.configuration.units;
  *
  * @author Ian
  */
-public class MMToInchesConverter implements UnitConverter
-{
+public class MMToInchesConverter implements UnitConverter {
 
 	//	@Override
 	//	public double convertToImperial(double value)

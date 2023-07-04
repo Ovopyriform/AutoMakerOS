@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package celtech.coreUI.components;
 
 import java.io.IOException;
@@ -16,8 +12,7 @@ import javafx.scene.layout.HBox;
  *
  * @author Ian
  */
-public class InsetPanelWithMenu extends HBox
-{
+public class InsetPanelWithMenu extends HBox {
 
 	@FXML
 	private InsetPanelMenu menu;
@@ -25,8 +20,7 @@ public class InsetPanelWithMenu extends HBox
 	@FXML
 	private HBox contentContainer;
 
-	public InsetPanelWithMenu()
-	{
+	public InsetPanelWithMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
 				"/celtech/resources/fxml/components/insetPanelWithMenu.fxml"));
 		fxmlLoader.setRoot(this);
@@ -34,11 +28,10 @@ public class InsetPanelWithMenu extends HBox
 
 		fxmlLoader.setClassLoader(this.getClass().getClassLoader());
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 
@@ -58,13 +51,11 @@ public class InsetPanelWithMenu extends HBox
 		//        contentContainer.setPrefWidth(this.getWidth());
 	}
 
-	public void setMenuTitle(String title)
-	{
+	public void setMenuTitle(String title) {
 		menu.setTitle(title);
 	}
 
-	public void addMenuItem(InsetPanelMenuItem menuItem, Node content)
-	{
+	public void addMenuItem(InsetPanelMenuItem menuItem, Node content) {
 		menu.addMenuItem(menuItem);
 
 		//        contentContainer.getChildren().add(content);

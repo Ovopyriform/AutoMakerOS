@@ -18,8 +18,7 @@ import javafx.scene.input.KeyEvent;
  *
  * @author ianhudson
  */
-public class BoundTextField extends TextField
-{
+public class BoundTextField extends TextField {
 	private DoubleProperty propertyToDisplay = null;
 	private String gcodePrefix = null;
 	private final Pattern wholeNumberPattern = Pattern.compile("\\d*");
@@ -27,8 +26,7 @@ public class BoundTextField extends TextField
 	/**
 	 *
 	 */
-	public BoundTextField()
-	{
+	public BoundTextField() {
 		this.getStyleClass().add("boundTextField");
 	}
 
@@ -37,62 +35,51 @@ public class BoundTextField extends TextField
 	 * @param displayValue
 	 * @param gcodePrefix
 	 */
-	public void bindToDataSource(DoubleProperty displayValue, String gcodePrefix)
-	{
+	public void bindToDataSource(DoubleProperty displayValue, String gcodePrefix) {
 		this.propertyToDisplay = displayValue;
 		this.gcodePrefix = gcodePrefix;
 		bindTextDisplay();
 
-		this.textProperty().addListener(new ChangeListener<String>()
-		{
+		this.textProperty().addListener(new ChangeListener<String>() {
 			@Override
-			public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue)
-			{
-				if (!wholeNumberPattern.matcher(newValue).matches())
-				{
+			public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
+				if (!wholeNumberPattern.matcher(newValue).matches()) {
 					revertValue(oldValue);
 				}
 			}
 		});
 
-		this.focusedProperty().addListener(new ChangeListener<Boolean>()
-		{
+		this.focusedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
-			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue)
-			{
-				if (newValue)
-				{
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
+				if (newValue) {
 					unbindTextDisplay();
-				} else
-				{
+				}
+				else {
 					bindTextDisplay();
 				}
 			}
 		});
 
-		this.setOnKeyPressed(new EventHandler<KeyEvent>()
-		{
+		this.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
-			public void handle(KeyEvent event)
-			{
-				switch (event.getCode())
-				{
-				case ESCAPE:
-					((Node) event.getSource()).getParent().requestFocus();
-					break;
-				case ENTER:
-					//                        sendValueToPrinter();
-					((Node) event.getSource()).getParent().requestFocus();
-					break;
-				default:
-					break;
+			public void handle(KeyEvent event) {
+				switch (event.getCode()) {
+					case ESCAPE:
+						((Node) event.getSource()).getParent().requestFocus();
+						break;
+					case ENTER:
+						//                        sendValueToPrinter();
+						((Node) event.getSource()).getParent().requestFocus();
+						break;
+					default:
+						break;
 				}
 			}
 		});
 	}
 
-	private void revertValue(String valueToRevertTo)
-	{
+	private void revertValue(String valueToRevertTo) {
 		this.setText(valueToRevertTo);
 	}
 
@@ -107,14 +94,12 @@ public class BoundTextField extends TextField
 	//        }
 	//    }
 
-	private void bindTextDisplay()
-	{
+	private void bindTextDisplay() {
 		this.textProperty()
-		.bind(propertyToDisplay.asString("%.0f"));
+				.bind(propertyToDisplay.asString("%.0f"));
 	}
 
-	private void unbindTextDisplay()
-	{
+	private void unbindTextDisplay() {
 		this.textProperty().unbind();
 	}
 }

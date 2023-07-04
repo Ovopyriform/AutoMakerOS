@@ -18,8 +18,7 @@ import javafx.scene.layout.VBox;
  *
  * @author Ian
  */
-public class OuterPanelController implements Initializable
-{
+public class OuterPanelController implements Initializable {
 
 	@FXML
 	private VBox rootPane;
@@ -35,33 +34,27 @@ public class OuterPanelController implements Initializable
 	 * Initialises the controller class.
 	 */
 	@Override
-	public void initialize(URL url, ResourceBundle rb)
-	{
+	public void initialize(URL url, ResourceBundle rb) {
 	}
 
-	public void setPreferredVisibility(BooleanProperty visibilityProperty)
-	{
-		if (visibilityProperty == null)
-		{
+	public void setPreferredVisibility(BooleanProperty visibilityProperty) {
+		if (visibilityProperty == null) {
 			crossButton.setVisible(false);
-		} else
-		{
+		}
+		else {
 			this.visibilityProperty = visibilityProperty;
-			crossButton.setOnMouseClicked((MouseEvent event) ->
-			{
+			crossButton.setOnMouseClicked((MouseEvent event) -> {
 				this.visibilityProperty.set(false);
 			});
 		}
 	}
 
-	public void setInnerPanel(Node insetPanel)
-	{
+	public void setInnerPanel(Node insetPanel) {
 		rootPane.getChildren().add(insetPanel);
 		VBox.setVgrow(insetPanel, Priority.ALWAYS);
 	}
 
-	public void setTitle(String title)
-	{
+	public void setTitle(String title) {
 		this.title.setText(title);
 	}
 

@@ -37,8 +37,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author George Salter
  */
-public class CameraProfilesPanelController implements Initializable, MenuInnerPanel
-{
+public class CameraProfilesPanelController implements Initializable, MenuInnerPanel {
 	private static final Logger LOGGER = LogManager.getLogger(CameraProfilesPanelController.class.getName());
 
 	private static final CameraProfileContainer CAMERA_PROFILE_CONTAINER = CameraProfileContainer.getInstance();
@@ -80,10 +79,10 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 	private CheckBox headLightOff;
 
 	@FXML
-	private  CheckBox ambientLightOff;
+	private CheckBox ambientLightOff;
 
 	@FXML
-	private  CheckBox moveBeforeCapture;
+	private CheckBox moveBeforeCapture;
 
 	@FXML
 	private RestrictedNumberField moveToX;
@@ -112,8 +111,7 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 	};
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
+	public void initialize(URL location, ResourceBundle resources) {
 		setupProfileNameChangeListeners();
 		setupProfileFieldListeners();
 		controlSettingsManager.initialise(controlGrid, isDirty);
@@ -142,8 +140,7 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 		});
 
 		DisplayManager.getInstance().libraryModeEnteredProperty().addListener((observable, oldValue, enteredLibraryMode) -> {
-			if (enteredLibraryMode)
-			{
+			if (enteredLibraryMode) {
 				populateCmbCameraProfiles();
 				BaseLookup.getConnectedCameras().addListener(connectedCamerasListener);
 				populateCmbCameraNames();
@@ -158,16 +155,14 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 		});
 	}
 
-	private void setupProfileNameChangeListeners()
-	{
+	private void setupProfileNameChangeListeners() {
 		cmbCameraProfile.getEditor().textProperty().addListener(
 				(ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
 					currentCameraProfile.setProfileName(newValue);
-					if (!validateProfileName())
-					{
+					if (!validateProfileName()) {
 						isNameValid.set(false);
-					} else
-					{
+					}
+					else {
 						isNameValid.set(true);
 					}
 				});
@@ -175,8 +170,7 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 		cmbCameraProfile.getEditor().textProperty().addListener(dirtyFieldListener);
 	}
 
-	private void populateCmbCameraProfiles()
-	{
+	private void populateCmbCameraProfiles() {
 		cameraProfilesMap = CAMERA_PROFILE_CONTAINER.getCameraProfilesMap();
 		List<String> profileNames = cameraProfilesMap.values()
 				.stream()
@@ -187,8 +181,7 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 		cmbCameraProfile.setItems(FXCollections.observableArrayList(profileNames));
 	}
 
-	private void populateCmbCameraNames()
-	{
+	private void populateCmbCameraNames() {
 		// Get all the distinct camera names from the currently connected cameras.
 		List<String> cameraNames = BaseLookup.getConnectedCameras()
 				.stream()
@@ -214,14 +207,12 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 		cmbCameraName.valueProperty().addListener(dirtyFieldListener);
 	}
 
-	private void selectDefaultCameraProfile()
-	{
+	private void selectDefaultCameraProfile() {
 		cmbCameraProfile.setValue(BaseConfiguration.defaultCameraProfileName);
 		selectCameraProfile(BaseConfiguration.defaultCameraProfileName);
 	}
 
-	private boolean selectCameraProfile(String profileName)
-	{
+	private boolean selectCameraProfile(String profileName) {
 		boolean selectedOK = false;
 
 		String profileKey = null;
@@ -234,8 +225,7 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 		else
 			LOGGER.debug("Null profile name");
 
-		if (profile != null)
-		{
+		if (profile != null) {
 			currentCameraProfile = profile;
 			updateValuesFromProfile(currentCameraProfile);
 			selectedProfileName = currentCameraProfile.getProfileName();
@@ -258,8 +248,7 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 		return selectedOK;
 	}
 
-	private void updateValuesFromProfile(CameraProfile cameraProfile)
-	{
+	private void updateValuesFromProfile(CameraProfile cameraProfile) {
 		captureHeight.setValue(cameraProfile.getCaptureHeight());
 		captureWidth.setValue(cameraProfile.getCaptureWidth());
 		headLightOff.selectedProperty().set(cameraProfile.isHeadLightOff());
@@ -274,23 +263,19 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 		cmbCameraName.setValue(cameraName);
 	}
 
-	private boolean validateProfileName()
-	{
+	private boolean validateProfileName() {
 		boolean valid = true;
 		String profileNameText = cmbCameraProfile.getValue();
 
-		if (profileNameText == null || profileNameText.isBlank())
-		{
+		if (profileNameText == null || profileNameText.isBlank()) {
 			// Can't change name to empty string.
 			valid = false;
 		}
 		else {
 			// Can't change name to the name of another existing profile.
-			for (String profileName : cameraProfilesMap.keySet())
-			{
+			for (String profileName : cameraProfilesMap.keySet()) {
 				if (!profileName.equalsIgnoreCase(selectedProfileName)
-						&& profileName.equalsIgnoreCase(profileNameText))
-				{
+						&& profileName.equalsIgnoreCase(profileNameText)) {
 					valid = false;
 					break;
 				}
@@ -299,10 +284,8 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 		return valid;
 	}
 
-	private void whenSavePressed()
-	{
-		if (validateProfileName())
-		{
+	private void whenSavePressed() {
+		if (validateProfileName()) {
 			updateProfileWithCurrentValues();
 			CAMERA_PROFILE_CONTAINER.saveCameraProfile(currentCameraProfile);
 			populateCmbCameraProfiles();
@@ -311,8 +294,7 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 		}
 	}
 
-	private void whenNewPressed()
-	{
+	private void whenNewPressed() {
 		currentCameraProfile = new CameraProfile(currentCameraProfile);
 		isNameValid.set(false);
 		state.set(State.NEW);
@@ -325,10 +307,8 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 		controlSettingsManager.setControlSettings(currentCameraProfile.getControlSettings(), currentCameraProfile.isSystemProfile());
 	}
 
-	private void whenDeletePressed()
-	{
-		if (state.get() != State.NEW)
-		{
+	private void whenDeletePressed() {
+		if (state.get() != State.NEW) {
 			CAMERA_PROFILE_CONTAINER.deleteCameraProfile(currentCameraProfile);
 		}
 		populateCmbCameraProfiles();
@@ -336,8 +316,7 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 		selectDefaultCameraProfile();
 	}
 
-	private void setupProfileFieldListeners()
-	{
+	private void setupProfileFieldListeners() {
 		captureHeight.valueChangedProperty().addListener(dirtyFieldListener);
 		captureWidth.valueChangedProperty().addListener(dirtyFieldListener);
 		headLightOff.selectedProperty().addListener(dirtyFieldListener);
@@ -348,8 +327,7 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 		cmbCameraName.valueProperty().addListener(dirtyFieldListener);
 	}
 
-	private void updateProfileWithCurrentValues()
-	{
+	private void updateProfileWithCurrentValues() {
 		currentCameraProfile.setCaptureHeight(captureHeight.getAsInt());
 		currentCameraProfile.setCaptureWidth(captureWidth.getAsInt());
 		currentCameraProfile.setHeadLightOff(headLightOff.selectedProperty().get());
@@ -375,119 +353,98 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 	}
 
 	@Override
-	public String getMenuTitle()
-	{
+	public String getMenuTitle() {
 		return "extrasMenu.cameraProfile";
 	}
 
 	@Override
-	public void panelSelected()
-	{
+	public void panelSelected() {
 
 	}
 
 	@Override
-	public List<OperationButton> getOperationButtons()
-	{
+	public List<OperationButton> getOperationButtons() {
 		List<MenuInnerPanel.OperationButton> operationButtons = new ArrayList<>();
 
-		MenuInnerPanel.OperationButton saveButton = new MenuInnerPanel.OperationButton()
-		{
+		MenuInnerPanel.OperationButton saveButton = new MenuInnerPanel.OperationButton() {
 			@Override
-			public String getTextId()
-			{
+			public String getTextId() {
 				return "genericFirstLetterCapitalised.Save";
 			}
 
 			@Override
-			public String getFXMLName()
-			{
+			public String getFXMLName() {
 				return "saveButton";
 			}
 
 			@Override
-			public String getTooltipTextId()
-			{
+			public String getTooltipTextId() {
 				return "genericFirstLetterCapitalised.Save";
 			}
 
 			@Override
-			public void whenClicked()
-			{
+			public void whenClicked() {
 				whenSavePressed();
 			}
 
 			@Override
-			public BooleanProperty whenEnabled()
-			{
+			public BooleanProperty whenEnabled() {
 				return canSave;
 			}
 
 		};
 
-		MenuInnerPanel.OperationButton newButton = new MenuInnerPanel.OperationButton()
-		{
+		MenuInnerPanel.OperationButton newButton = new MenuInnerPanel.OperationButton() {
 			@Override
-			public String getTextId()
-			{
+			public String getTextId() {
 				return "projectLoader.newButtonLabel";
 			}
 
 			@Override
-			public String getFXMLName()
-			{
+			public String getFXMLName() {
 				return "saveAsButton";
 			}
 
 			@Override
-			public String getTooltipTextId()
-			{
+			public String getTooltipTextId() {
 				return "projectLoader.newButtonLabel";
 			}
 
 			@Override
-			public void whenClicked()
-			{
+			public void whenClicked() {
 				whenNewPressed();
 			}
 
 			@Override
-			public BooleanProperty whenEnabled()
-			{
+			public BooleanProperty whenEnabled() {
 				return canCreateNew;
 			}
 
 		};
 
-		MenuInnerPanel.OperationButton deleteButton = new MenuInnerPanel.OperationButton()
-		{
+		MenuInnerPanel.OperationButton deleteButton = new MenuInnerPanel.OperationButton() {
 			@Override
-			public String getTextId()
-			{
+			public String getTextId() {
 				return "genericFirstLetterCapitalised.Delete";
 			}
 
 			@Override
-			public String getFXMLName()
-			{
+			public String getFXMLName() {
 				return "deleteButton";
 			}
 
 			@Override
-			public String getTooltipTextId()
-			{
+			public String getTooltipTextId() {
 				return "genericFirstLetterCapitalised.Delete";
 			}
 
 			@Override
-			public void whenClicked()
-			{
+			public void whenClicked() {
 				whenDeletePressed();
 			}
 
 			@Override
-			public BooleanProperty whenEnabled()
-			{
+			public BooleanProperty whenEnabled() {
 				return canDelete;
 			}
 

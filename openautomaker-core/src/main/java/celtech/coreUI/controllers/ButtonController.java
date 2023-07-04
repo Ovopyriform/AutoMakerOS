@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package celtech.coreUI.controllers;
 
 import javafx.scene.Node;
@@ -15,8 +11,7 @@ import javafx.scene.effect.Lighting;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class ButtonController
-{
+public class ButtonController {
 
 	/**
 	 *
@@ -51,8 +46,7 @@ public class ButtonController
 	/**
 	 *
 	 */
-	public ButtonController()
-	{
+	public ButtonController() {
 		availableAndHover = new DropShadow();
 		availableAndHover.setWidth(21);
 		availableAndHover.setHeight(21);
@@ -74,8 +68,7 @@ public class ButtonController
 	 *
 	 * @param button
 	 */
-	protected void makeButtonNotAvailable(Node button)
-	{
+	protected void makeButtonNotAvailable(Node button) {
 		//        button.setMouseTransparent(true);
 		//        button.setDisable(true);
 		button.setOpacity(dimmedOpacity);
@@ -86,8 +79,7 @@ public class ButtonController
 	 *
 	 * @param button
 	 */
-	protected void makeButtonAvailable(Node button)
-	{
+	protected void makeButtonAvailable(Node button) {
 		//        button.setDisable(false);
 		//        button.setMouseTransparent(false);
 		button.setOpacity(1.0);
@@ -98,8 +90,7 @@ public class ButtonController
 	 *
 	 * @param button
 	 */
-	protected void makeButtonSelected(Node button)
-	{
+	protected void makeButtonSelected(Node button) {
 		//        button.setMouseTransparent(true);
 		//        button.setDisable(true);
 		button.setOpacity(1.0);

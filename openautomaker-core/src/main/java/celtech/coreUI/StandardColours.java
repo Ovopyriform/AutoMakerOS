@@ -1,17 +1,13 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI;
 
 import javafx.scene.paint.Color;
-
 
 /**
  *
  * @author tony
  */
-public class StandardColours
-{
+public class StandardColours {
 	public static Color ROBOX_BLUE = Color.rgb(0, 0x96, 0xe1);
 	public static Color ROBOX_BLUE_TRANSPARENT = Color.rgb(0, 0x96, 0xe1, 0.3);
 	public static Color LIGHT_GREY = Color.rgb(99, 99, 99);

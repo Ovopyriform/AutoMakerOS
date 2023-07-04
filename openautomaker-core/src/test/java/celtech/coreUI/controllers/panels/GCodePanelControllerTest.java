@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package celtech.coreUI.controllers.panels;
 
 import static org.junit.Assert.assertTrue;
@@ -48,19 +44,17 @@ public class GCodePanelControllerTest extends JavaFXConfiguredTest {
 				ApplicationConfiguration.fxmlUtilityPanelResourcePath + "GCodePanel.fxml");
 		FXMLLoader loader = new FXMLLoader(fxmlFileName, BaseLookup.getLanguageBundle());
 
-		try
-		{
+		try {
 			VBox layout = (VBox) loader.load();
-		} catch (IOException ex)
-		{
+		}
+		catch (IOException ex) {
 			return;
 		}
 		controller = (GCodePanelController) loader.getController();
 		Lookup.setSelectedPrinter(printer);
 	}
 
-	private Optional<String> convertBackslashes(Optional<String> path)
-	{
+	private Optional<String> convertBackslashes(Optional<String> path) {
 		// On Windows, paths can have a mixture of forward slashes and
 		// backslashes. Convert them all to forward slashes.
 		if (path.isPresent())

@@ -54,8 +54,7 @@ import xyz.openautomaker.base.utils.PrinterUtils;
  *
  * @author Ian
  */
-public class PurgeInsetPanelController implements Initializable
-{
+public class PurgeInsetPanelController implements Initializable {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			PurgeInsetPanelController.class.getName());
@@ -157,43 +156,36 @@ public class PurgeInsetPanelController implements Initializable
 	private boolean backToStatusInhibitWhenAtTop = false;
 
 	@FXML
-	void start(ActionEvent event)
-	{
+	void start(ActionEvent event) {
 		transitionManager.followTransition(GUIName.START);
 	}
 
 	@FXML
-	void proceed(ActionEvent event)
-	{
+	void proceed(ActionEvent event) {
 		transitionManager.followTransition(GUIName.NEXT);
 	}
 
 	@FXML
-	void cancel(ActionEvent event)
-	{
+	void cancel(ActionEvent event) {
 		transitionManager.cancel();
 	}
 
 	@FXML
-	void repeat(ActionEvent event)
-	{
+	void repeat(ActionEvent event) {
 		transitionManager.followTransition(GUIName.RETRY);
 	}
 
 	@FXML
-	void okPressed(ActionEvent event)
-	{
+	void okPressed(ActionEvent event) {
 		closeWindow(null);
 	}
 
 	@FXML
-	void closeWindow(ActionEvent event)
-	{
+	void closeWindow(ActionEvent event) {
 
 		ApplicationStatus.getInstance().returnToLastMode();
 
-		if (project != null)
-		{
+		if (project != null) {
 			BaseLookup.getSystemNotificationHandler().askUserToClearBed();
 
 			// Need to go to settings page for this project
@@ -202,53 +194,40 @@ public class PurgeInsetPanelController implements Initializable
 		}
 	}
 
-	private final ChangeListener<Boolean> purgeTempEntryListener0
-	= (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-	{
+	private final ChangeListener<Boolean> purgeTempEntryListener0 = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 		if (printer.headProperty().get() != null
-				&& printer.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD)
-		{
+				&& printer.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD) {
 			transitionManager.setPurgeTemperature(1, purgeTemperature0.getAsInt());
-		} else
-		{
+		}
+		else {
 			transitionManager.setPurgeTemperature(0, purgeTemperature0.getAsInt());
 		}
 	};
 
-	private final ChangeListener<Boolean> purgeTempEntryListener1
-	= (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-	{
+	private final ChangeListener<Boolean> purgeTempEntryListener1 = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 		transitionManager.setPurgeTemperature(0, purgeTemperature1.getAsInt());
 	};
 
-	private final ChangeListener<Boolean> purgeMaterial0Listener
-	= (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-	{
-		if (printer.headProperty().get().headTypeProperty().get() == Head.HeadType.SINGLE_MATERIAL_HEAD)
-		{
+	private final ChangeListener<Boolean> purgeMaterial0Listener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+		if (printer.headProperty().get().headTypeProperty().get() == Head.HeadType.SINGLE_MATERIAL_HEAD) {
 			transitionManager.setPurgeNozzleHeater0(purgeMaterial0.isSelected());
-		} else
-		{
+		}
+		else {
 			transitionManager.setPurgeNozzleHeater1(purgeMaterial0.isSelected());
 		}
 	};
 
-	private final ChangeListener<Boolean> purgeMaterial1Listener
-	= (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-	{
-		if (printer.headProperty().get().headTypeProperty().get() == Head.HeadType.SINGLE_MATERIAL_HEAD)
-		{
+	private final ChangeListener<Boolean> purgeMaterial1Listener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+		if (printer.headProperty().get().headTypeProperty().get() == Head.HeadType.SINGLE_MATERIAL_HEAD) {
 			transitionManager.setPurgeNozzleHeater1(purgeMaterial1.isSelected());
-		} else
-		{
+		}
+		else {
 			transitionManager.setPurgeNozzleHeater0(purgeMaterial1.isSelected());
 		}
 	};
 
-
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
+	public void initialize(URL location, ResourceBundle resources) {
 		populateNamesToButtons();
 
 		applicationStatus = ApplicationStatus.getInstance();
@@ -263,63 +242,50 @@ public class PurgeInsetPanelController implements Initializable
 
 		FXMLUtilities.addColonsToLabels(purgeDetailsGrid);
 
-		BaseLookup.getPrinterListChangesNotifier().addListener(new PrinterListChangesAdapter()
-		{
+		BaseLookup.getPrinterListChangesNotifier().addListener(new PrinterListChangesAdapter() {
 
 			@Override
-			public void whenReelAdded(Printer printer, int reelIndex)
-			{
-				if (PurgeInsetPanelController.this.printer == printer)
-				{
+			public void whenReelAdded(Printer printer, int reelIndex) {
+				if (PurgeInsetPanelController.this.printer == printer) {
 					PurgeInsetPanelController.this.showCurrentMaterial0();
 					PurgeInsetPanelController.this.showCurrentMaterial1();
 				}
 			}
 
 			@Override
-			public void whenReelRemoved(Printer printer, Reel reel, int reelIndex)
-			{
-				if (PurgeInsetPanelController.this.printer == printer)
-				{
+			public void whenReelRemoved(Printer printer, Reel reel, int reelIndex) {
+				if (PurgeInsetPanelController.this.printer == printer) {
 					PurgeInsetPanelController.this.showCurrentMaterial0();
 					PurgeInsetPanelController.this.showCurrentMaterial1();
 				}
 			}
 
 			@Override
-			public void whenReelChanged(Printer printer, Reel reel)
-			{
-				if (PurgeInsetPanelController.this.printer == printer)
-				{
+			public void whenReelChanged(Printer printer, Reel reel) {
+				if (PurgeInsetPanelController.this.printer == printer) {
 					PurgeInsetPanelController.this.showCurrentMaterial0();
 					PurgeInsetPanelController.this.showCurrentMaterial1();
 				}
 			}
 		});
 
-		diagramContainer.widthProperty().addListener(new ChangeListener<Number>()
-		{
+		diagramContainer.widthProperty().addListener(new ChangeListener<Number>() {
 			@Override
-			public void changed(ObservableValue<? extends Number> ov, Number t, Number t1)
-			{
+			public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
 				resizePurgeDisplay(diagramContainer.getWidth(), diagramContainer.getHeight());
 			}
 		});
 
-		diagramContainer.heightProperty().addListener(new ChangeListener<Number>()
-		{
+		diagramContainer.heightProperty().addListener(new ChangeListener<Number>() {
 			@Override
-			public void changed(ObservableValue<? extends Number> ov, Number t, Number t1)
-			{
+			public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
 				resizePurgeDisplay(diagramContainer.getWidth(), diagramContainer.getHeight());
 			}
 		});
 
-		diagramContainer.visibleProperty().addListener(new ChangeListener<Boolean>()
-		{
+		diagramContainer.visibleProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
-			public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1)
-			{
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
 				resizePurgeDisplay(diagramContainer.getWidth(), diagramContainer.getHeight());
 			}
 		});
@@ -327,8 +293,7 @@ public class PurgeInsetPanelController implements Initializable
 		resizePurgeDisplay(diagramContainer.getWidth(), diagramContainer.getHeight());
 	}
 
-	public void hideCommonBordersAndBackButton()
-	{
+	public void hideCommonBordersAndBackButton() {
 		topMenuStrip.setMinHeight(0);
 		topMenuStrip.setPrefHeight(0);
 		topMenuStrip.setVisible(false);
@@ -336,8 +301,7 @@ public class PurgeInsetPanelController implements Initializable
 		backToStatusInhibitWhenAtTop = true;
 	}
 
-	private void resizePurgeDisplay(double displayWidth, double displayHeight)
-	{
+	private void resizePurgeDisplay(double displayWidth, double displayHeight) {
 		final double beginWidth = 804;
 		final double beginHeight = 345;
 		final double aspect = beginWidth / beginHeight;
@@ -350,13 +314,12 @@ public class PurgeInsetPanelController implements Initializable
 		double newWidth = 0;
 		double newHeight = 0;
 
-		if (displayAspect >= aspect)
-		{
+		if (displayAspect >= aspect) {
 			// Drive from height
 			newWidth = displayHeight * aspect;
 			newHeight = displayHeight;
-		} else
-		{
+		}
+		else {
 			//Drive from width
 			newHeight = displayWidth / aspect;
 			newWidth = displayWidth;
@@ -369,8 +332,7 @@ public class PurgeInsetPanelController implements Initializable
 		diagram.setScaleY(yScale);
 	}
 
-	private void populateNamesToButtons()
-	{
+	private void populateNamesToButtons() {
 		namesToButtons.put(StateTransitionManager.GUIName.NEXT, proceedButton);
 		namesToButtons.put(StateTransitionManager.GUIName.RETRY, repeatButton);
 		namesToButtons.put(StateTransitionManager.GUIName.START, startPurgeButton);
@@ -381,23 +343,18 @@ public class PurgeInsetPanelController implements Initializable
 	/**
 	 * According to the available transitions, show the appropriate buttons.
 	 */
-	private void showAppropriateButtons(PurgeState state)
-	{
-		if (state.showCancelButton())
-		{
+	private void showAppropriateButtons(PurgeState state) {
+		if (state.showCancelButton()) {
 			cancelPurgeButton.setVisible(true);
 		}
-		for (StateTransition<PurgeState> allowedTransition : transitionManager.getTransitions())
-		{
-			if (namesToButtons.containsKey(allowedTransition.getGUIName()))
-			{
+		for (StateTransition<PurgeState> allowedTransition : transitionManager.getTransitions()) {
+			if (namesToButtons.containsKey(allowedTransition.getGUIName())) {
 				namesToButtons.get(allowedTransition.getGUIName()).setVisible(true);
 			}
 		}
 	}
 
-	private void hideAllButtons()
-	{
+	private void hideAllButtons() {
 		cancelPurgeButton.setVisible(false);
 		proceedButton.setVisible(false);
 		repeatButton.setVisible(false);
@@ -409,8 +366,7 @@ public class PurgeInsetPanelController implements Initializable
 		diagramContainer.setVisible(false);
 	}
 
-	public void setState(PurgeState state)
-	{
+	public void setState(PurgeState state) {
 		LOGGER.debug("go to state " + state);
 		LOGGER.debug("printer status is " + printer.printerStatusProperty().get());
 		hideAllButtons();
@@ -419,69 +375,62 @@ public class PurgeInsetPanelController implements Initializable
 		purgeStatus.setVisible(true);
 		purgeStatus.setText(state.getStepTitle());
 		purgeTemperature0.valueChangedProperty().removeListener(purgeTempEntryListener0);
-		if (purgeTwoNozzleHeaters.get())
-		{
+		if (purgeTwoNozzleHeaters.get()) {
 			purgeTemperature1.valueChangedProperty().removeListener(purgeTempEntryListener1);
 		}
-		switch (state)
-		{
-		case IDLE:
-			break;
-		case INITIALISING:
-			break;
-		case CONFIRM_TEMPERATURE:
-			showCurrentMaterial0();
-			purgeTemperature0.valueChangedProperty().addListener(purgeTempEntryListener0);
-			purgeDetailsGrid0.setVisible(true);
+		switch (state) {
+			case IDLE:
+				break;
+			case INITIALISING:
+				break;
+			case CONFIRM_TEMPERATURE:
+				showCurrentMaterial0();
+				purgeTemperature0.valueChangedProperty().addListener(purgeTempEntryListener0);
+				purgeDetailsGrid0.setVisible(true);
 
-			if (purgeTwoNozzleHeaters.get())
-			{
-				showCurrentMaterial1();
-				purgeTemperature1.valueChangedProperty().addListener(purgeTempEntryListener1);
-				purgeMaterial0.setVisible(true);
-			} else
-			{
-				purgeMaterial0.setVisible(false);
-			}
-			purgeDetailsGrid1.setVisible(purgeTwoNozzleHeaters.get());
-			break;
-		case HEATING:
-			break;
-		case RUNNING_PURGE:
-			diagramContainer.setVisible(true);
-			break;
-		case FINISHED:
-			diagramContainer.setVisible(true);
-			break;
-		case DONE:
-			closeWindow(null);
-			break;
-		case FAILED:
-			break;
-		case CANCELLING:
-			resettingPrinter.setVisible(true);
-			purgeStatus.setVisible(false);
-			break;
-		case CANCELLED:
-			closeWindow(null);
-			break;
+				if (purgeTwoNozzleHeaters.get()) {
+					showCurrentMaterial1();
+					purgeTemperature1.valueChangedProperty().addListener(purgeTempEntryListener1);
+					purgeMaterial0.setVisible(true);
+				}
+				else {
+					purgeMaterial0.setVisible(false);
+				}
+				purgeDetailsGrid1.setVisible(purgeTwoNozzleHeaters.get());
+				break;
+			case HEATING:
+				break;
+			case RUNNING_PURGE:
+				diagramContainer.setVisible(true);
+				break;
+			case FINISHED:
+				diagramContainer.setVisible(true);
+				break;
+			case DONE:
+				closeWindow(null);
+				break;
+			case FAILED:
+				break;
+			case CANCELLING:
+				resettingPrinter.setVisible(true);
+				purgeStatus.setVisible(false);
+				break;
+			case CANCELLED:
+				closeWindow(null);
+				break;
 		}
 	}
 
-	private MapChangeListener<Integer, Filament> effectiveFilamentListener = (MapChangeListener.Change<? extends Integer, ? extends Filament> change) ->
-	{
+	private MapChangeListener<Integer, Filament> effectiveFilamentListener = (MapChangeListener.Change<? extends Integer, ? extends Filament> change) -> {
 		showCurrentMaterial0();
 		showCurrentMaterial1();
 	};
 
 	/**
-	 * Bind to the given printer. This is only called once for a given purge and
-	 * should not be called again during the purge.
+	 * Bind to the given printer. This is only called once for a given purge and should not be called again during the purge.
 	 */
-	private void bindPrinter(Printer printer)
-	{
-		if (this.printer != null)
-		{
+	private void bindPrinter(Printer printer) {
+		if (this.printer != null) {
 			cantPurgeDoorIsOpenNotificationBar.clearAppearanceCondition();
 			cantPrintNoFilamentNotificationBar.clearAppearanceCondition();
 			cantPrintNoFilament0NotificationBar.clearAppearanceCondition();
@@ -510,26 +459,21 @@ public class PurgeInsetPanelController implements Initializable
 	}
 
 	/**
-	 * If a reel is loaded then show and select its material, else show and
-	 * select the material from the combo box. This should be called whenever a
-	 * reel is loaded/unloaded or changed.
+	 * If a reel is loaded then show and select its material, else show and select the material from the combo box. This should be called whenever a reel is loaded/unloaded or changed.
 	 */
-	private void showCurrentMaterial0()
-	{
+	private void showCurrentMaterial0() {
 		currentMaterial0 = printer.effectiveFilamentsProperty().get(0);
 
 		if (currentMaterial0 != null
-				&& currentMaterial0 != FilamentContainer.UNKNOWN_FILAMENT)
-		{
+				&& currentMaterial0 != FilamentContainer.UNKNOWN_FILAMENT) {
 			selectMaterial0(currentMaterial0);
-		} else
-		{
+		}
+		else {
 			if (printer.headProperty().get() != null
-					&& printer.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD)
-			{
+					&& printer.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD) {
 				transitionManager.setPurgeTemperature(1, 0);
-			} else
-			{
+			}
+			else {
 				transitionManager.setPurgeTemperature(0, 0);
 			}
 			purgeTemperature0.textProperty().set("0");
@@ -538,44 +482,36 @@ public class PurgeInsetPanelController implements Initializable
 	}
 
 	/**
-	 * If a reel is loaded then show and select its material, else show and
-	 * select the material from the combo box. This should be called whenever a
-	 * reel is loaded/unloaded or changed.
+	 * If a reel is loaded then show and select its material, else show and select the material from the combo box. This should be called whenever a reel is loaded/unloaded or changed.
 	 */
-	private void showCurrentMaterial1()
-	{
-		if (!purgeTwoNozzleHeaters.get())
-		{
+	private void showCurrentMaterial1() {
+		if (!purgeTwoNozzleHeaters.get()) {
 			return;
 		}
 
 		currentMaterial1 = printer.effectiveFilamentsProperty().get(1);
 
 		if (currentMaterial1 != null
-				&& currentMaterial1 != FilamentContainer.UNKNOWN_FILAMENT)
-		{
+				&& currentMaterial1 != FilamentContainer.UNKNOWN_FILAMENT) {
 			selectMaterial1(currentMaterial1);
-		} else
-		{
+		}
+		else {
 			transitionManager.setPurgeTemperature(0, 0);
 			purgeTemperature1.textProperty().set("0");
 			textCurrentMaterial1.textProperty().set("Unknown");
 		}
 	}
 
-	private boolean headHasTwoNozzleHeaters(Printer printer)
-	{
+	private boolean headHasTwoNozzleHeaters(Printer printer) {
 		return printer.headProperty().get().getNozzleHeaters().size() == 2;
 	}
 
 	private void installTagAndDisabledStatusForButton(PurgeStateTransitionManager transitionManager,
-			Printer printer, GraphicButtonWithLabel button)
-	{
+			Printer printer, GraphicButtonWithLabel button) {
 		BooleanBinding doorIsOpen = printer.getPrinterAncillarySystems().doorOpenProperty().and(
 				Lookup.getUserPreferences().safetyFeaturesOnProperty());
 
-		BooleanBinding extruder0NotLoaded = printer.extrudersProperty().get(0).
-				filamentLoadedProperty().not();
+		BooleanBinding extruder0NotLoaded = printer.extrudersProperty().get(0).filamentLoadedProperty().not();
 
 		BooleanBinding notPurgingAndNotIdle = Bindings.and(
 				printer.printerStatusProperty().isNotEqualTo(PrinterStatus.PURGING_HEAD),
@@ -584,9 +520,7 @@ public class PurgeInsetPanelController implements Initializable
 		cantPurgeDoorIsOpenNotificationBar.setAppearanceCondition(doorIsOpen
 				.and(applicationStatus.modeProperty().isEqualTo(ApplicationMode.PURGE)));
 
-
-		if (!headHasTwoNozzleHeaters(printer))
-		{
+		if (!headHasTwoNozzleHeaters(printer)) {
 			cantPrintNoFilamentNotificationBar.setAppearanceCondition(applicationStatus.modeProperty().isEqualTo(ApplicationMode.PURGE)
 					.and(extruder0NotLoaded));
 
@@ -597,36 +531,29 @@ public class PurgeInsetPanelController implements Initializable
 			BooleanBinding isDisabled = notPurgingAndNotIdle.or(doorIsOpen).or(extruder0NotLoaded);
 			button.disableProperty().bind(isDisabled);
 		}
-		else
-		{
+		else {
 
-			BooleanBinding extruder1NotLoaded = printer.extrudersProperty().get(1).
-					filamentLoadedProperty().not();
+			BooleanBinding extruder1NotLoaded = printer.extrudersProperty().get(1).filamentLoadedProperty().not();
 
-			if (button == proceedButton)
-			{
-				BooleanBinding purgingNozzleHeater0 = new BooleanBinding()
-				{
+			if (button == proceedButton) {
+				BooleanBinding purgingNozzleHeater0 = new BooleanBinding() {
 					{
 						super.bind(transitionManager.getPurgeNozzleHeater0());
 					}
 
 					@Override
-					protected boolean computeValue()
-					{
+					protected boolean computeValue() {
 						return transitionManager.getPurgeNozzleHeater0().get();
 					}
 				};
 
-				BooleanBinding purgingNozzleHeater1 = new BooleanBinding()
-				{
+				BooleanBinding purgingNozzleHeater1 = new BooleanBinding() {
 					{
 						super.bind(transitionManager.getPurgeNozzleHeater1());
 					}
 
 					@Override
-					protected boolean computeValue()
-					{
+					protected boolean computeValue() {
 						return transitionManager.getPurgeNozzleHeater1().get();
 					}
 				};
@@ -657,8 +584,7 @@ public class PurgeInsetPanelController implements Initializable
 						.or(purgingNozzleHeater0.and(extruder1NotLoaded.or(filament1Invalid)));
 				button.disableProperty().bind(isDisabled);
 			}
-			else
-			{
+			else {
 				BooleanBinding neitherExtruderLoaded = extruder0NotLoaded.and(extruder1NotLoaded);
 				BooleanBinding isDisabled = notPurgingAndNotIdle.or(doorIsOpen).or(neitherExtruderLoaded);
 				button.disableProperty().bind(isDisabled);
@@ -667,11 +593,9 @@ public class PurgeInsetPanelController implements Initializable
 	}
 
 	/**
-	 * This is called when the user wants to print and the system has detected
-	 * that a purge is required.
+	 * This is called when the user wants to print and the system has detected that a purge is required.
 	 */
-	public void purgeAndPrint(ModelContainerProject project, Printer printerToUse)
-	{
+	public void purgeAndPrint(ModelContainerProject project, Printer printerToUse) {
 		this.project = project;
 		bindPrinter(printerToUse);
 		selectMaterial0(printer.effectiveFilamentsProperty().get(0));
@@ -685,30 +609,25 @@ public class PurgeInsetPanelController implements Initializable
 	/**
 	 * If a nozzle needs purging then set the appropriate flag to true.
 	 */
-	private void setPurgeForRequiredNozzles()
-	{
-		if (!headHasTwoNozzleHeaters(printer))
-		{
+	private void setPurgeForRequiredNozzles() {
+		if (!headHasTwoNozzleHeaters(printer)) {
 			purgeMaterial0.setSelected(true);
 			purgeMaterial1.setSelected(false);
-		} else
-		{
+		}
+		else {
 			purgeMaterial0.setSelected(false);
 			purgeMaterial1.setSelected(false);
 
-			if (PrinterUtils.isPurgeNecessaryForExtruder(printer, 0))
-			{
+			if (PrinterUtils.isPurgeNecessaryForExtruder(printer, 0)) {
 				purgeMaterial0.setSelected(true);
 			}
-			if (PrinterUtils.isPurgeNecessaryForExtruder(printer, 1))
-			{
+			if (PrinterUtils.isPurgeNecessaryForExtruder(printer, 1)) {
 				purgeMaterial1.setSelected(true);
 			}
 		}
 	}
 
-	public void purge(Printer printer)
-	{
+	public void purge(Printer printer) {
 		bindPrinter(printer);
 
 		// default to purging both nozzles.
@@ -718,12 +637,10 @@ public class PurgeInsetPanelController implements Initializable
 		startPurge();
 	}
 
-	private void startPurge()
-	{
+	private void startPurge() {
 		ApplicationStatus.getInstance().setMode(ApplicationMode.PURGE);
 
-		try
-		{
+		try {
 			transitionManager = printer.startPurge(Lookup.getUserPreferences().isSafetyFeaturesOn());
 
 			currentMaterialTemperature0.textProperty().unbind();
@@ -737,8 +654,7 @@ public class PurgeInsetPanelController implements Initializable
 
 			setPurgeForRequiredNozzles();
 
-			if (purgeTwoNozzleHeaters.get())
-			{
+			if (purgeTwoNozzleHeaters.get()) {
 				currentMaterialTemperature1.textProperty().unbind();
 				lastMaterialTemperature1.textProperty().unbind();
 				currentMaterialTemperature1.textProperty().bind(
@@ -752,8 +668,8 @@ public class PurgeInsetPanelController implements Initializable
 
 				lastMaterialTemperature0.textProperty().bind(
 						transitionManager.getLastMaterialTemperature(1).asString());
-			} else
-			{
+			}
+			else {
 				currentMaterialTemperature0.textProperty().bind(
 						transitionManager.getCurrentMaterialTemperature(0).asString());
 
@@ -761,23 +677,19 @@ public class PurgeInsetPanelController implements Initializable
 						transitionManager.getLastMaterialTemperature(0).asString());
 			}
 
-			transitionManager.stateGUITProperty().addListener(new ChangeListener()
-			{
+			transitionManager.stateGUITProperty().addListener(new ChangeListener() {
 				@Override
-				public void changed(ObservableValue observable, Object oldValue, Object newValue)
-				{
+				public void changed(ObservableValue observable, Object oldValue, Object newValue) {
 					setState((PurgeState) newValue);
 				}
 			});
 
 			transitionManager.start();
 
-
-			if (printer.headProperty().get().headTypeProperty().get() == Head.HeadType.SINGLE_MATERIAL_HEAD)
-			{
+			if (printer.headProperty().get().headTypeProperty().get() == Head.HeadType.SINGLE_MATERIAL_HEAD) {
 				transitionManager.setPurgeNozzleHeater0(purgeMaterial0.isSelected());
-			} else
-			{
+			}
+			else {
 				transitionManager.setPurgeNozzleHeater0(purgeMaterial1.isSelected());
 				transitionManager.setPurgeNozzleHeater1(purgeMaterial0.isSelected());
 			}
@@ -786,35 +698,30 @@ public class PurgeInsetPanelController implements Initializable
 			installTagAndDisabledStatusForButton(transitionManager, printer, proceedButton);
 
 			setState(PurgeState.IDLE);
-		} catch (PrinterException ex)
-		{
+		}
+		catch (PrinterException ex) {
 			LOGGER.error("Error starting purge: " + ex);
 		}
 	}
 
 	/**
-	 * Tell the purge state machine about the (changed) current material, and
-	 * update the relevant text fields.
+	 * Tell the purge state machine about the (changed) current material, and update the relevant text fields.
 	 */
-	private void selectMaterial0(Filament filament)
-	{
+	private void selectMaterial0(Filament filament) {
 		currentMaterial0 = filament;
-		if (transitionManager != null)
-		{
-			try
-			{
+		if (transitionManager != null) {
+			try {
 				if (printer.headProperty().get() != null
-						&& printer.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD)
-				{
+						&& printer.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD) {
 					transitionManager.setPurgeFilament(1, filament);
 					purgeTemperature0.setText(transitionManager.getPurgeTemperature(1).asString().get());
-				} else
-				{
+				}
+				else {
 					transitionManager.setPurgeFilament(0, filament);
 					purgeTemperature0.setText(transitionManager.getPurgeTemperature(0).asString().get());
 				}
-			} catch (PrintException ex)
-			{
+			}
+			catch (PrintException ex) {
 				LOGGER.error("Error setting purge filament", ex);
 			}
 			textCurrentMaterial0.setText(currentMaterial0.getLongFriendlyName() + " "
@@ -823,35 +730,29 @@ public class PurgeInsetPanelController implements Initializable
 	}
 
 	/**
-	 * Tell the purge state machine about the (changed) current material, and
-	 * update the relevant text fields.
+	 * Tell the purge state machine about the (changed) current material, and update the relevant text fields.
 	 */
-	private void selectMaterial1(Filament filament)
-	{
+	private void selectMaterial1(Filament filament) {
 		currentMaterial1 = filament;
-		if (transitionManager != null)
-		{
-			try
-			{
+		if (transitionManager != null) {
+			try {
 				transitionManager.setPurgeFilament(0, filament);
-			} catch (PrintException ex)
-			{
+			}
+			catch (PrintException ex) {
 				LOGGER.error("Error setting purge filament", ex);
 			}
-			if (currentMaterial1.getMaterial() != null)
-			{
+			if (currentMaterial1.getMaterial() != null) {
 				textCurrentMaterial1.setText(currentMaterial1.getLongFriendlyName() + " "
 						+ currentMaterial1.getMaterial().getFriendlyName());
-			} else
-			{
+			}
+			else {
 				textCurrentMaterial1.setText(currentMaterial1.getLongFriendlyName());
 			}
 			purgeTemperature1.setText(transitionManager.getPurgeTemperature(0).asString().get());
 		}
 	}
 
-	public ReadOnlyObjectProperty<PurgeState> purgeStateProperty()
-	{
+	public ReadOnlyObjectProperty<PurgeState> purgeStateProperty() {
 		return transitionManager.stateGUITProperty();
 	}
 }

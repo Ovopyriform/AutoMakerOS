@@ -20,8 +20,7 @@ import xyz.openautomaker.base.utils.Math.MathUtils;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class SelectionHighlighter extends Group implements ShapeProvider.ShapeChangeListener
-{
+public class SelectionHighlighter extends Group implements ShapeProvider.ShapeChangeListener {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			SelectionHighlighter.class.getName());
@@ -48,13 +47,11 @@ public class SelectionHighlighter extends Group implements ShapeProvider.ShapeCh
 	 *
 	 * @param modelContainer
 	 */
-	public SelectionHighlighter(final ModelContainer modelContainer, double cameraDistance)
-	{
+	public SelectionHighlighter(final ModelContainer modelContainer, double cameraDistance) {
 		cameraDistanceChange(cameraDistance);
 
 		this.setId(idString);
-		if (modelContainer instanceof ModelGroup)
-		{
+		if (modelContainer instanceof ModelGroup) {
 			selectionIsGroup = true;
 		}
 		buildSelectionBox();
@@ -63,8 +60,7 @@ public class SelectionHighlighter extends Group implements ShapeProvider.ShapeCh
 		modelContainer.addShapeChangeListener(this);
 	}
 
-	private void buildSelectionBox()
-	{
+	private void buildSelectionBox() {
 		selectionBoxBackLeftBottom = generateSelectionCornerGroup(0, 90, 0);
 
 		selectionBoxBackRightBottom = generateSelectionCornerGroup(0, -180, 0);
@@ -90,10 +86,8 @@ public class SelectionHighlighter extends Group implements ShapeProvider.ShapeCh
 	}
 
 	@Override
-	public void shapeChanged(ShapeProvider shapeProviderRaw)
-	{
-		if (shapeProviderRaw instanceof ShapeProviderThreeD)
-		{
+	public void shapeChanged(ShapeProvider shapeProviderRaw) {
+		if (shapeProviderRaw instanceof ShapeProviderThreeD) {
 			ShapeProviderThreeD shapeProvider = (ShapeProviderThreeD) shapeProviderRaw;
 
 			double halfWidth = shapeProvider.getScaledWidth() / 2;
@@ -143,8 +137,7 @@ public class SelectionHighlighter extends Group implements ShapeProvider.ShapeCh
 		}
 	}
 
-	private Xform generateSelectionCornerGroup(double xRotate, double yRotate, double zRotate)
-	{
+	private Xform generateSelectionCornerGroup(double xRotate, double yRotate, double zRotate) {
 
 		final double cylRadius = 0.75;
 
@@ -193,14 +186,12 @@ public class SelectionHighlighter extends Group implements ShapeProvider.ShapeCh
 		return selectionCornerTransform;
 	}
 
-	public final void cameraDistanceChange(double cameraDistance)
-	{
+	public final void cameraDistanceChange(double cameraDistance) {
 		double newScale = cameraDistance / 350;
-		if (newScale < 0.3)
-		{
+		if (newScale < 0.3) {
 			newScale = 0.3;
-		} else if (newScale > 1.5)
-		{
+		}
+		else if (newScale > 1.5) {
 			newScale = 1.5;
 		}
 		boxScaleProperty.set(newScale);

@@ -10,26 +10,22 @@ import xyz.openautomaker.base.configuration.Filament;
  *
  * @author Ian
  */
-public class FilamentOnReelDisplay extends HBox
-{
+public class FilamentOnReelDisplay extends HBox {
 
 	private final Text titleText = new Text("Nothing");
 	private final Text filamentNameText = new Text();
 	private final FilamentSwatch swatch = new FilamentSwatch();
 
-	public FilamentOnReelDisplay()
-	{
+	public FilamentOnReelDisplay() {
 		initialise();
 	}
 
-	public FilamentOnReelDisplay(String title, Filament filament)
-	{
+	public FilamentOnReelDisplay(String title, Filament filament) {
 		initialise();
 		updateFilamentOnReelDisplay(title, filament);
 	}
 
-	private void initialise()
-	{
+	private void initialise() {
 		setAlignment(Pos.CENTER_LEFT);
 		setSpacing(5.0);
 		SVGPath reelIcon = new SVGPath();
@@ -38,15 +34,13 @@ public class FilamentOnReelDisplay extends HBox
 		getChildren().addAll(titleText, swatch, filamentNameText, reelIcon);
 	}
 
-	public final void updateFilamentOnReelDisplay(String title, Filament filament)
-	{
+	public final void updateFilamentOnReelDisplay(String title, Filament filament) {
 		titleText.setText(title);
 		filamentNameText.setText(filament.getFriendlyFilamentName());
 		swatch.updateFilament(filament);
 	}
 
-	public Filament getSelectedFilament()
-	{
+	public Filament getSelectedFilament() {
 		return swatch.getFilament();
 	}
 }

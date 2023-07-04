@@ -64,8 +64,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  * @author Ian
  */
 public class CalibrationInsetPanelController implements Initializable,
-PrinterListChangesListener
-{
+		PrinterListChangesListener {
 
 	final CalibrationMenuConfiguration calibrationMenuConfiguration;
 	ObjectProperty<CalibrationMode> calibrationMode = new SimpleObjectProperty<>(null);
@@ -80,24 +79,23 @@ PrinterListChangesListener
 
 	private ResourceBundle resources;
 
-	private void resizeTopBorderPane()
-	{
+	private void resizeTopBorderPane() {
 		topBorderPane.setPrefWidth(topPane.getWidth());
 		topBorderPane.setPrefHeight(topPane.getHeight());
 		topBorderPane.setMaxWidth(topPane.getWidth());
 		topBorderPane.setMaxHeight(topPane.getHeight());
 	}
 
-	void resetMenuAndGoToChoiceMode()
-	{
+	void resetMenuAndGoToChoiceMode() {
 		calibrationMenu.reset();
 		setCalibrationMode(CalibrationMode.CHOICE);
 	}
 
-	protected static enum ProgressVisibility
-	{
+	protected static enum ProgressVisibility {
 
-		TEMP, PRINT, NONE;
+		TEMP,
+		PRINT,
+		NONE;
 	}
 
 	private static final Logger LOGGER = LogManager.getLogger(
@@ -164,15 +162,13 @@ PrinterListChangesListener
 	private boolean backToStatusInhibitWhenAtTop = false;
 	private Line lineToAnimate;
 	private double originalAnimatedLineLength = 0;
-	private Transition animatedFilamentTransition = new Transition()
-	{
+	private Transition animatedFilamentTransition = new Transition() {
 		{
 			setCycleDuration(Duration.millis(2000));
 		}
 
 		@Override
-		public void interpolate(double frac)
-		{
+		public void interpolate(double frac) {
 			lineToAnimate.setEndY(frac * originalAnimatedLineLength);
 		}
 	};
@@ -188,38 +184,31 @@ PrinterListChangesListener
 	private boolean notRequiredMessagesShown = false;
 
 	@FXML
-	void buttonAAction(ActionEvent event)
-	{
+	void buttonAAction(ActionEvent event) {
 		stateManager.followTransition(StateTransitionManager.GUIName.A_BUTTON);
 	}
 
 	@FXML
-	void buttonBAction(ActionEvent event)
-	{
+	void buttonBAction(ActionEvent event) {
 		stateManager.followTransition(StateTransitionManager.GUIName.B_BUTTON);
 	}
 
 	@FXML
-	void nextButtonAction(ActionEvent event)
-	{
+	void nextButtonAction(ActionEvent event) {
 		stateManager.followTransition(StateTransitionManager.GUIName.NEXT);
 	}
 
 	@FXML
-	void backToStatusAction(ActionEvent event)
-	{
+	void backToStatusAction(ActionEvent event) {
 		if (calibrationMode.get() == CalibrationMode.CHOICE
-				|| stateManager == null)
-		{
+				|| stateManager == null) {
 			ApplicationStatus.getInstance().setMode(ApplicationMode.STATUS);
-		} else
-		{
-			try
-			{
+		}
+		else {
+			try {
 				stateManager.followTransition(StateTransitionManager.GUIName.BACK);
 			}
-			catch (RuntimeException ex)
-			{
+			catch (RuntimeException ex) {
 			}
 			ApplicationStatus.getInstance().setMode(ApplicationMode.STATUS);
 			calibrationMenu.reset();
@@ -227,42 +216,34 @@ PrinterListChangesListener
 	}
 
 	@FXML
-	void startCalibration(ActionEvent event)
-	{
+	void startCalibration(ActionEvent event) {
 		stateManager.followTransition(StateTransitionManager.GUIName.START);
 	}
 
 	@FXML
-	void cancelCalibration(ActionEvent event)
-	{
-		try
-		{
+	void cancelCalibration(ActionEvent event) {
+		try {
 			stateManager.cancel();
-		} catch (Exception ex)
-		{
+		}
+		catch (Exception ex) {
 			LOGGER.error("Error cancelling calibration: " + ex);
 		}
 	}
 
 	@FXML
-	void retryCalibration(ActionEvent event)
-	{
+	void retryCalibration(ActionEvent event) {
 		stateManager.followTransition(StateTransitionManager.GUIName.RETRY);
 	}
 
-	private final ChangeListener<ApplicationMode> applicationModeChangeListener = new ChangeListener<>()
-	{
+	private final ChangeListener<ApplicationMode> applicationModeChangeListener = new ChangeListener<>() {
 		@Override
-		public void changed(ObservableValue<? extends ApplicationMode> observable, ApplicationMode oldValue, ApplicationMode newValue)
-		{
+		public void changed(ObservableValue<? extends ApplicationMode> observable, ApplicationMode oldValue, ApplicationMode newValue) {
 			if (newValue == ApplicationMode.CALIBRATION_CHOICE)
 				resetMenuAndGoToChoiceMode();
 		}
 	};
 
-
-	protected void hideAllInputControlsExceptStepNumber()
-	{
+	protected void hideAllInputControlsExceptStepNumber() {
 		backToStatus.setVisible(false);
 		retryPrintButton.setVisible(false);
 		startCalibrationButton.setVisible(false);
@@ -272,28 +253,24 @@ PrinterListChangesListener
 		buttonA.setVisible(false);
 		stepNumber.setVisible(true);
 		hideSpinner();
-		if (diagramNode != null)
-		{
+		if (diagramNode != null) {
 			diagramNode.setVisible(false);
 		}
 		stepNumber.setText("");
 	}
 
-	public CalibrationInsetPanelController()
-	{
+	public CalibrationInsetPanelController() {
 		this.calibrationMenuConfiguration = new CalibrationMenuConfiguration(true, true, true);
 	}
 
 	public CalibrationInsetPanelController(boolean displayOpening,
 			boolean displayHeight,
-			boolean displayAlignment)
-	{
+			boolean displayAlignment) {
 		this.calibrationMenuConfiguration = new CalibrationMenuConfiguration(displayOpening, displayHeight, displayAlignment);
 	}
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
+	public void initialize(URL location, ResourceBundle resources) {
 		applicationStatus = ApplicationStatus.getInstance();
 
 		oneExtruderNoFilamentSelectedNotificationBar = new ConditionalNotificationBar("dialogs.cantPrintAttachRoboxReelMessage", NotificationType.CAUTION);
@@ -321,55 +298,45 @@ PrinterListChangesListener
 
 		// If the application mode changes, or a different printer is selected, then the calibration page should reset to a known state.
 		ApplicationStatus.getInstance().modeProperty().addListener(
-				(ObservableValue<? extends ApplicationMode> observable, ApplicationMode oldValue, ApplicationMode newValue) ->
-				{
+				(ObservableValue<? extends ApplicationMode> observable, ApplicationMode oldValue, ApplicationMode newValue) -> {
 					if (newValue == ApplicationMode.CALIBRATION_CHOICE)
 						resetMenuAndGoToChoiceMode();
 				});
 
 		Lookup.getSelectedPrinterProperty().addListener(
-				(ObservableValue<? extends Printer> observable, Printer oldValue, Printer newValue) ->
-				{
+				(ObservableValue<? extends Printer> observable, Printer oldValue, Printer newValue) -> {
 					if (ApplicationStatus.getInstance().getMode() == ApplicationMode.CALIBRATION_CHOICE &&
-							currentPrinter != newValue)
-					{
+							currentPrinter != newValue) {
 						resetMenuAndGoToChoiceMode();
 					}
 				});
 	}
 
-	private void addDiagramMoveScaleListeners()
-	{
+	private void addDiagramMoveScaleListeners() {
 		topPane.widthProperty().addListener(
-				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-				{
+				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 					resizeTopBorderPane();
 				});
 
 		topPane.heightProperty().addListener(
-				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-				{
+				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 					resizeTopBorderPane();
 				});
 
 		diagramContainer.widthProperty().addListener(
-				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-				{
+				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 					resizeDiagram();
 				});
 
 		diagramContainer.heightProperty().addListener(
-				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-				{
+				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 					resizeDiagram();
 				});
 
 	}
 
-	private void resizeDiagram()
-	{
-		if (diagramNode == null)
-		{
+	private void resizeDiagram() {
+		if (diagramNode == null) {
 			return;
 		}
 
@@ -407,19 +374,16 @@ PrinterListChangesListener
 	 * @param diagramName
 	 * @return
 	 */
-	private Node getDiagramNode(URL fxmlFileName)
-	{
+	private Node getDiagramNode(URL fxmlFileName) {
 		Pane loadedDiagramNode = null;
 		animatedFilamentTransition.stop();
-		try
-		{
+		try {
 			FXMLLoader loader = new FXMLLoader(fxmlFileName, resources);
 			diagramController = new DiagramController();
 			loader.setController(diagramController);
 			loadedDiagramNode = loader.load();
 			lineToAnimate = (Line) loadedDiagramNode.lookup("#animatedFilament");
-			if (lineToAnimate != null)
-			{
+			if (lineToAnimate != null) {
 				originalAnimatedLineLength = lineToAnimate.getEndY();
 				animatedFilamentTransition.playFrom(Duration.ZERO);
 			}
@@ -429,16 +393,15 @@ PrinterListChangesListener
 			nodeToBoundsCache.put(loadedDiagramNode, bounds);
 			diagramController.setStateTransitionManager(stateManager);
 
-		} catch (IOException ex)
-		{
+		}
+		catch (IOException ex) {
 			LOGGER.error("Could not load diagram: " + fxmlFileName, ex);
 		}
 		return loadedDiagramNode;
 
 	}
 
-	private Bounds getBoundsOfNotYetDisplayedNode(Pane loadedDiagramNode)
-	{
+	private Bounds getBoundsOfNotYetDisplayedNode(Pane loadedDiagramNode) {
 		Group group = new Group(loadedDiagramNode);
 		Scene scene = new Scene(group);
 		scene.getStylesheets().add(ApplicationConfiguration.getMainCSSFile());
@@ -448,11 +411,9 @@ PrinterListChangesListener
 		return bounds;
 	}
 
-	protected void showDiagram(URL fxmlLocation)
-	{
+	protected void showDiagram(URL fxmlLocation) {
 		diagramNode = (Pane) getDiagramNode(fxmlLocation);
-		if (diagramNode == null)
-		{
+		if (diagramNode == null) {
 			return;
 		}
 
@@ -464,26 +425,21 @@ PrinterListChangesListener
 		diagramNode.setVisible(true);
 	}
 
-	private void switchToPrinter(Printer printer)
-	{
+	private void switchToPrinter(Printer printer) {
 		if (printer == null || printer != currentPrinter)
 			notRequiredMessagesShown = false;
-		if (printer != null)
-		{
+		if (printer != null) {
 			bindPrinter(printer);
 		}
 		currentPrinter = printer;
 	}
 
-	private void bindPrinter(Printer printer)
-	{
+	private void bindPrinter(Printer printer) {
 		configureStartButtonForMode(printer);
 	}
 
-	private void configureStartButtonForMode(Printer printer)
-	{
-		if (printer == null)
-		{
+	private void configureStartButtonForMode(Printer printer) {
+		if (printer == null) {
 			return;
 		}
 
@@ -501,18 +457,15 @@ PrinterListChangesListener
 				noFilament1Selected).and(applicationStatus.modeProperty().isEqualTo(ApplicationMode.CALIBRATION_CHOICE)));
 
 		oneExtruderNoFilamentNotificationBar.setAppearanceCondition(oneExtruderPrinter.and(
-				printer.extrudersProperty().get(0).
-				filamentLoadedProperty().not()).and(applicationStatus.modeProperty().isEqualTo(ApplicationMode.CALIBRATION_CHOICE)));
+				printer.extrudersProperty().get(0).filamentLoadedProperty().not()).and(applicationStatus.modeProperty().isEqualTo(ApplicationMode.CALIBRATION_CHOICE)));
 
 		twoExtrudersNoFilament1SelectedNotificationBar.setAppearanceCondition(twoExtruderPrinter.and(
 				noFilament1Selected).and(applicationStatus.modeProperty().isEqualTo(ApplicationMode.CALIBRATION_CHOICE)));
 
 		twoExtrudersNoFilament1NotificationBar.setAppearanceCondition(twoExtruderPrinter.and(
-				printer.extrudersProperty().get(0).
-				filamentLoadedProperty().not()).and(applicationStatus.modeProperty().isEqualTo(ApplicationMode.CALIBRATION_CHOICE)));
+				printer.extrudersProperty().get(0).filamentLoadedProperty().not()).and(applicationStatus.modeProperty().isEqualTo(ApplicationMode.CALIBRATION_CHOICE)));
 
-		if (printer.headProperty().get() != null)
-		{
+		if (printer.headProperty().get() != null) {
 			twoExtrudersNoFilament2SelectedNotificationBar.setAppearanceCondition(twoExtruderPrinter
 					.and(printer.headProperty().get().headTypeProperty().isEqualTo(HeadType.DUAL_MATERIAL_HEAD))
 					.and(noFilament2Selected)
@@ -520,153 +473,132 @@ PrinterListChangesListener
 
 			twoExtrudersNoFilament2NotificationBar.setAppearanceCondition(twoExtruderPrinter
 					.and(printer.headProperty().get().headTypeProperty().isEqualTo(HeadType.DUAL_MATERIAL_HEAD))
-					.and(printer.extrudersProperty().get(1).
-							filamentLoadedProperty().not()).and(applicationStatus.modeProperty().isEqualTo(ApplicationMode.CALIBRATION_CHOICE)));
+					.and(printer.extrudersProperty().get(1).filamentLoadedProperty().not()).and(applicationStatus.modeProperty().isEqualTo(ApplicationMode.CALIBRATION_CHOICE)));
 		}
-		else
-		{
+		else {
 			twoExtrudersNoFilament2SelectedNotificationBar.clearAppearanceCondition();
 			twoExtrudersNoFilament2NotificationBar.clearAppearanceCondition();
 		}
 
-		switch (calibrationMode.get())
-		{
-		case NOZZLE_OPENING:
-			startCalibrationButton.disableProperty().bind(
-					printer.canCalibrateNozzleOpeningProperty().not());
-			break;
-		case NOZZLE_HEIGHT:
-			startCalibrationButton.disableProperty().bind(
-					printer.canCalibrateNozzleHeightProperty().not());
-			break;
-		case X_AND_Y_OFFSET:
-			startCalibrationButton.disableProperty().bind(
-					printer.canCalibrateXYAlignmentProperty().not());
-			break;
-		case CHOICE:
-			if (!notRequiredMessagesShown &&
-					printer.headProperty().get() != null &&
-					printer.headProperty().get().valveTypeProperty().get() == ValveType.NOT_FITTED)
-			{
-				notRequiredMessagesShown = true;
-				BaseLookup.getSystemNotificationHandler().showInformationNotification(OpenAutoMakerEnv.getI18N().t("openNozzleCalibrationNotRequired.title"),
-						OpenAutoMakerEnv.getI18N().t("openNozzleCalibrationNotRequired.message"));
-				BaseLookup.getSystemNotificationHandler().showInformationNotification(OpenAutoMakerEnv.getI18N().t("xyAlignmentNotRequired.title"),
-						OpenAutoMakerEnv.getI18N().t("xyAlignmentNotRequired.message"));
-			}
-			break;
+		switch (calibrationMode.get()) {
+			case NOZZLE_OPENING:
+				startCalibrationButton.disableProperty().bind(
+						printer.canCalibrateNozzleOpeningProperty().not());
+				break;
+			case NOZZLE_HEIGHT:
+				startCalibrationButton.disableProperty().bind(
+						printer.canCalibrateNozzleHeightProperty().not());
+				break;
+			case X_AND_Y_OFFSET:
+				startCalibrationButton.disableProperty().bind(
+						printer.canCalibrateXYAlignmentProperty().not());
+				break;
+			case CHOICE:
+				if (!notRequiredMessagesShown &&
+						printer.headProperty().get() != null &&
+						printer.headProperty().get().valveTypeProperty().get() == ValveType.NOT_FITTED) {
+					notRequiredMessagesShown = true;
+					BaseLookup.getSystemNotificationHandler().showInformationNotification(OpenAutoMakerEnv.getI18N().t("openNozzleCalibrationNotRequired.title"),
+							OpenAutoMakerEnv.getI18N().t("openNozzleCalibrationNotRequired.message"));
+					BaseLookup.getSystemNotificationHandler().showInformationNotification(OpenAutoMakerEnv.getI18N().t("xyAlignmentNotRequired.title"),
+							OpenAutoMakerEnv.getI18N().t("xyAlignmentNotRequired.message"));
+				}
+				break;
 		}
 	}
 
-	public void setCalibrationMode(CalibrationMode calibrationMode)
-	{
+	public void setCalibrationMode(CalibrationMode calibrationMode) {
 		this.calibrationMode.set(calibrationMode);
 		switchToPrinter(Lookup.getSelectedPrinterProperty().get());
 		configureStartButtonForMode(currentPrinter);
-		switch (calibrationMode)
-		{
-		case NOZZLE_OPENING:
-		{
-			try
-			{
-				stateManager = currentPrinter.startCalibrateNozzleOpening(Lookup.getUserPreferences().isSafetyFeaturesOn());
-			} catch (PrinterException ex)
-			{
-				LOGGER.warn("Can't switch to calibration: " + ex);
-				return;
-			}
-		}
-		calibrationNozzleOpeningGUI = new CalibrationNozzleOpeningGUI(this, stateManager);
-		calibrationNozzleOpeningGUI.setState(NozzleOpeningCalibrationState.IDLE);
-		break;
-
-		case NOZZLE_HEIGHT:
-			if (currentPrinter.headProperty().get() != null &&
-			currentPrinter.headProperty().get().getNozzles().size() == 1)
-			{
-				try
-				{
-					stateManager = currentPrinter.startCalibrateSingleNozzleHeight(Lookup.getUserPreferences().isSafetyFeaturesOn());
-				} catch (PrinterException ex)
-				{
+		switch (calibrationMode) {
+			case NOZZLE_OPENING: {
+				try {
+					stateManager = currentPrinter.startCalibrateNozzleOpening(Lookup.getUserPreferences().isSafetyFeaturesOn());
+				}
+				catch (PrinterException ex) {
 					LOGGER.warn("Can't switch to calibration: " + ex);
 					return;
 				}
-
-				calibrationSingleNozzleHeightGUI = new CalibrationSingleNozzleHeightGUI(this, stateManager);
-				calibrationSingleNozzleHeightGUI.setState(SingleNozzleHeightCalibrationState.IDLE);
 			}
-			else
-			{
-				try
-				{
-					stateManager = currentPrinter.startCalibrateNozzleHeight(Lookup.getUserPreferences().isSafetyFeaturesOn());
-				} catch (PrinterException ex)
-				{
+				calibrationNozzleOpeningGUI = new CalibrationNozzleOpeningGUI(this, stateManager);
+				calibrationNozzleOpeningGUI.setState(NozzleOpeningCalibrationState.IDLE);
+				break;
+
+			case NOZZLE_HEIGHT:
+				if (currentPrinter.headProperty().get() != null &&
+						currentPrinter.headProperty().get().getNozzles().size() == 1) {
+					try {
+						stateManager = currentPrinter.startCalibrateSingleNozzleHeight(Lookup.getUserPreferences().isSafetyFeaturesOn());
+					}
+					catch (PrinterException ex) {
+						LOGGER.warn("Can't switch to calibration: " + ex);
+						return;
+					}
+
+					calibrationSingleNozzleHeightGUI = new CalibrationSingleNozzleHeightGUI(this, stateManager);
+					calibrationSingleNozzleHeightGUI.setState(SingleNozzleHeightCalibrationState.IDLE);
+				}
+				else {
+					try {
+						stateManager = currentPrinter.startCalibrateNozzleHeight(Lookup.getUserPreferences().isSafetyFeaturesOn());
+					}
+					catch (PrinterException ex) {
+						LOGGER.warn("Can't switch to calibration: " + ex);
+						return;
+					}
+
+					calibrationNozzleHeightGUI = new CalibrationNozzleHeightGUI(this, stateManager);
+					calibrationNozzleHeightGUI.setState(NozzleHeightCalibrationState.IDLE);
+				}
+
+				break;
+
+			case X_AND_Y_OFFSET: {
+				try {
+					stateManager = currentPrinter.startCalibrateXAndY(Lookup.getUserPreferences().isSafetyFeaturesOn());
+				}
+				catch (PrinterException ex) {
 					LOGGER.warn("Can't switch to calibration: " + ex);
 					return;
 				}
-
-				calibrationNozzleHeightGUI = new CalibrationNozzleHeightGUI(this, stateManager);
-				calibrationNozzleHeightGUI.setState(NozzleHeightCalibrationState.IDLE);
 			}
+				calibrationXAndYGUI = new CalibrationXAndYGUI(this, stateManager);
+				calibrationXAndYGUI.setState(CalibrationXAndYState.IDLE);
+				break;
 
-			break;
-
-		case X_AND_Y_OFFSET:
-		{
-			try
-			{
-				stateManager = currentPrinter.startCalibrateXAndY(Lookup.getUserPreferences().isSafetyFeaturesOn());
-			} catch (PrinterException ex)
-			{
-				LOGGER.warn("Can't switch to calibration: " + ex);
-				return;
-			}
-		}
-		calibrationXAndYGUI = new CalibrationXAndYGUI(this, stateManager);
-		calibrationXAndYGUI.setState(CalibrationXAndYState.IDLE);
-		break;
-
-		case CHOICE:
-			setupChoice();
+			case CHOICE:
+				setupChoice();
 		}
 	}
 
-	private void setupChoice()
-	{
+	private void setupChoice() {
 		calibrationStatus.replaceText(OpenAutoMakerEnv.getI18N().t("calibrationPanel.chooseCalibration"));
 		calibrationMenu.reset();
 		hideAllInputControlsExceptStepNumber();
 		stepNumber.setVisible(false);
-		if (!backToStatusInhibitWhenAtTop)
-		{
+		if (!backToStatusInhibitWhenAtTop) {
 			backToStatus.setVisible(true);
-		} else
-		{
+		}
+		else {
 			backToStatus.setVisible(false);
 		}
 		cancelCalibrationButton.setVisible(false);
 	}
 
-	protected void showSpinner()
-	{
-		if (spinnerControl != null)
-		{
+	protected void showSpinner() {
+		if (spinnerControl != null) {
 			spinnerControl.startSpinning(informationCentre);
 		}
 	}
 
-	protected void hideSpinner()
-	{
-		if (spinnerControl != null)
-		{
+	protected void hideSpinner() {
+		if (spinnerControl != null) {
 			spinnerControl.stopSpinning();
 		}
 	}
 
-	public void hideCommonBordersAndBackButton()
-	{
+	public void hideCommonBordersAndBackButton() {
 		topMenuStrip.setMinHeight(0);
 		topMenuStrip.setPrefHeight(0);
 		topMenuStrip.setVisible(false);
@@ -675,60 +607,48 @@ PrinterListChangesListener
 	}
 
 	@Override
-	public void whenPrinterAdded(Printer printer)
-	{
+	public void whenPrinterAdded(Printer printer) {
 	}
 
 	@Override
-	public void whenPrinterRemoved(Printer printer)
-	{
-		if (printer == currentPrinter)
-		{
+	public void whenPrinterRemoved(Printer printer) {
+		if (printer == currentPrinter) {
 			resetMenuAndGoToChoiceMode();
 			backToStatusAction(null);
 		}
 	}
 
 	@Override
-	public void whenHeadAdded(Printer printer)
-	{
-		if (printer == currentPrinter)
-		{
+	public void whenHeadAdded(Printer printer) {
+		if (printer == currentPrinter) {
 			bindPrinter(printer);
 		}
 	}
 
 	@Override
-	public void whenHeadRemoved(Printer printer, Head head)
-	{
-		if (printer == currentPrinter)
-		{
+	public void whenHeadRemoved(Printer printer, Head head) {
+		if (printer == currentPrinter) {
 			setCalibrationMode(CalibrationMode.CHOICE);
 		}
 	}
 
 	@Override
-	public void whenReelAdded(Printer printer, int reelIndex)
-	{
+	public void whenReelAdded(Printer printer, int reelIndex) {
 	}
 
 	@Override
-	public void whenReelRemoved(Printer printer, Reel reel, int reelIndex)
-	{
+	public void whenReelRemoved(Printer printer, Reel reel, int reelIndex) {
 	}
 
 	@Override
-	public void whenReelChanged(Printer printer, Reel reel)
-	{
+	public void whenReelChanged(Printer printer, Reel reel) {
 	}
 
 	@Override
-	public void whenExtruderAdded(Printer printer, int extruderIndex)
-	{
+	public void whenExtruderAdded(Printer printer, int extruderIndex) {
 	}
 
 	@Override
-	public void whenExtruderRemoved(Printer printer, int extruderIndex)
-	{
+	public void whenExtruderRemoved(Printer printer, int extruderIndex) {
 	}
 }

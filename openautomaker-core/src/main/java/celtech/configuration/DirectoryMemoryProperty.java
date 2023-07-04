@@ -6,8 +6,7 @@ package celtech.configuration;
  */
 
 //TODO: This seems odd, why only this one?
-public enum DirectoryMemoryProperty
-{
+public enum DirectoryMemoryProperty {
 
 	LAST_MODEL_DIRECTORY,
 

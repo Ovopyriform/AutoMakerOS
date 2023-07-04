@@ -7,8 +7,7 @@ package celtech.utils.threed;
  *
  * @author tony
  */
-public class MeshCutter2Test
-{
+public class MeshCutter2Test {
 
 	//    @Test
 	//    public void testCutSimpleCube() {

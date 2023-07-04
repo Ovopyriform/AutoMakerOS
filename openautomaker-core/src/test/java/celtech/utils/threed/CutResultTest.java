@@ -13,32 +13,26 @@ import org.junit.Test;
 import javafx.geometry.Point3D;
 import javafx.scene.shape.TriangleMesh;
 
-
 /**
  *
  * @author tony
  */
-public class CutResultTest
-{
+public class CutResultTest {
 
-	MeshCutter2.BedToLocalConverter nullConverter = new MeshCutter2.BedToLocalConverter()
-	{
+	MeshCutter2.BedToLocalConverter nullConverter = new MeshCutter2.BedToLocalConverter() {
 
 		@Override
-		public Point3D localToBed(Point3D point)
-		{
+		public Point3D localToBed(Point3D point) {
 			return point;
 		}
 
 		@Override
-		public Point3D bedToLocal(Point3D point)
-		{
+		public Point3D bedToLocal(Point3D point) {
 			return point;
 		}
 	};
 
-	TriangleMesh makeTriangleMesh()
-	{
+	TriangleMesh makeTriangleMesh() {
 		float Y = 1;
 		TriangleMesh triangleMesh = new TriangleMesh();
 		triangleMesh.getPoints().addAll(0, Y, 0);
@@ -72,8 +66,7 @@ public class CutResultTest
 		return triangleMesh;
 	}
 
-	private PolygonIndices makeLoop0_3()
-	{
+	private PolygonIndices makeLoop0_3() {
 		PolygonIndices outerLoop = new PolygonIndices();
 		outerLoop.add(0);
 		outerLoop.add(1);
@@ -83,8 +76,7 @@ public class CutResultTest
 		return outerLoop;
 	}
 
-	private PolygonIndices makeLoop4_7()
-	{
+	private PolygonIndices makeLoop4_7() {
 		PolygonIndices outerLoop = new PolygonIndices();
 		outerLoop.add(4);
 		outerLoop.add(5);
@@ -94,8 +86,7 @@ public class CutResultTest
 		return outerLoop;
 	}
 
-	private PolygonIndices makeLoop1_2()
-	{
+	private PolygonIndices makeLoop1_2() {
 		PolygonIndices outerLoop = new PolygonIndices();
 		outerLoop.add(8);
 		outerLoop.add(9);
@@ -105,8 +96,7 @@ public class CutResultTest
 		return outerLoop;
 	}
 
-	private PolygonIndices makeLoop5_6()
-	{
+	private PolygonIndices makeLoop5_6() {
 		PolygonIndices outerLoop = new PolygonIndices();
 		outerLoop.add(12);
 		outerLoop.add(13);
@@ -116,8 +106,7 @@ public class CutResultTest
 		return outerLoop;
 	}
 
-	private PolygonIndices makeLoop3_8()
-	{
+	private PolygonIndices makeLoop3_8() {
 		PolygonIndices outerLoop = new PolygonIndices();
 		outerLoop.add(2);
 		outerLoop.add(16);
@@ -127,8 +116,7 @@ public class CutResultTest
 		return outerLoop;
 	}
 
-	private PolygonIndices makeLoop2_9()
-	{
+	private PolygonIndices makeLoop2_9() {
 		PolygonIndices outerLoop = new PolygonIndices();
 		outerLoop.add(10);
 		outerLoop.add(19);
@@ -139,8 +127,7 @@ public class CutResultTest
 	}
 
 	@Test
-	public void testGetNestedPolygonSetsSingleLoop()
-	{
+	public void testGetNestedPolygonSetsSingleLoop() {
 		TriangleMesh triangleMesh = makeTriangleMesh();
 		PolygonIndices outerLoop = makeLoop0_3();
 
@@ -154,8 +141,7 @@ public class CutResultTest
 	}
 
 	@Test
-	public void testGetNestedPolygonSetsTwoOuterLoops()
-	{
+	public void testGetNestedPolygonSetsTwoOuterLoops() {
 		TriangleMesh triangleMesh = makeTriangleMesh();
 
 		PolygonIndices outerLoop1 = makeLoop0_3();
@@ -172,8 +158,7 @@ public class CutResultTest
 	}
 
 	@Test
-	public void testGetNestedPolygonSetsOuterLoopWithInner()
-	{
+	public void testGetNestedPolygonSetsOuterLoopWithInner() {
 		TriangleMesh triangleMesh = makeTriangleMesh();
 
 		PolygonIndices outerLoop1 = makeLoop0_3();
@@ -192,8 +177,7 @@ public class CutResultTest
 	}
 
 	@Test
-	public void testIdentifyOuterLoopsAndInnerLoopsOuterLoopWithInner()
-	{
+	public void testIdentifyOuterLoopsAndInnerLoopsOuterLoopWithInner() {
 		TriangleMesh triangleMesh = makeTriangleMesh();
 
 		PolygonIndices outerLoop1 = makeLoop0_3();
@@ -212,8 +196,7 @@ public class CutResultTest
 	}
 
 	@Test
-	public void testGetRegionsforSingleLoopHasOneRegionWithNoHoles()
-	{
+	public void testGetRegionsforSingleLoopHasOneRegionWithNoHoles() {
 		TriangleMesh triangleMesh = makeTriangleMesh();
 		PolygonIndices outerLoop = makeLoop0_3();
 
@@ -231,8 +214,7 @@ public class CutResultTest
 	}
 
 	@Test
-	public void testGetRegionsforOneOuterLoopWithOneInnerLoopHasOneRegionWithOneHole()
-	{
+	public void testGetRegionsforOneOuterLoopWithOneInnerLoopHasOneRegionWithOneHole() {
 		TriangleMesh triangleMesh = makeTriangleMesh();
 
 		PolygonIndices outerLoop1 = makeLoop0_3();
@@ -254,8 +236,7 @@ public class CutResultTest
 	}
 
 	@Test
-	public void testGetRegionsforTwoOuterLoopsHasTwoRegionsWithNoHole()
-	{
+	public void testGetRegionsforTwoOuterLoopsHasTwoRegionsWithNoHole() {
 		TriangleMesh triangleMesh = makeTriangleMesh();
 
 		PolygonIndices outerLoop1 = makeLoop0_3();
@@ -269,8 +250,7 @@ public class CutResultTest
 				MeshCutter2.TopBottom.BOTTOM);
 		Set<LoopSet> loopSets = cutResult.identifyOuterLoopsAndInnerLoops();
 		assertEquals(2, loopSets.size());
-		for (LoopSet loopSet : loopSets)
-		{
+		for (LoopSet loopSet : loopSets) {
 			Set<Region> regions = loopSet.getRegions();
 			assertEquals(1, regions.size());
 			Region region = regions.iterator().next();
@@ -280,8 +260,7 @@ public class CutResultTest
 	}
 
 	@Test
-	public void testGetRegionsforTwoOuterLoopsEachWithInnerLoopHasTwoRegionsWithOneHole()
-	{
+	public void testGetRegionsforTwoOuterLoopsEachWithInnerLoopHasTwoRegionsWithOneHole() {
 		TriangleMesh triangleMesh = makeTriangleMesh();
 
 		PolygonIndices outerLoop1 = makeLoop0_3();
@@ -299,8 +278,7 @@ public class CutResultTest
 				MeshCutter2.TopBottom.BOTTOM);
 		Set<LoopSet> loopSets = cutResult.identifyOuterLoopsAndInnerLoops();
 		assertEquals(2, loopSets.size());
-		for (LoopSet loopSet : loopSets)
-		{
+		for (LoopSet loopSet : loopSets) {
 			Set<Region> regions = loopSet.getRegions();
 			assertEquals(1, regions.size());
 			Region region = regions.iterator().next();
@@ -310,8 +288,7 @@ public class CutResultTest
 	}
 
 	@Test
-	public void testGetRegionsforOneOuterLoopsWithInnerLoopWhichHasInnerLoop()
-	{
+	public void testGetRegionsforOneOuterLoopsWithInnerLoopWhichHasInnerLoop() {
 		TriangleMesh triangleMesh = makeTriangleMesh();
 
 		PolygonIndices outerLoop2 = makeLoop4_7();
@@ -333,8 +310,7 @@ public class CutResultTest
 	}
 
 	@Test
-	public void testGetRegionsforOneOuterLoopWithInnerLoopWhichHasInnerLoopThatAlsoHasInnerLoop()
-	{
+	public void testGetRegionsforOneOuterLoopWithInnerLoopWhichHasInnerLoopThatAlsoHasInnerLoop() {
 		TriangleMesh triangleMesh = makeTriangleMesh();
 
 		PolygonIndices outerLoop2 = makeLoop4_7();
@@ -355,17 +331,14 @@ public class CutResultTest
 		LoopSet loopSet = loopSets.iterator().next();
 		Set<Region> regions = loopSet.getRegions();
 
-		for (Region region : regions)
-		{
+		for (Region region : regions) {
 			System.out.println("region outer:" + region.outerLoop);
 			System.out.println("region inner:" + region.innerLoops);
-			if (region.outerLoop.name.equals("3_8"))
-			{
+			if (region.outerLoop.name.equals("3_8")) {
 				assertEquals(1, region.innerLoops.size());
 				assertEquals("4_7", region.innerLoops.iterator().next().name);
 			}
-			if (region.outerLoop.name.equals("4_7"))
-			{
+			if (region.outerLoop.name.equals("4_7")) {
 				assertEquals(1, region.innerLoops.size());
 				assertEquals("5_6", region.innerLoops.iterator().next().name);
 			}

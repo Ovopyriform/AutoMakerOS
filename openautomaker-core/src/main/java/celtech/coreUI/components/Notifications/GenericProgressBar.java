@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI.components.Notifications;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -13,27 +11,22 @@ import javafx.fxml.Initializable;
  *
  * @author ian
  */
-public class GenericProgressBar extends AppearingProgressBar implements Initializable
-{
+public class GenericProgressBar extends AppearingProgressBar implements Initializable {
 
-	private final ChangeListener<Boolean> displayBarChangeListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-	{
+	private final ChangeListener<Boolean> displayBarChangeListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 		displayBar(newValue);
 	};
 
-	private void displayBar(boolean displayBar)
-	{
-		if (displayBar)
-		{
+	private void displayBar(boolean displayBar) {
+		if (displayBar) {
 			startSlidingInToView();
-		} else
-		{
+		}
+		else {
 			startSlidingOutOfView();
 		}
 	}
 
-	public GenericProgressBar(String title, ReadOnlyBooleanProperty displayProgressBar, ReadOnlyDoubleProperty progressProperty)
-	{
+	public GenericProgressBar(String title, ReadOnlyBooleanProperty displayProgressBar, ReadOnlyDoubleProperty progressProperty) {
 		super();
 
 		displayBar(displayProgressBar.get());

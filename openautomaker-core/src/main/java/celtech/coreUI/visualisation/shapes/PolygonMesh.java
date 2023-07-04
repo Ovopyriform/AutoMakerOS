@@ -27,7 +27,8 @@ public class PolygonMesh {
 	/**
 	 *
 	 */
-	public PolygonMesh() {}
+	public PolygonMesh() {
+	}
 
 	/**
 	 *
@@ -72,7 +73,7 @@ public class PolygonMesh {
 	public int getNumEdgesInFaces() {
 		if (numEdgesInFaces == -1) {
 			numEdgesInFaces = 0;
-			for(int[] face : faces) {
+			for (int[] face : faces) {
 				numEdgesInFaces += face.length;
 			}
 			numEdgesInFaces /= 2;

@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package celtech.coreUI.components;
 
 import java.util.List;
@@ -20,8 +16,7 @@ import javafx.scene.transform.Translate;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class ScalingGroup extends Group
-{
+public class ScalingGroup extends Group {
 
 	private static final Logger LOGGER = LogManager.getLogger(ScalingGroup.class.getName());
 	private Translate translate = new Translate(0, 0, 0);
@@ -31,30 +26,25 @@ public class ScalingGroup extends Group
 	/**
 	 *
 	 */
-	public ScalingGroup()
-	{
+	public ScalingGroup() {
 		LOGGER.debug("Creating a scaling group");
 	}
 
 	@Override
-	protected void layoutChildren()
-	{
+	protected void layoutChildren() {
 		List<Node> children = getChildren();
 		double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE, minZ = Double.MAX_VALUE;
 		double maxX = Double.MIN_VALUE, maxY = Double.MIN_VALUE, maxZ = Double.MIN_VALUE;
 		boolean first = true;
 		for (final Node node : children) {
-			if (node.isVisible())
-			{
+			if (node.isVisible()) {
 				Bounds bounds = node.getBoundsInLocal();
 				// if the bounds of the child are invalid, we don't want
 				// to use those in the remaining computations.
-				if (bounds.isEmpty())
-				{
+				if (bounds.isEmpty()) {
 					continue;
 				}
-				if (first)
-				{
+				if (first) {
 					minX = bounds.getMinX();
 					minY = bounds.getMinY();
 					minZ = bounds.getMinZ();
@@ -62,8 +52,8 @@ public class ScalingGroup extends Group
 					maxY = bounds.getMaxY();
 					maxZ = bounds.getMaxZ();
 					first = false;
-				} else
-				{
+				}
+				else {
 					minX = Math.min(bounds.getMinX(), minX);
 					minY = Math.min(bounds.getMinY(), minY);
 					minZ = Math.min(bounds.getMinZ(), minZ);

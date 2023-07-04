@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package xyz.openautomaker.base.printerControl.model.statetransitions;
 
 import xyz.openautomaker.base.utils.tasks.TaskExecutor;

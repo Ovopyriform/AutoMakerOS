@@ -15,55 +15,46 @@ import celtech.ConfiguredTest;
  *
  * @author tony
  */
-public class CommandStackTest extends ConfiguredTest
-{
+public class CommandStackTest extends ConfiguredTest {
 
-	public class TestModel
-	{
+	public class TestModel {
 		public int i = 0;
 	}
 
-	public class IncrementCommand extends Command
-	{
+	public class IncrementCommand extends Command {
 
 		private TestModel testModel;
 		private int increment;
 		private int oldI;
 
-		public IncrementCommand(TestModel testModel, int increment)
-		{
+		public IncrementCommand(TestModel testModel, int increment) {
 			this.testModel = testModel;
 			this.increment = increment;
 		}
 
 		@Override
-		public void do_()
-		{
+		public void do_() {
 			oldI = testModel.i;
 			redo();
 		}
 
 		@Override
-		public void undo()
-		{
+		public void undo() {
 			testModel.i = oldI;
 		}
 
 		@Override
-		public void redo()
-		{
+		public void redo() {
 			testModel.i += increment;
 		}
 
 		@Override
-		public boolean canMergeWith(Command command)
-		{
+		public boolean canMergeWith(Command command) {
 			return (command instanceof IncrementCommand);
 		}
 
 		@Override
-		public void merge(Command command)
-		{
+		public void merge(Command command) {
 			IncrementCommand incrementCommand = (IncrementCommand) command;
 			increment += incrementCommand.getIncrement();
 		}
@@ -75,8 +66,7 @@ public class CommandStackTest extends ConfiguredTest
 	}
 
 	@Test
-	public void testDo_()
-	{
+	public void testDo_() {
 		TestModel testModel = new TestModel();
 		testModel.i = 5;
 
@@ -89,8 +79,7 @@ public class CommandStackTest extends ConfiguredTest
 	}
 
 	@Test
-	public void testUndo() throws CommandStack.UndoException
-	{
+	public void testUndo() throws CommandStack.UndoException {
 		TestModel testModel = new TestModel();
 		testModel.i = 5;
 
@@ -105,8 +94,7 @@ public class CommandStackTest extends ConfiguredTest
 	}
 
 	@Test
-	public void testRedo() throws CommandStack.UndoException
-	{
+	public void testRedo() throws CommandStack.UndoException {
 		TestModel testModel = new TestModel();
 		testModel.i = 5;
 
@@ -124,8 +112,7 @@ public class CommandStackTest extends ConfiguredTest
 	}
 
 	@Test
-	public void testCanRedo() throws CommandStack.UndoException
-	{
+	public void testCanRedo() throws CommandStack.UndoException {
 		TestModel testModel = new TestModel();
 		testModel.i = 5;
 
@@ -144,8 +131,7 @@ public class CommandStackTest extends ConfiguredTest
 	}
 
 	@Test
-	public void testCanUndo() throws CommandStack.UndoException
-	{
+	public void testCanUndo() throws CommandStack.UndoException {
 		TestModel testModel = new TestModel();
 		testModel.i = 5;
 
@@ -165,8 +151,7 @@ public class CommandStackTest extends ConfiguredTest
 	}
 
 	@Test
-	public void testMergeCommands() throws CommandStack.UndoException
-	{
+	public void testMergeCommands() throws CommandStack.UndoException {
 		TestModel testModel = new TestModel();
 		testModel.i = 5;
 
@@ -187,7 +172,6 @@ public class CommandStackTest extends ConfiguredTest
 		commandStack.redo();
 		// should be no more commands in stack
 		assertFalse(commandStack.getCanRedo().get());
-
 
 	}
 }

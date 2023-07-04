@@ -42,8 +42,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  * @author Ian Hudson @ Liberty Systems Limited
  */
 public class PrinterStatusSidePanelController implements Initializable, SidePanelManager,
-PrinterListChangesListener
-{
+		PrinterListChangesListener {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			PrinterStatusSidePanelController.class.getName());
@@ -163,20 +162,16 @@ PrinterListChangesListener
 
 	private ChartManager chartManager;
 
-	private final ListChangeListener<XYChart.Data<Number, Number>> graphDataPointChangeListener
-	= (ListChangeListener.Change<? extends XYChart.Data<Number, Number>> change) ->
-	{
-		while (change.next())
-		{
-			if (change.wasAdded() || change.wasRemoved())
-			{
+	private final ListChangeListener<XYChart.Data<Number, Number>> graphDataPointChangeListener = (ListChangeListener.Change<? extends XYChart.Data<Number, Number>> change) -> {
+		while (change.next()) {
+			if (change.wasAdded() || change.wasRemoved()) {
 				timeAxis.setLowerBound(currentAmbientTemperatureHistory.getData().size()
 						- MAX_DATA_POINTS);
 				timeAxis.setUpperBound(currentAmbientTemperatureHistory.getData().size());
-			} else if (change.wasReplaced())
-			{
-			} else if (change.wasUpdated())
-			{
+			}
+			else if (change.wasReplaced()) {
+			}
+			else if (change.wasUpdated()) {
 			}
 		}
 	};
@@ -188,13 +183,11 @@ PrinterListChangesListener
 	 * @param rb
 	 */
 	@Override
-	public void initialize(URL url, ResourceBundle rb)
-	{
+	public void initialize(URL url, ResourceBundle rb) {
 		chartManager = new ChartManager(temperatureChart);
 
 		Lookup.getSelectedPrinterProperty().addListener(
-				(ObservableValue<? extends Printer> observable, Printer oldValue, Printer newValue) ->
-				{
+				(ObservableValue<? extends Printer> observable, Printer oldValue, Printer newValue) -> {
 					whenPrinterSelected(newValue);
 				});
 
@@ -211,20 +204,17 @@ PrinterListChangesListener
 
 		BaseLookup.getPrinterListChangesNotifier().addListener(this);
 
-		uberContainer.heightProperty().addListener(new ChangeListener<Number>()
-		{
+		uberContainer.heightProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
-			public void changed(ObservableValue<? extends Number> ov, Number t, Number t1)
-			{
-				if (t1.intValue() < 140)
-				{
+			public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+				if (t1.intValue() < 140) {
 					graphContainer.setVisible(false);
 					graphContainer.setMaxHeight(0);
 					graphAlternativeGrid.setVisible(true);
 					graphAlternativeGrid.setMaxHeight(-1);
-				} else
-				{
+				}
+				else {
 					graphContainer.setVisible(true);
 					graphContainer.setMaxHeight(-1);
 					graphAlternativeGrid.setVisible(false);
@@ -234,8 +224,7 @@ PrinterListChangesListener
 		});
 	}
 
-	private void initialiseTemperatureChart()
-	{
+	private void initialiseTemperatureChart() {
 		timeAxis = new NumberAxis(0, MAX_DATA_POINTS, 30);
 		timeAxis.setForceZeroInRange(false);
 		timeAxis.setAutoRanging(true);
@@ -253,49 +242,39 @@ PrinterListChangesListener
 	}
 
 	/**
-	 * When a printer is selected bind to it and show temperature chart etc if
-	 * necessary.
+	 * When a printer is selected bind to it and show temperature chart etc if necessary.
 	 *
 	 * @param printer
 	 */
-	private void whenPrinterSelected(Printer printer)
-	{
-		if (previousSelectedPrinter != null)
-		{
+	private void whenPrinterSelected(Printer printer) {
+		if (previousSelectedPrinter != null) {
 			unbindPrinter(previousSelectedPrinter);
-			if (previousSelectedPrinter.headProperty().get() != null)
-			{
+			if (previousSelectedPrinter.headProperty().get() != null) {
 				unbindHeadProperties(previousSelectedPrinter.headProperty().get());
 			}
 		}
 
-		if (printer != null)
-		{
+		if (printer != null) {
 			previousSelectedPrinter = printer;
 			bindDetails(printer);
-			if (printer.headProperty().get() != null)
-			{
+			if (printer.headProperty().get() != null) {
 				bindHeadProperties(printer.headProperty().get());
 			}
 		}
 		controlDetailsVisibility();
 	}
 
-	private void bindDetails(Printer printer)
-	{
-		if (Lookup.getSelectedPrinterProperty().get() != null)
-		{
+	private void bindDetails(Printer printer) {
+		if (Lookup.getSelectedPrinterProperty().get() != null) {
 			unbindPrinter(Lookup.getSelectedPrinterProperty().get());
 		}
 
-		if (printer != null)
-		{
+		if (printer != null) {
 			bindPrinter(printer);
 		}
 	}
 
-	private void bindPrinter(Printer printer)
-	{
+	private void bindPrinter(Printer printer) {
 		currentAmbientTemperatureHistory = printer.getPrinterAncillarySystems().getAmbientTemperatureHistory();
 		chartManager.setLegendLabels(legendBed, legendAmbient);
 		chartManager.bindPrinter(printer);
@@ -310,37 +289,29 @@ PrinterListChangesListener
 		refreshMaterialContainer(printer);
 	}
 
-	private void refreshMaterialContainer(Printer printer)
-	{
+	private void refreshMaterialContainer(Printer printer) {
 		materialContainer.getChildren().clear();
-		for (int extruderNumber = 0; extruderNumber < 2; extruderNumber++)
-		{
+		for (int extruderNumber = 0; extruderNumber < 2; extruderNumber++) {
 			Extruder extruder = printer.extrudersProperty().get(extruderNumber);
-			if (extruder.isFittedProperty().get())
-			{
-				MaterialComponent materialComponent
-				= new MaterialComponent(printer, extruderNumber);
+			if (extruder.isFittedProperty().get()) {
+				MaterialComponent materialComponent = new MaterialComponent(printer, extruderNumber);
 				materialContainer.getChildren().add(materialComponent);
-				if (printer.extrudersProperty().size() > 1)
-				{
+				if (printer.extrudersProperty().size() > 1) {
 					materialComponent.setMaxHeight(110);
-				} else
-				{
+				}
+				else {
 					materialComponent.setMaxHeight(120);
 				}
 			}
 		}
 	}
 
-	private void unbindMaterialContainer()
-	{
+	private void unbindMaterialContainer() {
 		materialContainer.getChildren().clear();
 	}
 
-	private void unbindPrinter(Printer printer)
-	{
-		if (printer.headProperty().get() != null)
-		{
+	private void unbindPrinter(Printer printer) {
+		if (printer.headProperty().get() != null) {
 			unbindHeadProperties(printer.headProperty().get());
 		}
 
@@ -357,8 +328,7 @@ PrinterListChangesListener
 		unbindMaterialContainer();
 	}
 
-	private void showNoHead()
-	{
+	private void showNoHead() {
 		headPanel.setVisible(false);
 		noheadDataBox.setVisible(true);
 		noHead.setVisible(true);
@@ -373,10 +343,8 @@ PrinterListChangesListener
 		graphAlternativeMaterial2Temp.setVisible(false);
 	}
 
-	private void unbindHeadProperties(Head head)
-	{
-		if (head.getNozzleHeaters().size() > 0)
-		{
+	private void unbindHeadProperties(Head head) {
+		if (head.getNozzleHeaters().size() > 0) {
 			head.getNozzleHeaters().get(0).getNozzleTemperatureHistory().getData().removeListener(
 					graphDataPointChangeListener);
 		}
@@ -388,14 +356,11 @@ PrinterListChangesListener
 		showNoHead();
 	}
 
-	private void bindHeadProperties(Head head)
-	{
-		if (head.getNozzleHeaters().size() > 0)
-		{
+	private void bindHeadProperties(Head head) {
+		if (head.getNozzleHeaters().size() > 0) {
 			head.getNozzleHeaters().get(0).getNozzleTemperatureHistory().getData().addListener(
 					graphDataPointChangeListener);
-			if (head.headTypeProperty().get() == Head.HeadType.SINGLE_MATERIAL_HEAD)
-			{
+			if (head.headTypeProperty().get() == Head.HeadType.SINGLE_MATERIAL_HEAD) {
 				graphAlternativeMaterial1Temp.setVisible(true);
 				graphAlternativeMaterial1Legend.setVisible(true);
 				graphAlternativeMaterial2Temp.setVisible(false);
@@ -411,8 +376,8 @@ PrinterListChangesListener
 								.greaterThanOrEqualTo(BaseConfiguration.minTempToDisplayOnGraph))
 						.then(head.getNozzleHeaters().get(0).nozzleTemperatureProperty().asString("1: %d°C"))
 						.otherwise("1: " + OpenAutoMakerEnv.getI18N().t("printerStatus.tempOutOfRangeLow")));
-			} else
-			{
+			}
+			else {
 				graphAlternativeMaterial1Temp.setVisible(false);
 				graphAlternativeMaterial1Legend.setVisible(false);
 				graphAlternativeMaterial2Temp.setVisible(true);
@@ -440,8 +405,7 @@ PrinterListChangesListener
 
 		}
 
-		if (head.getNozzleHeaters().size() > 1)
-		{
+		if (head.getNozzleHeaters().size() > 1) {
 			graphAlternativeMaterial1Legend.setVisible(true);
 			graphAlternativeMaterial1Temp.setVisible(true);
 			graphAlternativeMaterial1Temp.textProperty().bind(Bindings
@@ -469,8 +433,7 @@ PrinterListChangesListener
 		headNozzles.setText(OpenAutoMakerEnv.getI18N().t("headPanel." + head.typeCodeProperty().get() + ".nozzles"));
 		headFeeds.setText(OpenAutoMakerEnv.getI18N().t("headPanel." + head.typeCodeProperty().get() + ".feeds"));
 
-		if (head.headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD)
-		{
+		if (head.headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD) {
 			headPanel.setVisible(true);
 			noheadDataBox.setVisible(false);
 			noHead.setVisible(false);
@@ -479,9 +442,9 @@ PrinterListChangesListener
 			singleMaterialHead.setVisible(false);
 			singleNozzleHead.setVisible(false);
 			singleRubyNozzleHead.setVisible(false);
-		} else if (head.headTypeProperty().get() == Head.HeadType.SINGLE_MATERIAL_HEAD &&
-				head.getNozzles().size() == 1)
-		{
+		}
+		else if (head.headTypeProperty().get() == Head.HeadType.SINGLE_MATERIAL_HEAD &&
+				head.getNozzles().size() == 1) {
 			headPanel.setVisible(true);
 			noheadDataBox.setVisible(false);
 			noHead.setVisible(false);
@@ -492,7 +455,8 @@ PrinterListChangesListener
 				singleRubyNozzleHead.setVisible(true);
 			else
 				singleNozzleHead.setVisible(true);
-		} else // Default to single material head.
+		}
+		else // Default to single material head.
 		{
 			headPanel.setVisible(true);
 			noheadDataBox.setVisible(false);
@@ -505,12 +469,11 @@ PrinterListChangesListener
 		}
 	}
 
-	private void controlDetailsVisibility()
-	{
+	private void controlDetailsVisibility() {
 		boolean visible = false;
 		boolean printerOffline = false;
 		Printer connectedPrinter = Lookup.getSelectedPrinterProperty().get();
-		if(connectedPrinter != null) {
+		if (connectedPrinter != null) {
 			visible = true;
 			printerOffline = connectedPrinter.printerConnectionProperty()
 					.isEqualTo(PrinterConnection.OFFLINE).get();
@@ -523,70 +486,56 @@ PrinterListChangesListener
 	}
 
 	@Override
-	public void configure(Initializable slideOutController)
-	{
+	public void configure(Initializable slideOutController) {
 	}
 
 	@Override
-	public void whenPrinterAdded(Printer printer)
-	{
+	public void whenPrinterAdded(Printer printer) {
 		controlDetailsVisibility();
 	}
 
 	@Override
-	public void whenPrinterRemoved(Printer printer)
-	{
+	public void whenPrinterRemoved(Printer printer) {
 		controlDetailsVisibility();
 	}
 
 	@Override
-	public void whenHeadAdded(Printer printer)
-	{
-		if (printer == Lookup.getSelectedPrinterProperty().get())
-		{
+	public void whenHeadAdded(Printer printer) {
+		if (printer == Lookup.getSelectedPrinterProperty().get()) {
 			Head head = printer.headProperty().get();
 			bindHeadProperties(head);
 		}
 	}
 
 	@Override
-	public void whenHeadRemoved(Printer printer, Head head)
-	{
-		if (printer == Lookup.getSelectedPrinterProperty().get())
-		{
+	public void whenHeadRemoved(Printer printer, Head head) {
+		if (printer == Lookup.getSelectedPrinterProperty().get()) {
 			unbindHeadProperties(head);
 		}
 	}
 
 	@Override
-	public void whenReelAdded(Printer printer, int reelIndex)
-	{
+	public void whenReelAdded(Printer printer, int reelIndex) {
 	}
 
 	@Override
-	public void whenReelRemoved(Printer printer, Reel reel, int reelNumber)
-	{
+	public void whenReelRemoved(Printer printer, Reel reel, int reelNumber) {
 	}
 
 	@Override
-	public void whenReelChanged(Printer printer, Reel reel)
-	{
+	public void whenReelChanged(Printer printer, Reel reel) {
 	}
 
 	@Override
-	public void whenExtruderAdded(Printer printer, int extruderIndex)
-	{
-		if (printer == Lookup.getSelectedPrinterProperty().get())
-		{
+	public void whenExtruderAdded(Printer printer, int extruderIndex) {
+		if (printer == Lookup.getSelectedPrinterProperty().get()) {
 			refreshMaterialContainer(printer);
 		}
 	}
 
 	@Override
-	public void whenExtruderRemoved(Printer printer, int extruderIndex)
-	{
-		if (printer == Lookup.getSelectedPrinterProperty().get())
-		{
+	public void whenExtruderRemoved(Printer printer, int extruderIndex) {
+		if (printer == Lookup.getSelectedPrinterProperty().get()) {
 			refreshMaterialContainer(printer);
 		}
 	}

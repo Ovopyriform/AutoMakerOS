@@ -16,8 +16,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author tony
  */
-public class FilamentCell extends ListCell<Filament>
-{
+public class FilamentCell extends ListCell<Filament> {
 
 	private static int SWATCH_SQUARE_SIZE = 16;
 
@@ -25,8 +24,7 @@ public class FilamentCell extends ListCell<Filament>
 	Rectangle rectangle = new Rectangle();
 	Label label;
 
-	public FilamentCell()
-	{
+	public FilamentCell() {
 		cellContainer = new HBox();
 		cellContainer.setAlignment(Pos.CENTER_LEFT);
 		rectangle = new Rectangle(SWATCH_SQUARE_SIZE, SWATCH_SQUARE_SIZE);
@@ -37,27 +35,25 @@ public class FilamentCell extends ListCell<Filament>
 	}
 
 	@Override
-	protected void updateItem(Filament item, boolean empty)
-	{
+	protected void updateItem(Filament item, boolean empty) {
 		super.updateItem(item, empty);
 		if (item != null && !empty
-				&& item != FilamentContainer.UNKNOWN_FILAMENT)
-		{
+				&& item != FilamentContainer.UNKNOWN_FILAMENT) {
 			Filament filament = item;
 			setGraphic(cellContainer);
 			rectangle.setVisible(true);
 			rectangle.setFill(filament.getDisplayColour());
 
 			label.setText(filament.getLongFriendlyName());
-		} else if (item == FilamentContainer.UNKNOWN_FILAMENT)
-		{
+		}
+		else if (item == FilamentContainer.UNKNOWN_FILAMENT) {
 			Filament filament = item;
 			setGraphic(cellContainer);
 			rectangle.setVisible(false);
 
 			label.setText(filament.getLongFriendlyName());
-		} else
-		{
+		}
+		else {
 			setGraphic(null);
 			label.setText(OpenAutoMakerEnv.getI18N().t("materialComponent.unknown"));
 		}

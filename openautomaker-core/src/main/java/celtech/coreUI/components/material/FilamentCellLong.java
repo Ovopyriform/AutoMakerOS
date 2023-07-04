@@ -11,42 +11,37 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author tony
  */
-public class FilamentCellLong extends FilamentCell
-{
-	public FilamentCellLong()
-	{
+public class FilamentCellLong extends FilamentCell {
+	public FilamentCellLong() {
 		super();
 	}
 
 	@Override
-	protected void updateItem(Filament item, boolean empty)
-	{
+	protected void updateItem(Filament item, boolean empty) {
 		super.updateItem(item, empty);
 		if (item != null && !empty
-				&& item != FilamentContainer.UNKNOWN_FILAMENT)
-		{
+				&& item != FilamentContainer.UNKNOWN_FILAMENT) {
 			Filament filament = item;
 			setGraphic(cellContainer);
 			rectangle.setVisible(true);
 			rectangle.setFill(filament.getDisplayColour());
 
-			if (filament.getMaterial() != null)
-			{
+			if (filament.getMaterial() != null) {
 				label.setText(filament.getLongFriendlyName() + " "
 						+ filament.getMaterial().getFriendlyName());
-			} else
-			{
+			}
+			else {
 				label.setText(filament.getLongFriendlyName());
 			}
-		} else if (item == FilamentContainer.UNKNOWN_FILAMENT)
-		{
+		}
+		else if (item == FilamentContainer.UNKNOWN_FILAMENT) {
 			Filament filament = item;
 			setGraphic(cellContainer);
 			rectangle.setVisible(false);
 
 			label.setText(filament.getLongFriendlyName());
-		} else
-		{
+		}
+		else {
 			setGraphic(null);
 			label.setText(OpenAutoMakerEnv.getI18N().t("materialComponent.unknown"));
 		}

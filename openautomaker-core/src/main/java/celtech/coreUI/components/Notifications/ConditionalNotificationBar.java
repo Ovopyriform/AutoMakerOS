@@ -12,55 +12,44 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian
  */
-public class ConditionalNotificationBar extends AppearingNotificationBar
-{
+public class ConditionalNotificationBar extends AppearingNotificationBar {
 
 	private ObservableValue<Boolean> appearanceCondition;
 
-	private final ChangeListener<Boolean> conditionChangeListener = new ChangeListener<>()
-	{
+	private final ChangeListener<Boolean> conditionChangeListener = new ChangeListener<>() {
 		@Override
 		public void changed(
-				ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
-		{
-			if (Platform.isFxApplicationThread())
-			{
+				ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+			if (Platform.isFxApplicationThread()) {
 				calculateVisibility();
-			} else
-			{
-				Platform.runLater(() ->
-				{
+			}
+			else {
+				Platform.runLater(() -> {
 					calculateVisibility();
 				});
 			}
 		}
 	};
 
-	public ConditionalNotificationBar(String message, NotificationType notificationType)
-	{
+	public ConditionalNotificationBar(String message, NotificationType notificationType) {
 		notificationDescription.replaceText(OpenAutoMakerEnv.getI18N().t(message));
 		setType(notificationType);
 	}
 
-	public void clearAppearanceCondition()
-	{
-		if (appearanceCondition != null)
-		{
+	public void clearAppearanceCondition() {
+		if (appearanceCondition != null) {
 			appearanceCondition.removeListener(conditionChangeListener);
 		}
 		appearanceCondition = null;
 		startSlidingOutOfView();
 	}
 
-	public ObservableValue<Boolean> getAppearanceCondition()
-	{
+	public ObservableValue<Boolean> getAppearanceCondition() {
 		return appearanceCondition;
 	}
 
-	public void setAppearanceCondition(BooleanBinding appearanceCondition)
-	{
-		if (this.appearanceCondition != null)
-		{
+	public void setAppearanceCondition(BooleanBinding appearanceCondition) {
+		if (this.appearanceCondition != null) {
 			this.appearanceCondition.removeListener(conditionChangeListener);
 		}
 		this.appearanceCondition = appearanceCondition;
@@ -68,42 +57,35 @@ public class ConditionalNotificationBar extends AppearingNotificationBar
 		calculateVisibility();
 	}
 
-	private void calculateVisibility()
-	{
-		if (appearanceCondition.getValue())
-		{
+	private void calculateVisibility() {
+		if (appearanceCondition.getValue()) {
 			show();
-		} else
-		{
+		}
+		else {
 			startSlidingOutOfView();
 		}
 	}
 
 	@Override
-	public void show()
-	{
+	public void show() {
 		Lookup.getNotificationDisplay().addStepCountedNotificationBar(this);
 		startSlidingInToView();
 	}
 
 	@Override
-	public void finishedSlidingIntoView()
-	{
+	public void finishedSlidingIntoView() {
 	}
 
 	@Override
-	public void finishedSlidingOutOfView()
-	{
+	public void finishedSlidingOutOfView() {
 		Lookup.getNotificationDisplay().removeStepCountedNotificationBar(this);
 	}
 
 	@Override
-	public boolean isSameAs(AppearingNotificationBar bar)
-	{
+	public boolean isSameAs(AppearingNotificationBar bar) {
 		boolean theSame = false;
 		if (this.getType() == bar.getType()
-				&& this.notificationDescription.getText().equals(bar.notificationDescription.getText()))
-		{
+				&& this.notificationDescription.getText().equals(bar.notificationDescription.getText())) {
 			theSame = true;
 		}
 
@@ -111,8 +93,7 @@ public class ConditionalNotificationBar extends AppearingNotificationBar
 	}
 
 	@Override
-	public void destroyBar()
-	{
+	public void destroyBar() {
 		clearAppearanceCondition();
 		finishedSlidingOutOfView();
 	}

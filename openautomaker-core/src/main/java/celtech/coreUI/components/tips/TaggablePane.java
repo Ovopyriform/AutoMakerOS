@@ -11,8 +11,7 @@ import javafx.scene.layout.Pane;
  *
  * @author Ian
  */
-public abstract class TaggablePane extends Pane
-{
+public abstract class TaggablePane extends Pane {
 
 	private final ObjectProperty<Orientation> tagOrientation = new SimpleObjectProperty<>(Orientation.NORTH);
 	private ArrowTag tipArrow = null;
@@ -20,51 +19,40 @@ public abstract class TaggablePane extends Pane
 	// Each taggable class should work out it's own interpretation of the position using the hints provided
 	public abstract Point2D getTagPosition();
 
-	public void setTagOrientation(Orientation orientation)
-	{
+	public void setTagOrientation(Orientation orientation) {
 		tagOrientation.set(orientation);
 	}
 
-	public Orientation getTagOrientation()
-	{
+	public Orientation getTagOrientation() {
 		return tagOrientation.get();
 	}
 
-	public ReadOnlyObjectProperty<Orientation> tagOrientationProperty()
-	{
+	public ReadOnlyObjectProperty<Orientation> tagOrientationProperty() {
 		return tagOrientation;
 	}
 
-
-	public void installTag()
-	{
-		if (tipArrow == null)
-		{
+	public void installTag() {
+		if (tipArrow == null) {
 			tipArrow = new ArrowTag();
 			tipArrow.initialise(this);
 		}
 	}
 
-	public void installTag(String i18nTitle)
-	{
-		if (tipArrow == null)
-		{
+	public void installTag(String i18nTitle) {
+		if (tipArrow == null) {
 			tipArrow = new ArrowTag();
 			tipArrow.initialise(this, i18nTitle);
 		}
 	}
 
-	public void uninstallTag()
-	{
-		if (tipArrow != null)
-		{
+	public void uninstallTag() {
+		if (tipArrow != null) {
 			tipArrow.destroy();
 			tipArrow = null;
 		}
 	}
 
-	public ArrowTag getTag()
-	{
+	public ArrowTag getTag() {
 		return tipArrow;
 	}
 }

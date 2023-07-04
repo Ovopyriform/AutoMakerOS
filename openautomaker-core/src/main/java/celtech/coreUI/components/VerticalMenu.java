@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI.components;
 
 import java.io.IOException;
@@ -29,11 +27,9 @@ import javafx.scene.text.Text;
  *
  * @author tony
  */
-public class VerticalMenu extends VBox
-{
+public class VerticalMenu extends VBox {
 
-	public interface NoArgsVoidFunc
-	{
+	public interface NoArgsVoidFunc {
 
 		void run() throws Exception;
 	}
@@ -62,16 +58,14 @@ public class VerticalMenu extends VBox
 	private boolean firstItemInitialised = false;
 	private Item firstItem;
 
-	class Item
-	{
+	class Item {
 
 		String name;
 		Text text;
 		Rectangle square;
 		Boolean predicateEnabled;
 
-		public Item(String itemName)
-		{
+		public Item(String itemName) {
 			name = itemName;
 			text = new Text(itemName);
 			text.getStyleClass().add("verticalMenuOption");
@@ -81,50 +75,42 @@ public class VerticalMenu extends VBox
 			square.setWidth(SQUARE_SIZE);
 		}
 
-		ChangeListener<Boolean> enabledListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-		{
+		ChangeListener<Boolean> enabledListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 			whenPredicateEnabledChanged(newValue);
 		};
 
-		private void whenPredicateEnabledChanged(Boolean newValue)
-		{
+		private void whenPredicateEnabledChanged(Boolean newValue) {
 			predicateEnabled = newValue;
 			setEnabled(newValue);
 		}
 
-		private void setEnabledPredicate(ReadOnlyBooleanProperty enabledPredicate)
-		{
+		private void setEnabledPredicate(ReadOnlyBooleanProperty enabledPredicate) {
 			enabledPredicate.addListener(enabledListener);
 			whenPredicateEnabledChanged(enabledPredicate.get());
 		}
 
-		private void setEnabled(Boolean enabled)
-		{
-			if (enabled && predicateEnabled != null && !predicateEnabled)
-			{
+		private void setEnabled(Boolean enabled) {
+			if (enabled && predicateEnabled != null && !predicateEnabled) {
 				// don't enable if predicate says no
 				return;
 			}
 			text.disableProperty().set(!enabled);
 		}
 
-		private void deselect()
-		{
+		private void deselect() {
 			square.setVisible(false);
 			text.pseudoClassStateChanged(SELECTED_PSEUDO_CLASS, false);
 			square.setFill(Color.WHITE);
 		}
 
-		private void displayAsSelected()
-		{
+		private void displayAsSelected() {
 			square.setVisible(true);
 			text.pseudoClassStateChanged(SELECTED_PSEUDO_CLASS, true);
 			square.setFill(StandardColours.ROBOX_BLUE);
 		}
 	}
 
-	public VerticalMenu()
-	{
+	public VerticalMenu() {
 		super();
 		URL fxml = getClass().getResource("/celtech/resources/fxml/components/verticalMenu.fxml");
 		FXMLLoader fxmlLoader = new FXMLLoader(fxml);
@@ -132,42 +118,36 @@ public class VerticalMenu extends VBox
 		fxmlLoader.setController(this);
 		fxmlLoader.setClassLoader(getClass().getClassLoader());
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 
 	}
 
-	public void setTitle(String title)
-	{
+	public void setTitle(String title) {
 		verticalMenuTitle.setText(title);
 	}
 
 	/**
-	 * Add a menu item to the menu. If enabledPredicate is not null then it governs if the item is
-	 * enabled or not.
+	 * Add a menu item to the menu. If enabledPredicate is not null then it governs if the item is enabled or not.
 	 */
 	public void addItem(String itemName, NoArgsVoidFunc callback,
-			ReadOnlyBooleanProperty enabledPredicate)
-	{
+			ReadOnlyBooleanProperty enabledPredicate) {
 		Item item = new Item(itemName);
 		addRow(verticalMenuGrid, item);
 		allItems.add(item);
 		itemCallbacks.put(item, callback);
 		setUpEventHandlersForItem(item);
 
-		if (!firstItemInitialised)
-		{
+		if (!firstItemInitialised) {
 			firstItem = item;
 			firstItemInitialised = true;
 		}
 
-		if (enabledPredicate != null)
-		{
+		if (enabledPredicate != null) {
 			item.setEnabledPredicate(enabledPredicate);
 		}
 	}
@@ -175,21 +155,17 @@ public class VerticalMenu extends VBox
 	/**
 	 * Select the first (top) item.
 	 */
-	public void selectFirstItem()
-	{
+	public void selectFirstItem() {
 		selectItem(firstItem);
 	}
 
 	/**
 	 * Programmatically select the item of the given name. If no item has that name then do nothing.
 	 */
-	public void selectItemOfName(String itemName)
-	{
+	public void selectItemOfName(String itemName) {
 
-		for (Item item : allItems)
-		{
-			if (item.name.equals(itemName))
-			{
+		for (Item item : allItems) {
+			if (item.name.equals(itemName)) {
 				deselectSelectedItem();
 				selectItem(item);
 				return;
@@ -197,31 +173,23 @@ public class VerticalMenu extends VBox
 		}
 	}
 
-	private void setUpEventHandlersForItem(Item item)
-	{
+	private void setUpEventHandlersForItem(Item item) {
 		item.square.setVisible(false);
-		item.text.setOnMouseEntered((MouseEvent e) ->
-		{
-			if (item != selectedItem && !disableNonSelectedItems)
-			{
+		item.text.setOnMouseEntered((MouseEvent e) -> {
+			if (item != selectedItem && !disableNonSelectedItems) {
 				item.square.setVisible(true);
 				item.square.setFill(Color.WHITE);
 			}
 		});
-		item.text.setOnMouseExited((MouseEvent e) ->
-		{
-			if (item != selectedItem && !disableNonSelectedItems)
-			{
+		item.text.setOnMouseExited((MouseEvent e) -> {
+			if (item != selectedItem && !disableNonSelectedItems) {
 				item.square.setVisible(false);
 			}
 
 		});
-		item.text.setOnMouseClicked((MouseEvent e) ->
-		{
-			if (item != selectedItem && !disableNonSelectedItems)
-			{
-				if (selectedItem != null)
-				{
+		item.text.setOnMouseClicked((MouseEvent e) -> {
+			if (item != selectedItem && !disableNonSelectedItems) {
+				if (selectedItem != null) {
 					selectedItem.deselect();
 				}
 
@@ -230,16 +198,14 @@ public class VerticalMenu extends VBox
 		});
 	}
 
-	private void selectItem(Item item)
-	{
+	private void selectItem(Item item) {
 		NoArgsVoidFunc callback = itemCallbacks.get(item);
 		selectedItem = item;
 		selectedItem.displayAsSelected();
-		try
-		{
+		try {
 			callback.run();
-		} catch (Exception ex)
-		{
+		}
+		catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
@@ -247,8 +213,7 @@ public class VerticalMenu extends VBox
 	/**
 	 * Add the given controls to a new row in the grid pane.
 	 */
-	private void addRow(GridPane menuGrid, Item item)
-	{
+	private void addRow(GridPane menuGrid, Item item) {
 		menuGrid.add(item.square, 0, nextRowNum);
 		menuGrid.add(item.text, 1, nextRowNum);
 		menuGrid.getRowConstraints().add(nextRowNum, new RowConstraints(ROW_HEIGHT, ROW_HEIGHT,
@@ -257,32 +222,24 @@ public class VerticalMenu extends VBox
 	}
 
 	/**
-	 * ***
-	 * Disable all menu items except the currently selected item.
+	 * *** Disable all menu items except the currently selected item.
 	 */
-	public void disableNonSelectedItems()
-	{
+	public void disableNonSelectedItems() {
 		disableNonSelectedItems = true;
-		for (Item item : allItems)
-		{
-			if (item != selectedItem)
-			{
+		for (Item item : allItems) {
+			if (item != selectedItem) {
 				item.setEnabled(false);
 			}
 		}
 	}
 
 	/**
-	 * *
-	 * Enable all menu items.
+	 * * Enable all menu items.
 	 */
-	public void enableNonSelectedItems()
-	{
+	public void enableNonSelectedItems() {
 		disableNonSelectedItems = false;
-		for (Item item : allItems)
-		{
-			if (item != selectedItem)
-			{
+		for (Item item : allItems) {
+			if (item != selectedItem) {
 				item.setEnabled(true);
 			}
 		}
@@ -291,10 +248,8 @@ public class VerticalMenu extends VBox
 	/**
 	 * If an item is selected then deselect it.
 	 */
-	public void deselectSelectedItem()
-	{
-		if (selectedItem != null)
-		{
+	public void deselectSelectedItem() {
+		if (selectedItem != null) {
 			selectedItem.deselect();
 			selectedItem = null;
 		}
@@ -303,8 +258,7 @@ public class VerticalMenu extends VBox
 	/**
 	 * Reset the menu.
 	 */
-	public void reset()
-	{
+	public void reset() {
 		enableNonSelectedItems();
 		deselectSelectedItem();
 	}

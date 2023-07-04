@@ -10,20 +10,17 @@ import javafx.scene.shape.MeshView;
  *
  * @author Ian
  */
-public class HullComputer extends Task<MeshView>
-{
+public class HullComputer extends Task<MeshView> {
 
 	private static final Logger LOGGER = LogManager.getLogger(HullComputer.class.getName());
 	private final MeshView meshView;
 
-	public HullComputer(MeshView meshView)
-	{
+	public HullComputer(MeshView meshView) {
 		this.meshView = meshView;
 	}
 
 	@Override
-	public MeshView call() throws Exception
-	{
+	public MeshView call() throws Exception {
 		LOGGER.info("Starting hull computation ");
 		//        CSG modelAsCSG = MeshUtils.mesh2CSG(meshView);
 		//        CSG hull = modelAsCSG.hull();

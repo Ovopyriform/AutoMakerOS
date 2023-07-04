@@ -48,8 +48,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian
  */
-public class RootScannerPanelController implements Initializable, MenuInnerPanel
-{
+public class RootScannerPanelController implements Initializable, MenuInnerPanel {
 
 	private static final Logger LOGGER = LogManager.getLogger(RootScannerPanelController.class.getName());
 
@@ -77,15 +76,12 @@ public class RootScannerPanelController implements Initializable, MenuInnerPanel
 	@FXML
 	private Button deleteRootButton;
 
-	private static final String IPADDRESS_PATTERN
-	= "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
+	private static final String IPADDRESS_PATTERN = "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
 			+ "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
 			+ "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
 			+ "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
 
-
-	private DetectedServer findKnownServer(String ipAddress)
-	{
+	private DetectedServer findKnownServer(String ipAddress) {
 		return currentServers.stream()
 				.filter(s -> s.getAddress().getHostAddress().equals(ipAddress))
 				.findAny()
@@ -93,32 +89,27 @@ public class RootScannerPanelController implements Initializable, MenuInnerPanel
 	}
 
 	@FXML
-	private void manuallyAddRoot(ActionEvent event)
-	{
+	private void manuallyAddRoot(ActionEvent event) {
 		String enteredIP = ipTextField.getText();
-		try
-		{
-			if (findKnownServer(enteredIP) == null)
-			{
+		try {
+			if (findKnownServer(enteredIP) == null) {
 				InetAddress address = InetAddress.getByName(enteredIP);
 				DetectedServer newServer = DetectedServer.createDetectedServer(address);
 				newServer.setWasAutomaticallyAdded(false);
 				checkAndAddServer(newServer);
 			}
 			ipTextField.setText("");
-		} catch (UnknownHostException ex)
-		{
+		}
+		catch (UnknownHostException ex) {
 			LOGGER.error("Bad IP address for manually added Root: " + enteredIP);
 		}
 	}
 
 	@FXML
-	private void manuallyDeleteRoot(ActionEvent event)
-	{
+	private void manuallyDeleteRoot(ActionEvent event) {
 		String enteredIP = ipTextField.getText();
 		DetectedServer matchingServer = findKnownServer(enteredIP);
-		if (matchingServer != null)
-		{
+		if (matchingServer != null) {
 			matchingServer.disconnect();
 			currentServers.remove(matchingServer);
 		}
@@ -126,23 +117,18 @@ public class RootScannerPanelController implements Initializable, MenuInnerPanel
 
 	private final ObservableList<DetectedServer> currentServers = FXCollections.observableArrayList();
 
-	private void checkAndAddServer(DetectedServer server)
-	{
-		if (!server.whoAreYou())
-		{
-			if (server.maxPollCountExceeded())
-			{
+	private void checkAndAddServer(DetectedServer server) {
+		if (!server.whoAreYou()) {
+			if (server.maxPollCountExceeded()) {
 				CoreMemory.getInstance().deactivateRoboxRoot(server);
-				Platform.runLater(() ->
-				{
+				Platform.runLater(() -> {
 					currentServers.remove(server);
 				});
 			}
-		} else
-		{
+		}
+		else {
 			server.connect();
-			Platform.runLater(() ->
-			{
+			Platform.runLater(() -> {
 				currentServers.add(server);
 			});
 		}
@@ -155,8 +141,7 @@ public class RootScannerPanelController implements Initializable, MenuInnerPanel
 	 * @param rb
 	 */
 	@Override
-	public void initialize(URL url, ResourceBundle rb)
-	{
+	public void initialize(URL url, ResourceBundle rb) {
 		URL.setURLStreamHandlerFactory(new AMURLStreamHandlerFactory());
 
 		colourColumn = new TableColumn<>();
@@ -174,7 +159,8 @@ public class RootScannerPanelController implements Initializable, MenuInnerPanel
 
 					if (colours == null || empty || colours.isEmpty()) { //If the cell is empty
 						setStyle("");
-					} else { //If the cell is not empty
+					}
+					else { //If the cell is not empty
 
 						// For now let's get the first colour
 						Color printerColour = Color.valueOf(colours.get(0));
@@ -237,17 +223,14 @@ public class RootScannerPanelController implements Initializable, MenuInnerPanel
 		HBox.setHgrow(scannedRoots, Priority.ALWAYS);
 
 		scannedRoots.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		scannedRoots.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<DetectedServer>()
-		{
+		scannedRoots.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<DetectedServer>() {
 			@Override
-			public void changed(ObservableValue<? extends DetectedServer> observable, DetectedServer oldValue, DetectedServer newValue)
-			{
+			public void changed(ObservableValue<? extends DetectedServer> observable, DetectedServer oldValue, DetectedServer newValue) {
 				if (newValue == null
-						|| newValue.getWasAutomaticallyAdded())
-				{
+						|| newValue.getWasAutomaticallyAdded()) {
 					ipTextField.setText("");
-				} else
-				{
+				}
+				else {
 					ipTextField.setText(newValue.getServerIP());
 				}
 			}
@@ -257,20 +240,17 @@ public class RootScannerPanelController implements Initializable, MenuInnerPanel
 
 		scannedRoots.setPlaceholder(new Text(OpenAutoMakerEnv.getI18N().t("rootScanner.noRemoteServersFound")));
 
-		ipTextField.textProperty().addListener(new ChangeListener<String>()
-		{
+		ipTextField.textProperty().addListener(new ChangeListener<String>() {
 			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
-			{
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				String enteredIP = ipTextField.getText();
-				if (enteredIP.matches(IPADDRESS_PATTERN))
-				{
+				if (enteredIP.matches(IPADDRESS_PATTERN)) {
 					DetectedServer matchingServer = findKnownServer(enteredIP);
 
 					addRootButton.setDisable(matchingServer != null); // Can't add existing server.
 					deleteRootButton.setDisable(matchingServer == null || matchingServer.getWasAutomaticallyAdded());
-				} else
-				{
+				}
+				else {
 					addRootButton.setDisable(true);
 					deleteRootButton.setDisable(true);
 				}
@@ -280,86 +260,67 @@ public class RootScannerPanelController implements Initializable, MenuInnerPanel
 		addRootButton.setDisable(true);
 		deleteRootButton.setDisable(true);
 
-		currentServers.addListener(new ListChangeListener<DetectedServer>()
-		{
+		currentServers.addListener(new ListChangeListener<DetectedServer>() {
 			@Override
-			public void onChanged(ListChangeListener.Change<? extends DetectedServer> change)
-			{
-				if (currentServers.size() > 0)
-				{
+			public void onChanged(ListChangeListener.Change<? extends DetectedServer> change) {
+				if (currentServers.size() > 0) {
 					scannedRoots.getSelectionModel().selectFirst();
-				} else
-				{
+				}
+				else {
 					scannedRoots.getSelectionModel().clearSelection();
 				}
 			}
 		});
 
-
-
-		Task<Void> scannerTask = new Task<>()
-		{
+		Task<Void> scannerTask = new Task<>() {
 
 			@Override
-			protected Void call() throws Exception
-			{
+			protected Void call() throws Exception {
 				List<DetectedServer> serversToCheck = new ArrayList<>(CoreMemory.getInstance().getActiveRoboxRoots());
-				serversToCheck.forEach((server) ->
-				{
+				serversToCheck.forEach((server) -> {
 					checkAndAddServer(server);
 				});
 
-				while (!isCancelled())
-				{
+				while (!isCancelled()) {
 					List<DetectedServer> foundServers = remoteServerDetector.searchForServers();
 
-					Platform.runLater(() ->
-					{
+					Platform.runLater(() -> {
 						List<DetectedServer> serversToAdd = new ArrayList<>();
 						List<DetectedServer> serversToRemove = new ArrayList<>();
 
-						for (DetectedServer server : foundServers)
-						{
-							if (!currentServers.contains(server))
-							{
+						for (DetectedServer server : foundServers) {
+							if (!currentServers.contains(server)) {
 								serversToAdd.add(server);
 							}
 						}
 
-						for (DetectedServer server : currentServers)
-						{
+						for (DetectedServer server : currentServers) {
 							if (!foundServers.contains(server)
-									&& server.getWasAutomaticallyAdded())
-							{
+									&& server.getWasAutomaticallyAdded()) {
 								serversToRemove.add(server);
 							}
 						}
 
-						for (DetectedServer server : serversToAdd)
-						{
+						for (DetectedServer server : serversToAdd) {
 							LOGGER.info("RootScanner adding server \"" + server.getDisplayName() + "\"");
 							currentServers.add(server);
 						}
 
-						for (DetectedServer server : serversToRemove)
-						{
-							if (server.incrementPollCount())
-							{
+						for (DetectedServer server : serversToRemove) {
+							if (server.incrementPollCount()) {
 								LOGGER.info("RootScanner removing server \"" + server.getDisplayName() + "\"");
 								currentServers.remove(server);
 								server.disconnect();
 							}
-							else
-							{
-								LOGGER.debug("RootScannerPanelController not removing server \"" + server.getDisplayName() + "\" as it has not exceeded it's maximum allowed poll count." );
+							else {
+								LOGGER.debug("RootScannerPanelController not removing server \"" + server.getDisplayName() + "\" as it has not exceeded it's maximum allowed poll count.");
 							}
 						}
 					});
-					try
-					{
+					try {
 						Thread.sleep(1000);
-					} catch (InterruptedException ex)
-					{
+					}
+					catch (InterruptedException ex) {
 					}
 				}
 
@@ -374,14 +335,12 @@ public class RootScannerPanelController implements Initializable, MenuInnerPanel
 	}
 
 	@Override
-	public String getMenuTitle()
-	{
+	public String getMenuTitle() {
 		return "preferences.root";
 	}
 
 	@Override
-	public List<OperationButton> getOperationButtons()
-	{
+	public List<OperationButton> getOperationButtons() {
 		return null;
 	}
 
@@ -394,5 +353,6 @@ public class RootScannerPanelController implements Initializable, MenuInnerPanel
 	}
 
 	@Override
-	public void panelSelected() {}
+	public void panelSelected() {
+	}
 }

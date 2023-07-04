@@ -15,14 +15,12 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian
  */
-public class CurrencySymbolPreference implements PreferencesInnerPanelController.Preference
-{
+public class CurrencySymbolPreference implements PreferencesInnerPanelController.Preference {
 
 	private final UserPreferences userPreferences;
 	private final ComboBox<CurrencySymbol> control;
 
-	public CurrencySymbolPreference(UserPreferences userPreferences)
-	{
+	public CurrencySymbolPreference(UserPreferences userPreferences) {
 		this.userPreferences = userPreferences;
 
 		control = new ComboBox<>();
@@ -30,46 +28,39 @@ public class CurrencySymbolPreference implements PreferencesInnerPanelController
 		control.setPrefWidth(200);
 		control.setMinWidth(control.getPrefWidth());
 
-		Callback<ListView<CurrencySymbol>, ListCell<CurrencySymbol>> currencySymbolCellFactory
-		= (ListView<CurrencySymbol> list) -> new CurrencySymbolListCell();
+		Callback<ListView<CurrencySymbol>, ListCell<CurrencySymbol>> currencySymbolCellFactory = (ListView<CurrencySymbol> list) -> new CurrencySymbolListCell();
 		control.setCellFactory(currencySymbolCellFactory);
 		control.setButtonCell(currencySymbolCellFactory.call(null));
 
 		control.getItems().setAll(CurrencySymbol.values());
 		control.getSelectionModel().selectedItemProperty()
-		.addListener((ObservableValue<? extends CurrencySymbol> observable, CurrencySymbol oldValue, CurrencySymbol newValue) ->
-		{
-			updateValueFromControl();
-		});
+				.addListener((ObservableValue<? extends CurrencySymbol> observable, CurrencySymbol oldValue, CurrencySymbol newValue) -> {
+					updateValueFromControl();
+				});
 	}
 
 	@Override
-	public void updateValueFromControl()
-	{
+	public void updateValueFromControl() {
 		userPreferences.setCurrencySymbol(control.getSelectionModel().selectedItemProperty().get());
 	}
 
 	@Override
-	public void populateControlWithCurrentValue()
-	{
+	public void populateControlWithCurrentValue() {
 		control.getSelectionModel().select(userPreferences.getCurrencySymbol());
 	}
 
 	@Override
-	public Control getControl()
-	{
+	public Control getControl() {
 		return control;
 	}
 
 	@Override
-	public String getDescription()
-	{
+	public String getDescription() {
 		return OpenAutoMakerEnv.getI18N().t("preferences.currencySymbol");
 	}
 
 	@Override
-	public void disableProperty(ObservableValue<Boolean> disableProperty)
-	{
+	public void disableProperty(ObservableValue<Boolean> disableProperty) {
 		control.disableProperty().unbind();
 		control.disableProperty().bind(disableProperty);
 	}

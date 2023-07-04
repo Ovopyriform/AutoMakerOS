@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package celtech.utils;
 
 import static org.junit.Assert.assertEquals;
@@ -20,8 +16,7 @@ import xyz.openautomaker.base.camera.CameraInfo;
  */
 public class CameraInfoStringConverterTest {
 	@Test
-	public void testStringConverter()
-	{
+	public void testStringConverter() {
 		// creating a Stream of strings
 		List<CameraInfo> l = new ArrayList<>();
 		CameraInfo ci = new CameraInfo();
@@ -43,7 +38,9 @@ public class CameraInfoStringConverterTest {
 		ci.setUdevName("/dev/video3");
 		l.add(ci);
 
-		CameraInfoStringConverter cisc = new CameraInfoStringConverter(() -> { return l; });
+		CameraInfoStringConverter cisc = new CameraInfoStringConverter(() -> {
+			return l;
+		});
 
 		String cs0 = cisc.toString(l.get(0));
 		CameraInfo ci1 = cisc.fromString("[1] Logitech C920");

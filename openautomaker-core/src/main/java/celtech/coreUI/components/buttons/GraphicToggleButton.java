@@ -11,39 +11,32 @@ import javafx.scene.control.ToggleButton;
  *
  * @author Ian
  */
-public class GraphicToggleButton extends ToggleButton
-{
+public class GraphicToggleButton extends ToggleButton {
 
 	private final StringProperty fxmlFileName = new SimpleStringProperty("");
 
-	public GraphicToggleButton()
-	{
+	public GraphicToggleButton() {
 		loadFXML();
 
 		this.getStyleClass().add("graphic-button");
 	}
 
-	public String getFxmlFileName()
-	{
+	public String getFxmlFileName() {
 		return fxmlFileName.get();
 	}
 
-	public void setFxmlFileName(String fxmlFileName)
-	{
+	public void setFxmlFileName(String fxmlFileName) {
 		this.fxmlFileName.set(fxmlFileName);
 
 		loadFXML();
 	}
 
-	public StringProperty getFxmlFileNameProperty()
-	{
+	public StringProperty getFxmlFileNameProperty() {
 		return fxmlFileName;
 	}
 
-	private void loadFXML() throws RuntimeException
-	{
-		if (!fxmlFileName.get().equalsIgnoreCase(""))
-		{
+	private void loadFXML() throws RuntimeException {
+		if (!fxmlFileName.get().equalsIgnoreCase("")) {
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
 					"/celtech/resources/fxml/buttons/" + fxmlFileName.get() + ".fxml"));
 			fxmlLoader.setRoot(this);
@@ -51,11 +44,10 @@ public class GraphicToggleButton extends ToggleButton
 
 			fxmlLoader.setClassLoader(this.getClass().getClassLoader());
 
-			try
-			{
+			try {
 				fxmlLoader.load();
-			} catch (IOException exception)
-			{
+			}
+			catch (IOException exception) {
 				throw new RuntimeException(exception);
 			}
 		}

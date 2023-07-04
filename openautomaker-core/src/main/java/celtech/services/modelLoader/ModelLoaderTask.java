@@ -29,37 +29,31 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author ianhudson
  */
-public class ModelLoaderTask extends Task<ModelLoadResults>
-{
+public class ModelLoaderTask extends Task<ModelLoadResults> {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final List<File> modelFilesToLoad;
 	private final DoubleProperty percentProgress = new SimpleDoubleProperty();
 
-	public ModelLoaderTask(List<File> modelFilesToLoad)
-	{
+	public ModelLoaderTask(List<File> modelFilesToLoad) {
 		this.modelFilesToLoad = modelFilesToLoad;
 
-		percentProgress.addListener(new ChangeListener<Number>()
-		{
+		percentProgress.addListener(new ChangeListener<Number>() {
 			@Override
-			public void changed(ObservableValue<? extends Number> ov, Number t, Number t1)
-			{
+			public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
 				updateProgress(t1.doubleValue(), 100.0);
 			}
 		});
 	}
 
 	@Override
-	protected ModelLoadResults call() throws Exception
-	{
+	protected ModelLoadResults call() throws Exception {
 		List<ModelLoadResult> modelLoadResultList = new ArrayList<>();
 
 		updateTitle(OpenAutoMakerEnv.getI18N().t("dialogs.loadModelTitle"));
 
-		for (File modelFileToLoad : modelFilesToLoad)
-		{
+		for (File modelFileToLoad : modelFilesToLoad) {
 			LOGGER.info("Model file load started:" + modelFileToLoad.getName());
 
 			String modelFilePath = modelFileToLoad.getAbsolutePath();
@@ -69,69 +63,61 @@ public class ModelLoaderTask extends Task<ModelLoadResults>
 
 			final List<String> fileNamesToLoad = new ArrayList<>();
 
-			if (modelFilePath.toUpperCase().endsWith("ZIP"))
-			{
+			if (modelFilePath.toUpperCase().endsWith("ZIP")) {
 				//                modelLoadResults.setShouldCentre(false);
 				ZipFile zipFile = new ZipFile(modelFilePath);
 
-				try
-				{
+				try {
 					final Enumeration<? extends ZipEntry> entries = zipFile.entries();
-					while (entries.hasMoreElements())
-					{
+					while (entries.hasMoreElements()) {
 						final ZipEntry entry = entries.nextElement();
 						final String tempTargetname = BaseConfiguration.getUserTempDirectory() + entry.getName();
 						FileUtilities.writeStreamToFile(zipFile.getInputStream(entry), tempTargetname);
 						fileNamesToLoad.add(tempTargetname);
 					}
-				} catch (IOException ex)
-				{
+				}
+				catch (IOException ex) {
 					LOGGER.error("Error unwrapping zip - " + ex.getMessage());
-				} finally
-				{
+				}
+				finally {
 					zipFile.close();
 				}
-			} else
-			{
+			}
+			else {
 				fileNamesToLoad.add(modelFilePath);
 			}
 
-			for (String filenameToLoad : fileNamesToLoad)
-			{
+			for (String filenameToLoad : fileNamesToLoad) {
 				ModelLoadResult loadResult = loadTheFile(filenameToLoad);
-				if (loadResult != null)
-				{
+				if (loadResult != null) {
 					modelLoadResultList.add(loadResult);
-				} else
-				{
+				}
+				else {
 					LOGGER.warn("Failed to load model: " + filenameToLoad);
 				}
 			}
 		}
 
 		ModelLoadResultType type = null;
-		if (!modelLoadResultList.isEmpty())
-		{
+		if (!modelLoadResultList.isEmpty()) {
 			type = modelLoadResultList.get(0).getType();
 		}
 		return new ModelLoadResults(type, modelLoadResultList);
 	}
 
-	private ModelLoadResult loadTheFile(String modelFileToLoad)
-	{
+	private ModelLoadResult loadTheFile(String modelFileToLoad) {
 		ModelLoadResult modelLoadResult = null;
 
-		if (modelFileToLoad.toUpperCase().endsWith("OBJ"))
-		{
+		if (modelFileToLoad.toUpperCase().endsWith("OBJ")) {
 			ObjImporter reader = new ObjImporter();
 			modelLoadResult = reader.loadFile(this, modelFileToLoad, percentProgress, false);
-		} else if (modelFileToLoad.toUpperCase().endsWith("STL"))
-		{
+		}
+		else if (modelFileToLoad.toUpperCase().endsWith("STL")) {
 			STLImporter reader = new STLImporter();
 			modelLoadResult = reader.loadFile(this, new File(modelFileToLoad),
 					percentProgress);
-		} else if (modelFileToLoad.toUpperCase().endsWith("SVG"))
-		{
+		}
+		else if (modelFileToLoad.toUpperCase().endsWith("SVG")) {
 			SVGImporter reader = new SVGImporter();
 			modelLoadResult = reader.loadFile(this, new File(modelFileToLoad),
 					percentProgress);
@@ -144,8 +130,7 @@ public class ModelLoaderTask extends Task<ModelLoadResults>
 	 *
 	 * @param message
 	 */
-	public void updateMessageText(String message)
-	{
+	public void updateMessageText(String message) {
 		updateMessage(message);
 	}
 }

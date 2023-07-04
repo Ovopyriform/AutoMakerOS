@@ -23,8 +23,7 @@ import xyz.openautomaker.base.configuration.hardwarevariants.PrinterType;
  *
  * @author Ian
  */
-public class UserPreferences
-{
+public class UserPreferences {
 
 	private final ObjectProperty<SlicerType> slicerType = new SimpleObjectProperty<>(SlicerType.Cura4);
 	private final BooleanProperty safetyFeaturesOn = new SimpleBooleanProperty(true);
@@ -47,34 +46,29 @@ public class UserPreferences
 	private final ObjectProperty<PrinterType> customPrinterType = new SimpleObjectProperty<>(PrinterType.ROBOX);
 	private final StringProperty customPrinterHead = new SimpleStringProperty(HeadContainer.defaultHeadID);
 
-	private final ChangeListener<String> stringChangeListener = (ObservableValue<? extends String> observable, String oldValue, String newValue) ->
-	{
+	private final ChangeListener<String> stringChangeListener = (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
 		saveSettings();
 	};
 
-	private final ChangeListener<Boolean> booleanChangeListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-	{
+	private final ChangeListener<Boolean> booleanChangeListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 		saveSettings();
 	};
 
-	private final ChangeListener<Number> numberChangeListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-	{
+	private final ChangeListener<Number> numberChangeListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 		saveSettings();
 	};
 
 	private boolean suppressAdvancedModeListenerCheck = false;
 
-	private final ChangeListener<Boolean> advancedModeChangeListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-	{
-		if (!suppressAdvancedModeListenerCheck)
-		{
+	private final ChangeListener<Boolean> advancedModeChangeListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+		if (!suppressAdvancedModeListenerCheck) {
 			confirmAdvancedModeChange(newValue);
 		}
 		saveSettings();
 	};
 
 	private final ChangeListener<Boolean> enableCustomPrinterChangeListener = (observable, oldValue, newValue) -> {
-		if(newValue)
+		if (newValue)
 			RoboxCommsManager.getInstance().addDummyPrinter(true);
 		else
 			RoboxCommsManager.getInstance().removeAllDummyPrinters();
@@ -89,8 +83,7 @@ public class UserPreferences
 		saveSettings();
 	};
 
-	public UserPreferences(UserPreferenceFile userPreferenceFile)
-	{
+	public UserPreferences(UserPreferenceFile userPreferenceFile) {
 		this.slicerType.set(userPreferenceFile.getSlicerType());
 		safetyFeaturesOn.set(userPreferenceFile.isSafetyFeaturesOn());
 		languageTag = userPreferenceFile.getLanguageTag();
@@ -129,60 +122,49 @@ public class UserPreferences
 		customPrinterEnabled.addListener(enableCustomPrinterChangeListener);
 	}
 
-	public String getLanguageTag()
-	{
+	public String getLanguageTag() {
 		return languageTag;
 	}
 
-	public void setLanguageTag(String language)
-	{
+	public void setLanguageTag(String language) {
 		this.languageTag = language;
 		saveSettings();
 	}
 
-	public SlicerType getSlicerType()
-	{
+	public SlicerType getSlicerType() {
 		return slicerType.get();
 	}
 
-	public ObjectProperty<SlicerType> getSlicerTypeProperty()
-	{
+	public ObjectProperty<SlicerType> getSlicerTypeProperty() {
 		return slicerType;
 	}
 
-	public void setSlicerType(SlicerType slicerType)
-	{
+	public void setSlicerType(SlicerType slicerType) {
 		this.slicerType.set(slicerType);
 		saveSettings();
 	}
 
-	public boolean isSafetyFeaturesOn()
-	{
+	public boolean isSafetyFeaturesOn() {
 		return safetyFeaturesOn.get();
 	}
 
-	public void setSafetyFeaturesOn(boolean value)
-	{
+	public void setSafetyFeaturesOn(boolean value) {
 		this.safetyFeaturesOn.set(value);
 	}
 
-	public BooleanProperty safetyFeaturesOnProperty()
-	{
+	public BooleanProperty safetyFeaturesOnProperty() {
 		return safetyFeaturesOn;
 	}
 
-	public boolean isShowTooltips()
-	{
+	public boolean isShowTooltips() {
 		return showTooltips.get();
 	}
 
-	public void setShowTooltips(boolean value)
-	{
+	public void setShowTooltips(boolean value) {
 		this.showTooltips.set(value);
 	}
 
-	public BooleanProperty showTooltipsProperty()
-	{
+	public BooleanProperty showTooltipsProperty() {
 		return showTooltips;
 	}
 
@@ -198,265 +180,214 @@ public class UserPreferences
 	//        saveSettings();
 	//    }
 
-	public boolean isAdvancedMode()
-	{
+	public boolean isAdvancedMode() {
 		return advancedMode.get();
 	}
 
-	public void setAdvancedMode(boolean advancedMode)
-	{
+	public void setAdvancedMode(boolean advancedMode) {
 		this.advancedMode.set(advancedMode);
 	}
 
-	public BooleanProperty advancedModeProperty()
-	{
+	public BooleanProperty advancedModeProperty() {
 		return advancedMode;
 	}
 
-	public boolean isFirstUse()
-	{
+	public boolean isFirstUse() {
 		return firstUse.get();
 	}
 
-	public void setFirstUse(boolean firstUse)
-	{
+	public void setFirstUse(boolean firstUse) {
 		this.firstUse.set(firstUse);
 	}
 
-	public BooleanProperty firstUseProperty()
-	{
+	public BooleanProperty firstUseProperty() {
 		return firstUse;
 	}
 
-	public boolean getDetectLoadedFilament()
-	{
+	public boolean getDetectLoadedFilament() {
 		return detectLoadedFilament.get();
 	}
 
-	public void setDetectLoadedFilament(boolean firstUse)
-	{
+	public void setDetectLoadedFilament(boolean firstUse) {
 		this.detectLoadedFilament.set(firstUse);
 	}
 
-	public BooleanProperty detectLoadedFilamentProperty()
-	{
+	public BooleanProperty detectLoadedFilamentProperty() {
 		return detectLoadedFilament;
 	}
 
-	public ObjectProperty<CurrencySymbol> currencySymbolProperty()
-	{
+	public ObjectProperty<CurrencySymbol> currencySymbolProperty() {
 		return currencySymbol;
 	}
 
-	public CurrencySymbol getCurrencySymbol()
-	{
+	public CurrencySymbol getCurrencySymbol() {
 		return currencySymbol.get();
 	}
 
-	public void setCurrencySymbol(CurrencySymbol currencySymbol)
-	{
+	public void setCurrencySymbol(CurrencySymbol currencySymbol) {
 		this.currencySymbol.set(currencySymbol);
 	}
 
-	public FloatProperty currencyGBPToLocalMultiplierProperty()
-	{
+	public FloatProperty currencyGBPToLocalMultiplierProperty() {
 		return currencyGBPToLocalMultiplier;
 	}
 
-	public float getcurrencyGBPToLocalMultiplier()
-	{
+	public float getcurrencyGBPToLocalMultiplier() {
 		return currencyGBPToLocalMultiplier.get();
 	}
 
-	public void setcurrencyGBPToLocalMultiplier(float value)
-	{
+	public void setcurrencyGBPToLocalMultiplier(float value) {
 		this.currencyGBPToLocalMultiplier.set(value);
 	}
 
-	public BooleanProperty searchForRemoteCamerasProperty()
-	{
+	public BooleanProperty searchForRemoteCamerasProperty() {
 		return searchForRemoteCameras;
 	}
 
-	public void setSearchForRemoteCameras(boolean searchForRemoteCameras)
-	{
+	public void setSearchForRemoteCameras(boolean searchForRemoteCameras) {
 		this.searchForRemoteCameras.set(searchForRemoteCameras);
 	}
 
-	public boolean isSearchForRemoteCameras()
-	{
+	public boolean isSearchForRemoteCameras() {
 		return searchForRemoteCameras.get();
 	}
 
-	private void saveSettings()
-	{
+	private void saveSettings() {
 		UserPreferenceContainer.savePreferences(this);
 	}
 
-	private void confirmAdvancedModeChange(boolean advancedMode)
-	{
+	private void confirmAdvancedModeChange(boolean advancedMode) {
 		suppressAdvancedModeListenerCheck = true;
 
-		if (advancedMode)
-		{
+		if (advancedMode) {
 			// Ask the user whether they really want to do this..
 			boolean goToAdvancedMode = BaseLookup.getSystemNotificationHandler().confirmAdvancedMode();
 			this.advancedMode.set(goToAdvancedMode);
-		} else
-		{
+		}
+		else {
 			this.advancedMode.set(advancedMode);
 		}
 
 		suppressAdvancedModeListenerCheck = false;
 	}
 
-	public BooleanProperty showDiagnosticsProperty()
-	{
+	public BooleanProperty showDiagnosticsProperty() {
 		return showDiagnostics;
 	}
 
-	public boolean getShowDiagnostics()
-	{
+	public boolean getShowDiagnostics() {
 		return showDiagnostics.get();
 	}
 
-	public void setShowDiagnostics(boolean showDiagnostics)
-	{
+	public void setShowDiagnostics(boolean showDiagnostics) {
 		this.showDiagnostics.set(showDiagnostics);
 	}
 
-	public BooleanProperty showGCodeProperty()
-	{
+	public BooleanProperty showGCodeProperty() {
 		return showGCode;
 	}
 
-	public boolean getShowGCode()
-	{
+	public boolean getShowGCode() {
 		return showGCode.get();
 	}
 
-	public void setShowGCode(boolean showGCode)
-	{
+	public void setShowGCode(boolean showGCode) {
 		this.showGCode.set(showGCode);
 	}
 
-	public BooleanProperty showAdjustmentsProperty()
-	{
+	public BooleanProperty showAdjustmentsProperty() {
 		return showAdjustments;
 	}
 
-	public boolean getShowAdjustments()
-	{
+	public boolean getShowAdjustments() {
 		return showAdjustments.get();
 	}
 
-	public void setShowAdjustments(boolean showAdjustments)
-	{
+	public void setShowAdjustments(boolean showAdjustments) {
 		this.showAdjustments.set(showAdjustments);
 	}
 
-	public BooleanProperty showSnapshotProperty()
-	{
+	public BooleanProperty showSnapshotProperty() {
 		return showSnapshot;
 	}
 
-	public boolean getShowSnapshot()
-	{
+	public boolean getShowSnapshot() {
 		return showSnapshot.get();
 	}
 
-	public void setShowSnapshot(boolean showSnapshot)
-	{
+	public void setShowSnapshot(boolean showSnapshot) {
 		this.showSnapshot.set(showSnapshot);
 	}
 
-	public void setShowMetricUnits(boolean value)
-	{
+	public void setShowMetricUnits(boolean value) {
 		showMetricUnits.set(value);
 	}
 
-	public boolean isShowMetricUnits()
-	{
+	public boolean isShowMetricUnits() {
 		return showMetricUnits.get();
 	}
 
-	public BooleanProperty showMetricUnitsProperty()
-	{
+	public BooleanProperty showMetricUnitsProperty() {
 		return showMetricUnits;
 	}
 
-	public boolean isLoosePartSplitOnLoad()
-	{
+	public boolean isLoosePartSplitOnLoad() {
 		return loosePartSplitOnLoad.get();
 	}
 
-	public void setLoosePartSplitOnLoad(boolean value)
-	{
+	public void setLoosePartSplitOnLoad(boolean value) {
 		loosePartSplitOnLoad.set(value);
 	}
 
-	public BooleanProperty loosePartSplitOnLoadProperty()
-	{
+	public BooleanProperty loosePartSplitOnLoadProperty() {
 		return loosePartSplitOnLoad;
 	}
 
-	public BooleanProperty autoGCodePreviewProperty()
-	{
+	public BooleanProperty autoGCodePreviewProperty() {
 		return autoGCodePreview;
 	}
 
-	public boolean isAutoGCodePreview()
-	{
+	public boolean isAutoGCodePreview() {
 		return autoGCodePreview.get();
 	}
 
-	public void setAutoGCodePreview(boolean autoGCodePreview)
-	{
+	public void setAutoGCodePreview(boolean autoGCodePreview) {
 		this.autoGCodePreview.set(autoGCodePreview);
 	}
 
-	public boolean isCustomPrinterEnabled()
-	{
+	public boolean isCustomPrinterEnabled() {
 		return customPrinterEnabled.get();
 	}
 
-	public void setCustomPrinterEnabled(boolean value)
-	{
+	public void setCustomPrinterEnabled(boolean value) {
 		customPrinterEnabled.set(value);
 	}
 
-	public BooleanProperty customPrinterEnabledProperty()
-	{
+	public BooleanProperty customPrinterEnabledProperty() {
 		return customPrinterEnabled;
 	}
 
-	public ObjectProperty<PrinterType> customPrinterTypeProperty()
-	{
+	public ObjectProperty<PrinterType> customPrinterTypeProperty() {
 		return customPrinterType;
 	}
 
-	public PrinterType getCustomPrinterType()
-	{
+	public PrinterType getCustomPrinterType() {
 		return customPrinterType.get();
 	}
 
-	public void setCustomPrinterType(PrinterType customPrinterType)
-	{
+	public void setCustomPrinterType(PrinterType customPrinterType) {
 		this.customPrinterType.set(customPrinterType);
 	}
 
-	public StringProperty customPrinterHeadProperty()
-	{
+	public StringProperty customPrinterHeadProperty() {
 		return customPrinterHead;
 	}
 
-	public String getCustomPrinterHead()
-	{
+	public String getCustomPrinterHead() {
 		return customPrinterHead.get();
 	}
 
-	public void setCustomPrinterHead(String customPrinterHead)
-	{
+	public void setCustomPrinterHead(String customPrinterHead) {
 		this.customPrinterHead.set(customPrinterHead);
 	}
 }

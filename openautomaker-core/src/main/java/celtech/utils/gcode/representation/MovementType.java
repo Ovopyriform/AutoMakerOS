@@ -8,8 +8,7 @@ package celtech.utils.gcode.representation;
  *
  * @author ianhudson
  */
-public enum MovementType
-{
+public enum MovementType {
 
 	/**
 	 *

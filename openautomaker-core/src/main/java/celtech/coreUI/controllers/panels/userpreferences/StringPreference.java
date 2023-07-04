@@ -11,15 +11,13 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian
  */
-public class StringPreference implements PreferencesInnerPanelController.Preference
-{
+public class StringPreference implements PreferencesInnerPanelController.Preference {
 
 	private final TextField control;
 	private final StringProperty stringProperty;
 	private final String caption;
 
-	public StringPreference(StringProperty stringProperty, String caption)
-	{
+	public StringPreference(StringProperty stringProperty, String caption) {
 		this.stringProperty = stringProperty;
 		this.caption = caption;
 
@@ -27,20 +25,17 @@ public class StringPreference implements PreferencesInnerPanelController.Prefere
 		control.setPrefWidth(150);
 		control.setMinWidth(control.getPrefWidth());
 		control.textProperty().addListener(
-				(ObservableValue<? extends String> observable, String oldValue, String newValue) ->
-				{
+				(ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
 					updateValueFromControl();
 				});
 		stringProperty.addListener(
-				(ObservableValue<? extends String> observable, String oldValue, String newValue) ->
-				{
+				(ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
 					control.setText(newValue);
 				});
 	}
 
 	@Override
-	public void updateValueFromControl()
-	{
+	public void updateValueFromControl() {
 		stringProperty.set(control.getText());
 
 		// User Preferences controls whether the property can be set - read back just in case our selection was overridden
@@ -48,26 +43,22 @@ public class StringPreference implements PreferencesInnerPanelController.Prefere
 	}
 
 	@Override
-	public void populateControlWithCurrentValue()
-	{
+	public void populateControlWithCurrentValue() {
 		control.setText(stringProperty.get());
 	}
 
 	@Override
-	public Control getControl()
-	{
+	public Control getControl() {
 		return control;
 	}
 
 	@Override
-	public String getDescription()
-	{
+	public String getDescription() {
 		return OpenAutoMakerEnv.getI18N().t(caption);
 	}
 
 	@Override
-	public void disableProperty(ObservableValue<Boolean> disableProperty)
-	{
+	public void disableProperty(ObservableValue<Boolean> disableProperty) {
 		control.disableProperty().unbind();
 		control.disableProperty().bind(disableProperty);
 	}

@@ -13,8 +13,7 @@ import celtech.modelcontrol.ModelContainer;
  *
  * @author Ian
  */
-public class CollisionManager implements CollisionShapeListener
-{
+public class CollisionManager implements CollisionShapeListener {
 
 	private static final Logger LOGGER = LogManager.getLogger(CollisionManager.class.getName());
 	//    private CollisionWorld collisionWorld = null;
@@ -25,13 +24,10 @@ public class CollisionManager implements CollisionShapeListener
 	private final TimerTask tickRun;
 	private long lastTickMilliseconds = 0;
 
-	public CollisionManager()
-	{
-		tickRun = new TimerTask()
-		{
+	public CollisionManager() {
+		tickRun = new TimerTask() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				collisionTick();
 			}
 		};
@@ -42,8 +38,7 @@ public class CollisionManager implements CollisionShapeListener
 		scheduledTickTimer.scheduleAtFixedRate(tickRun, 0, 250);
 	}
 
-	private void setupCollisionWorld()
-	{
+	private void setupCollisionWorld() {
 		//        DefaultCollisionConfiguration collisionConfiguration
 		//                = new DefaultCollisionConfiguration();
 		//        // calculates exact collision given a list possible colliding pairs
@@ -65,8 +60,7 @@ public class CollisionManager implements CollisionShapeListener
 		//        collisionWorld = new CollisionWorld(dispatcher, broadphase, collisionConfiguration);
 	}
 
-	public void addModel(ModelContainer model)
-	{
+	public void addModel(ModelContainer model) {
 		//        if (model.getCollisionShape() != null)
 		//        {
 		//            createGhost(model);
@@ -80,13 +74,11 @@ public class CollisionManager implements CollisionShapeListener
 		//        }
 	}
 
-	public void removeModel(ModelContainer model)
-	{
+	public void removeModel(ModelContainer model) {
 		destroyGhost(model);
 	}
 
-	private void createGhost(ModelContainer model)
-	{
+	private void createGhost(ModelContainer model) {
 		//        GhostObject ghostOfModel = new GhostObject();
 		////        ghostOfModel.setCollisionShape(model.getCollisionShape());
 		//        ghostOfModel.setCollisionFlags(CollisionFlags.NO_CONTACT_RESPONSE);
@@ -110,8 +102,7 @@ public class CollisionManager implements CollisionShapeListener
 		//        monitoredModelsTransforms.put(model, centringTransform);
 	}
 
-	private void destroyGhost(ModelContainer model)
-	{
+	private void destroyGhost(ModelContainer model) {
 		//        removeAllModelListeners(model);
 		//
 		//        if (monitoredModels.get(model) != null)
@@ -124,27 +115,22 @@ public class CollisionManager implements CollisionShapeListener
 	}
 
 	@Override
-	public void collisionShapeAvailable(ModelContainer model)
-	{
+	public void collisionShapeAvailable(ModelContainer model) {
 		createGhost(model);
 	}
 
-	private void addModelTransformListeners(ModelContainer model)
-	{
+	private void addModelTransformListeners(ModelContainer model) {
 	}
 
-	private void removeModelTransformListeners(ModelContainer model)
-	{
+	private void removeModelTransformListeners(ModelContainer model) {
 	}
 
-	private void removeAllModelListeners(ModelContainer model)
-	{
+	private void removeAllModelListeners(ModelContainer model) {
 		model.removeCollisionShapeListener(this);
 		removeModelTransformListeners(model);
 	}
 
-	private void collisionTick()
-	{
+	private void collisionTick() {
 		//        long timeNowMilliseconds = System.currentTimeMillis();
 		////        LOGGER.info("Tock");
 		//        collisionWorld.performDiscreteCollisionDetection();
@@ -185,8 +171,7 @@ public class CollisionManager implements CollisionShapeListener
 		//        lastTickMilliseconds = timeNowMilliseconds;
 	}
 
-	public void modelsTransformed(Set<ModelContainer> modelContainers)
-	{
+	public void modelsTransformed(Set<ModelContainer> modelContainers) {
 		//        for (ModelContainer model : modelContainers)
 		//        {
 		////            Transform worldTxform = new Transform();

@@ -21,8 +21,7 @@ import xyz.openautomaker.base.printerControl.model.Printer;
  *
  * @author Ian
  */
-public class SnapshotPanelController extends SnapshotController
-{
+public class SnapshotPanelController extends SnapshotController {
 	private Printer connectedPrinter = null;
 
 	private final ChangeListener<Boolean> cameraDetectedChangeListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -44,8 +43,7 @@ public class SnapshotPanelController extends SnapshotController
 	 * @param rb
 	 */
 	@Override
-	public void initialize(URL url, ResourceBundle rb)
-	{
+	public void initialize(URL url, ResourceBundle rb) {
 		viewWidthFixed = true;
 		super.initialize(url, rb);
 		Lookup.getSelectedPrinterProperty().addListener((ObservableValue<? extends Printer> observable, Printer oldValue, Printer newValue) -> {
@@ -58,8 +56,7 @@ public class SnapshotPanelController extends SnapshotController
 		ApplicationStatus.getInstance().modeProperty().addListener(applicationModeChangeListener);
 	}
 
-	private void unbindFromPrinter(Printer printer)
-	{
+	private void unbindFromPrinter(Printer printer) {
 		if (connectedPrinter != null) {
 			connectedPrinter = null;
 		}
@@ -72,12 +69,11 @@ public class SnapshotPanelController extends SnapshotController
 		controlSnapshotTask();
 	}
 
-	private void bindToPrinter(Printer printer)
-	{
+	private void bindToPrinter(Printer printer) {
 		connectedPrinter = printer;
 		if (connectedPrinter != null &&
 				connectedPrinter.getCommandInterface() instanceof RoboxRemoteCommandInterface) {
-			connectedServer = ((RemoteDetectedPrinter)connectedPrinter.getCommandInterface().getPrinterHandle()).getServerPrinterIsAttachedTo();
+			connectedServer = ((RemoteDetectedPrinter) connectedPrinter.getCommandInterface().getPrinterHandle()).getServerPrinterIsAttachedTo();
 			String profileName = "";
 			String cameraName = "";
 			CameraTag tag = connectedServer.cameraTagProperty().get();
@@ -99,12 +95,10 @@ public class SnapshotPanelController extends SnapshotController
 		controlSnapshotTask();
 	}
 
-	private void controlSnapshotTask()
-	{
+	private void controlSnapshotTask() {
 		if (ApplicationStatus.getInstance().modeProperty().get() == ApplicationMode.STATUS &&
 				connectedServer != null &&
-				connectedServer.getCameraDetected())
-		{
+				connectedServer.getCameraDetected()) {
 			repopulateCameraProfileChooser();
 			repopulateCameraChooser();
 			if (snapshotTask == null) {

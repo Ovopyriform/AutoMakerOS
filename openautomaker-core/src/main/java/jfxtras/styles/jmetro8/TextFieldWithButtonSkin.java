@@ -14,7 +14,7 @@ import javafx.scene.layout.StackPane;
 /**
  * Created by pedro_000 on 12/15/13.
  */
-public class TextFieldWithButtonSkin extends TextFieldSkin{
+public class TextFieldWithButtonSkin extends TextFieldSkin {
 	private StackPane rightButton;
 	private Region rightButtonGraphic;
 
@@ -75,8 +75,7 @@ public class TextFieldWithButtonSkin extends TextFieldSkin{
 		});
 	}
 
-	protected void textChanged()
-	{
+	protected void textChanged() {
 		if (textField.getText() == null)
 			return;
 
@@ -84,8 +83,7 @@ public class TextFieldWithButtonSkin extends TextFieldSkin{
 		rightButtonGraphic.setVisible(!textField.getText().isEmpty());
 	}
 
-	protected void focusChanged()
-	{
+	protected void focusChanged() {
 		if (textField.getText() == null)
 			return;
 
@@ -102,16 +100,14 @@ public class TextFieldWithButtonSkin extends TextFieldSkin{
 
 		rightButton.resize(clearButtonWidth, h);
 		positionInArea(rightButton,
-				(x+w) - clearButtonWidth, y,
+				(x + w) - clearButtonWidth, y,
 				clearButtonWidth, h, 0, HPos.CENTER, VPos.CENTER);
 	}
 
-	protected void rightButtonPressed()
-	{
+	protected void rightButtonPressed() {
 	}
 
-	protected void rightButtonReleased()
-	{
+	protected void rightButtonReleased() {
 
 	}
 

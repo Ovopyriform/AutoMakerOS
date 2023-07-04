@@ -22,8 +22,7 @@ import xyz.openautomaker.base.BaseLookup;
 import xyz.openautomaker.base.configuration.BaseConfiguration;
 
 /**
- * A JUnit {@link Rule} for running tests on the JavaFX thread and performing
- * JavaFX initialisation. To include in your test case, add the following code:
+ * A JUnit {@link Rule} for running tests on the JavaFX thread and performing JavaFX initialisation. To include in your test case, add the following code:
  *
  * <pre>
  * {@literal @}Rule
@@ -33,43 +32,36 @@ import xyz.openautomaker.base.configuration.BaseConfiguration;
  * @author Andy Till
  *
  */
-public class JavaFXThreadingRule implements TestRule
-{
+public class JavaFXThreadingRule implements TestRule {
 
 	/**
-	 * Flag for setting up the JavaFX, we only need to do this once for all
-	 * tests.
+	 * Flag for setting up the JavaFX, we only need to do this once for all tests.
 	 */
 	private static boolean jfxIsSetup;
 
 	@Override
-	public Statement apply(Statement statement, Description description)
-	{
+	public Statement apply(Statement statement, Description description) {
 
 		return new OnJFXThreadStatement(statement);
 	}
 
-	private static class OnJFXThreadStatement extends Statement
-	{
+	private static class OnJFXThreadStatement extends Statement {
 
 		private final TemporaryFolder temporaryUserStorageFolder = new TemporaryFolder();
 		private String userStorageFolderPath;
 
 		private final Statement statement;
 
-		public OnJFXThreadStatement(Statement aStatement)
-		{
+		public OnJFXThreadStatement(Statement aStatement) {
 			statement = aStatement;
 		}
 
 		private Throwable rethrownException = null;
 
 		@Override
-		public void evaluate() throws Throwable
-		{
+		public void evaluate() throws Throwable {
 
-			if (!jfxIsSetup)
-			{
+			if (!jfxIsSetup) {
 				setupJavaFX();
 
 				jfxIsSetup = true;
@@ -77,16 +69,13 @@ public class JavaFXThreadingRule implements TestRule
 
 			final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-			Platform.runLater(new Runnable()
-			{
+			Platform.runLater(new Runnable() {
 				@Override
-				public void run()
-				{
-					try
-					{
+				public void run() {
+					try {
 						statement.evaluate();
-					} catch (Throwable e)
-					{
+					}
+					catch (Throwable e) {
 						rethrownException = e;
 					}
 					countDownLatch.countDown();
@@ -97,14 +86,12 @@ public class JavaFXThreadingRule implements TestRule
 
 			// if an exception was thrown by the statement during evaluation,
 			// then re-throw it to fail the test
-			if (rethrownException != null)
-			{
+			if (rethrownException != null) {
 				throw rethrownException;
 			}
 		}
 
-		protected void setupJavaFX() throws InterruptedException
-		{
+		protected void setupJavaFX() throws InterruptedException {
 			Properties testProperties = new Properties();
 
 			testProperties.setProperty(
@@ -154,19 +141,16 @@ public class JavaFXThreadingRule implements TestRule
 			final CountDownLatch latch = new CountDownLatch(1);
 
 			SwingUtilities.invokeLater(
-					new Runnable()
-					{
+					new Runnable() {
 
 						@Override
-						public void run()
-						{
+						public void run() {
 							// initializes JavaFX environment
 							new JFXPanel();
 
 							latch.countDown();
 						}
-					}
-					);
+					});
 
 			System.out.println(
 					"javafx initialising...");

@@ -34,8 +34,7 @@ import xyz.openautomaker.base.configuration.BaseConfiguration;
  *
  * @author Ian
  */
-public class ReadmeInsetPanelController implements Initializable
-{
+public class ReadmeInsetPanelController implements Initializable {
 
 	private static final Logger LOGGER = LogManager.getLogger(ReadmeInsetPanelController.class.getName());
 
@@ -43,47 +42,38 @@ public class ReadmeInsetPanelController implements Initializable
 	private WebView textContainer;
 
 	@FXML
-	void backToStatusAction(ActionEvent event)
-	{
+	void backToStatusAction(ActionEvent event) {
 		ApplicationStatus.getInstance().setMode(ApplicationMode.STATUS);
 	}
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
+	public void initialize(URL location, ResourceBundle resources) {
 		String protocol = "file:///";
 		String basePath = BaseConfiguration.getApplicationInstallDirectory(ReadmeInsetPanelController.class) + "README/README_AutoMaker.html";
 		basePath = basePath.replace("\\", "/");
 		String urlEncodedPath = "";
 
-		try
-		{
+		try {
 			urlEncodedPath = URLEncoder.encode(urlEncodedPath, "UTF-8");
-		} catch (UnsupportedEncodingException ex)
-		{
+		}
+		catch (UnsupportedEncodingException ex) {
 			LOGGER.error("Error encoding readme URL", ex);
 		}
 
 		final String normalisedURL = protocol + basePath;
 
-		textContainer.getEngine().getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>()
-		{
+		textContainer.getEngine().getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
 
 			@Override
-			public void changed(ObservableValue<? extends Worker.State> ov, Worker.State t, Worker.State newState)
-			{
-				if (newState == Worker.State.SUCCEEDED)
-				{
+			public void changed(ObservableValue<? extends Worker.State> ov, Worker.State t, Worker.State newState) {
+				if (newState == Worker.State.SUCCEEDED) {
 					NodeList nodeList = textContainer.getEngine().getDocument().getElementsByTagName("a");
-					for (int i = 0; i < nodeList.getLength(); i++)
-					{
+					for (int i = 0; i < nodeList.getLength(); i++) {
 						Node node = nodeList.item(i);
 						EventTarget eventTarget = (EventTarget) node;
-						eventTarget.addEventListener("click", new EventListener()
-						{
+						eventTarget.addEventListener("click", new EventListener() {
 							@Override
-							public void handleEvent(Event evt)
-							{
+							public void handleEvent(Event evt) {
 								EventTarget target = evt.getCurrentTarget();
 								HTMLAnchorElement anchorElement = (HTMLAnchorElement) target;
 								String href = anchorElement.getHref();
@@ -91,29 +81,25 @@ public class ReadmeInsetPanelController implements Initializable
 								//If we're going outside of the readme file then launch in the native browser
 								String decodedHref = null;
 
-								try
-								{
+								try {
 									decodedHref = URLDecoder.decode(href, "UTF-8");
-								} catch (UnsupportedEncodingException ex)
-								{
+								}
+								catch (UnsupportedEncodingException ex) {
 									LOGGER.error("Failed to decode README href", ex);
 								}
 
 								if (decodedHref == null
-										|| !decodedHref.startsWith(normalisedURL))
-								{
+										|| !decodedHref.startsWith(normalisedURL)) {
 									evt.preventDefault();
 
-									try
-									{
+									try {
 										URI outboundURI = new URI(href);
 										if (Desktop.isDesktopSupported()
-												&& Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))
-										{
+												&& Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
 											Desktop.getDesktop().browse(outboundURI);
 										}
-									} catch (URISyntaxException | IOException ex)
-									{
+									}
+									catch (URISyntaxException | IOException ex) {
 										LOGGER.error("Unable to generate URI from " + href);
 									}
 								}

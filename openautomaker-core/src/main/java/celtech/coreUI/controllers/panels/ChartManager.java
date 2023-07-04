@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI.controllers.panels;
 
 import java.util.ArrayList;
@@ -25,13 +23,11 @@ import xyz.openautomaker.base.printerControl.model.PrinterAncillarySystems;
 import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
- * ChartManager is an auxiliary class to PrinterStatusSidePanelController and
- * manages the temperature chart.
+ * ChartManager is an auxiliary class to PrinterStatusSidePanelController and manages the temperature chart.
  *
  * @author tony
  */
-class ChartManager
-{
+class ChartManager {
 
 	private final LineChart<Number, Number> chart;
 	private XYChart.Series<Number, Number> ambientData = new XYChart.Series<>();
@@ -65,19 +61,16 @@ class ChartManager
 	private final String bedLineColour = "#ffc800";
 	private final List<String> nozzleLineColour = new ArrayList<>();
 
-	private final String rhTriangleBugCSS
-	= "-fx-background-radius: 0; "
+	private final String rhTriangleBugCSS = "-fx-background-radius: 0; "
 			+ "-fx-shape: \"M0,6 L12,0 L12,12 L0,6 Z\"; "
 			+ "-fx-scale-x: 2; "
 			+ "-fx-scale-y: 2; ";
 
-	private final String rhTriangleBugUpperOnlyCSS
-	= "-fx-background-radius: 0; "
+	private final String rhTriangleBugUpperOnlyCSS = "-fx-background-radius: 0; "
 			+ "-fx-shape: \"M0,12 L24,12 L24,24 L0,12 Z\"; "
 			+ "-fx-alignment: bottom-center; ";
 
-	private final String rhTriangleBugLowerOnlyCSS
-	= "-fx-background-radius: 0; "
+	private final String rhTriangleBugLowerOnlyCSS = "-fx-background-radius: 0; "
 			+ "-fx-shape: \"M0,6 L12,0 L12,6 L0,6 Z\"; "
 			+ "-fx-padding: 8 0 0 0;";
 
@@ -88,14 +81,14 @@ class ChartManager
 
 	private Printer currentPrinter = null;
 
-	private enum BugType
-	{
+	private enum BugType {
 
-		ALL, UPPER, LOWER
+		ALL,
+		UPPER,
+		LOWER
 	}
 
-	public ChartManager(LineChart<Number, Number> chart)
-	{
+	public ChartManager(LineChart<Number, Number> chart) {
 		this.chart = chart;
 		ambientTargetTemperatureSeries.getData().add(ambientTargetPoint);
 		bedTargetTemperatureSeries.getData().add(bedTargetPoint);
@@ -108,8 +101,7 @@ class ChartManager
 
 	}
 
-	public void bindPrinter(Printer printer)
-	{
+	public void bindPrinter(Printer printer) {
 		currentPrinter = printer;
 
 		PrinterAncillarySystems ancillarySystems = printer.getPrinterAncillarySystems();
@@ -123,25 +115,21 @@ class ChartManager
 		setBedHeaterModeProperty(ancillarySystems.bedHeaterModeProperty());
 
 		setTargetBedTemperatureProperty(ancillarySystems.bedTargetTemperatureProperty());
-		setTargetBedFirstLayerTemperatureProperty(ancillarySystems.
-				bedFirstLayerTargetTemperatureProperty());
+		setTargetBedFirstLayerTemperatureProperty(ancillarySystems.bedFirstLayerTargetTemperatureProperty());
 	}
 
-	public void unbindPrinter()
-	{
+	public void unbindPrinter() {
 		clearAmbientData();
 		clearBedData();
 		clearLegendLabels();
 	}
 
-	public void setAmbientData(XYChart.Series<Number, Number> ambientData)
-	{
+	public void setAmbientData(XYChart.Series<Number, Number> ambientData) {
 		this.ambientData = ambientData;
 		updateChartDataSources();
 	}
 
-	public void setBedData(XYChart.Series<Number, Number> bedData)
-	{
+	public void setBedData(XYChart.Series<Number, Number> bedData) {
 		this.bedData = bedData;
 		updateChartDataSources();
 	}
@@ -149,8 +137,7 @@ class ChartManager
 	/**
 	 * update the chart to display all the correct data.
 	 */
-	private void updateChartDataSources()
-	{
+	private void updateChartDataSources() {
 		dashedLineCounter = 0;
 
 		chart.getData().clear();
@@ -164,31 +151,27 @@ class ChartManager
 		setupBug(bedIndexOffset, bedTargetTemperatureSeries, bedBugColour, BugType.ALL);
 
 		//Set up the nozzle bugs
-		for (int nozzleCounter = 0; nozzleCounter < nozzleChartDataSets.size(); nozzleCounter++)
-		{
+		for (int nozzleCounter = 0; nozzleCounter < nozzleChartDataSets.size(); nozzleCounter++) {
 			BugType bugType;
-			if (nozzleCounter % 2 == 0)
-			{
+			if (nozzleCounter % 2 == 0) {
 				bugType = BugType.UPPER;
-			} else
-			{
+			}
+			else {
 				bugType = BugType.LOWER;
 			}
 
 			int nozzleBugColourIndex = 0;
-			if (currentPrinter.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD)
-			{
-				switch (nozzleCounter)
-				{
-				case 0:
-					nozzleBugColourIndex = 1;
-					break;
-				case 1:
-					nozzleBugColourIndex = 0;
-					break;
+			if (currentPrinter.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD) {
+				switch (nozzleCounter) {
+					case 0:
+						nozzleBugColourIndex = 1;
+						break;
+					case 1:
+						nozzleBugColourIndex = 0;
+						break;
 				}
-			} else
-			{
+			}
+			else {
 				nozzleBugColourIndex = 0;
 			}
 
@@ -202,22 +185,19 @@ class ChartManager
 
 		boolean dashedNozzleLines = nozzleChartDataSets.size() > 1;
 
-		for (int nozzleCounter = 0; nozzleCounter < nozzleChartDataSets.size(); nozzleCounter++)
-		{
+		for (int nozzleCounter = 0; nozzleCounter < nozzleChartDataSets.size(); nozzleCounter++) {
 			int nozzleBugColourIndex = 0;
-			if (currentPrinter.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD)
-			{
-				switch (nozzleCounter)
-				{
-				case 0:
-					nozzleBugColourIndex = 1;
-					break;
-				case 1:
-					nozzleBugColourIndex = 0;
-					break;
+			if (currentPrinter.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD) {
+				switch (nozzleCounter) {
+					case 0:
+						nozzleBugColourIndex = 1;
+						break;
+					case 1:
+						nozzleBugColourIndex = 0;
+						break;
 				}
-			} else
-			{
+			}
+			else {
 				nozzleBugColourIndex = 0;
 			}
 			setupChartLine(startOfLineSection + firstNozzleIndexOffset + nozzleCounter,
@@ -227,83 +207,70 @@ class ChartManager
 		}
 	}
 
-	private void setupBug(int offset, XYChart.Series<Number, Number> series, String webColour, BugType bugType)
-	{
+	private void setupBug(int offset, XYChart.Series<Number, Number> series, String webColour, BugType bugType) {
 		chart.getData().add(offset, series);
 		Set<Node> symbolNodes = chart.lookupAll(".default-color" + offset + ".chart-line-symbol");
 
-		symbolNodes.forEach(symbolNode ->
-		{
-			switch (bugType)
-			{
-			case ALL:
-				symbolNode.setStyle(rhTriangleBugCSS + "-fx-background-color: " + webColour + "; ");
-				break;
-			case LOWER:
-				symbolNode.setStyle(rhTriangleBugLowerOnlyCSS + "-fx-background-color: " + webColour + "; ");
-				break;
-			case UPPER:
-				symbolNode.setStyle(rhTriangleBugUpperOnlyCSS + "-fx-background-color: " + webColour + "; ");
-				break;
+		symbolNodes.forEach(symbolNode -> {
+			switch (bugType) {
+				case ALL:
+					symbolNode.setStyle(rhTriangleBugCSS + "-fx-background-color: " + webColour + "; ");
+					break;
+				case LOWER:
+					symbolNode.setStyle(rhTriangleBugLowerOnlyCSS + "-fx-background-color: " + webColour + "; ");
+					break;
+				case UPPER:
+					symbolNode.setStyle(rhTriangleBugUpperOnlyCSS + "-fx-background-color: " + webColour + "; ");
+					break;
 			}
 		});
 	}
 
 	private void setupChartLine(int offset, XYChart.Series<Number, Number> series, String webColour,
-			boolean dashed)
-	{
+			boolean dashed) {
 		chart.getData().add(offset, series);
 
 		Set<Node> symbolNodes = chart.lookupAll(".default-color" + offset + ".chart-line-symbol");
 
-		symbolNodes.forEach(symbolNode ->
-		{
+		symbolNodes.forEach(symbolNode -> {
 			symbolNode.setStyle("visibility: hidden;");
 		});
 
 		Node lineNode = chart.lookup(".default-color" + offset + ".chart-series-line");
 
-		if (lineNode != null)
-		{
-			if (dashed)
-			{
-				if (dashedLineCounter > 0)
-				{
+		if (lineNode != null) {
+			if (dashed) {
+				if (dashedLineCounter > 0) {
 					lineNode.setStyle(graphLineThinCSS + "-fx-stroke: " + webColour);
-				} else
-				{
+				}
+				else {
 					lineNode.setStyle(graphLineFatCSS + "-fx-stroke: " + webColour);
 				}
 				dashedLineCounter++;
-			} else
-			{
+			}
+			else {
 				lineNode.setStyle(graphLineCSS + "-fx-stroke: " + webColour + "; ");
 			}
 		}
 	}
 
-	void clearBedData()
-	{
+	void clearBedData() {
 		bedData = new XYChart.Series<>();
 		bedTemperatureProperty = null;
 	}
 
-	void clearAmbientData()
-	{
+	void clearAmbientData() {
 		ambientData = new XYChart.Series<>();
 		ambientTemperatureProperty = null;
 	}
 
-	ChangeListener<Number> ambientTargetTemperatureListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-	{
+	ChangeListener<Number> ambientTargetTemperatureListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 		ambientTargetPoint.setYValue(newValue);
 	};
 
 	void setTargetAmbientTemperatureProperty(
-			ReadOnlyIntegerProperty ambientTargetTemperatureProperty)
-	{
-		if (this.ambientTargetTemperatureProperty != null)
-		{
+			ReadOnlyIntegerProperty ambientTargetTemperatureProperty) {
+		if (this.ambientTargetTemperatureProperty != null) {
 			ambientTargetTemperatureProperty.removeListener(ambientTargetTemperatureListener);
 		}
 		ambientTargetPoint.setYValue(ambientTargetTemperatureProperty.get());
@@ -311,16 +278,13 @@ class ChartManager
 		ambientTargetTemperatureProperty.addListener(ambientTargetTemperatureListener);
 	}
 
-	ChangeListener<Number> bedTargetTemperatureListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-	{
+	ChangeListener<Number> bedTargetTemperatureListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 		updateBedTargetPoint();
 	};
 
 	void setTargetBedTemperatureProperty(
-			ReadOnlyIntegerProperty bedTargetTemperatureProperty)
-	{
-		if (this.bedTargetTemperatureProperty != null)
-		{
+			ReadOnlyIntegerProperty bedTargetTemperatureProperty) {
+		if (this.bedTargetTemperatureProperty != null) {
 			this.bedTargetTemperatureProperty.removeListener(bedTargetTemperatureListener);
 		}
 		this.bedTargetTemperatureProperty = bedTargetTemperatureProperty;
@@ -329,16 +293,13 @@ class ChartManager
 		updateBedTargetPoint();
 	}
 
-	ChangeListener<Number> bedFirstLayerTargetTemperatureListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-	{
+	ChangeListener<Number> bedFirstLayerTargetTemperatureListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 		updateBedTargetPoint();
 	};
 
 	void setTargetBedFirstLayerTemperatureProperty(
-			ReadOnlyIntegerProperty bedFirstLayerTargetTemperatureProperty)
-	{
-		if (this.bedFirstLayerTargetTemperatureProperty != null)
-		{
+			ReadOnlyIntegerProperty bedFirstLayerTargetTemperatureProperty) {
+		if (this.bedFirstLayerTargetTemperatureProperty != null) {
 			this.bedFirstLayerTargetTemperatureProperty.removeListener(bedTargetTemperatureListener);
 		}
 		this.bedFirstLayerTargetTemperatureProperty = bedFirstLayerTargetTemperatureProperty;
@@ -347,15 +308,12 @@ class ChartManager
 		updateBedTargetPoint();
 	}
 
-	ChangeListener<HeaterMode> bedHeaterModeListener = (ObservableValue<? extends HeaterMode> observable, HeaterMode oldValue, HeaterMode newValue) ->
-	{
+	ChangeListener<HeaterMode> bedHeaterModeListener = (ObservableValue<? extends HeaterMode> observable, HeaterMode oldValue, HeaterMode newValue) -> {
 		updateBedTargetPoint();
 	};
 
-	void setBedHeaterModeProperty(ReadOnlyObjectProperty<HeaterMode> bedHeaterModeProperty)
-	{
-		if (this.bedHeaterModeProperty != null)
-		{
+	void setBedHeaterModeProperty(ReadOnlyObjectProperty<HeaterMode> bedHeaterModeProperty) {
+		if (this.bedHeaterModeProperty != null) {
 			this.bedHeaterModeProperty.removeListener(bedHeaterModeListener);
 		}
 		bedHeaterModeProperty.addListener(bedHeaterModeListener);
@@ -363,69 +321,57 @@ class ChartManager
 		updateBedTargetPoint();
 	}
 
-	void updateBedTargetPoint()
-	{
-		if (bedHeaterModeProperty.get() == HeaterMode.OFF)
-		{
+	void updateBedTargetPoint() {
+		if (bedHeaterModeProperty.get() == HeaterMode.OFF) {
 			bedTargetPoint.setYValue(0);
-		} else if (bedHeaterModeProperty.get() == HeaterMode.FIRST_LAYER)
-		{
+		}
+		else if (bedHeaterModeProperty.get() == HeaterMode.FIRST_LAYER) {
 			bedTargetPoint.setYValue(bedFirstLayerTargetTemperatureProperty.get());
-		} else if (bedHeaterModeProperty.get() == HeaterMode.NORMAL)
-		{
+		}
+		else if (bedHeaterModeProperty.get() == HeaterMode.NORMAL) {
 			bedTargetPoint.setYValue(bedTargetTemperatureProperty.get());
 		}
 	}
 
-	void setLegendLabels(Label legendBed, Label legendAmbient)
-	{
+	void setLegendLabels(Label legendBed, Label legendAmbient) {
 		this.legendBed = legendBed;
 		this.legendAmbient = legendAmbient;
 		updateLegend();
 	}
 
-	void clearLegendLabels()
-	{
+	void clearLegendLabels() {
 		this.legendBed = null;
 		this.legendAmbient = null;
 		updateLegend();
 	}
 
-	private void updateLegend()
-	{
+	private void updateLegend() {
 		String degreesC = OpenAutoMakerEnv.getI18N().t("misc.degreesC");
 		String legendBedText = OpenAutoMakerEnv.getI18N().t("printerStatus.temperatureGraphBedLabel");
 		String legendAmbientText = OpenAutoMakerEnv.getI18N().t("printerStatus.temperatureGraphAmbientLabel");
 
-		if (legendBed != null && bedTemperatureProperty != null)
-		{
+		if (legendBed != null && bedTemperatureProperty != null) {
 			legendBedText += String.format(" %s%s", bedTemperatureProperty.get(), degreesC);
 		}
 
-		if (legendAmbient != null && ambientTemperatureProperty != null)
-		{
+		if (legendAmbient != null && ambientTemperatureProperty != null) {
 			legendAmbientText += String.format(" %s%s", ambientTemperatureProperty.get(), degreesC);
 		}
 
-		if (legendBed != null)
-		{
+		if (legendBed != null) {
 			legendBed.setText(legendBedText);
 		}
-		if (legendAmbient != null)
-		{
+		if (legendAmbient != null) {
 			legendAmbient.setText(legendAmbientText);
 		}
 	}
 
-	InvalidationListener bedTemperatureListener = (Observable observable) ->
-	{
+	InvalidationListener bedTemperatureListener = (Observable observable) -> {
 		updateLegend();
 	};
 
-	void setBedTemperatureProperty(ReadOnlyIntegerProperty bedTemperatureProperty)
-	{
-		if (this.bedTemperatureProperty != null)
-		{
+	void setBedTemperatureProperty(ReadOnlyIntegerProperty bedTemperatureProperty) {
+		if (this.bedTemperatureProperty != null) {
 			this.bedTemperatureProperty.removeListener(bedTemperatureListener);
 		}
 		this.bedTemperatureProperty = bedTemperatureProperty;
@@ -433,15 +379,12 @@ class ChartManager
 		updateLegend();
 	}
 
-	InvalidationListener ambientTemperatureListener = (Observable observable) ->
-	{
+	InvalidationListener ambientTemperatureListener = (Observable observable) -> {
 		updateLegend();
 	};
 
-	void setAmbientTemperatureProperty(ReadOnlyIntegerProperty ambientTemperatureProperty)
-	{
-		if (this.ambientTemperatureProperty != null)
-		{
+	void setAmbientTemperatureProperty(ReadOnlyIntegerProperty ambientTemperatureProperty) {
+		if (this.ambientTemperatureProperty != null) {
 			this.ambientTemperatureProperty.removeListener(ambientTemperatureListener);
 		}
 		this.ambientTemperatureProperty = ambientTemperatureProperty;
@@ -453,8 +396,7 @@ class ChartManager
 			ReadOnlyObjectProperty<HeaterMode> nozzleHeaterModeProperty,
 			ReadOnlyIntegerProperty nozzleTargetTemperatureProperty,
 			ReadOnlyIntegerProperty nozzleFirstLayerTargetTemperatureProperty,
-			ReadOnlyIntegerProperty nozzleTemperatureProperty)
-	{
+			ReadOnlyIntegerProperty nozzleTemperatureProperty) {
 		NozzleChartData nozzleChartData = new NozzleChartData(nozzleNumber, nozzleTemperatureData,
 				nozzleHeaterModeProperty,
 				nozzleTargetTemperatureProperty,
@@ -466,18 +408,15 @@ class ChartManager
 		updateChartDataSources();
 	}
 
-	void removeNozzle(int nozzleNumber)
-	{
+	void removeNozzle(int nozzleNumber) {
 		nozzleChartDataSets.get(nozzleNumber).destroy();
 		nozzleChartDataSets.remove(nozzleNumber);
 
 		updateChartDataSources();
 	}
 
-	void removeAllNozzles()
-	{
-		nozzleChartDataSets.forEach(dataSet ->
-		{
+	void removeAllNozzles() {
+		nozzleChartDataSets.forEach(dataSet -> {
 			dataSet.destroy();
 		});
 

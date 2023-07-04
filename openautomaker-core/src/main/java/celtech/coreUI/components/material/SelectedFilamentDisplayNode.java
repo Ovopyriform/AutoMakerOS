@@ -12,8 +12,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian
  */
-public class SelectedFilamentDisplayNode extends HBox
-{
+public class SelectedFilamentDisplayNode extends HBox {
 
 	private static final int SWATCH_SQUARE_SIZE = 16;
 
@@ -22,8 +21,7 @@ public class SelectedFilamentDisplayNode extends HBox
 
 	private Filament filamentOnDisplay = null;
 
-	public SelectedFilamentDisplayNode()
-	{
+	public SelectedFilamentDisplayNode() {
 		setAlignment(Pos.CENTER_LEFT);
 		rectangle = new Rectangle(SWATCH_SQUARE_SIZE, SWATCH_SQUARE_SIZE);
 		label = new Label();
@@ -32,21 +30,19 @@ public class SelectedFilamentDisplayNode extends HBox
 		getChildren().addAll(rectangle, label);
 	}
 
-	public void updateSelectedFilament(Filament filament)
-	{
+	public void updateSelectedFilament(Filament filament) {
 		if (filament != null
-				&& filament != FilamentContainer.UNKNOWN_FILAMENT)
-		{
+				&& filament != FilamentContainer.UNKNOWN_FILAMENT) {
 			rectangle.setVisible(true);
 			rectangle.setFill(filament.getDisplayColour());
 
 			label.setText(filament.getLongFriendlyName());
-		} else if (filament == FilamentContainer.UNKNOWN_FILAMENT)
-		{
+		}
+		else if (filament == FilamentContainer.UNKNOWN_FILAMENT) {
 			rectangle.setVisible(false);
 			label.setText(filament.getLongFriendlyName());
-		} else
-		{
+		}
+		else {
 			rectangle.setVisible(false);
 			label.setText(OpenAutoMakerEnv.getI18N().t("materialComponent.unknown"));
 		}
@@ -54,8 +50,7 @@ public class SelectedFilamentDisplayNode extends HBox
 		filamentOnDisplay = filament;
 	}
 
-	public Filament getSelectedFilament()
-	{
+	public Filament getSelectedFilament() {
 		return filamentOnDisplay;
 	}
 }

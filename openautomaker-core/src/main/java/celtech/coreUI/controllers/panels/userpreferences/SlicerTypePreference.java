@@ -19,8 +19,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian
  */
-public class SlicerTypePreference implements PreferencesInnerPanelController.Preference
-{
+public class SlicerTypePreference implements PreferencesInnerPanelController.Preference {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final ComboBox<SlicerType> control;
@@ -39,8 +38,7 @@ public class SlicerTypePreference implements PreferencesInnerPanelController.Pre
 		}
 	};
 
-	public SlicerTypePreference(UserPreferences userPreferences)
-	{
+	public SlicerTypePreference(UserPreferences userPreferences) {
 		this.userPreferences = userPreferences;
 
 		control = new ComboBox<>();
@@ -59,14 +57,13 @@ public class SlicerTypePreference implements PreferencesInnerPanelController.Pre
 	}
 
 	@Override
-	public void updateValueFromControl()
-	{
+	public void updateValueFromControl() {
 		if (!updating) {
 			// TODO: Sounds a bit funky.  Really need to do this?  Perhaps no auto debounce?
 			updating = true; // Prevent recursive calls.
 			SlicerType slicerType = control.getValue();
 
-			if(slicerType == null)
+			if (slicerType == null)
 				slicerType = SlicerType.Cura;
 
 			control.setValue(slicerType);
@@ -77,27 +74,23 @@ public class SlicerTypePreference implements PreferencesInnerPanelController.Pre
 	}
 
 	@Override
-	public void populateControlWithCurrentValue()
-	{
+	public void populateControlWithCurrentValue() {
 		SlicerType chosenType = userPreferences.getSlicerType();
 		control.setValue(chosenType);
 	}
 
 	@Override
-	public Control getControl()
-	{
+	public Control getControl() {
 		return control;
 	}
 
 	@Override
-	public String getDescription()
-	{
+	public String getDescription() {
 		return OpenAutoMakerEnv.getI18N().t("preferences.slicerType");
 	}
 
 	@Override
-	public void disableProperty(ObservableValue<Boolean> disableProperty)
-	{
+	public void disableProperty(ObservableValue<Boolean> disableProperty) {
 		control.disableProperty().unbind();
 		control.disableProperty().bind(disableProperty);
 	}

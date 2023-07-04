@@ -107,10 +107,10 @@ public class SmoothingGroups {
 		for (int f = 0; f < faces.length; f++) {
 			int[] face = faces[f];
 			int[] faceNormal = faceNormals[f];
-			int n = face.length/2;
+			int n = face.length / 2;
 			faceEdges[f] = new Edge[n];
-			int from = face[(n-1) * 2];
-			int fromNormal = faceNormal[n-1];
+			int from = face[(n - 1) * 2];
+			int fromNormal = faceNormal[n - 1];
 			for (int i = 0; i < n; i++) {
 				int to = face[i * 2];
 				int toNormal = faceNormal[i];
@@ -132,7 +132,7 @@ public class SmoothingGroups {
 				adjacentFaces.get(edge).add(f);
 			}
 		}
-		for (Iterator<Map.Entry<Edge, List<Integer>>> it = adjacentFaces.entrySet().iterator(); it.hasNext(); ) {
+		for (Iterator<Map.Entry<Edge, List<Integer>>> it = adjacentFaces.entrySet().iterator(); it.hasNext();) {
 			Map.Entry<Edge, List<Integer>> e = it.next();
 			if (e.getValue().size() != 2) {
 				// just skip them
@@ -208,7 +208,8 @@ public class SmoothingGroups {
 			List<Integer> list = group;
 			if (list.size() == 1) {
 				smGroups[list.get(0)] = 0;
-			} else {
+			}
+			else {
 				for (Integer element : list) {
 					Integer faceIndex = element;
 					smGroups[faceIndex] = 1 << curGroup;
@@ -279,9 +280,10 @@ public class SmoothingGroups {
 
 	/**
 	 * Calculates smoothing groups for data formatted in PolygonMesh style
-	 * @param faces An array of faces, where each face consists of an array of vertex and uv indices
+	 * 
+	 * @param faces       An array of faces, where each face consists of an array of vertex and uv indices
 	 * @param faceNormals An array of face normals, where each face normal consists of an array of normal indices
-	 * @param normals The array of normals
+	 * @param normals     The array of normals
 	 * @return An array of smooth groups, where the length of the array is the number of faces
 	 */
 	public static int[] calcSmoothGroups(int[][] faces, int[][] faceNormals, float[] normals) {
@@ -291,22 +293,23 @@ public class SmoothingGroups {
 
 	/**
 	 * Calculates smoothing groups for data formatted in TriangleMesh style
-	 * @param flatFaces An array of faces, where each triangle face is represented by 6 (vertex and uv) indices
+	 * 
+	 * @param flatFaces       An array of faces, where each triangle face is represented by 6 (vertex and uv) indices
 	 * @param flatFaceNormals An array of face normals, where each triangle face is represented by 3 normal indices
-	 * @param normals The array of normals
+	 * @param normals         The array of normals
 	 * @return An array of smooth groups, where the length of the array is the number of faces
 	 */
 	public static int[] calcSmoothGroups(int[] flatFaces, int[] flatFaceNormals, float[] normals) {
-		int[][] faces = new int[flatFaces.length/ReplacementConstants.NUM_COMPONENTS_PER_FACE][ReplacementConstants.NUM_COMPONENTS_PER_FACE];
+		int[][] faces = new int[flatFaces.length / ReplacementConstants.NUM_COMPONENTS_PER_FACE][ReplacementConstants.NUM_COMPONENTS_PER_FACE];
 		for (int f = 0; f < faces.length; f++) {
 			for (int e = 0; e < ReplacementConstants.NUM_COMPONENTS_PER_FACE; e++) {
-				faces[f][e] = flatFaces[f*ReplacementConstants.NUM_COMPONENTS_PER_FACE + e];
+				faces[f][e] = flatFaces[f * ReplacementConstants.NUM_COMPONENTS_PER_FACE + e];
 			}
 		}
-		int[][] faceNormals = new int[flatFaceNormals.length/ReplacementConstants.NUM_COMPONENTS_PER_POINT][ReplacementConstants.NUM_COMPONENTS_PER_POINT];
+		int[][] faceNormals = new int[flatFaceNormals.length / ReplacementConstants.NUM_COMPONENTS_PER_POINT][ReplacementConstants.NUM_COMPONENTS_PER_POINT];
 		for (int f = 0; f < faceNormals.length; f++) {
 			for (int e = 0; e < ReplacementConstants.NUM_COMPONENTS_PER_POINT; e++) {
-				faceNormals[f][e] = flatFaceNormals[f*ReplacementConstants.NUM_COMPONENTS_PER_POINT + e];
+				faceNormals[f][e] = flatFaceNormals[f * ReplacementConstants.NUM_COMPONENTS_PER_POINT + e];
 			}
 		}
 		SmoothingGroups smoothGroups = new SmoothingGroups(faces, faceNormals, normals);

@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI.visualisation;
 
 import static xyz.openautomaker.base.utils.DeDuplicator.suggestNonDuplicateName;
@@ -33,13 +31,11 @@ import javafx.collections.ObservableSet;
 import xyz.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
 
 /**
- * ProjectSelection captures all required state about the currently selected
- * ModelContainers.
+ * ProjectSelection captures all required state about the currently selected ModelContainers.
  *
  * @author tony
  */
-public class ProjectSelection implements ProjectChangesListener
-{
+public class ProjectSelection implements ProjectChangesListener {
 
 	private final ObservableSet<ProjectifiableThing> modelContainers;
 	private final PrimarySelectedModelDetails primarySelectedModelDetails;
@@ -50,33 +46,27 @@ public class ProjectSelection implements ProjectChangesListener
 	private final Project project;
 
 	/**
-	 * If any of the current selection are a child of a group then value is
-	 * true.
+	 * If any of the current selection are a child of a group then value is true.
 	 */
 	private final BooleanBinding selectionHasChildOfGroup;
 
-	public ProjectSelection(Project project)
-	{
+	public ProjectSelection(Project project) {
 		modelContainers = FXCollections.observableSet();
 		primarySelectedModelDetails = new PrimarySelectedModelDetails();
 		selectedModelContainersListeners = new HashSet<>();
 		project.addProjectChangesListener(this);
 		this.project = project;
 
-		selectionHasChildOfGroup = new BooleanBinding()
-		{
+		selectionHasChildOfGroup = new BooleanBinding() {
 			{
 				super.bind(modelContainers);
 			}
 
 			@Override
-			protected boolean computeValue()
-			{
-				for (ProjectifiableThing modelContainer : modelContainers)
-				{
+			protected boolean computeValue() {
+				for (ProjectifiableThing modelContainer : modelContainers) {
 					if ((modelContainer instanceof ModelContainer)
-							&& ((ModelContainer) modelContainer).getParentModelContainer() != null)
-					{
+							&& ((ModelContainer) modelContainer).getParentModelContainer() != null) {
 						return true;
 					}
 				}
@@ -86,34 +76,28 @@ public class ProjectSelection implements ProjectChangesListener
 		};
 	}
 
-	public BooleanBinding getSelectionHasChildOfGroup()
-	{
+	public BooleanBinding getSelectionHasChildOfGroup() {
 		return selectionHasChildOfGroup;
 	}
 
 	/**
 	 * Add the given modelContainer to the set of selected ModelContainers.
 	 */
-	public void addSelectedItem(ProjectifiableThing modelContainer)
-	{
-		if (!modelContainers.contains(modelContainer))
-		{
+	public void addSelectedItem(ProjectifiableThing modelContainer) {
+		if (!modelContainers.contains(modelContainer)) {
 			modelContainer.setSelected(true);
 			modelContainers.add(modelContainer);
 			primarySelectedModelDetails.setTo(modelContainer);
 			numModelsSelected.set(numModelsSelected.get() + 1);
-			if (modelContainer instanceof ModelGroup)
-			{
+			if (modelContainer instanceof ModelGroup) {
 				numGroupsSelected.set(numGroupsSelected.get() + 1);
-				if (modelContainer instanceof ModelContainer)
-				{
+				if (modelContainer instanceof ModelContainer) {
 					((ModelContainer) modelContainer).updateOriginalModelBounds();
 					((ModelContainer) modelContainer).notifyScreenExtentsChange();
 					((ModelContainer) modelContainer).notifyShapeChange();
 				}
 			}
-			for (SelectedModelContainersListener selectedModelContainersListener : selectedModelContainersListeners)
-			{
+			for (SelectedModelContainersListener selectedModelContainersListener : selectedModelContainersListeners) {
 				selectedModelContainersListener.whenAdded(modelContainer);
 			}
 		}
@@ -124,23 +108,19 @@ public class ProjectSelection implements ProjectChangesListener
 	 *
 	 * @param projectifiableThing
 	 */
-	public void removeModelContainer(ProjectifiableThing projectifiableThing)
-	{
-		if (modelContainers.contains(projectifiableThing))
-		{
+	public void removeModelContainer(ProjectifiableThing projectifiableThing) {
+		if (modelContainers.contains(projectifiableThing)) {
 			projectifiableThing.setSelected(false);
 			modelContainers.remove(projectifiableThing);
 			numModelsSelected.set(numModelsSelected.get() - 1);
-			if (projectifiableThing instanceof ModelGroup)
-			{
+			if (projectifiableThing instanceof ModelGroup) {
 				numGroupsSelected.set(numGroupsSelected.get() - 1);
 				ModelGroup modelGroup = (ModelGroup) projectifiableThing;
 				modelGroup.updateOriginalModelBounds();
 				modelGroup.notifyScreenExtentsChange();
 				modelGroup.notifyShapeChange();
 			}
-			for (SelectedModelContainersListener selectedModelContainersListener : selectedModelContainersListeners)
-			{
+			for (SelectedModelContainersListener selectedModelContainersListener : selectedModelContainersListeners) {
 				selectedModelContainersListener.whenRemoved(projectifiableThing);
 			}
 		}
@@ -153,19 +133,16 @@ public class ProjectSelection implements ProjectChangesListener
 	 * @param modelContainer
 	 * @return
 	 */
-	public boolean isSelected(ModelContainer modelContainer)
-	{
+	public boolean isSelected(ModelContainer modelContainer) {
 		return modelContainers.contains(modelContainer);
 	}
 
 	/**
 	 * Deselect all ModelContainers in the set of ModelContainers.
 	 */
-	public void deselectAllModels()
-	{
+	public void deselectAllModels() {
 		Set<ProjectifiableThing> allSelectedModelContainers = new HashSet<>(modelContainers);
-		for (ProjectifiableThing modelContainer : allSelectedModelContainers)
-		{
+		for (ProjectifiableThing modelContainer : allSelectedModelContainers) {
 			removeModelContainer(modelContainer);
 		}
 	}
@@ -175,8 +152,7 @@ public class ProjectSelection implements ProjectChangesListener
 	 *
 	 * @return
 	 */
-	public Set<ProjectifiableThing> getSelectedModelsSnapshot()
-	{
+	public Set<ProjectifiableThing> getSelectedModelsSnapshot() {
 		return new HashSet<>(modelContainers);
 	}
 
@@ -186,14 +162,11 @@ public class ProjectSelection implements ProjectChangesListener
 	 * @param desiredClass
 	 * @return
 	 */
-	public <T> Set<T> getSelectedModelsSnapshot(Class desiredClass)
-	{
+	public <T> Set<T> getSelectedModelsSnapshot(Class desiredClass) {
 		Set<T> returnedModels = new HashSet<>();
 
-		for (ProjectifiableThing container : modelContainers)
-		{
-			if (desiredClass.isInstance(container))
-			{
+		for (ProjectifiableThing container : modelContainers) {
+			if (desiredClass.isInstance(container)) {
 				returnedModels.add((T) container);
 			}
 		}
@@ -206,8 +179,7 @@ public class ProjectSelection implements ProjectChangesListener
 	 *
 	 * @return
 	 */
-	public ReadOnlyIntegerProperty getNumModelsSelectedProperty()
-	{
+	public ReadOnlyIntegerProperty getNumModelsSelectedProperty() {
 		return numModelsSelected;
 	}
 
@@ -216,8 +188,7 @@ public class ProjectSelection implements ProjectChangesListener
 	 *
 	 * @return
 	 */
-	public ReadOnlyIntegerProperty getNumGroupsSelectedProperty()
-	{
+	public ReadOnlyIntegerProperty getNumGroupsSelectedProperty() {
 		return numGroupsSelected;
 	}
 
@@ -226,32 +197,28 @@ public class ProjectSelection implements ProjectChangesListener
 	 *
 	 * @return
 	 */
-	public PrimarySelectedModelDetails getPrimarySelectedModelDetails()
-	{
+	public PrimarySelectedModelDetails getPrimarySelectedModelDetails() {
 		return primarySelectedModelDetails;
 	}
 
 	/**
-	 * Call this method when the transformed geometry of the selected model have
-	 * changed.
+	 * Call this method when the transformed geometry of the selected model have changed.
 	 */
-	public void updateSelectedValues()
-	{
+	public void updateSelectedValues() {
 		primarySelectedModelDetails.updateSelectedProperties();
 	}
 
 	@Override
-	public void whenModelAdded(ProjectifiableThing projectifiableThing)
-	{
-		if(!project.isProjectNameModified())
-		{
+	public void whenModelAdded(ProjectifiableThing projectifiableThing) {
+		if (!project.isProjectNameModified()) {
 			ModelContainer modelContainer = (ModelContainer) projectifiableThing;
 			Optional<ModelContainer> childModel = modelContainer.getChildModelContainers().stream().findFirst();
 			String projectName;
-			if(childModel.isPresent()) {
+			if (childModel.isPresent()) {
 				// Regex looks for split on any period follwed by any number of non-periods and the end of input
 				projectName = childModel.get().getModelName().split("\\.(?=[^\\.]+$)")[0];
-			} else {
+			}
+			else {
 				// Regex looks for split on any period follwed by any number of non-periods and the end of input
 				projectName = modelContainer.getModelName().split("\\.(?=[^\\.]+$)")[0];
 			}
@@ -264,67 +231,55 @@ public class ProjectSelection implements ProjectChangesListener
 	}
 
 	@Override
-	public void whenModelsRemoved(Set<ProjectifiableThing> projectifiableThings)
-	{
+	public void whenModelsRemoved(Set<ProjectifiableThing> projectifiableThings) {
 		List<ProjectifiableThing> thingsToRemove = new ArrayList<>();
 		thingsToRemove.addAll(modelContainers);
-		for (ProjectifiableThing modelContainer : thingsToRemove)
-		{
+		for (ProjectifiableThing modelContainer : thingsToRemove) {
 			removeModelContainer(modelContainer);
 		}
 	}
 
 	@Override
-	public void whenAutoLaidOut()
-	{
+	public void whenAutoLaidOut() {
 		updateSelectedValues();
 	}
 
 	@Override
-	public void whenModelsTransformed(Set<ProjectifiableThing> projectifiableThings)
-	{
+	public void whenModelsTransformed(Set<ProjectifiableThing> projectifiableThings) {
 		updateSelectedValues();
 	}
 
 	@Override
-	public void whenModelChanged(ProjectifiableThing modelContainer, String propertyName)
-	{
+	public void whenModelChanged(ProjectifiableThing modelContainer, String propertyName) {
 	}
 
 	@Override
-	public void whenPrinterSettingsChanged(PrinterSettingsOverrides printerSettings)
-	{
+	public void whenPrinterSettingsChanged(PrinterSettingsOverrides printerSettings) {
 	}
 
 	@Override
-	public void whenTimelapseSettingsChanged(TimelapseSettingsData timelapseSettings)
-	{
+	public void whenTimelapseSettingsChanged(TimelapseSettingsData timelapseSettings) {
 	}
 
 	/**
-	 * Add a listener that will be notified whenever a ModelContainer is
-	 * selected or deselected.
+	 * Add a listener that will be notified whenever a ModelContainer is selected or deselected.
 	 *
 	 * @param selectedModelContainersListener
 	 */
-	public void addListener(SelectedModelContainersListener selectedModelContainersListener)
-	{
+	public void addListener(SelectedModelContainersListener selectedModelContainersListener) {
 		selectedModelContainersListeners.add(selectedModelContainersListener);
 	}
 
 	/**
-	 * Remove a listener that will be notified whenever a ModelContainer is
-	 * selected or deselected.
+	 * Remove a listener that will be notified whenever a ModelContainer is selected or deselected.
 	 *
 	 * @param selectedModelContainersListener
 	 */
-	public void removeListener(SelectedModelContainersListener selectedModelContainersListener)
-	{
+	public void removeListener(SelectedModelContainersListener selectedModelContainersListener) {
 		selectedModelContainersListeners.remove(selectedModelContainersListener);
 	}
 
-	public interface SelectedModelContainersListener
-	{
+	public interface SelectedModelContainersListener {
 
 		/**
 		 * Called when a ModelContainer is selected.
@@ -338,11 +293,9 @@ public class ProjectSelection implements ProjectChangesListener
 	}
 
 	/**
-	 * PrimarySelectedModelDetails contains the details pertaining to the
-	 * primary selected ModelContainer.
+	 * PrimarySelectedModelDetails contains the details pertaining to the primary selected ModelContainer.
 	 */
-	public class PrimarySelectedModelDetails
-	{
+	public class PrimarySelectedModelDetails {
 
 		ProjectifiableThing boundModelContainer;
 
@@ -359,110 +312,92 @@ public class ProjectSelection implements ProjectChangesListener
 		private final DoubleProperty rotationTwist = new SimpleDoubleProperty(-1);
 		private final DoubleProperty rotationTurn = new SimpleDoubleProperty(-1);
 
-		private PrimarySelectedModelDetails()
-		{
+		private PrimarySelectedModelDetails() {
 		}
 
-		public DoubleProperty getWidth()
-		{
+		public DoubleProperty getWidth() {
 			return width;
 		}
 
-		public void setTo(ProjectifiableThing modelContainer)
-		{
+		public void setTo(ProjectifiableThing modelContainer) {
 			boundModelContainer = modelContainer;
 			updateSelectedProperties();
 		}
 
-		private void updateSelectedProperties()
-		{
-			if (boundModelContainer != null)
-			{
-				if (boundModelContainer instanceof ShapeProviderThreeD)
-				{
+		private void updateSelectedProperties() {
+			if (boundModelContainer != null) {
+				if (boundModelContainer instanceof ShapeProviderThreeD) {
 					width.set(((ShapeProviderTwoD) boundModelContainer).getScaledWidth());
 					height.set(((ShapeProviderTwoD) boundModelContainer).getScaledHeight());
 					depth.set(((ShapeProviderThreeD) boundModelContainer).getScaledDepth());
 					centreX.set(boundModelContainer.getTransformedCentreX());
 					centreDepth.set(boundModelContainer.getTransformedCentreDepth());
-				} else if (boundModelContainer instanceof ShapeProviderTwoD)
-				{
+				}
+				else if (boundModelContainer instanceof ShapeProviderTwoD) {
 					width.set(((ShapeProviderTwoD) boundModelContainer).getScaledWidth());
 					height.set(((ShapeProviderTwoD) boundModelContainer).getScaledHeight());
 					centreX.set(boundModelContainer.getTransformedCentreX());
 					centreDepth.set(boundModelContainer.getTransformedCentreDepth());
 				}
 
-				if (boundModelContainer instanceof ScaleableThreeD)
-				{
+				if (boundModelContainer instanceof ScaleableThreeD) {
 					scaleX.set(((ScaleableTwoD) boundModelContainer).getXScale());
 					scaleY.set(((ScaleableTwoD) boundModelContainer).getYScale());
 					scaleZ.set(((ScaleableThreeD) boundModelContainer).getZScale());
-				} else if (boundModelContainer instanceof ScaleableTwoD)
-				{
+				}
+				else if (boundModelContainer instanceof ScaleableTwoD) {
 					scaleX.set(((ScaleableTwoD) boundModelContainer).getXScale());
 					scaleY.set(((ScaleableTwoD) boundModelContainer).getYScale());
 				}
 
-				if (boundModelContainer instanceof RotatableThreeD)
-				{
+				if (boundModelContainer instanceof RotatableThreeD) {
 					rotationLean.set(((RotatableThreeD) boundModelContainer).getRotationLean());
 					rotationTwist.set(((RotatableThreeD) boundModelContainer).getRotationTwist());
 					rotationTurn.set(((RotatableTwoD) boundModelContainer).getRotationTurn());
-				} else if (boundModelContainer instanceof RotatableTwoD)
-				{
+				}
+				else if (boundModelContainer instanceof RotatableTwoD) {
 					rotationTurn.set(((RotatableTwoD) boundModelContainer).getRotationTurn());
 				}
 			}
 		}
 
-		public DoubleProperty getCentreDepth()
-		{
+		public DoubleProperty getCentreDepth() {
 			return centreDepth;
 		}
 
-		public DoubleProperty getCentreX()
-		{
+		public DoubleProperty getCentreX() {
 			return centreX;
 		}
 
-		public DoubleProperty getHeight()
-		{
+		public DoubleProperty getHeight() {
 			return height;
 		}
 
-		public DoubleProperty getDepth()
-		{
+		public DoubleProperty getDepth() {
 			return depth;
 		}
 
-		public DoubleProperty getScaleX()
-		{
+		public DoubleProperty getScaleX() {
 			return scaleX;
 		}
 
-		public DoubleProperty getScaleY()
-		{
+		public DoubleProperty getScaleY() {
 			return scaleY;
 		}
 
-		public DoubleProperty getScaleZ()
-		{
+		public DoubleProperty getScaleZ() {
 			return scaleZ;
 		}
 
-		public DoubleProperty getRotationLean()
-		{
+		public DoubleProperty getRotationLean() {
 			return rotationLean;
 		}
 
-		public DoubleProperty getRotationTwist()
-		{
+		public DoubleProperty getRotationTwist() {
 			return rotationTwist;
 		}
 
-		public DoubleProperty getRotationTurn()
-		{
+		public DoubleProperty getRotationTurn() {
 			return rotationTurn;
 		}
 	}

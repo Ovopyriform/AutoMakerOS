@@ -10,16 +10,14 @@ import xyz.openautomaker.base.BaseLookup;
  *
  * @author Ian
  */
-public class TimedNotificationBar extends AppearingNotificationBar
-{
+public class TimedNotificationBar extends AppearingNotificationBar {
 
 	private final int displayFor_ms = 4000;
 	private final int selfDestructIn_ms = 6000;
 	private Timer selfDestructTimer = null;
 
 	@Override
-	public void show()
-	{
+	public void show() {
 		Lookup.getNotificationDisplay().addNotificationBar(this);
 		selfDestructTimer = new Timer("TimedNotificationSelfDestruct", true);
 		startSlidingInToView();
@@ -27,53 +25,43 @@ public class TimedNotificationBar extends AppearingNotificationBar
 	}
 
 	@Override
-	public void finishedSlidingIntoView()
-	{
+	public void finishedSlidingIntoView() {
 		Timer putItAwayTimer = new Timer("TimedNotificationDisposer", true);
 		putItAwayTimer.schedule(new SlideAwayTask(), displayFor_ms);
 	}
 
 	@Override
-	public void finishedSlidingOutOfView()
-	{
+	public void finishedSlidingOutOfView() {
 		Lookup.getNotificationDisplay().removeNotificationBar(this);
-		if (selfDestructTimer != null)
-		{
+		if (selfDestructTimer != null) {
 			selfDestructTimer.cancel();
 			selfDestructTimer = null;
 		}
 	}
 
-	private class SlideAwayTask extends TimerTask
-	{
+	private class SlideAwayTask extends TimerTask {
 
 		@Override
-		public void run()
-		{
+		public void run() {
 			startSlidingOutOfView();
 		}
 	}
 
-	private class SelfDestructTask extends TimerTask
-	{
+	private class SelfDestructTask extends TimerTask {
 
 		@Override
-		public void run()
-		{
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
+		public void run() {
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				finishedSlidingOutOfView();
 			});
 		}
 	}
 
 	@Override
-	public boolean isSameAs(AppearingNotificationBar bar)
-	{
+	public boolean isSameAs(AppearingNotificationBar bar) {
 		boolean theSame = false;
 		if (this.getType() == bar.getType()
-				&& this.notificationDescription.getText().equals(bar.notificationDescription.getText()))
-		{
+				&& this.notificationDescription.getText().equals(bar.notificationDescription.getText())) {
 			theSame = true;
 		}
 
@@ -81,8 +69,7 @@ public class TimedNotificationBar extends AppearingNotificationBar
 	}
 
 	@Override
-	public void destroyBar()
-	{
+	public void destroyBar() {
 		finishedSlidingOutOfView();
 	}
 

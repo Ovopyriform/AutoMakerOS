@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI.controllers.panels;
 
 import java.net.URL;
@@ -14,8 +12,7 @@ import javafx.scene.Node;
  *
  * @author tony
  */
-public class SpinnerController implements Initializable
-{
+public class SpinnerController implements Initializable {
 
 	@FXML
 	private Node outerArcs;
@@ -24,8 +21,7 @@ public class SpinnerController implements Initializable
 	private Node innerArcs;
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
+	public void initialize(URL location, ResourceBundle resources) {
 
 	}
 

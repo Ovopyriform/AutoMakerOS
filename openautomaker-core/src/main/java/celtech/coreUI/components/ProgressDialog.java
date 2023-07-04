@@ -29,8 +29,7 @@ import xyz.openautomaker.base.services.ControllableService;
  *
  * @author ianhudson
  */
-public class ProgressDialog
-{
+public class ProgressDialog {
 
 	private static final Logger LOGGER = LogManager.getLogger(ProgressDialog.class.getName());
 	private Stage dialogStage = null;
@@ -40,8 +39,7 @@ public class ProgressDialog
 	/**
 	 *
 	 */
-	public ProgressDialog()
-	{
+	public ProgressDialog() {
 		setupDialog();
 	}
 
@@ -49,8 +47,7 @@ public class ProgressDialog
 	 *
 	 * @param service
 	 */
-	public ProgressDialog(ControllableService service)
-	{
+	public ProgressDialog(ControllableService service) {
 		setupDialog();
 		dialogController.configure(service, dialogStage);
 	}
@@ -59,18 +56,15 @@ public class ProgressDialog
 	 *
 	 * @param service
 	 */
-	public void associateControllableService(ControllableService service)
-	{
+	public void associateControllableService(ControllableService service) {
 		dialogController.configure(service, dialogStage);
 	}
 
-	private void setupDialog()
-	{
+	private void setupDialog() {
 		dialogStage = new Stage(StageStyle.TRANSPARENT);
 		URL dialogFXMLURL = ProgressDialog.class.getResource(ApplicationConfiguration.fxmlResourcePath + "ProgressDialog.fxml");
 		FXMLLoader dialogLoader = new FXMLLoader(dialogFXMLURL);
-		try
-		{
+		try {
 			dialogBoxContainer = (StackPane) dialogLoader.load();
 			dialogController = (ProgressDialogController) dialogLoader.getController();
 
@@ -80,8 +74,8 @@ public class ProgressDialog
 			dialogStage.initOwner(DisplayManager.getMainStage());
 			dialogStage.initModality(Modality.APPLICATION_MODAL);
 			dialogStage.toFront();
-		} catch (IOException ex)
-		{
+		}
+		catch (IOException ex) {
 			LOGGER.error("Couldn't load dialog box FXML", ex);
 		}
 	}
@@ -91,8 +85,7 @@ public class ProgressDialog
 	 * @param eventType
 	 * @param eventHandler
 	 */
-	public void addKeyHandler(EventType<KeyEvent> eventType, EventHandler<KeyEvent> eventHandler)
-	{
+	public void addKeyHandler(EventType<KeyEvent> eventType, EventHandler<KeyEvent> eventHandler) {
 		dialogBoxContainer.addEventHandler(eventType, eventHandler);
 	}
 
@@ -101,8 +94,7 @@ public class ProgressDialog
 	 * @param eventType
 	 * @param eventHandler
 	 */
-	public void removeKeyHandler(EventType<KeyEvent> eventType, EventHandler<KeyEvent> eventHandler)
-	{
+	public void removeKeyHandler(EventType<KeyEvent> eventType, EventHandler<KeyEvent> eventHandler) {
 		dialogBoxContainer.removeEventHandler(eventType, eventHandler);
 	}
 }

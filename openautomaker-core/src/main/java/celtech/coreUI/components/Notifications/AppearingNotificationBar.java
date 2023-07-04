@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI.components.Notifications;
 
 import java.io.IOException;
@@ -29,8 +27,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author tony
  */
-public abstract class AppearingNotificationBar extends StackPane implements Initializable
-{
+public abstract class AppearingNotificationBar extends StackPane implements Initializable {
 
 	@FXML
 	private StackPane notificationBar;
@@ -57,29 +54,25 @@ public abstract class AppearingNotificationBar extends StackPane implements Init
 
 	NotificationType notificationType;
 
-	private Animation hideSidebar = new Transition()
-	{
+	private Animation hideSidebar = new Transition() {
 		{
 			setCycleDuration(transitionLengthMillis);
 		}
 
 		@Override
-		public void interpolate(double frac)
-		{
+		public void interpolate(double frac) {
 			slideMenuPanel(1.0 - frac);
 		}
 	};
 
-	private Animation showSidebar = new Transition()
-	{
+	private Animation showSidebar = new Transition() {
 
 		{
 			setCycleDuration(transitionLengthMillis);
 		}
 
 		@Override
-		public void interpolate(double frac)
-		{
+		public void interpolate(double frac) {
 			slideMenuPanel(frac);
 		}
 	};
@@ -93,8 +86,7 @@ public abstract class AppearingNotificationBar extends StackPane implements Init
 	private double panelHeight = 0;
 	private final Rectangle clippingRectangle = new Rectangle();
 
-	public AppearingNotificationBar()
-	{
+	public AppearingNotificationBar() {
 		super();
 
 		URL fxml = getClass().getResource(
@@ -104,24 +96,21 @@ public abstract class AppearingNotificationBar extends StackPane implements Init
 		fxmlLoader.setController(this);
 		fxmlLoader.setClassLoader(getClass().getClassLoader());
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			exception.printStackTrace();
 			throw new RuntimeException(exception);
 		}
 
-		showSidebar.setOnFinished((ActionEvent t) ->
-		{
+		showSidebar.setOnFinished((ActionEvent t) -> {
 			slidingIntoView = false;
 			slidIntoView = true;
 			finishedSlidingIntoView();
 		});
 
-		hideSidebar.setOnFinished((ActionEvent t) ->
-		{
+		hideSidebar.setOnFinished((ActionEvent t) -> {
 			slidingOutOfView = false;
 			slidOutOfView = true;
 			setVisible(false);
@@ -136,13 +125,11 @@ public abstract class AppearingNotificationBar extends StackPane implements Init
 	 *
 	 * @param amountToShow
 	 */
-	private void slideMenuPanel(double amountToShow)
-	{
-		if (amountToShow < minimumToShow)
-		{
+	private void slideMenuPanel(double amountToShow) {
+		if (amountToShow < minimumToShow) {
 			amountToShow = minimumToShow;
-		} else if (amountToShow > maximumToShow)
-		{
+		}
+		else if (amountToShow > maximumToShow) {
 			amountToShow = maximumToShow;
 		}
 
@@ -156,10 +143,8 @@ public abstract class AppearingNotificationBar extends StackPane implements Init
 	/**
 	 *
 	 */
-	public void startSlidingOutOfView()
-	{
-		if (!isSlidOutOrSlidingOut())
-		{
+	public void startSlidingOutOfView() {
+		if (!isSlidOutOrSlidingOut()) {
 			slidingIntoView = false;
 			slidingOutOfView = true;
 			slidIntoView = false;
@@ -167,19 +152,17 @@ public abstract class AppearingNotificationBar extends StackPane implements Init
 			showSidebar.stop();
 			Duration time = showSidebar.getCurrentTime();
 			Duration startFromTime;
-			if (time.lessThanOrEqualTo(Duration.ZERO))
-			{
+			if (time.lessThanOrEqualTo(Duration.ZERO)) {
 				startFromTime = Duration.ZERO;
-			} else
-			{
+			}
+			else {
 				startFromTime = transitionLengthMillis.subtract(time);
 			}
 			hideSidebar.jumpTo(startFromTime);
 			hideSidebar.play();
-		} else if (slidOutOfView)
-		{
-			if (MathUtils.compareDouble(notificationBar.getPrefHeight(), 0.0, 0.01) == MathUtils.MORE_THAN)
-			{
+		}
+		else if (slidOutOfView) {
+			if (MathUtils.compareDouble(notificationBar.getPrefHeight(), 0.0, 0.01) == MathUtils.MORE_THAN) {
 				slideMenuPanel(0);
 			}
 		}
@@ -189,10 +172,8 @@ public abstract class AppearingNotificationBar extends StackPane implements Init
 	/**
 	 *
 	 */
-	public void startSlidingInToView()
-	{
-		if (!isSlidInOrSlidingIn())
-		{
+	public void startSlidingInToView() {
+		if (!isSlidInOrSlidingIn()) {
 			setVisible(true);
 			slidingIntoView = true;
 			slidingOutOfView = false;
@@ -201,27 +182,24 @@ public abstract class AppearingNotificationBar extends StackPane implements Init
 			hideSidebar.stop();
 			Duration time = hideSidebar.getCurrentTime();
 			Duration startFromTime;
-			if (time.lessThanOrEqualTo(Duration.ZERO))
-			{
+			if (time.lessThanOrEqualTo(Duration.ZERO)) {
 				startFromTime = Duration.ZERO;
-			} else
-			{
+			}
+			else {
 				startFromTime = transitionLengthMillis.subtract(time);
 				showSidebar.jumpTo(startFromTime);
 			}
 			showSidebar.play();
-		} else if (slidIntoView)
-		{
-			if (MathUtils.compareDouble(notificationBar.getPrefHeight(), 1.0, 0.01) == MathUtils.LESS_THAN)
-			{
+		}
+		else if (slidIntoView) {
+			if (MathUtils.compareDouble(notificationBar.getPrefHeight(), 1.0, 0.01) == MathUtils.LESS_THAN) {
 				slideMenuPanel(1.0);
 			}
 		}
 	}
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
+	public void initialize(URL location, ResourceBundle resources) {
 		panelHeight = notificationBar.getPrefHeight();
 
 		notificationBar.setMinHeight(0);
@@ -245,57 +223,50 @@ public abstract class AppearingNotificationBar extends StackPane implements Init
 		notificationBar.setPrefHeight(0);
 	}
 
-	public boolean isSlidInOrSlidingIn()
-	{
+	public boolean isSlidInOrSlidingIn() {
 		return slidIntoView || slidingIntoView;
 	}
 
-	public boolean isSlidOutOrSlidingOut()
-	{
+	public boolean isSlidOutOrSlidingOut() {
 		return slidOutOfView || slidingOutOfView;
 	}
 
-	public void setMessage(String message)
-	{
+	public void setMessage(String message) {
 		notificationDescription.replaceText(message);
 	}
 
-	public void setType(NotificationType notificationType)
-	{
-		switch (notificationType)
-		{
-		case NOTE:
-			noteIndicator.setVisible(true);
-			warningIndicator.setVisible(false);
-			cautionIndicator.setVisible(false);
-			break;
-		case WARNING:
-			noteIndicator.setVisible(false);
-			warningIndicator.setVisible(true);
-			cautionIndicator.setVisible(false);
-			break;
-		case CAUTION:
-			noteIndicator.setVisible(false);
-			warningIndicator.setVisible(false);
-			cautionIndicator.setVisible(true);
-			break;
-		default:
-			noteIndicator.setVisible(false);
-			warningIndicator.setVisible(false);
-			cautionIndicator.setVisible(false);
-			break;
+	public void setType(NotificationType notificationType) {
+		switch (notificationType) {
+			case NOTE:
+				noteIndicator.setVisible(true);
+				warningIndicator.setVisible(false);
+				cautionIndicator.setVisible(false);
+				break;
+			case WARNING:
+				noteIndicator.setVisible(false);
+				warningIndicator.setVisible(true);
+				cautionIndicator.setVisible(false);
+				break;
+			case CAUTION:
+				noteIndicator.setVisible(false);
+				warningIndicator.setVisible(false);
+				cautionIndicator.setVisible(true);
+				break;
+			default:
+				noteIndicator.setVisible(false);
+				warningIndicator.setVisible(false);
+				cautionIndicator.setVisible(false);
+				break;
 		}
 
 		this.notificationType = notificationType;
 	}
 
-	public NotificationType getType()
-	{
+	public NotificationType getType() {
 		return notificationType;
 	}
 
-	public void setXOfY(int step, int ofSteps)
-	{
+	public void setXOfY(int step, int ofSteps) {
 		notificationStepXofY.setText(step + " " + OpenAutoMakerEnv.getI18N().t("misc.of") + " " + ofSteps);
 		notificationStepXofY.setVisible(true);
 	}

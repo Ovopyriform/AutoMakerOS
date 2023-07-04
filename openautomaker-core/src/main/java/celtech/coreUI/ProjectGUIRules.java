@@ -12,47 +12,39 @@ import javafx.collections.ObservableSet;
 /**
  * ProjectGUIRules indicates eg if the project selection can be translated, removed, scaled etc.
  */
-public class ProjectGUIRules
-{
+public class ProjectGUIRules {
 
 	private final ObservableSet<ModelContainer> excludedFromSelection;
 
 	private final ProjectSelection projectSelection;
 
 	public ProjectGUIRules(ProjectSelection projectSelection,
-			ObservableSet<ModelContainer> excludedFromSelection)
-	{
+			ObservableSet<ModelContainer> excludedFromSelection) {
 		this.projectSelection = projectSelection;
 		this.excludedFromSelection = excludedFromSelection;
 	}
 
-	public BooleanBinding canSnapToGroundSelection()
-	{
+	public BooleanBinding canSnapToGroundSelection() {
 		return projectSelection.getSelectionHasChildOfGroup().not();
 	}
 
-	public BooleanBinding canRemoveOrDuplicateSelection()
-	{
+	public BooleanBinding canRemoveOrDuplicateSelection() {
 		return Bindings.isEmpty(excludedFromSelection);
 	}
 
-	public BooleanBinding canAddModel()
-	{
+	public BooleanBinding canAddModel() {
 		return Bindings.isEmpty(excludedFromSelection);
 	}
 
-	public BooleanBinding canCutModel()
-	{
+	public BooleanBinding canCutModel() {
 		return projectSelection.getNumModelsSelectedProperty().isEqualTo(1).and(Bindings.isEmpty(excludedFromSelection));
 	}
 
-	public BooleanBinding canGroupSelection()
-	{
+	public BooleanBinding canGroupSelection() {
 		return projectSelection.getNumModelsSelectedProperty().greaterThan(1).and(Bindings.isEmpty(excludedFromSelection));
 	}
 
-	public BooleanBinding canUngroupSelection()
-	{
+	public BooleanBinding canUngroupSelection() {
 		return projectSelection.getNumGroupsSelectedProperty().isEqualTo(1).and(Bindings.isEmpty(excludedFromSelection));
 	}
 }

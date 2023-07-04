@@ -34,8 +34,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian
  */
-public class MaintenanceInsetPanelController implements Initializable, MenuInnerPanel
-{
+public class MaintenanceInsetPanelController implements Initializable, MenuInnerPanel {
 
 	private static final Logger LOGGER = LogManager.getLogger(MaintenanceInsetPanelController.class.getName());
 	private Printer connectedPrinter;
@@ -96,167 +95,138 @@ public class MaintenanceInsetPanelController implements Initializable, MenuInner
 	private Button ZTestButton;
 
 	@FXML
-	void ejectStuckMaterial1(ActionEvent event)
-	{
-		if (connectedPrinter != null && connectedPrinter.headProperty().get() != null)
-		{
-			try
-			{
+	void ejectStuckMaterial1(ActionEvent event) {
+		if (connectedPrinter != null && connectedPrinter.headProperty().get() != null) {
+			try {
 				int nozzleNumber = 0;
 				if (connectedPrinter.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD)
 					nozzleNumber = 1;
 
 				connectedPrinter.ejectStuckMaterial(nozzleNumber, false, null, Lookup.getUserPreferences().isSafetyFeaturesOn());
 			}
-			catch (PrinterException ex)
-			{
+			catch (PrinterException ex) {
 				LOGGER.info("Error attempting to run eject stuck material E");
 			}
 		}
 	}
 
 	@FXML
-	void ejectStuckMaterial2(ActionEvent event)
-	{
+	void ejectStuckMaterial2(ActionEvent event) {
 		if (connectedPrinter != null &&
 				connectedPrinter.headProperty().get() != null &&
-				connectedPrinter.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD)
-		{
-			try
-			{
+				connectedPrinter.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD) {
+			try {
 				connectedPrinter.ejectStuckMaterial(0, false, null, Lookup.getUserPreferences().isSafetyFeaturesOn());
-			} catch (PrinterException ex)
-			{
+			}
+			catch (PrinterException ex) {
 				LOGGER.info("Error attempting to run eject stuck material D");
 			}
 		}
 	}
 
 	@FXML
-	void levelGantry(ActionEvent event)
-	{
-		try
-		{
+	void levelGantry(ActionEvent event) {
+		try {
 			connectedPrinter.levelGantry(false, null);
-		} catch (PrinterException ex)
-		{
+		}
+		catch (PrinterException ex) {
 			LOGGER.error("Couldn't level gantry");
 		}
 	}
 
 	@FXML
-	void testX(ActionEvent event)
-	{
-		try
-		{
+	void testX(ActionEvent event) {
+		try {
 			connectedPrinter.testX(false, null);
-		} catch (PrinterException ex)
-		{
+		}
+		catch (PrinterException ex) {
 			LOGGER.error("Couldn't test X");
 		}
 	}
 
 	@FXML
-	void testY(ActionEvent event)
-	{
-		try
-		{
+	void testY(ActionEvent event) {
+		try {
 			connectedPrinter.testY(false, null);
-		} catch (PrinterException ex)
-		{
+		}
+		catch (PrinterException ex) {
 			LOGGER.error("Couldn't test Y");
 		}
 	}
 
 	@FXML
-	void testZ(ActionEvent event)
-	{
-		try
-		{
+	void testZ(ActionEvent event) {
+		try {
 			connectedPrinter.testZ(false, null);
-		} catch (PrinterException ex)
-		{
+		}
+		catch (PrinterException ex) {
 			LOGGER.error("Couldn't test Z");
 		}
 	}
 
 	@FXML
-	void cleanNozzleT0(ActionEvent event)
-	{
-		try
-		{
+	void cleanNozzleT0(ActionEvent event) {
+		try {
 			connectedPrinter.cleanNozzle(0, false, null, Lookup.getUserPreferences().isSafetyFeaturesOn());
-		} catch (PrinterException ex)
-		{
+		}
+		catch (PrinterException ex) {
 			LOGGER.error("Couldn't clean left nozzle");
 		}
 	}
 
 	@FXML
-	void cleanNozzleT1(ActionEvent event)
-	{
-		try
-		{
+	void cleanNozzleT1(ActionEvent event) {
+		try {
 			connectedPrinter.cleanNozzle(1, false, null, Lookup.getUserPreferences().isSafetyFeaturesOn());
-		} catch (PrinterException ex)
-		{
+		}
+		catch (PrinterException ex) {
 			LOGGER.error("Couldn't clean right nozzle");
 		}
 	}
 
 	@FXML
-	void speedTest(ActionEvent event)
-	{
-		try
-		{
+	void speedTest(ActionEvent event) {
+		try {
 			connectedPrinter.speedTest(false, null);
-		} catch (PrinterException ex)
-		{
+		}
+		catch (PrinterException ex) {
 			LOGGER.error("Couldn't run speed test");
 		}
 	}
 
 	@FXML
-	void loadFirmware(ActionEvent event)
-	{
+	void loadFirmware(ActionEvent event) {
 		firmwareFileChooser.setInitialFileName("Untitled");
 
 		firmwareFileChooser.setInitialDirectory(ApplicationConfiguration.getLastDirectoryFile(DirectoryMemoryProperty.LAST_FIRMWARE_DIRECTORY));
 
 		final File file = firmwareFileChooser.showOpenDialog(DisplayManager.getMainStage());
-		if (file != null)
-		{
-			ApplicationConfiguration.setLastDirectory(DirectoryMemoryProperty.LAST_FIRMWARE_DIRECTORY, file.
-					getParentFile().getAbsolutePath());
+		if (file != null) {
+			ApplicationConfiguration.setLastDirectory(DirectoryMemoryProperty.LAST_FIRMWARE_DIRECTORY, file.getParentFile().getAbsolutePath());
 			connectedPrinter.loadFirmware(file.getAbsolutePath());
 		}
 	}
 
 	@FXML
-	void sendGCodeSD(ActionEvent event)
-	{
+	void sendGCodeSD(ActionEvent event) {
 		gcodeFileChooser.setInitialFileName("Untitled");
 		gcodeFileChooser.setInitialDirectory(ApplicationConfiguration.getLastDirectoryFile(DirectoryMemoryProperty.LAST_GCODE_DIRECTORY));
 
 		final File file = gcodeFileChooser.showOpenDialog(container.getScene().getWindow());
 
-		if (file != null)
-		{
-			try
-			{
+		if (file != null) {
+			try {
 				connectedPrinter.executeGCodeFile(file.toPath(), false);
-			} catch (PrinterException ex)
-			{
+			}
+			catch (PrinterException ex) {
 				LOGGER.error("Error sending SD job");
 			}
-			ApplicationConfiguration.setLastDirectory(DirectoryMemoryProperty.LAST_GCODE_DIRECTORY, file.
-					getParentFile().getAbsolutePath());
+			ApplicationConfiguration.setLastDirectory(DirectoryMemoryProperty.LAST_GCODE_DIRECTORY, file.getParentFile().getAbsolutePath());
 		}
 	}
 
 	@FXML
-	void purge(ActionEvent event)
-	{
+	void purge(ActionEvent event) {
 		DisplayManager.getInstance().getPurgeInsetPanelController().purge(connectedPrinter);
 	}
 
@@ -267,26 +237,24 @@ public class MaintenanceInsetPanelController implements Initializable, MenuInner
 	 * @param rb
 	 */
 	@Override
-	public void initialize(URL url, ResourceBundle rb)
-	{
-		try
-		{
+	public void initialize(URL url, ResourceBundle rb) {
+		try {
 			YTestButton.disableProperty().bind(printingDisabled);
 			PurgeMaterialButton.disableProperty().bind(
 					noFilamentEOrD.or(noHead).or(printingDisabled));
 
 			T0CleanButton.disableProperty().bind(
 					noHead
-					.or(printingDisabled)
-					.or(dualHead.and(noFilamentD))
-					.or(singleHead.and(noFilamentEOrD))
-					.or(noValveHead));
+							.or(printingDisabled)
+							.or(dualHead.and(noFilamentD))
+							.or(singleHead.and(noFilamentEOrD))
+							.or(noValveHead));
 			T1CleanButton.disableProperty().bind(
 					noHead
-					.or(printingDisabled)
-					.or(dualHead.and(noFilamentE))
-					.or(singleHead.and(noFilamentEOrD))
-					.or(noValveHead));
+							.or(printingDisabled)
+							.or(dualHead.and(noFilamentE))
+							.or(singleHead.and(noFilamentEOrD))
+							.or(noValveHead));
 
 			EjectStuckMaterialButton1.disableProperty().bind(printingDisabled.or(noFilamentE));
 			EjectStuckMaterialButton2.disableProperty().bind(printingDisabled.or(noFilamentD).or(singleHead));
@@ -296,29 +264,26 @@ public class MaintenanceInsetPanelController implements Initializable, MenuInner
 
 			LevelGantryButton.disableProperty().bind(printingDisabled);
 			ZTestButton.disableProperty().bind(printingDisabled);
-			sendGCodeSDButton.disableProperty().bind(printingDisabled.or(Lookup.
-					getUserPreferences().advancedModeProperty().not()));
+			sendGCodeSDButton.disableProperty().bind(printingDisabled.or(Lookup.getUserPreferences().advancedModeProperty().not()));
 
 			currentFirmwareField.setStyle("-fx-font-weight: bold;");
 
 			gcodeFileChooser.setTitle(OpenAutoMakerEnv.getI18N().t("maintenancePanel.gcodeFileChooserTitle"));
 			gcodeFileChooser.getExtensionFilters()
-			.addAll(
-					new FileChooser.ExtensionFilter(OpenAutoMakerEnv.getI18N().t(
-							"maintenancePanel.gcodeFileDescription"),
-							"*.gcode"));
+					.addAll(
+							new FileChooser.ExtensionFilter(OpenAutoMakerEnv.getI18N().t(
+									"maintenancePanel.gcodeFileDescription"),
+									"*.gcode"));
 
 			firmwareFileChooser.setTitle(OpenAutoMakerEnv.getI18N().t("maintenancePanel.firmwareFileChooserTitle"));
 			firmwareFileChooser.getExtensionFilters()
-			.addAll(
-					new FileChooser.ExtensionFilter(OpenAutoMakerEnv.getI18N().t(
-							"maintenancePanel.firmwareFileDescription"), "*.bin"));
+					.addAll(
+							new FileChooser.ExtensionFilter(OpenAutoMakerEnv.getI18N().t(
+									"maintenancePanel.firmwareFileDescription"), "*.bin"));
 
 			Lookup.getSelectedPrinterProperty().addListener(
-					(ObservableValue<? extends Printer> observable, Printer oldValue, Printer newValue) ->
-					{
-						if (connectedPrinter != null)
-						{
+					(ObservableValue<? extends Printer> observable, Printer oldValue, Printer newValue) -> {
+						if (connectedPrinter != null) {
 							currentFirmwareField.textProperty().unbind();
 							sendGCodeSDButton.disableProperty().unbind();
 							loadFirmwareButton.disableProperty().unbind();
@@ -344,16 +309,15 @@ public class MaintenanceInsetPanelController implements Initializable, MenuInner
 
 						connectedPrinter = newValue;
 
-						if (connectedPrinter != null)
-						{
+						if (connectedPrinter != null) {
 							currentFirmwareField.textProperty().bind(connectedPrinter.getPrinterIdentity().firmwareVersionProperty());
 							loadFirmwareButton.disableProperty()
-							.bind(printingDisabled.or(Lookup.getUserPreferences()
-									.advancedModeProperty()
-									.not()
-									.or(connectedPrinter.getPrinterIdentity()
-											.validIDProperty()
-											.not())));
+									.bind(printingDisabled.or(Lookup.getUserPreferences()
+											.advancedModeProperty()
+											.not()
+											.or(connectedPrinter.getPrinterIdentity()
+													.validIDProperty()
+													.not())));
 
 							printingDisabled.bind(connectedPrinter.printerStatusProperty().isNotEqualTo(
 									PrinterStatus.IDLE));
@@ -361,8 +325,8 @@ public class MaintenanceInsetPanelController implements Initializable, MenuInner
 							noHead.bind(connectedPrinter.headProperty().isNull());
 
 							//if (noHead.not().get())
-								//{
-									//    dualHead.bind(Bindings.size(
+							//{
+							//    dualHead.bind(Bindings.size(
 							//                    connectedPrinter.headProperty().get().getNozzleHeaters()).isEqualTo(
 							//                    2));
 							//    singleHead.bind(Bindings.size(
@@ -389,34 +353,32 @@ public class MaintenanceInsetPanelController implements Initializable, MenuInner
 
 							noFilamentEOrD.bind(
 									connectedPrinter.extrudersProperty().get(0).filamentLoadedProperty().not()
-									.and(
-											connectedPrinter.extrudersProperty().get(1).filamentLoadedProperty().not()));
+											.and(
+													connectedPrinter.extrudersProperty().get(1).filamentLoadedProperty().not()));
 						}
-						else
-						{
+						else {
 							loadFirmwareButton.disableProperty().unbind();
 							loadFirmwareButton.disableProperty().set(true);
 							currentFirmwareField.setText("-");
 						}
 					});
-		} catch (Exception ex)
-		{
+		}
+		catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 
 	@Override
-	public String getMenuTitle()
-	{
+	public String getMenuTitle() {
 		return "maintenancePanel.title";
 	}
 
 	@Override
-	public List<OperationButton> getOperationButtons()
-	{
+	public List<OperationButton> getOperationButtons() {
 		return null;
 	}
 
 	@Override
-	public void panelSelected() {}
+	public void panelSelected() {
+	}
 }

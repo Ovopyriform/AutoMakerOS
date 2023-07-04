@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI.components.printerstatus;
 
 import static celtech.utils.StringMetrics.getWidthOfString;
@@ -45,8 +43,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author tony
  */
-public class PrinterComponent extends Pane
-{
+public class PrinterComponent extends Pane {
 
 	private boolean selected = false;
 	private Size currentSize;
@@ -57,8 +54,7 @@ public class PrinterComponent extends Pane
 
 	private final HideableTooltip errorTooltip = new HideableTooltip();
 
-	public enum Size
-	{
+	public enum Size {
 
 		SIZE_SMALL(80, 10),
 		SIZE_MEDIUM(120, 20),
@@ -67,25 +63,21 @@ public class PrinterComponent extends Pane
 		private final int size;
 		private final int spacing;
 
-		private Size(int size, int spacing)
-		{
+		private Size(int size, int spacing) {
 			this.size = size;
 			this.spacing = spacing;
 		}
 
-		public int getSize()
-		{
+		public int getSize() {
 			return size;
 		}
 
-		public int getSpacing()
-		{
+		public int getSpacing() {
 			return spacing;
 		}
 	}
 
-	public enum Status
-	{
+	public enum Status {
 
 		NO_INDICATOR(""),
 		READY("printerStatus.idle"),
@@ -95,8 +87,7 @@ public class PrinterComponent extends Pane
 
 		private final String i18nString;
 
-		private Status(String i18nString)
-		{
+		private Status(String i18nString) {
 			this.i18nString = i18nString;
 		}
 
@@ -104,12 +95,10 @@ public class PrinterComponent extends Pane
 		 *
 		 * @return
 		 */
-		public String getI18nString()
-		{
+		public String getI18nString() {
 			String stringToOutput = "";
 
-			if (!i18nString.equals(""))
-			{
+			if (!i18nString.equals("")) {
 				stringToOutput = OpenAutoMakerEnv.getI18N().t(i18nString);
 			}
 			return stringToOutput;
@@ -120,8 +109,7 @@ public class PrinterComponent extends Pane
 		 * @return
 		 */
 		@Override
-		public String toString()
-		{
+		public String toString() {
 			return getI18nString();
 		}
 	}
@@ -154,21 +142,17 @@ public class PrinterComponent extends Pane
 
 	private String styleClassForText = "regularText";
 
-	private ChangeListener<String> nameListener = (ObservableValue<? extends String> observable, String oldValue, String newValue) ->
-	{
+	private ChangeListener<String> nameListener = (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
 		setName(newValue);
 	};
-	private ChangeListener<Color> colorListener = (ObservableValue<? extends Color> observable, Color oldValue, Color newValue) ->
-	{
+	private ChangeListener<Color> colorListener = (ObservableValue<? extends Color> observable, Color oldValue, Color newValue) -> {
 		setColour(newValue);
 	};
-	private ChangeListener<Number> progressListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-	{
+	private ChangeListener<Number> progressListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 		setProgress((double) newValue);
 	};
 
-	public PrinterComponent(Printer printer, ComponentIsolationInterface isolationInterface)
-	{
+	public PrinterComponent(Printer printer, ComponentIsolationInterface isolationInterface) {
 		this.printer = printer;
 		this.isolationInterface = isolationInterface;
 
@@ -177,39 +161,34 @@ public class PrinterComponent extends Pane
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 
 		initialise();
 	}
 
-	public void setStatus(Status status)
-	{
+	public void setStatus(Status status) {
 		printerSVG.setStatus(status);
 		progressBar.setVisible(showProgress);
 	}
 
-	public void setName(String newName)
-	{
+	public void setName(String newName) {
 		newName = fitNameToWidth(newName);
 		nameTextProperty().set(newName);
 	}
 
-	public StringProperty nameTextProperty()
-	{
+	public StringProperty nameTextProperty() {
 		return name.textProperty();
 	}
 
 	/**
 	 * Initialise the component
 	 */
-	private void initialise()
-	{
+	private void initialise() {
 		setStyle("-fx-background-color: white;");
 
 		name.getStyleClass().add(styleClassForText);
@@ -220,18 +199,16 @@ public class PrinterComponent extends Pane
 
 		String nameText;
 
-		if (printer != null)
-		{
+		if (printer != null) {
 			printerSVG.setPrinterIcon(printer.printerConfigurationProperty().get().getTypeCode());
 			nameText = printer.getPrinterIdentity().printerFriendlyNameProperty().get();
-			if (!printer.printerConfigurationProperty().get().getTypeCode().equalsIgnoreCase("RBX10") && printer.getCommandInterface() instanceof RoboxRemoteCommandInterface)
-			{
+			if (!printer.printerConfigurationProperty().get().getTypeCode().equalsIgnoreCase("RBX10") && printer.getCommandInterface() instanceof RoboxRemoteCommandInterface) {
 				rootName.textProperty().unbind();
 				rootName.textProperty().bind(((RemoteDetectedPrinter) printer.getCommandInterface().getPrinterHandle()).getServerPrinterIsAttachedTo().nameProperty());
 				rootName.setVisible(true);
 				printerSVG.setIsRoot(true);
-			} else
-			{
+			}
+			else {
 				rootName.setVisible(false);
 				printerSVG.setIsRoot(false);
 			}
@@ -241,27 +218,23 @@ public class PrinterComponent extends Pane
 			printer.getPrinterIdentity().printerColourProperty().addListener(colorListener);
 			printer.getPrintEngine().progressProperty().addListener(progressListener);
 			printer.printerStatusProperty().addListener(
-					(ObservableValue<? extends PrinterStatus> observable, PrinterStatus oldValue, PrinterStatus newValue) ->
-					{
+					(ObservableValue<? extends PrinterStatus> observable, PrinterStatus oldValue, PrinterStatus newValue) -> {
 						updateStatus(newValue, printer.pauseStatusProperty().get());
 					});
 
 			printer.pauseStatusProperty().addListener(
-					(ObservableValue<? extends PauseStatus> observable, PauseStatus oldValue, PauseStatus newValue) ->
-					{
+					(ObservableValue<? extends PauseStatus> observable, PauseStatus oldValue, PauseStatus newValue) -> {
 						updateStatus(printer.printerStatusProperty().get(), newValue);
 					});
 
-			printer.getPrintEngine().highIntensityCommsInProgressProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-			{
+			printer.getPrintEngine().highIntensityCommsInProgressProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 				updateStatus(printer.printerStatusProperty().get(), printer.pauseStatusProperty().get());
 			});
 
 			updateStatus(printer.printerStatusProperty().get(), printer.pauseStatusProperty().get());
 
 			printer.getCurrentErrors().addListener((ListChangeListener.Change<? extends FirmwareError> c) -> {
-				BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-				{
+				BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 					dealWithErrorVisibility();
 				});
 			});
@@ -269,17 +242,16 @@ public class PrinterComponent extends Pane
 			dealWithErrorVisibility();
 
 			URL printerImageURL = getClass().getResource(ApplicationConfiguration.imageResourcePath + "printers/" + printer.printerConfigurationProperty().get().getTypeCode() + ".png");
-			if (printerImageURL != null)
-			{
+			if (printerImageURL != null) {
 				Image newImage = new Image(printerImageURL.toExternalForm());
 				imageAspectRatio = newImage.getWidth() / newImage.getHeight();
 				printerImage.setImage(newImage);
-			} else
-			{
+			}
+			else {
 				printerImage.setVisible(false);
 			}
-		} else
-		{
+		}
+		else {
 			nameText = OpenAutoMakerEnv.getI18N().t("sidePanel_printerStatus.notConnected");
 			String style = "-fx-background-color: #" + colourToString(StandardColours.LIGHT_GREY) + ";";
 			innerPane.setStyle(style);
@@ -291,28 +263,24 @@ public class PrinterComponent extends Pane
 
 		setSize(Size.SIZE_LARGE);
 
-		this.disabledProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-		{
-			if (newValue)
-			{
+		this.disabledProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+			if (newValue) {
 				this.setOpacity(0.1);
-			} else
-			{
+			}
+			else {
 				this.setOpacity(1);
 			}
 		});
 	}
 
-	private void dealWithErrorVisibility()
-	{
+	private void dealWithErrorVisibility() {
 
-		if (printer.getCurrentErrors().isEmpty())
-		{
+		if (printer.getCurrentErrors().isEmpty()) {
 			errorTooltip.setText("");
 			Tooltip.uninstall(this, errorTooltip);
 			printerSVG.showErrorIndicator(false);
-		} else
-		{
+		}
+		else {
 			String errorTooltipString = printer.getCurrentErrors().stream()
 					.map(error -> OpenAutoMakerEnv.getI18N().t("misc.error") + ": " + OpenAutoMakerEnv.getI18N().t(error.getErrorTitleKey()) + "\n")
 					.collect(Collectors.joining());
@@ -322,13 +290,11 @@ public class PrinterComponent extends Pane
 		}
 	}
 
-	public void setProgress(double progress)
-	{
+	public void setProgress(double progress) {
 		progressBar.setProgress(progress);
 	}
 
-	public void setColour(Color color)
-	{
+	public void setColour(Color color) {
 		PrinterColourMap colourMap = PrinterColourMap.getInstance();
 		Color displayColour = colourMap.printerToDisplayColour(color);
 		String colourHexString = "#" + colourToString(displayColour);
@@ -336,63 +302,55 @@ public class PrinterComponent extends Pane
 		innerPane.setStyle(style);
 	}
 
-	public void setSelected(boolean select)
-	{
-		if (selected != select)
-		{
+	public void setSelected(boolean select) {
+		if (selected != select) {
 			selected = select;
 			redraw();
 		}
 	}
 
-	public void setSize(Size size)
-	{
-		if (size != currentSize)
-		{
+	public void setSize(Size size) {
+		if (size != currentSize) {
 			currentSize = size;
 			redraw();
 		}
 	}
 
-	private void updateStatus(PrinterStatus printerStatus, PauseStatus pauseStatus)
-	{
+	private void updateStatus(PrinterStatus printerStatus, PauseStatus pauseStatus) {
 		Status status;
 
-		switch (printerStatus)
-		{
-		case IDLE:
-		case REMOVING_HEAD:
-		case OPENING_DOOR:
-			status = Status.READY;
-			inInterruptibleState = true;
-			showProgress = false;
-			break;
-		case RUNNING_MACRO_FILE:
-		case PRINTING_PROJECT:
-		case CALIBRATING_NOZZLE_ALIGNMENT:
-		case CALIBRATING_NOZZLE_OPENING:
-		case CALIBRATING_NOZZLE_HEIGHT:
-		case PURGING_HEAD:
-			status = Status.PRINTING;
-			inInterruptibleState = true;
-			showProgress = true;
-			break;
-		default:
-			status = Status.READY;
-			inInterruptibleState = false;
-			showProgress = false;
-			break;
+		switch (printerStatus) {
+			case IDLE:
+			case REMOVING_HEAD:
+			case OPENING_DOOR:
+				status = Status.READY;
+				inInterruptibleState = true;
+				showProgress = false;
+				break;
+			case RUNNING_MACRO_FILE:
+			case PRINTING_PROJECT:
+			case CALIBRATING_NOZZLE_ALIGNMENT:
+			case CALIBRATING_NOZZLE_OPENING:
+			case CALIBRATING_NOZZLE_HEIGHT:
+			case PURGING_HEAD:
+				status = Status.PRINTING;
+				inInterruptibleState = true;
+				showProgress = true;
+				break;
+			default:
+				status = Status.READY;
+				inInterruptibleState = false;
+				showProgress = false;
+				break;
 		}
 
 		if (pauseStatus == PauseStatus.PAUSED
 				|| pauseStatus == PauseStatus.SELFIE_PAUSE
-				|| pauseStatus == PauseStatus.PAUSE_PENDING)
-		{
+				|| pauseStatus == PauseStatus.PAUSE_PENDING) {
 			status = Status.PAUSED;
 		}
 
-		if (printer.getPrintEngine().highIntensityCommsInProgressProperty().get())
-		{
+		if (printer.getPrintEngine().highIntensityCommsInProgressProperty().get()) {
 			inInterruptibleState = false;
 		}
 
@@ -402,45 +360,41 @@ public class PrinterComponent extends Pane
 	}
 
 	/**
-	 * Redraw the component. Reposition child nodes according to selection state
-	 * and size.
+	 * Redraw the component. Reposition child nodes according to selection state and size.
 	 */
-	private void redraw()
-	{
+	private void redraw() {
 		int progressBarWidth;
 		int progressBarHeight;
 		double progressBarYOffset;
 		double nameLayoutY;
 		int borderWidth;
-		if (selected)
-		{
+		if (selected) {
 			borderWidth = 3;
-		} else
-		{
+		}
+		else {
 			borderWidth = 0;
 		}
 
-		switch (currentSize)
-		{
-		case SIZE_SMALL:
-			fontSize = 9;
-			progressBarWidth = 65;
-			progressBarHeight = 6;
-			progressBarYOffset = 17;
+		switch (currentSize) {
+			case SIZE_SMALL:
+				fontSize = 9;
+				progressBarWidth = 65;
+				progressBarHeight = 6;
+				progressBarYOffset = 17;
 
-			break;
-		case SIZE_MEDIUM:
-			fontSize = 14;
-			progressBarWidth = 100;
-			progressBarHeight = 9;
-			progressBarYOffset = 26;
-			break;
-		default:
-			fontSize = 30;
-			progressBarWidth = 220;
-			progressBarHeight = 20;
-			progressBarYOffset = 55;
-			break;
+				break;
+			case SIZE_MEDIUM:
+				fontSize = 14;
+				progressBarWidth = 100;
+				progressBarHeight = 9;
+				progressBarYOffset = 26;
+				break;
+			default:
+				fontSize = 30;
+				progressBarWidth = 220;
+				progressBarHeight = 20;
+				progressBarYOffset = 55;
+				break;
 		}
 
 		sizePixels = currentSize.getSize();
@@ -473,8 +427,7 @@ public class PrinterComponent extends Pane
 		progressBar.setControlWidth(progressBarWidth);
 		progressBar.setControlHeight(progressBarHeight);
 
-		if (printerImage.isVisible())
-		{
+		if (printerImage.isVisible()) {
 			double fitHeight = sizePixels / 2;
 			double fitWidth = (sizePixels / 2) * imageAspectRatio;
 			printerImage.setFitHeight(fitHeight);
@@ -483,8 +436,7 @@ public class PrinterComponent extends Pane
 			printerImage.setLayoutY(sizePixels - fitHeight);
 		}
 
-		for (Node child : innerPane.getChildren())
-		{
+		for (Node child : innerPane.getChildren()) {
 			child.setTranslateX(-borderWidth);
 			child.setTranslateY(-borderWidth);
 		}
@@ -511,57 +463,48 @@ public class PrinterComponent extends Pane
 	}
 
 	@Override
-	public double computeMinHeight(double width)
-	{
+	public double computeMinHeight(double width) {
 		return sizePixels;
 	}
 
 	@Override
-	public double computeMinWidth(double height)
-	{
+	public double computeMinWidth(double height) {
 		return sizePixels;
 	}
 
 	@Override
-	public double computeMaxHeight(double width)
-	{
+	public double computeMaxHeight(double width) {
 		return sizePixels;
 	}
 
 	@Override
-	public double computeMaxWidth(double height)
-	{
+	public double computeMaxWidth(double height) {
 		return sizePixels;
 	}
 
 	@Override
-	public double computePrefHeight(double width)
-	{
+	public double computePrefHeight(double width) {
 		return sizePixels;
 	}
 
 	@Override
-	public double computePrefWidth(double height)
-	{
+	public double computePrefWidth(double height) {
 		return sizePixels;
 	}
 
 	/**
 	 * Fit the printer name to the available space.
 	 */
-	public String fitNameToWidth(String name)
-	{
+	public String fitNameToWidth(String name) {
 
 		int FONT_SIZE = 14;
 		int AVAILABLE_WIDTH = 125;
 		double stringWidth = getWidthOfString(name, styleClassForText, FONT_SIZE);
 		int i = 0;
-		while (stringWidth > AVAILABLE_WIDTH)
-		{
+		while (stringWidth > AVAILABLE_WIDTH) {
 			name = name.substring(0, name.length() - 1);
 			stringWidth = getWidthOfString(name, styleClassForText, FONT_SIZE);
-			if (i > 100)
-			{
+			if (i > 100) {
 				break;
 			}
 			i++;
@@ -569,8 +512,7 @@ public class PrinterComponent extends Pane
 		return name;
 	}
 
-	public boolean isInterruptible()
-	{
+	public boolean isInterruptible() {
 		return inInterruptibleState;
 	}
 }

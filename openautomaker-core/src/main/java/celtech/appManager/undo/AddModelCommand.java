@@ -16,8 +16,7 @@ import celtech.modelcontrol.ProjectifiableThing;
  *
  * @author tony
  */
-public class AddModelCommand extends Command
-{
+public class AddModelCommand extends Command {
 
 	private final Logger LOGGER = LogManager.getLogger();
 
@@ -26,21 +25,18 @@ public class AddModelCommand extends Command
 	// transform redos to work.
 	ProjectifiableThing modelContainer;
 
-	public AddModelCommand(Project project, ProjectifiableThing modelContainer)
-	{
+	public AddModelCommand(Project project, ProjectifiableThing modelContainer) {
 		this.project = project;
 		this.modelContainer = modelContainer;
 	}
 
 	@Override
-	public void do_()
-	{
+	public void do_() {
 		project.addModel(modelContainer);
 	}
 
 	@Override
-	public void undo()
-	{
+	public void undo() {
 		//        modelContainer.clearElements();
 		Set<ProjectifiableThing> modelContainers = new HashSet<>();
 		modelContainers.add(modelContainer);
@@ -48,8 +44,7 @@ public class AddModelCommand extends Command
 	}
 
 	@Override
-	public void redo()
-	{
+	public void redo() {
 		do_();
 		//        //TODO ensure that user does not try to undo/redo while this is still loading
 		//        List<File> modelFiles = new ArrayList<>();
@@ -79,20 +74,17 @@ public class AddModelCommand extends Command
 	}
 
 	@Override
-	public boolean canMergeWith(Command command)
-	{
+	public boolean canMergeWith(Command command) {
 		return false;
 	}
 
 	@Override
-	public void merge(Command command)
-	{
+	public void merge(Command command) {
 		throw new UnsupportedOperationException("Should never be called.");
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(this.getClass().toGenericString());
 		sb.append("\n");

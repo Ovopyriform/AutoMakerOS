@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package celtech.coreUI;
 
 import javafx.scene.Node;
@@ -13,14 +9,12 @@ import javafx.scene.layout.VBox;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class SidePanel
-{
+public class SidePanel {
 
 	private HBox sidePanelNode;
 	private Object sidePanelController;
 
-	SidePanel(HBox sidePanelNode, Object sidePanelController)
-	{
+	SidePanel(HBox sidePanelNode, Object sidePanelController) {
 		this.sidePanelNode = sidePanelNode;
 		this.sidePanelController = sidePanelController;
 	}
@@ -29,8 +23,7 @@ public class SidePanel
 	 *
 	 * @return
 	 */
-	public HBox getSidePanelNode()
-	{
+	public HBox getSidePanelNode() {
 		return sidePanelNode;
 	}
 
@@ -38,8 +31,7 @@ public class SidePanel
 	 *
 	 * @param sidePanelNode
 	 */
-	public void setSidePanelNode(HBox sidePanelNode)
-	{
+	public void setSidePanelNode(HBox sidePanelNode) {
 		this.sidePanelNode = sidePanelNode;
 	}
 
@@ -47,8 +39,7 @@ public class SidePanel
 	 *
 	 * @return
 	 */
-	public Object getSidePanelController()
-	{
+	public Object getSidePanelController() {
 		return sidePanelController;
 	}
 
@@ -56,8 +47,7 @@ public class SidePanel
 	 *
 	 * @param sidePanelController
 	 */
-	public void setSidePanelController(Object sidePanelController)
-	{
+	public void setSidePanelController(Object sidePanelController) {
 		this.sidePanelController = sidePanelController;
 	}
 
@@ -65,18 +55,13 @@ public class SidePanel
 	 *
 	 * @return
 	 */
-	public VBox getSlideOutContainer()
-	{
+	public VBox getSlideOutContainer() {
 		VBox returnValue = null;
 
-		for (Node node : sidePanelNode.getChildren())
-		{
-			if (node.getId().equalsIgnoreCase("SlideOut") && node instanceof HBox)
-			{
-				for (Node subNode : ((HBox)node).getChildren())
-				{
-					if (subNode.getId().equalsIgnoreCase("Container") && subNode instanceof VBox)
-					{
+		for (Node node : sidePanelNode.getChildren()) {
+			if (node.getId().equalsIgnoreCase("SlideOut") && node instanceof HBox) {
+				for (Node subNode : ((HBox) node).getChildren()) {
+					if (subNode.getId().equalsIgnoreCase("Container") && subNode instanceof VBox) {
 						returnValue = (VBox) subNode;
 						break;
 					}

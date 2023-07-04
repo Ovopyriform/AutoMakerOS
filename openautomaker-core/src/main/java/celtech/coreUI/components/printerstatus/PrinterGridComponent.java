@@ -27,21 +27,18 @@ import xyz.openautomaker.base.printerControl.model.PrinterListChangesListener;
 import xyz.openautomaker.base.printerControl.model.Reel;
 
 /**
- * This component houses a square grid of PrinterComponents and is used a
- * printer selector.
+ * This component houses a square grid of PrinterComponents and is used a printer selector.
  *
  * @author tony
  */
-public class PrinterGridComponent extends FlowPane implements PrinterListChangesListener, ComponentIsolationInterface
-{
+public class PrinterGridComponent extends FlowPane implements PrinterListChangesListener, ComponentIsolationInterface {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private ObservableList<Printer> connectedPrinters;
 	private final Map<Printer, PrinterComponent> printerComponentsByPrinter = new HashMap<>();
 	private PrinterIDDialog printerIDDialog = null;
 
-	public PrinterGridComponent()
-	{
+	public PrinterGridComponent() {
 		final int width = 260;
 		this.setPrefWidth(width);
 		this.setMinWidth(width);
@@ -50,12 +47,11 @@ public class PrinterGridComponent extends FlowPane implements PrinterListChanges
 		this.setMaxHeight(260);
 		this.setPrefWrapLength(261);
 
-		try
-		{
+		try {
 			connectedPrinters = BaseLookup.getConnectedPrinters();
 			BaseLookup.getPrinterListChangesNotifier().addListener(this);
-		} catch (NoClassDefFoundError error)
-		{
+		}
+		catch (NoClassDefFoundError error) {
 			// this should only happen in SceneBuilder
 			connectedPrinters = new SimpleListProperty<>();
 		}
@@ -66,17 +62,15 @@ public class PrinterGridComponent extends FlowPane implements PrinterListChanges
 	/**
 	 * Add the given printer component to the given grid coordinates.
 	 */
-	private void addPrinterComponentToGrid(PrinterComponent printerComponent)
-	{
+	private void addPrinterComponentToGrid(PrinterComponent printerComponent) {
 		PrinterComponent.Size size;
-		if (connectedPrinters.size() > 4)
-		{
+		if (connectedPrinters.size() > 4) {
 			size = PrinterComponent.Size.SIZE_SMALL;
-		} else if (connectedPrinters.size() > 1)
-		{
+		}
+		else if (connectedPrinters.size() > 1) {
 			size = PrinterComponent.Size.SIZE_MEDIUM;
-		} else
-		{
+		}
+		else {
 			size = PrinterComponent.Size.SIZE_LARGE;
 		}
 
@@ -86,53 +80,44 @@ public class PrinterGridComponent extends FlowPane implements PrinterListChanges
 		this.getChildren().add(printerComponent);
 	}
 
-	private void removeAllPrintersFromGrid()
-	{
+	private void removeAllPrintersFromGrid() {
 		printerComponentsByPrinter.clear();
 		this.getChildren().clear();
 	}
 
 	/**
-	 * Remove the given printer from the display. Update the selected printer to
-	 * one of the remaining printers.
+	 * Remove the given printer from the display. Update the selected printer to one of the remaining printers.
 	 */
-	public void removePrinter(Printer printer)
-	{
+	public void removePrinter(Printer printer) {
 		PrinterComponent printerComponent = printerComponentsByPrinter.get(printer);
 		this.getChildren().remove(printerComponent);
 		printerComponentsByPrinter.remove(printer);
 		actOnComponentInterruptible();
 	}
 
-	public final void clearAndAddAllPrintersToGrid()
-	{
+	public final void clearAndAddAllPrintersToGrid() {
 		removeAllPrintersFromGrid();
 
-		if (connectedPrinters.size() > 0)
-		{
-			for (Printer printer : connectedPrinters)
-			{
+		if (connectedPrinters.size() > 0) {
+			for (Printer printer : connectedPrinters) {
 				PrinterComponent printerComponent = createPrinterComponentForPrinter(printer);
 				addPrinterComponentToGrid(printerComponent);
 			}
 
 			actOnComponentInterruptible();
-		} else
-		{
+		}
+		else {
 			PrinterComponent printerComponent = createPrinterComponentForPrinter(null);
 			addPrinterComponentToGrid(printerComponent);
 		}
 	}
 
 	/**
-	 * Create the PrinterComponent for the given printer and set up any
-	 * listeners on component events.
+	 * Create the PrinterComponent for the given printer and set up any listeners on component events.
 	 */
-	private PrinterComponent createPrinterComponentForPrinter(Printer printer)
-	{
+	private PrinterComponent createPrinterComponentForPrinter(Printer printer) {
 		PrinterComponent printerComponent = new PrinterComponent(printer, this);
-		printerComponent.setOnMouseClicked((MouseEvent event) ->
-		{
+		printerComponent.setOnMouseClicked((MouseEvent event) -> {
 			handlePrinterClicked(event, printer);
 		});
 		printerComponentsByPrinter.put(printer, printerComponent);
@@ -140,36 +125,27 @@ public class PrinterGridComponent extends FlowPane implements PrinterListChanges
 	}
 
 	/**
-	 * This is called when the user clicks on the printer component for the
-	 * given printer, and handles click (select printer) and double-click (go to
-	 * edit printer details).
+	 * This is called when the user clicks on the printer component for the given printer, and handles click (select printer) and double-click (go to edit printer details).
 	 *
 	 * @param event
 	 */
-	private void handlePrinterClicked(MouseEvent event, Printer printer)
-	{
-		if (event.getClickCount() == 1)
-		{
+	private void handlePrinterClicked(MouseEvent event, Printer printer) {
+		if (event.getClickCount() == 1) {
 			selectPrinter(printer);
 		}
-		if (event.getClickCount() > 1)
-		{
+		if (event.getClickCount() > 1) {
 			showEditPrinterDetails(printer);
 		}
 	}
 
-	private void selectPrinter(Printer printer)
-	{
-		if (Lookup.getSelectedPrinterProperty().get() != null)
-		{
+	private void selectPrinter(Printer printer) {
+		if (Lookup.getSelectedPrinterProperty().get() != null) {
 			PrinterComponent printerComponent = printerComponentsByPrinter.get(Lookup.getSelectedPrinterProperty().get());
-			if (printerComponent != null)
-			{
+			if (printerComponent != null) {
 				printerComponent.setSelected(false);
 			}
 		}
-		if (printer != null)
-		{
+		if (printer != null) {
 			PrinterComponent printerComponent = printerComponentsByPrinter.get(printer);
 			printerComponent.setSelected(true);
 		}
@@ -180,32 +156,27 @@ public class PrinterGridComponent extends FlowPane implements PrinterListChanges
 	/**
 	 * Show the printerIDDialog for the given printer.
 	 */
-	private void showEditPrinterDetails(Printer printer)
-	{
+	private void showEditPrinterDetails(Printer printer) {
 
 		PrinterColourMap colourMap = PrinterColourMap.getInstance();
-		if (printer != null && printer.printerConnectionProperty().isNotEqualTo(PrinterConnection.OFFLINE).get())
-		{
+		if (printer != null && printer.printerConnectionProperty().isNotEqualTo(PrinterConnection.OFFLINE).get()) {
 			printerIDDialog.setPrinterToUse(printer);
 			PrinterIdentity printerIdentity = printer.getPrinterIdentity();
 			printerIDDialog.setChosenDisplayColour(colourMap.printerToDisplayColour(
 					printerIdentity.printerColourProperty().get()));
-			printerIDDialog.
-			setChosenPrinterName(printerIdentity.printerFriendlyNameProperty().get());
+			printerIDDialog.setChosenPrinterName(printerIdentity.printerFriendlyNameProperty().get());
 
 			boolean okPressed = printerIDDialog.show();
 
-			if (okPressed)
-			{
-				try
-				{
+			if (okPressed) {
+				try {
 					PrinterIdentity clonedID = printer.getPrinterIdentity().clone();
 					clonedID.printerFriendlyNameProperty().set(printerIDDialog.getChosenPrinterName());
 					clonedID.printerColourProperty().set(colourMap.displayToPrinterColour(
 							printerIDDialog.getChosenDisplayColour()));
 					printer.updatePrinterIdentity(clonedID);
-				} catch (PrinterException ex)
-				{
+				}
+				catch (PrinterException ex) {
 					LOGGER.error("Error writing printer ID");
 				}
 			}
@@ -213,93 +184,75 @@ public class PrinterGridComponent extends FlowPane implements PrinterListChanges
 	}
 
 	/**
-	 * Select any one of the active printers. If there are no printers left then
-	 * select 'null'
+	 * Select any one of the active printers. If there are no printers left then select 'null'
 	 */
-	private void selectOnePrinter()
-	{
-		if (connectedPrinters.size() > 0)
-		{
+	private void selectOnePrinter() {
+		if (connectedPrinters.size() > 0) {
 			selectPrinter(connectedPrinters.get(0));
-		} else
-		{
+		}
+		else {
 			selectPrinter(null);
 		}
 	}
 
 	@Override
-	public void whenPrinterAdded(Printer printer)
-	{
+	public void whenPrinterAdded(Printer printer) {
 		clearAndAddAllPrintersToGrid();
 		selectPrinter(printer);
 	}
 
 	@Override
-	public void whenPrinterRemoved(Printer printer)
-	{
+	public void whenPrinterRemoved(Printer printer) {
 		removePrinter(printer);
 		clearAndAddAllPrintersToGrid();
 		selectOnePrinter();
 	}
 
 	@Override
-	public void whenHeadAdded(Printer printer)
-	{
+	public void whenHeadAdded(Printer printer) {
 	}
 
 	@Override
-	public void whenHeadRemoved(Printer printer, Head head)
-	{
+	public void whenHeadRemoved(Printer printer, Head head) {
 	}
 
 	@Override
-	public void whenReelAdded(Printer printer, int reelIndex)
-	{
+	public void whenReelAdded(Printer printer, int reelIndex) {
 	}
 
 	@Override
-	public void whenReelRemoved(Printer printer, Reel reel, int reelIndex)
-	{
+	public void whenReelRemoved(Printer printer, Reel reel, int reelIndex) {
 	}
 
 	@Override
-	public void whenReelChanged(Printer printer, Reel reel)
-	{
+	public void whenReelChanged(Printer printer, Reel reel) {
 	}
 
 	@Override
-	public void whenExtruderAdded(Printer printer, int extruderIndex)
-	{
+	public void whenExtruderAdded(Printer printer, int extruderIndex) {
 	}
 
 	@Override
-	public void whenExtruderRemoved(Printer printer, int extruderIndex)
-	{
+	public void whenExtruderRemoved(Printer printer, int extruderIndex) {
 	}
 
 	@Override
-	public void interruptibilityUpdated(PrinterComponent component)
-	{
+	public void interruptibilityUpdated(PrinterComponent component) {
 		actOnComponentInterruptible();
 	}
 
-	private void actOnComponentInterruptible()
-	{
-		if (Lookup.getSelectedPrinterProperty().get() != null)
-		{
-			for (Entry<Printer, PrinterComponent> componentEntry : printerComponentsByPrinter.entrySet())
-			{
-				if (componentEntry.getKey() == Lookup.getSelectedPrinterProperty().get())
-				{
+	private void actOnComponentInterruptible() {
+		if (Lookup.getSelectedPrinterProperty().get() != null) {
+			for (Entry<Printer, PrinterComponent> componentEntry : printerComponentsByPrinter.entrySet()) {
+				if (componentEntry.getKey() == Lookup.getSelectedPrinterProperty().get()) {
 					componentEntry.getValue().setDisable(false);
-				} else
-				{
+				}
+				else {
 					PrinterComponent componentToExamine = printerComponentsByPrinter.get(Lookup.getSelectedPrinterProperty().get());
-					if (componentToExamine != null && !componentToExamine.isInterruptible())
-					{
+					if (componentToExamine != null && !componentToExamine.isInterruptible()) {
 						componentEntry.getValue().setDisable(true);
-					} else
-					{
+					}
+					else {
 						componentEntry.getValue().setDisable(false);
 					}
 				}

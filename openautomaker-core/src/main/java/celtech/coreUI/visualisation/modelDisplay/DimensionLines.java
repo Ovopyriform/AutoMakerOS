@@ -14,8 +14,7 @@ import javafx.scene.text.TextAlignment;
  *
  * @author Ian
  */
-public class DimensionLines
-{
+public class DimensionLines {
 
 	private final Group parentGroup;
 	private final double offsetFromMaxMin;
@@ -38,20 +37,24 @@ public class DimensionLines
 	private Node depthForwardArrowHead = null;
 	private Node depthLine = null;
 
-	private enum ArrowHeadDirection
-	{
+	private enum ArrowHeadDirection {
 
-		LEFT, RIGHT, UP, DOWN, FORWARD, BACK
+		LEFT,
+		RIGHT,
+		UP,
+		DOWN,
+		FORWARD,
+		BACK
 	}
 
-	private enum LineDirection
-	{
+	private enum LineDirection {
 
-		HORIZONTAL, VERTICAL, FORWARD_BACK
+		HORIZONTAL,
+		VERTICAL,
+		FORWARD_BACK
 	}
 
-	public DimensionLines(Group parentGroup, PhongMaterial materialToUse, double offsetFromMaxMin)
-	{
+	public DimensionLines(Group parentGroup, PhongMaterial materialToUse, double offsetFromMaxMin) {
 		this.parentGroup = parentGroup;
 		this.materialToUse = materialToUse;
 		this.offsetFromMaxMin = offsetFromMaxMin;
@@ -59,8 +62,7 @@ public class DimensionLines
 		buildDimensionLines();
 	}
 
-	private void buildDimensionLines()
-	{
+	private void buildDimensionLines() {
 		heightUpArrowHead = createArrowHead(ArrowHeadDirection.UP);
 		heightDownArrowHead = createArrowHead(ArrowHeadDirection.DOWN);
 		heightLine = createLine(LineDirection.VERTICAL);
@@ -93,44 +95,42 @@ public class DimensionLines
 		//        depthForwardArrowHead = createArrowHead(ArrowHeadDirection.FORWARD);
 	}
 
-	private MeshView createArrowHead(ArrowHeadDirection headDirection)
-	{
+	private MeshView createArrowHead(ArrowHeadDirection headDirection) {
 		TriangleMesh triMesh = new TriangleMesh();
 
-		switch (headDirection)
-		{
-		case UP:
-			triMesh.getPoints().addAll(0, 0, 0);
-			triMesh.getPoints().addAll(-arrowHeadWidth / 2, arrowHeadLength, 0);
-			triMesh.getPoints().addAll(0, arrowHeadLength, 0);
-			triMesh.getPoints().addAll(arrowHeadWidth / 2, arrowHeadLength, 0);
-			triMesh.getFaces().addAll(0, 0, 1, 0, 2, 0);
-			triMesh.getFaces().addAll(2, 0, 3, 0, 0, 0);
-			break;
-		case DOWN:
-			triMesh.getPoints().addAll(0, 0, 0);
-			triMesh.getPoints().addAll(-arrowHeadWidth / 2, -arrowHeadLength, 0);
-			triMesh.getPoints().addAll(0, -arrowHeadLength, 0);
-			triMesh.getPoints().addAll(arrowHeadWidth / 2, -arrowHeadLength, 0);
-			triMesh.getFaces().addAll(0, 0, 2, 0, 1, 0);
-			triMesh.getFaces().addAll(0, 0, 3, 0, 2, 0);
-			break;
-		case LEFT:
-			triMesh.getPoints().addAll(0, 0, 0);
-			triMesh.getPoints().addAll(arrowHeadLength, arrowHeadWidth / 2, 0);
-			triMesh.getPoints().addAll(arrowHeadLength, 0, 0);
-			triMesh.getPoints().addAll(arrowHeadLength, -arrowHeadWidth / 2, 0);
-			triMesh.getFaces().addAll(0, 0, 1, 0, 2, 0);
-			triMesh.getFaces().addAll(2, 0, 3, 0, 0, 0);
-			break;
-		case RIGHT:
-			triMesh.getPoints().addAll(0, 0, 0);
-			triMesh.getPoints().addAll(-arrowHeadLength, -arrowHeadWidth/2, 0);
-			triMesh.getPoints().addAll(-arrowHeadLength, 0, 0);
-			triMesh.getPoints().addAll(-arrowHeadLength, arrowHeadWidth/2, 0);
-			triMesh.getFaces().addAll(0, 0, 2, 0, 1, 0);
-			triMesh.getFaces().addAll(0, 0, 3, 0, 2, 0);
-			break;
+		switch (headDirection) {
+			case UP:
+				triMesh.getPoints().addAll(0, 0, 0);
+				triMesh.getPoints().addAll(-arrowHeadWidth / 2, arrowHeadLength, 0);
+				triMesh.getPoints().addAll(0, arrowHeadLength, 0);
+				triMesh.getPoints().addAll(arrowHeadWidth / 2, arrowHeadLength, 0);
+				triMesh.getFaces().addAll(0, 0, 1, 0, 2, 0);
+				triMesh.getFaces().addAll(2, 0, 3, 0, 0, 0);
+				break;
+			case DOWN:
+				triMesh.getPoints().addAll(0, 0, 0);
+				triMesh.getPoints().addAll(-arrowHeadWidth / 2, -arrowHeadLength, 0);
+				triMesh.getPoints().addAll(0, -arrowHeadLength, 0);
+				triMesh.getPoints().addAll(arrowHeadWidth / 2, -arrowHeadLength, 0);
+				triMesh.getFaces().addAll(0, 0, 2, 0, 1, 0);
+				triMesh.getFaces().addAll(0, 0, 3, 0, 2, 0);
+				break;
+			case LEFT:
+				triMesh.getPoints().addAll(0, 0, 0);
+				triMesh.getPoints().addAll(arrowHeadLength, arrowHeadWidth / 2, 0);
+				triMesh.getPoints().addAll(arrowHeadLength, 0, 0);
+				triMesh.getPoints().addAll(arrowHeadLength, -arrowHeadWidth / 2, 0);
+				triMesh.getFaces().addAll(0, 0, 1, 0, 2, 0);
+				triMesh.getFaces().addAll(2, 0, 3, 0, 0, 0);
+				break;
+			case RIGHT:
+				triMesh.getPoints().addAll(0, 0, 0);
+				triMesh.getPoints().addAll(-arrowHeadLength, -arrowHeadWidth / 2, 0);
+				triMesh.getPoints().addAll(-arrowHeadLength, 0, 0);
+				triMesh.getPoints().addAll(-arrowHeadLength, arrowHeadWidth / 2, 0);
+				triMesh.getFaces().addAll(0, 0, 2, 0, 1, 0);
+				triMesh.getFaces().addAll(0, 0, 3, 0, 2, 0);
+				break;
 		}
 		FloatArrayList texCoords = new FloatArrayList();
 		texCoords.add(0f);
@@ -138,8 +138,7 @@ public class DimensionLines
 		triMesh.getTexCoords().addAll(texCoords.toFloatArray());
 
 		int[] smoothingGroups = new int[triMesh.getFaces().size() / 6];
-		for (int i = 0; i < smoothingGroups.length; i++)
-		{
+		for (int i = 0; i < smoothingGroups.length; i++) {
 			smoothingGroups[i] = 0;
 		}
 		triMesh.getFaceSmoothingGroups().addAll(smoothingGroups);
@@ -155,28 +154,26 @@ public class DimensionLines
 		return meshView;
 	}
 
-	private MeshView createLine(LineDirection lineDirection)
-	{
+	private MeshView createLine(LineDirection lineDirection) {
 		TriangleMesh triMesh = new TriangleMesh();
 
-		switch (lineDirection)
-		{
-		case VERTICAL:
-			triMesh.getPoints().addAll(-lineWidth / 2, 0, 0);
-			triMesh.getPoints().addAll(lineWidth / 2, 0, 0);
-			triMesh.getPoints().addAll(lineWidth / 2, -1, 0);
-			triMesh.getPoints().addAll(-lineWidth / 2, -1, 0);
-			triMesh.getFaces().addAll(0, 0, 1, 0, 3, 0);
-			triMesh.getFaces().addAll(1, 0, 2, 0, 3, 0);
-			break;
-		case HORIZONTAL:
-			triMesh.getPoints().addAll(0, -lineWidth / 2, 0);
-			triMesh.getPoints().addAll(0, lineWidth / 2, 0);
-			triMesh.getPoints().addAll(-1, lineWidth / 2, 0);
-			triMesh.getPoints().addAll(-1, -lineWidth / 2, 0);
-			triMesh.getFaces().addAll(0, 0, 1, 0, 3, 0);
-			triMesh.getFaces().addAll(1, 0, 2, 0, 3, 0);
-			break;
+		switch (lineDirection) {
+			case VERTICAL:
+				triMesh.getPoints().addAll(-lineWidth / 2, 0, 0);
+				triMesh.getPoints().addAll(lineWidth / 2, 0, 0);
+				triMesh.getPoints().addAll(lineWidth / 2, -1, 0);
+				triMesh.getPoints().addAll(-lineWidth / 2, -1, 0);
+				triMesh.getFaces().addAll(0, 0, 1, 0, 3, 0);
+				triMesh.getFaces().addAll(1, 0, 2, 0, 3, 0);
+				break;
+			case HORIZONTAL:
+				triMesh.getPoints().addAll(0, -lineWidth / 2, 0);
+				triMesh.getPoints().addAll(0, lineWidth / 2, 0);
+				triMesh.getPoints().addAll(-1, lineWidth / 2, 0);
+				triMesh.getPoints().addAll(-1, -lineWidth / 2, 0);
+				triMesh.getFaces().addAll(0, 0, 1, 0, 3, 0);
+				triMesh.getFaces().addAll(1, 0, 2, 0, 3, 0);
+				break;
 		}
 		FloatArrayList texCoords = new FloatArrayList();
 		texCoords.add(0f);
@@ -184,8 +181,7 @@ public class DimensionLines
 		triMesh.getTexCoords().addAll(texCoords.toFloatArray());
 
 		int[] smoothingGroups = new int[triMesh.getFaces().size() / 6];
-		for (int i = 0; i < smoothingGroups.length; i++)
-		{
+		for (int i = 0; i < smoothingGroups.length; i++) {
 			smoothingGroups[i] = 0;
 		}
 		triMesh.getFaceSmoothingGroups().addAll(smoothingGroups);
@@ -201,8 +197,7 @@ public class DimensionLines
 		return meshView;
 	}
 
-	void place(double minX, double maxX, double minY, double maxY, double minZ, double maxZ)
-	{
+	void place(double minX, double maxX, double minY, double maxY, double minZ, double maxZ) {
 		double upArrowBottom = minY + offsetFromMaxMin;
 		heightUpArrowHead.setTranslateY(upArrowBottom);
 		heightUpArrowHead.setTranslateX(minX);

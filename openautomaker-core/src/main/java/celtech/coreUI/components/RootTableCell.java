@@ -11,37 +11,31 @@ import javafx.scene.image.ImageView;
  *
  * @author Ian
  */
-public class RootTableCell extends TableCell<DetectedServer, ServerStatus>
-{
+public class RootTableCell extends TableCell<DetectedServer, ServerStatus> {
 
 	private ImageView imageContainer;
 	private Image connectedImage;
 	private Image disconnectedImage;
 
-	public RootTableCell()
-	{
+	public RootTableCell() {
 		imageContainer = new ImageView();
 		connectedImage = new Image(ApplicationConfiguration.imageResourcePath + "plug_connected.png");
 		disconnectedImage = new Image(ApplicationConfiguration.imageResourcePath + "plug_disconnected.png");
 	}
 
 	@Override
-	protected void updateItem(ServerStatus item, boolean empty)
-	{
+	protected void updateItem(ServerStatus item, boolean empty) {
 		super.updateItem(item, empty);
-		if (item != null && !empty)
-		{
+		if (item != null && !empty) {
 			setGraphic(imageContainer);
-			if (item == ServerStatus.CONNECTED || item == ServerStatus.UPGRADING)
-			{
+			if (item == ServerStatus.CONNECTED || item == ServerStatus.UPGRADING) {
 				imageContainer.setImage(connectedImage);
 			}
-			else
-			{
+			else {
 				imageContainer.setImage(disconnectedImage);
 			}
-		} else
-		{
+		}
+		else {
 			setGraphic(null);
 		}
 	}

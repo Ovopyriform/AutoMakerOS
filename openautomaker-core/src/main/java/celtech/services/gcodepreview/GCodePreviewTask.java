@@ -1,9 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package celtech.services.gcodepreview;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -36,16 +33,14 @@ public class GCodePreviewTask extends Task<Boolean> {
 	private String printerType;
 	private Rectangle2D normalisedScreenBounds;
 
-	public GCodePreviewTask(String projectDirectory, String printerType, Rectangle2D normalisedScreenBounds)
-	{
+	public GCodePreviewTask(String projectDirectory, String printerType, Rectangle2D normalisedScreenBounds) {
 		this.projectDirectory = projectDirectory;
 		this.printerType = printerTypeOrDefault(printerType);
 		this.normalisedScreenBounds = normalisedScreenBounds;
 		this.stdInStream = null;
 	}
 
-	private String printerTypeOrDefault(String printerType)
-	{
+	private String printerTypeOrDefault(String printerType) {
 		String pt = (printerType != null ? printerType.trim() : "");
 		if (pt.isEmpty())
 			pt = "DEFAULT";
@@ -53,27 +48,23 @@ public class GCodePreviewTask extends Task<Boolean> {
 		return pt;
 	}
 
-	public IntegerProperty getLayerCountProperty()
-	{
+	public IntegerProperty getLayerCountProperty() {
 		return layerCountProperty;
 	}
 
-	private void writeToInStream(String command) throws IOException
-	{
+	private void writeToInStream(String command) throws IOException {
 		LOGGER.debug("Writing command \"" + command + "\"");
 		stdInStream.write(command.getBytes());
 		stdInStream.write('\n');
 	}
 
-	public synchronized void writeCommand(String command)
-	{
+	public synchronized void writeCommand(String command) {
 		if (this.stdInStream == null) {
 			if (pendingCommands == null)
 				pendingCommands = new ArrayList<>();
 			pendingCommands.add(command);
 		}
-		else
-		{
+		else {
 			try {
 				flushPendingCommands();
 				writeToInStream(command);
@@ -85,18 +76,15 @@ public class GCodePreviewTask extends Task<Boolean> {
 		}
 	}
 
-	public synchronized void flushPendingCommands() throws IOException
-	{
-		if (pendingCommands != null)
-		{
+	public synchronized void flushPendingCommands() throws IOException {
+		if (pendingCommands != null) {
 			for (String pendingCommand : pendingCommands)
 				writeToInStream(pendingCommand);
 			pendingCommands = null;
 		}
 	}
 
-	public void loadGCodeFile(String filePath)
-	{
+	public void loadGCodeFile(String filePath) {
 		StringBuilder command = new StringBuilder();
 		command.append("load ");
 		command.append(filePath);
@@ -105,8 +93,7 @@ public class GCodePreviewTask extends Task<Boolean> {
 		writeCommand(command.toString());
 	}
 
-	public void setPrinterType(String printerType)
-	{
+	public void setPrinterType(String printerType) {
 		this.printerType = printerTypeOrDefault(printerType);
 		StringBuilder command = new StringBuilder();
 		command.append("printer ");
@@ -116,8 +103,7 @@ public class GCodePreviewTask extends Task<Boolean> {
 		writeCommand(command.toString());
 	}
 
-	public void setToolColour(int toolIndex, Color colour)
-	{
+	public void setToolColour(int toolIndex, Color colour) {
 		StringBuilder command = new StringBuilder();
 		command.append("colour tool ");
 		command.append(Integer.toString(toolIndex));
@@ -132,8 +118,7 @@ public class GCodePreviewTask extends Task<Boolean> {
 		writeCommand(command.toString());
 	}
 
-	public void setTopLayer(int topLayer)
-	{
+	public void setTopLayer(int topLayer) {
 		StringBuilder command = new StringBuilder();
 		command.append("top ");
 		command.append(topLayer);
@@ -142,8 +127,7 @@ public class GCodePreviewTask extends Task<Boolean> {
 		writeCommand(command.toString());
 	}
 
-	public void setMovesVisible(boolean flag)
-	{
+	public void setMovesVisible(boolean flag) {
 		StringBuilder command = new StringBuilder();
 		if (flag)
 			command.append("show moves");
@@ -154,20 +138,16 @@ public class GCodePreviewTask extends Task<Boolean> {
 		writeCommand(command.toString());
 	}
 
-	public void clearGCode()
-	{
+	public void clearGCode() {
 		writeCommand("clear");
 	}
 
-	public void giveFocus()
-	{
+	public void giveFocus() {
 		writeCommand("focus");
 	}
 
-	public void terminatePreview()
-	{
-		if (this.stdInStream != null)
-		{
+	public void terminatePreview() {
+		if (this.stdInStream != null) {
 			String command = "q";
 			writeCommand(command.toString());
 		}
@@ -177,7 +157,6 @@ public class GCodePreviewTask extends Task<Boolean> {
 	protected Boolean call() throws Exception {
 		boolean succeeded = false;
 		ArrayList<String> commands = new ArrayList<>();
-
 
 		String jvmLocation = System.getProperties().getProperty("java.home") + File.separator + "bin" + File.separator + "java";
 		commands.add(jvmLocation);
@@ -216,8 +195,7 @@ public class GCodePreviewTask extends Task<Boolean> {
 			commands.add(Double.toString(normalisedScreenBounds.getHeight()));
 		}
 
-		if (commands.size() > 0)
-		{
+		if (commands.size() > 0) {
 			LOGGER.debug("GCodePreviewTask command is \"" + String.join(" ", commands) + "\"");
 			ProcessBuilder previewProcessBuilder = new ProcessBuilder(commands);
 			previewProcessBuilder.redirectErrorStream(true);
@@ -228,8 +206,8 @@ public class GCodePreviewTask extends Task<Boolean> {
 
 				GCodePreviewConsumer outputConsumer = new GCodePreviewConsumer(previewProcess.getInputStream());
 				outputConsumer.setLayerCountProperty(layerCountProperty);
-				synchronized(this){
-					this.stdInStream =  previewProcess.getOutputStream();
+				synchronized (this) {
+					this.stdInStream = previewProcess.getOutputStream();
 					try {
 						flushPendingCommands();
 						stdInStream.flush();
@@ -243,17 +221,16 @@ public class GCodePreviewTask extends Task<Boolean> {
 				outputConsumer.start();
 
 				int exitStatus = previewProcess.waitFor();
-				switch (exitStatus)
-				{
-				case 0:
-					LOGGER.debug("GCode previewer terminated successfully ");
-					succeeded = true;
-					break;
-				default:
-					LOGGER.error("Failure when invoking gcode previewer with command line: \"" + String.join(
-							" ", commands) + "\"");
-					LOGGER.error("GCode Previewer terminated with exit code " + exitStatus);
-					break;
+				switch (exitStatus) {
+					case 0:
+						LOGGER.debug("GCode previewer terminated successfully ");
+						succeeded = true;
+						break;
+					default:
+						LOGGER.error("Failure when invoking gcode previewer with command line: \"" + String.join(
+								" ", commands) + "\"");
+						LOGGER.error("GCode Previewer terminated with exit code " + exitStatus);
+						break;
 				}
 			}
 			catch (IOException ex) {
@@ -261,13 +238,12 @@ public class GCodePreviewTask extends Task<Boolean> {
 			}
 			catch (InterruptedException ex) {
 				LOGGER.warn("Interrupted whilst waiting for GCode Previewer to complete");
-				if (previewProcess != null)
-				{
+				if (previewProcess != null) {
 					previewProcess.destroyForcibly();
 				}
 			}
-		} else
-		{
+		}
+		else {
 			LOGGER.error("Couldn't run GCode Previewer - no commands for OS ");
 		}
 

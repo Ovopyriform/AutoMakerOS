@@ -31,19 +31,15 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author tony
  */
-public class CutCommand extends Command
-{
+public class CutCommand extends Command {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			CutCommand.class.getName());
 
 	/**
-	 * Cuts for groups have to be treated differently to cuts of single models
-	 * due to the requirement that Undo must reconstitute any previous hierarchy
-	 * of grouping that existed before the cut.
+	 * Cuts for groups have to be treated differently to cuts of single models due to the requirement that Undo must reconstitute any previous hierarchy of grouping that existed before the cut.
 	 */
-	class GroupingOperation
-	{
+	class GroupingOperation {
 
 		ModelGroup originalGroup;
 		Set<Groupable> modelsForTopGroup;
@@ -55,8 +51,7 @@ public class CutCommand extends Command
 
 		public GroupingOperation(ModelGroup originalGroup, Set<Groupable> modelsForTopGroup,
 				Set<Groupable> modelsForBottomGroup, Set<ModelContainer> modelsToRemoveFromProject,
-				Set<ModelContainer> modelsToAddToProject)
-		{
+				Set<ModelContainer> modelsToAddToProject) {
 			this.originalGroup = originalGroup;
 			this.modelsForTopGroup = modelsForTopGroup;
 			this.modelsForBottomGroup = modelsForBottomGroup;
@@ -64,22 +59,18 @@ public class CutCommand extends Command
 			this.modelsToAddToProject = modelsToAddToProject;
 		}
 
-		void undo()
-		{
+		void undo() {
 
-			for (ModelContainer modelContainer : modelsToRemoveFromProject)
-			{
+			for (ModelContainer modelContainer : modelsToRemoveFromProject) {
 				project.addModel(modelContainer);
 			}
 
 			Set<ModelGroup> groups = new HashSet<>();
 
-			if (topGroup != null)
-			{
+			if (topGroup != null) {
 				groups.add(topGroup);
 			}
-			if (bottomGroup != null)
-			{
+			if (bottomGroup != null) {
 				groups.add(bottomGroup);
 			}
 			project.ungroup(groups);
@@ -88,39 +79,35 @@ public class CutCommand extends Command
 			project.removeModels(projectifiableThings);
 		}
 
-		void redo()
-		{
+		void redo() {
 
 			ungroupAllDescendentModelGroups(originalGroup);
 
 			Set<ProjectifiableThing> projectifiableThings = (Set) modelsToRemoveFromProject;
 			project.removeModels(projectifiableThings);
-			for (ModelContainer modelContainer : modelsToAddToProject)
-			{
+			for (ModelContainer modelContainer : modelsToAddToProject) {
 				project.addModel(modelContainer);
 			}
 
-			if (!modelsForTopGroup.isEmpty())
-			{
+			if (!modelsForTopGroup.isEmpty()) {
 				topGroup = project.group(modelsForTopGroup);
 				topGroup.setState(originalGroup.getState());
 				topGroup.moveToCentre();
 				topGroup.dropToBed();
 				topGroup.translateBy(-10, -10);
-			} else
-			{
+			}
+			else {
 				topGroup = null;
 			}
 
-			if (!modelsForBottomGroup.isEmpty())
-			{
+			if (!modelsForBottomGroup.isEmpty()) {
 				bottomGroup = project.group(modelsForBottomGroup);
 				bottomGroup.setState(originalGroup.getState());
 				bottomGroup.moveToCentre();
 				bottomGroup.dropToBed();
 				bottomGroup.translateBy(10, 10);
-			} else
-			{
+			}
+			else {
 				bottomGroup = null;
 			}
 		}
@@ -144,51 +131,43 @@ public class CutCommand extends Command
 
 	boolean cutWorked = false;
 
-	public CutCommand(ModelContainerProject project, Set<ModelContainer> modelContainers, float cutHeightValue)
-	{
+	public CutCommand(ModelContainerProject project, Set<ModelContainer> modelContainers, float cutHeightValue) {
 		this.project = project;
 		this.cutHeightValue = cutHeightValue;
 		this.modelContainers = modelContainers;
 	}
 
 	@Override
-	public void do_()
-	{
+	public void do_() {
 		redo();
 	}
 
 	@Override
-	public void undo()
-	{
+	public void undo() {
 
-		if (cutWorked)
-		{
+		if (cutWorked) {
 			Set<ProjectifiableThing> projectifiableThings = (Set) createdModelContainers;
 			project.removeModels(projectifiableThings);
 
-			for (ModelContainer modelContainer : modelsToRemoveFromProject)
-			{
+			for (ModelContainer modelContainer : modelsToRemoveFromProject) {
 				project.addModel(modelContainer);
 			}
 
-			for (GroupingOperation groupingOperation : groupingOperations)
-			{
+			for (GroupingOperation groupingOperation : groupingOperations) {
 				groupingOperation.undo();
 			}
 
-			try
-			{
+			try {
 				project.recreateGroups(groupStructure, groupState);
-			} catch (ModelContainerProject.ProjectLoadException ex)
-			{
+			}
+			catch (ModelContainerProject.ProjectLoadException ex) {
 				LOGGER.error("Error undoing group cut", ex);
 			}
 		}
 	}
 
 	@Override
-	public void redo()
-	{
+	public void redo() {
 
 		groupingOperations = new HashSet<>();
 		createdModelContainers = new HashSet<>();
@@ -198,34 +177,28 @@ public class CutCommand extends Command
 
 		multiCut(modelContainers, cutHeightValue);
 
-		if (cutWorked)
-		{
-			for (ModelContainer modelContainer : createdModelContainers)
-			{
+		if (cutWorked) {
+			for (ModelContainer modelContainer : createdModelContainers) {
 				project.addModel(modelContainer);
 			}
 
 			Set<ProjectifiableThing> projectifiableThings = (Set) modelsToRemoveFromProject;
 			project.removeModels(projectifiableThings);
 
-			for (GroupingOperation groupingOperation : groupingOperations)
-			{
+			for (GroupingOperation groupingOperation : groupingOperations) {
 				groupingOperation.redo();
 			}
 		}
 	}
 
-	private void multiCut(Set<ModelContainer> modelContainers, float cutHeightValue)
-	{
-		try
-		{
-			for (ModelContainer modelContainer : modelContainers)
-			{
+	private void multiCut(Set<ModelContainer> modelContainers, float cutHeightValue) {
+		try {
+			for (ModelContainer modelContainer : modelContainers) {
 				cut(modelContainer, cutHeightValue);
 			}
 
-		} catch (Exception ex)
-		{
+		}
+		catch (Exception ex) {
 			cutWorked = false;
 			LOGGER.error("an error occurred during cutting ", ex);
 			BaseLookup.getSystemNotificationHandler().showErrorNotification(
@@ -235,21 +208,18 @@ public class CutCommand extends Command
 		cutWorked = true;
 	}
 
-	private void cut(ModelContainer modelContainer, float cutHeightValue)
-	{
+	private void cut(ModelContainer modelContainer, float cutHeightValue) {
 
-		if (modelContainer instanceof ModelGroup)
-		{
+		if (modelContainer instanceof ModelGroup) {
 			cutGroup((ModelGroup) modelContainer, cutHeightValue);
-		} else
-		{
+		}
+		else {
 			cutSingleModel(modelContainer, cutHeightValue);
 		}
 		return;
 	}
 
-	private void cutSingleModel(ModelContainer modelContainer, float cutHeightValue)
-	{
+	private void cutSingleModel(ModelContainer modelContainer, float cutHeightValue) {
 		List<ModelContainer> childModelContainers = new ArrayList<>();
 
 		List<Optional<ModelContainer>> modelContainerPair = cutModelContainerAtHeight(modelContainer,
@@ -258,25 +228,20 @@ public class CutCommand extends Command
 		Optional<ModelContainer> bottomModelContainer = modelContainerPair.get(1);
 
 		boolean cutTookPlace = false;
-		if (bottomModelContainer.isPresent() && topModelContainer.isPresent())
-		{
+		if (bottomModelContainer.isPresent() && topModelContainer.isPresent()) {
 			cutTookPlace = true;
 		}
 
-		if (bottomModelContainer.isPresent())
-		{
-			if (cutTookPlace)
-			{
+		if (bottomModelContainer.isPresent()) {
+			if (cutTookPlace) {
 				bottomModelContainer.get().moveToCentre();
 				bottomModelContainer.get().dropToBed();
 				bottomModelContainer.get().translateBy(-10, -10);
 			}
 			childModelContainers.add(bottomModelContainer.get());
 		}
-		if (topModelContainer.isPresent())
-		{
-			if (cutTookPlace)
-			{
+		if (topModelContainer.isPresent()) {
+			if (cutTookPlace) {
 				topModelContainer.get().moveToCentre();
 				topModelContainer.get().dropToBed();
 				topModelContainer.get().translateBy(10, 10);
@@ -284,11 +249,9 @@ public class CutCommand extends Command
 			childModelContainers.add(topModelContainer.get());
 		}
 		/**
-		 * The cut can just be the original model, we don't add to
-		 * childModelContainers in that case.
+		 * The cut can just be the original model, we don't add to childModelContainers in that case.
 		 */
-		if (!childModelContainers.contains(modelContainer))
-		{
+		if (!childModelContainers.contains(modelContainer)) {
 			createdModelContainers.addAll(childModelContainers);
 			modelsToRemoveFromProject.add(modelContainer);
 		}
@@ -297,8 +260,7 @@ public class CutCommand extends Command
 	Map<Integer, ItemState> groupState;
 	Map<Integer, Set<Integer>> groupStructure;
 
-	private void cutGroup(ModelGroup modelGroup, float cutHeightValue)
-	{
+	private void cutGroup(ModelGroup modelGroup, float cutHeightValue) {
 
 		Set<ModelContainer> modelsToRemoveFromProject = new HashSet<>();
 		Set<ModelContainer> modelsToAddToProject = new HashSet<>();
@@ -308,21 +270,17 @@ public class CutCommand extends Command
 
 		Set<ModelContainer> allMeshViews = modelGroup.getModelsHoldingMeshViews();
 
-		for (ModelContainer descendentModelContainer : allMeshViews)
-		{
+		for (ModelContainer descendentModelContainer : allMeshViews) {
 			List<Optional<ModelContainer>> modelContainerPair = cutModelContainerAtHeight(
 					descendentModelContainer,
 					cutHeightValue);
-			if (modelContainerPair.get(0).isPresent())
-			{
+			if (modelContainerPair.get(0).isPresent()) {
 				topModelContainers.add(modelContainerPair.get(0).get());
 			}
-			if (modelContainerPair.get(1).isPresent())
-			{
+			if (modelContainerPair.get(1).isPresent()) {
 				bottomModelContainers.add(modelContainerPair.get(1).get());
 			}
-			if (modelContainerPair.get(0).isPresent() && modelContainerPair.get(1).isPresent())
-			{
+			if (modelContainerPair.get(0).isPresent() && modelContainerPair.get(1).isPresent()) {
 				// this part was cut
 				modelsToRemoveFromProject.add(descendentModelContainer);
 				modelsToAddToProject.add(modelContainerPair.get(0).get());
@@ -339,25 +297,22 @@ public class CutCommand extends Command
 	}
 
 	private List<Optional<ModelContainer>> cutModelContainerAtHeight(ModelContainer modelContainer,
-			float cutHeight)
-	{
+			float cutHeight) {
 		List<Optional<ModelContainer>> modelContainerPair = new ArrayList<>();
 
 		/**
-		 * First check for the case where the cutting plane is entirely above or
-		 * below the model.
+		 * First check for the case where the cutting plane is entirely above or below the model.
 		 */
 		List<Float> limits = modelContainer.getMaxAndMinYInBedCoords();
 		float maxHeight = limits.get(0);
 		float minHeight = limits.get(1);
-		if (cutHeight <= minHeight)
-		{
+		if (cutHeight <= minHeight) {
 			modelContainerPair.add(Optional.empty());
 			modelContainerPair.add(Optional.of(modelContainer));
 
 			return modelContainerPair;
-		} else if (cutHeight >= maxHeight)
-		{
+		}
+		else if (cutHeight >= maxHeight) {
 			modelContainerPair.add(Optional.of(modelContainer));
 			modelContainerPair.add(Optional.empty());
 
@@ -370,8 +325,7 @@ public class CutCommand extends Command
 		modelContainer.saveAndClearBedTransform();
 		modelContainer.saveAndClearDropToBedYTransform();
 
-		try
-		{
+		try {
 			List<TriangleMesh> meshPair = MeshCutter2.cut(
 					(TriangleMesh) modelContainer.getMeshView().getMesh(),
 					cutHeight, modelContainer.getBedToLocalConverter());
@@ -379,8 +333,7 @@ public class CutCommand extends Command
 			String modelName = modelContainer.getModelName();
 
 			int ix = 1;
-			for (TriangleMesh subMesh : meshPair)
-			{
+			for (TriangleMesh subMesh : meshPair) {
 				MeshView meshView = new MeshView(subMesh);
 				meshView.cullFaceProperty().set(CullFace.NONE);
 				ModelContainer newModelContainer = new ModelContainer(
@@ -395,8 +348,8 @@ public class CutCommand extends Command
 				//                newModelContainer.getMeshView().setDrawMode(DrawMode.LINE);
 				ix++;
 			}
-		} finally
-		{
+		}
+		finally {
 			modelContainer.restoreBedTransform();
 			modelContainer.restoreDropToBedYTransform();
 		}
@@ -407,31 +360,26 @@ public class CutCommand extends Command
 	/**
 	 * Ungroup this model group and any descendent model groups.
 	 */
-	private void ungroupAllDescendentModelGroups(ModelGroup modelGroup)
-	{
+	private void ungroupAllDescendentModelGroups(ModelGroup modelGroup) {
 		Set<ModelContainer> groupChildren = modelGroup.getChildModelContainers();
 		Set<ModelContainer> modelGroups = new HashSet<>();
 		modelGroups.add(modelGroup);
 		project.ungroup(modelGroups);
 
-		for (ModelContainer childModel : groupChildren)
-		{
-			if (childModel instanceof ModelGroup)
-			{
+		for (ModelContainer childModel : groupChildren) {
+			if (childModel instanceof ModelGroup) {
 				ungroupAllDescendentModelGroups((ModelGroup) childModel);
 			}
 		}
 	}
 
 	@Override
-	public boolean canMergeWith(Command command)
-	{
+	public boolean canMergeWith(Command command) {
 		return false;
 	}
 
 	@Override
-	public void merge(Command command)
-	{
+	public void merge(Command command) {
 		throw new UnsupportedOperationException("Should never be called");
 	}
 }

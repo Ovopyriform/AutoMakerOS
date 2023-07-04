@@ -9,8 +9,7 @@ import javafx.scene.layout.Region;
  *
  * @author tony
  */
-public interface SpinnerControl
-{
+public interface SpinnerControl {
 	/**
 	 * Show the spinner, and keep it centred on the given region.
 	 */

@@ -23,8 +23,7 @@ import xyz.openautomaker.base.configuration.BaseConfiguration;
  *
  * @author Ian
  */
-public class NewsBot
-{
+public class NewsBot {
 
 	private static final Logger LOGGER = LogManager.getLogger(NewsBot.class.getName());
 	private static NewsBot instance = null;
@@ -40,8 +39,7 @@ public class NewsBot
 	private final int LOWER_FREQUENCY_POLLING_PERIOD_MS = 120000;
 	private final int STRIKES_AND_YOURE_OUT = 6;
 
-	public class NewsArticle
-	{
+	public class NewsArticle {
 
 		private int id;
 		private String title;
@@ -49,8 +47,7 @@ public class NewsBot
 		private String link;
 		private String dateString;
 
-		private NewsArticle(int id, String title, String content, String link, String dateString)
-		{
+		private NewsArticle(int id, String title, String content, String link, String dateString) {
 			this.id = id;
 			this.title = title;
 			this.content = content;
@@ -58,93 +55,74 @@ public class NewsBot
 			this.dateString = dateString;
 		}
 
-		public int getId()
-		{
+		public int getId() {
 			return id;
 		}
 
-		public void setId(int id)
-		{
+		public void setId(int id) {
 			this.id = id;
 		}
 
-		public String getTitle()
-		{
+		public String getTitle() {
 			return title;
 		}
 
-		public void setTitle(String title)
-		{
+		public void setTitle(String title) {
 			this.title = title;
 		}
 
-		public String getContent()
-		{
+		public String getContent() {
 			return content;
 		}
 
-		public void setContent(String content)
-		{
+		public void setContent(String content) {
 			this.content = content;
 		}
 
-		public String getLink()
-		{
+		public String getLink() {
 			return link;
 		}
 
-		public void setLink(String link)
-		{
+		public void setLink(String link) {
 			this.link = link;
 		}
 
-		public String getDateString()
-		{
+		public String getDateString() {
 			return dateString;
 		}
 
-		public void setDateString(String dateString)
-		{
+		public void setDateString(String dateString) {
 			this.dateString = dateString;
 		}
 	}
 
-	private NewsBot()
-	{
+	private NewsBot() {
 		lastTimeThereWasNewNewsDateString = ApplicationConfiguration.getLastNewsRetrievalTimeAsString();
 		newsCheckTimer.schedule(new PeriodicNewsCheckTask(), 1000, NORMAL_FREQUENCY_POLLING_PERIOD_MS);
 	}
 
-	public static NewsBot getInstance()
-	{
-		if (instance == null)
-		{
+	public static NewsBot getInstance() {
+		if (instance == null) {
 			instance = new NewsBot();
 		}
 
 		return instance;
 	}
 
-	public void registerListener(NewsListener newsListener)
-	{
+	public void registerListener(NewsListener newsListener) {
 		newsListeners.add(newsListener);
-		if (!unreadNewsArticles.isEmpty())
-		{
+		if (!unreadNewsArticles.isEmpty()) {
 			newsListener.hereIsTheNews(unreadNewsArticles);
 		}
 	}
 
-	private class PeriodicNewsCheckTask extends TimerTask
-	{
+	private class PeriodicNewsCheckTask extends TimerTask {
 
 		@Override
-		public void run()
-		{
-			try
-			{
+		public void run() {
+			try {
 				String newsCheckURLToUse = baseURL;
-				if (lastTimeThereWasNewNewsDateString != null)
-				{
+				if (lastTimeThereWasNewNewsDateString != null) {
 					newsCheckURLToUse += "&after=" + lastTimeThereWasNewNewsDateString;
 				}
 
@@ -160,16 +138,13 @@ public class NewsBot
 				con.setConnectTimeout(5000);
 				int responseCode = con.getResponseCode();
 
-				if (responseCode == 200)
-				{
+				if (responseCode == 200) {
 					JsonNode jsonNode = jsonMapper.readTree(con.getInputStream());
-					if (jsonNode.isArray())
-					{
+					if (jsonNode.isArray()) {
 						List<NewsArticle> articlesToAdd = new ArrayList<>();
 
 						Iterator<JsonNode> elementIterator = jsonNode.elements();
-						while (elementIterator.hasNext())
-						{
+						while (elementIterator.hasNext()) {
 							JsonNode childNode = elementIterator.next();
 							int id = childNode.get("id").asInt();
 
@@ -178,37 +153,34 @@ public class NewsBot
 							String link = childNode.get("link").asText();
 							String postDate = childNode.get("date").asText();
 							NewsArticle newsArticle = new NewsArticle(id, title, content, link, postDate);
-							if (articlesToAdd.isEmpty())
-							{
+							if (articlesToAdd.isEmpty()) {
 								//The first article is the newest, so grab the date string
 								lastTimeThereWasNewNewsDateString = postDate;
 							}
 							articlesToAdd.add(newsArticle);
 						}
 
-						if (articlesToAdd.size() > 0)
-						{
+						if (articlesToAdd.size() > 0) {
 							addNewNewsArticles(articlesToAdd);
 						}
 					}
 
 					strikes = 0;
-				} else
-				{
+				}
+				else {
 					strikes++;
 				}
-			} catch (IOException ex)
-			{
+			}
+			catch (IOException ex) {
 				LOGGER.warn("Error whilst polling for news " + ex + " is the internet connection down?");
 				strikes++;
 			}
 
-			if (strikes >= STRIKES_AND_YOURE_OUT)
-			{
+			if (strikes >= STRIKES_AND_YOURE_OUT) {
 				LOGGER.info("Too many failed attempts to look for news - stopping news service...");
 				newsCheckTimer.cancel();
-			} else if (strikes == LOWER_FREQUENCY_POLLING_THRESHOLD)
-			{
+			}
+			else if (strikes == LOWER_FREQUENCY_POLLING_THRESHOLD) {
 				LOGGER.info("Repeated failure to contact news service - switching to lower poll rate.");
 				newsCheckTimer.cancel();
 				newsCheckTimer = new Timer(true);
@@ -217,35 +189,29 @@ public class NewsBot
 		}
 	}
 
-	private void addNewNewsArticles(List<NewsArticle> newsArticles)
-	{
+	private void addNewNewsArticles(List<NewsArticle> newsArticles) {
 		unreadNewsArticles.addAll(newsArticles);
 		updateListeners();
 	}
 
-	private void addNewNewsArticle(NewsArticle newsArticle)
-	{
+	private void addNewNewsArticle(NewsArticle newsArticle) {
 		unreadNewsArticles.add(newsArticle);
 		updateListeners();
 	}
 
-	private void updateListeners()
-	{
-		newsListeners.forEach((listener) ->
-		{
+	private void updateListeners() {
+		newsListeners.forEach((listener) -> {
 			listener.hereIsTheNews(unreadNewsArticles);
 		});
 	}
 
-	public void allNewsHasBeenRead()
-	{
+	public void allNewsHasBeenRead() {
 		ApplicationConfiguration.setLastNewsRetrievalTime(lastTimeThereWasNewNewsDateString);
 		unreadNewsArticles.clear();
 		updateListeners();
 	}
 
-	public void articleRead(NewsArticle newsArticle)
-	{
+	public void articleRead(NewsArticle newsArticle) {
 		unreadNewsArticles.remove(newsArticle);
 		updateListeners();
 	}

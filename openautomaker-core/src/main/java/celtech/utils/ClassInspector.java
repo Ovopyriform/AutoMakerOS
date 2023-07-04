@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package celtech.utils;
 
 import java.lang.annotation.Annotation;
@@ -16,15 +12,13 @@ import java.util.List;
  *
  * @author ianhudson
  */
-public class ClassInspector
-{
+public class ClassInspector {
 
 	/**
 	 *
 	 * @param c
 	 */
-	public static void inspect(Class<?> c)
-	{
+	public static void inspect(Class<?> c) {
 
 		//        try
 		//        {
@@ -34,59 +28,51 @@ public class ClassInspector
 
 		System.out.format("Type Parameters:%n");
 		TypeVariable[] tv = c.getTypeParameters();
-		if (tv.length != 0)
-		{
+		if (tv.length != 0) {
 			System.out.format("  ");
-			for (TypeVariable t : tv)
-			{
+			for (TypeVariable t : tv) {
 				System.out.format("%s ", t.getName());
 			}
 			System.out.format("%n%n");
-		} else
-		{
+		}
+		else {
 			System.out.format("  -- No Type Parameters --%n%n");
 		}
 
 		System.out.format("Implemented Interfaces:%n");
 		Type[] intfs = c.getGenericInterfaces();
-		if (intfs.length != 0)
-		{
-			for (Type intf : intfs)
-			{
+		if (intfs.length != 0) {
+			for (Type intf : intfs) {
 				System.out.format("  %s%n", intf.toString());
 			}
 			System.out.format("%n");
-		} else
-		{
+		}
+		else {
 			System.out.format("  -- No Implemented Interfaces --%n%n");
 		}
 
 		System.out.format("Inheritance Path:%n");
 		List<Class> l = new ArrayList<>();
 		printAncestor(c, l);
-		if (l.size() != 0)
-		{
-			for (Class<?> cl : l)
-			{
+		if (l.size() != 0) {
+			for (Class<?> cl : l) {
 				System.out.format("  %s%n", cl.getCanonicalName());
 			}
 			System.out.format("%n");
-		} else
-		{
+		}
+		else {
 			System.out.format("  -- No Super Classes --%n%n");
 		}
 
 		System.out.format("Annotations:%n");
 		Annotation[] ann = c.getAnnotations();
-		if (ann.length != 0)
-		{
-			for (Annotation a : ann)
-			{
+		if (ann.length != 0) {
+			for (Annotation a : ann) {
 				System.out.format("  %s%n", a.toString());
 			}
 			System.out.format("%n");
-		} else
-		{
+		}
+		else {
 			System.out.format("  -- No Annotations --%n%n");
 		}
 
@@ -97,13 +83,9 @@ public class ClassInspector
 		//        }
 	}
 
-
-
-	private static void printAncestor(Class<?> c, List<Class> l)
-	{
+	private static void printAncestor(Class<?> c, List<Class> l) {
 		Class<?> ancestor = c.getSuperclass();
-		if (ancestor != null)
-		{
+		if (ancestor != null) {
 			l.add(ancestor);
 			printAncestor(ancestor, l);
 		}

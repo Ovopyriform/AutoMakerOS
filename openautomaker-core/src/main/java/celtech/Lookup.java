@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech;
 
 import java.util.HashMap;
@@ -41,7 +39,8 @@ public class Lookup {
 			while (change.next()) {
 				if (change.wasRemoved()) {
 					ChoiceLinkDialogBox.whenPrinterDisconnected();
-				} else if (change.wasAdded()) {
+				}
+				else if (change.wasAdded()) {
 					ChoiceLinkDialogBox.whenPrinterConnected();
 				}
 			}

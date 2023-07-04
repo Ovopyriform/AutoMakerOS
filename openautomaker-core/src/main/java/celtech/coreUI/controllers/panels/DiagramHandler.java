@@ -20,12 +20,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 /**
- * DiagramHandler loads and automatically rescales an fxml diagram when it's container changes
- * size.
+ * DiagramHandler loads and automatically rescales an fxml diagram when it's container changes size.
+ * 
  * @author tony
  */
-public class DiagramHandler
-{
+public class DiagramHandler {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			DiagramHandler.class.getName());
@@ -35,31 +34,26 @@ public class DiagramHandler
 	private final VBox diagramContainer;
 	private final ResourceBundle resources;
 
-	public DiagramHandler(VBox diagramContainer, ResourceBundle resources)
-	{
+	public DiagramHandler(VBox diagramContainer, ResourceBundle resources) {
 		this.diagramContainer = diagramContainer;
 		this.resources = resources;
 	}
 
-	private void addDiagramMoveScaleListeners()
-	{
+	private void addDiagramMoveScaleListeners() {
 
 		diagramContainer.widthProperty().addListener(
-				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-				{
+				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 					resizeDiagram();
 				});
 
 		diagramContainer.heightProperty().addListener(
-				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-				{
+				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 					resizeDiagram();
 				});
 
 	}
 
-	private Bounds getBoundsOfNotYetDisplayedNode(Pane loadedDiagramNode)
-	{
+	private Bounds getBoundsOfNotYetDisplayedNode(Pane loadedDiagramNode) {
 		Group group = new Group(loadedDiagramNode);
 		Scene scene = new Scene(group);
 		scene.getStylesheets().add(ApplicationConfiguration.getMainCSSFile());
@@ -69,26 +63,23 @@ public class DiagramHandler
 		return bounds;
 	}
 
-	private void loadDiagram()
-	{
+	private void loadDiagram() {
 		URL fxmlFileName = getClass().getResource(
 				ApplicationConfiguration.fxmlDiagramsResourcePath + "purge/purge.fxml");
-		try
-		{
+		try {
 			FXMLLoader loader = new FXMLLoader(fxmlFileName, resources);
 			diagramNode = loader.load();
 			diagramBounds = getBoundsOfNotYetDisplayedNode(diagramNode);
 			diagramContainer.getChildren().clear();
 			diagramContainer.getChildren().add(diagramNode);
 
-		} catch (IOException ex)
-		{
+		}
+		catch (IOException ex) {
 			LOGGER.error("Could not load diagram: " + fxmlFileName, ex);
 		}
 	}
 
-	private void resizeDiagram()
-	{
+	private void resizeDiagram() {
 		double diagramWidth = diagramBounds.getWidth();
 		double diagramHeight = diagramBounds.getHeight();
 
@@ -115,12 +106,10 @@ public class DiagramHandler
 
 	}
 
-	void initialise()
-	{
+	void initialise() {
 		loadDiagram();
 		resizeDiagram();
 		addDiagramMoveScaleListeners();
 	}
-
 
 }

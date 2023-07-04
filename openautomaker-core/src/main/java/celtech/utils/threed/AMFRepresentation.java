@@ -16,8 +16,7 @@ import celtech.utils.threed.amf.Material;
  * @author Ian
  */
 @JacksonXmlRootElement(localName = "amf")
-public class AMFRepresentation
-{
+public class AMFRepresentation {
 
 	@JacksonXmlProperty(isAttribute = true)
 	private String unit = "millimeter";
@@ -33,53 +32,43 @@ public class AMFRepresentation
 	@JacksonXmlElementWrapper(useWrapping = false)
 	private List<Material> material = new ArrayList<>();
 
-	public String getUnit()
-	{
+	public String getUnit() {
 		return unit;
 	}
 
-	public void setUnit(String unit)
-	{
+	public void setUnit(String unit) {
 		this.unit = unit;
 	}
 
-	public String getVersion()
-	{
+	public String getVersion() {
 		return version;
 	}
 
-	public void setVersion(String version)
-	{
+	public void setVersion(String version) {
 		this.version = version;
 	}
 
-	public AMFObject getObject()
-	{
+	public AMFObject getObject() {
 		return object;
 	}
 
-	public void setObject(AMFObject object)
-	{
+	public void setObject(AMFObject object) {
 		this.object = object;
 	}
 
-	public Constellation getConstellation()
-	{
+	public Constellation getConstellation() {
 		return constellation;
 	}
 
-	public void setConstellation(Constellation constellation)
-	{
+	public void setConstellation(Constellation constellation) {
 		this.constellation = constellation;
 	}
 
-	public List<Material> getMaterial()
-	{
+	public List<Material> getMaterial() {
 		return material;
 	}
 
-	public void setMaterial(List<Material> material)
-	{
+	public void setMaterial(List<Material> material) {
 		this.material = material;
 	}
 

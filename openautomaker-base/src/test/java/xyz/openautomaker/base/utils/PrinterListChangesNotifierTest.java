@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package xyz.openautomaker.base.utils;
 
 import java.util.ArrayList;

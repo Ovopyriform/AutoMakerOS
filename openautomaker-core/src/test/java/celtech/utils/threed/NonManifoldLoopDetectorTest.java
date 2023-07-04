@@ -20,16 +20,13 @@ import org.junit.Test;
 import javafx.geometry.Point3D;
 import javafx.scene.shape.TriangleMesh;
 
-
 /**
  *
  * @author tony
  */
-public class NonManifoldLoopDetectorTest
-{
+public class NonManifoldLoopDetectorTest {
 
-	public static TriangleMesh createSimpleCubeWithMissingFace()
-	{
+	public static TriangleMesh createSimpleCubeWithMissingFace() {
 		TriangleMesh mesh = new TriangleMesh();
 		mesh.getPoints().addAll(0, 0, 0);
 		mesh.getPoints().addAll(0, 0, 2);
@@ -56,8 +53,7 @@ public class NonManifoldLoopDetectorTest
 	}
 
 	@Test
-	public void testGetNonManifoldEdges()
-	{
+	public void testGetNonManifoldEdges() {
 		MeshCutter2.BedToLocalConverter nullBedToLocalConverter = makeNullConverter();
 		TriangleMesh mesh = createSimpleCubeWithMissingFace();
 		Set<ManifoldEdge> edges = NonManifoldLoopDetector.getNonManifoldEdges(mesh,
@@ -76,8 +72,7 @@ public class NonManifoldLoopDetectorTest
 	}
 
 	@Test
-	public void testLoopForEdgeInDirectionSimple()
-	{
+	public void testLoopForEdgeInDirectionSimple() {
 		Point3D vertex0 = new Point3D(1, 0, 0);
 		Point3D vertex1 = new Point3D(2, 0, 0);
 		Point3D vertex2 = new Point3D(1, 0, 1);
@@ -111,8 +106,7 @@ public class NonManifoldLoopDetectorTest
 	}
 
 	@Test
-	public void testGetLoopForEdgeInDirectionTwoAdjacentLoops()
-	{
+	public void testGetLoopForEdgeInDirectionTwoAdjacentLoops() {
 
 		Point3D vertex0 = new Point3D(1, 0, 0);
 		Point3D vertex1 = new Point3D(2, 0, 0);
@@ -142,8 +136,7 @@ public class NonManifoldLoopDetectorTest
 		Optional<List<ManifoldEdge>> loop1 = NonManifoldLoopDetector.getLoopForEdgeInDirection(edge0,
 				edgesWithVertex,
 				NonManifoldLoopDetector.Direction.BACKWARDS);
-		for (ManifoldEdge manifoldEdge : loop1.get())
-		{
+		for (ManifoldEdge manifoldEdge : loop1.get()) {
 			System.out.println(manifoldEdge);
 		}
 		assertEquals(4, loop1.get().size());
@@ -167,8 +160,7 @@ public class NonManifoldLoopDetectorTest
 	}
 
 	@Test
-	public void testIdentifyNonManifoldLoops()
-	{
+	public void testIdentifyNonManifoldLoops() {
 
 		TriangleMesh mesh = createSimpleCubeWithMissingFace();
 
@@ -176,11 +168,9 @@ public class NonManifoldLoopDetectorTest
 
 		Set<List<ManifoldEdge>> loops = NonManifoldLoopDetector.identifyNonManifoldLoops(mesh,
 				nullBedToLocalConverter);
-		for (List<ManifoldEdge> loop : loops)
-		{
+		for (List<ManifoldEdge> loop : loops) {
 			System.out.println("XXXX");
-			for (ManifoldEdge edge : loop)
-			{
+			for (ManifoldEdge edge : loop) {
 				System.out.println(edge);
 			}
 		}
@@ -195,8 +185,7 @@ public class NonManifoldLoopDetectorTest
 	}
 
 	@Test
-	public void testGetRightmostEdge()
-	{
+	public void testGetRightmostEdge() {
 
 		Point3D vertex0 = new Point3D(1, 0, 0);
 		Point3D vertex1 = new Point3D(2, 0, 0);
@@ -255,8 +244,7 @@ public class NonManifoldLoopDetectorTest
 	}
 
 	@Test
-	public void testGetLoop()
-	{
+	public void testGetLoop() {
 
 		Point3D vertex9 = new Point3D(-6.999998f, -9.999f, -14.001001f);
 		Point3D vertex8 = new Point3D(-16.999998f, -9.999f, -14.001001f);
@@ -291,8 +279,7 @@ public class NonManifoldLoopDetectorTest
 
 		Optional<List<ManifoldEdge>> loop = NonManifoldLoopDetector.getLoopForEdgeInDirection(
 				edge0, edgesWithPoint3D, NonManifoldLoopDetector.Direction.FORWARDS);
-		for (ManifoldEdge manifoldEdge : loop.get())
-		{
+		for (ManifoldEdge manifoldEdge : loop.get()) {
 			System.out.println(manifoldEdge);
 		}
 		assertEquals(8, loop.get().size());
@@ -304,12 +291,10 @@ public class NonManifoldLoopDetectorTest
 	}
 
 	/**
-	 * This test was taken from cutting the repaired Eiffel tower (at 45 degree lean) at 51. It shows
-	 * some strangely ordered vertices, which prevent triangulation.
+	 * This test was taken from cutting the repaired Eiffel tower (at 45 degree lean) at 51. It shows some strangely ordered vertices, which prevent triangulation.
 	 */
 	@Test
-	public void testEiffelTower1()
-	{
+	public void testEiffelTower1() {
 		Point3D p56832 = new Point3D(-38.88096904592214, -49.385915225137296, -46.14887970685962);
 		Point3D p56833 = new Point3D(-38.88097090038349, -49.38591707959864, -44.36129450798035);
 		Point3D p56834 = new Point3D(-38.880969130215846, -49.385915309431, -43.69737410545349);
@@ -495,17 +480,14 @@ public class NonManifoldLoopDetectorTest
 
 		Optional<List<ManifoldEdge>> loop = NonManifoldLoopDetector.getLoopForEdgeInDirection(
 				edge0, edgesWithPoint3D, NonManifoldLoopDetector.Direction.FORWARDS);
-		for (ManifoldEdge manifoldEdge : loop.get())
-		{
+		for (ManifoldEdge manifoldEdge : loop.get()) {
 			System.out.println(manifoldEdge);
 		}
 		assertEquals(59, loop.get().size());
 
-		for (ManifoldEdge edge : loop.get())
-		{
+		for (ManifoldEdge edge : loop.get()) {
 			System.out.println(edge.v0 + " " + edge.v1);
 		}
-
 
 		Set<List<ManifoldEdge>> loops = new HashSet<>();
 		loops.add(loop.get());

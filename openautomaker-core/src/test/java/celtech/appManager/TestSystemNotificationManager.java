@@ -19,260 +19,211 @@ import xyz.openautomaker.base.utils.tasks.TaskResponder;
  *
  * @author Ian
  */
-public class TestSystemNotificationManager implements SystemNotificationManager
-{
+public class TestSystemNotificationManager implements SystemNotificationManager {
 
 	@Override
-	public boolean askUserToUpdateFirmware(Printer printerToUpdate)
-	{
+	public boolean askUserToUpdateFirmware(Printer printerToUpdate) {
 		return false;
 	}
 
 	@Override
-	public boolean showDowngradeFirmwareDialog(Printer printerToUpdate)
-	{
+	public boolean showDowngradeFirmwareDialog(Printer printerToUpdate) {
 		return false;
 	}
 
 	@Override
-	public RoboxResetIDResult askUserToResetPrinterID(Printer printerToUse, PrinterIDResponse printerID)
-	{
+	public RoboxResetIDResult askUserToResetPrinterID(Printer printerToUse, PrinterIDResponse printerID) {
 		return RoboxResetIDResult.RESET_NOT_DONE;
 	}
 
 	@Override
-	public void processErrorPacketFromPrinter(FirmwareError response, Printer printer)
-	{
+	public void processErrorPacketFromPrinter(FirmwareError response, Printer printer) {
 	}
 
 	@Override
-	public void showCalibrationDialogue()
-	{
+	public void showCalibrationDialogue() {
 	}
 
 	@Override
-	public void showFirmwareUpgradeStatusNotification(FirmwareLoadResult result)
-	{
+	public void showFirmwareUpgradeStatusNotification(FirmwareLoadResult result) {
 	}
 
 	@Override
-	public void showGCodePostProcessSuccessfulNotification()
-	{
+	public void showGCodePostProcessSuccessfulNotification() {
 	}
 
 	@Override
-	public void showHeadUpdatedNotification()
-	{
+	public void showHeadUpdatedNotification() {
 	}
 
 	@Override
-	public void showPrintJobCancelledNotification()
-	{
+	public void showPrintJobCancelledNotification() {
 	}
 
 	@Override
-	public void showPrintJobFailedNotification()
-	{
+	public void showPrintJobFailedNotification() {
 	}
 
 	@Override
-	public void showPrintTransferInitiatedNotification()
-	{
+	public void showPrintTransferInitiatedNotification() {
 	}
 
 	@Override
-	public void showPrintTransferSuccessfulNotification(String printerName)
-	{
+	public void showPrintTransferSuccessfulNotification(String printerName) {
 	}
 
 	@Override
-	public void showReprintStartedNotification()
-	{
+	public void showReprintStartedNotification() {
 	}
 
 	@Override
-	public void showSDCardNotification()
-	{
+	public void showSDCardNotification() {
 	}
 
 	@Override
-	public void showSliceSuccessfulNotification()
-	{
+	public void showSliceSuccessfulNotification() {
 	}
 
 	@Override
-	public void configureFirmwareProgressDialog(FirmwareLoadService firmwareLoadService)
-	{
+	public void configureFirmwareProgressDialog(FirmwareLoadService firmwareLoadService) {
 	}
 
 	@Override
-	public void showNoSDCardDialog()
-	{
+	public void showNoSDCardDialog() {
 	}
 
 	@Override
-	public void showNoPrinterIDDialog(Printer printer)
-	{
+	public void showNoPrinterIDDialog(Printer printer) {
 	}
 
 	@Override
-	public void showInformationNotification(String title, String message)
-	{
+	public void showInformationNotification(String title, String message) {
 	}
 
 	@Override
-	public void showWarningNotification(String title, String message)
-	{
+	public void showWarningNotification(String title, String message) {
 	}
 
 	@Override
-	public void showErrorNotification(String title, String message)
-	{
+	public void showErrorNotification(String title, String message) {
 	}
 
 	@Override
-	public boolean showOpenDoorDialog()
-	{
+	public boolean showOpenDoorDialog() {
 		return false;
 	}
 
 	@Override
-	public boolean showModelTooBigDialog(String modelFilename)
-	{
+	public boolean showModelTooBigDialog(String modelFilename) {
 		return false;
 	}
 
 	@Override
-	public boolean showApplicationUpgradeDialog(String applicationName)
-	{
+	public boolean showApplicationUpgradeDialog(String applicationName) {
 		return false;
 	}
 
 	@Override
-	public boolean showAreYouSureYouWantToDowngradeDialog()
-	{
+	public boolean showAreYouSureYouWantToDowngradeDialog() {
 		return false;
 	}
 
 	@Override
-	public boolean showJobsTransferringShutdownDialog()
-	{
+	public boolean showJobsTransferringShutdownDialog() {
 		return false;
 	}
 
 	@Override
-	public void showProgramInvalidHeadDialog(TaskResponder<HeadFile> taskResponse)
-	{
+	public void showProgramInvalidHeadDialog(TaskResponder<HeadFile> taskResponse) {
 	}
 
 	@Override
-	public void showHeadNotRecognisedDialog(String printerName)
-	{
+	public void showHeadNotRecognisedDialog(String printerName) {
 	}
 
 	@Override
-	public PurgeResponse showPurgeDialog()
-	{
+	public PurgeResponse showPurgeDialog() {
 		return PurgeResponse.PRINT_WITH_PURGE;
 	}
 
 	@Override
-	public void showReelNotRecognisedDialog(String printerName)
-	{
+	public void showReelNotRecognisedDialog(String printerName) {
 	}
 
 	@Override
-	public void showReelUpdatedNotification()
-	{
+	public void showReelUpdatedNotification() {
 	}
 
 	@Override
 	public Optional<PrinterErrorChoice> showPrinterErrorDialog(String title, String message,
-			boolean showContinueOption, boolean showAbortOption, boolean showRetryOption, boolean showOKOption)
-	{
+			boolean showContinueOption, boolean showAbortOption, boolean showRetryOption, boolean showOKOption) {
 		return Optional.empty();
 	}
 
 	@Override
-	public void askUserToClearBed()
-	{
+	public void askUserToClearBed() {
 	}
 
 	@Override
-	public boolean confirmAdvancedMode()
-	{
+	public boolean confirmAdvancedMode() {
 		return true;
 	}
 
 	@Override
-	public void showPrintTransferFailedNotification(String printerName)
-	{
+	public void showPrintTransferFailedNotification(String printerName) {
 	}
 
 	@Override
-	public void removePrintTransferFailedNotification()
-	{
+	public void removePrintTransferFailedNotification() {
 	}
 
 	@Override
-	public void showEjectFailedDialog(Printer printer, int nozzleNumber, FirmwareError error)
-	{
+	public void showEjectFailedDialog(Printer printer, int nozzleNumber, FirmwareError error) {
 	}
 
 	@Override
-	public void showKeepPushingFilamentNotification()
-	{
+	public void showKeepPushingFilamentNotification() {
 	}
 
 	@Override
-	public void hideKeepPushingFilamentNotification()
-	{
+	public void hideKeepPushingFilamentNotification() {
 	}
 
 	@Override
-	public void showFilamentStuckMessage()
-	{
+	public void showFilamentStuckMessage() {
 	}
 
 	@Override
-	public void showLoadFilamentNowMessage()
-	{
+	public void showLoadFilamentNowMessage() {
 	}
 
 	@Override
-	public void showFilamentMotionCheckBanner()
-	{
+	public void showFilamentMotionCheckBanner() {
 	}
 
 	@Override
-	public void hideFilamentMotionCheckBanner()
-	{
+	public void hideFilamentMotionCheckBanner() {
 	}
 
 	@Override
-	public boolean showModelIsInvalidDialog(Set<String> modelNames)
-	{
+	public boolean showModelIsInvalidDialog(Set<String> modelNames) {
 		return false;
 	}
 
 	@Override
-	public void clearAllDialogsOnDisconnect()
-	{
+	public void clearAllDialogsOnDisconnect() {
 	}
 
 	@Override
-	public PurgeResponse showPurgeDialog(boolean allowAutoPrint)
-	{
+	public PurgeResponse showPurgeDialog(boolean allowAutoPrint) {
 		return PurgeResponse.PRINT_WITH_PURGE;
 	}
 
 	@Override
-	public void hideProgramInvalidHeadDialog()
-	{
+	public void hideProgramInvalidHeadDialog() {
 	}
 
 	@Override
-	public void showDismissableNotification(String message, String buttonText, NotificationType notificationType)
-	{
+	public void showDismissableNotification(String message, String buttonText, NotificationType notificationType) {
 	}
 }

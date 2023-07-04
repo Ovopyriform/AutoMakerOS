@@ -26,8 +26,7 @@ import xyz.openautomaker.base.printerControl.model.Printer;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class ProjectPanelController implements Initializable, StatusInsetController
-{
+public class ProjectPanelController implements Initializable, StatusInsetController {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			ProjectPanelController.class.getName());
@@ -45,17 +44,13 @@ public class ProjectPanelController implements Initializable, StatusInsetControl
 	private Label layerHeight;
 
 	private Printer currentPrinter = null;
-	private ChangeListener<PrintJob> printJobChangeListener = (ObservableValue<? extends PrintJob> ov, PrintJob t, PrintJob printJob) ->
-	{
+	private ChangeListener<PrintJob> printJobChangeListener = (ObservableValue<? extends PrintJob> ov, PrintJob t, PrintJob printJob) -> {
 		updateDisplay(printJob);
 	};
 
-	private void updateDisplay(PrintJob printJob)
-	{
-		if (printJob != null)
-		{
-			try
-			{
+	private void updateDisplay(PrintJob printJob) {
+		if (printJob != null) {
+			try {
 				NumberFormat threeDPformatter = NumberFormat.getNumberInstance(Locale.UK);
 				threeDPformatter.setMaximumFractionDigits(3);
 				threeDPformatter.setGroupingUsed(false);
@@ -65,16 +60,16 @@ public class ProjectPanelController implements Initializable, StatusInsetControl
 				profileName.setText(stats.getProfileName());
 				layerHeight.setText(threeDPformatter.format(stats.getLayerHeight()));
 				projectPanel.setVisible(true);
-			} catch (IOException ex)
-			{
+			}
+			catch (IOException ex) {
 				projectPanel.setVisible(false);
 				projectName.setText("");
 				profileName.setText("");
 				layerHeight.setText("");
 				LOGGER.debug("Unable to retrieve project name");
 			}
-		} else
-		{
+		}
+		else {
 			projectPanel.setVisible(false);
 			projectName.setText("");
 			profileName.setText("");
@@ -86,21 +81,17 @@ public class ProjectPanelController implements Initializable, StatusInsetControl
 	 * Initialises the controller class.
 	 */
 	@Override
-	public void initialize(URL url, ResourceBundle rb)
-	{
-		Lookup.getSelectedPrinterProperty().addListener((ObservableValue<? extends Printer> ov, Printer lastPrinter, Printer newPrinter) ->
-		{
-			if (currentPrinter != null)
-			{
+	public void initialize(URL url, ResourceBundle rb) {
+		Lookup.getSelectedPrinterProperty().addListener((ObservableValue<? extends Printer> ov, Printer lastPrinter, Printer newPrinter) -> {
+			if (currentPrinter != null) {
 				currentPrinter.getPrintEngine().printJobProperty().removeListener(printJobChangeListener);
 			}
 
-			if (newPrinter == null)
-			{
+			if (newPrinter == null) {
 				projectPanel.setVisible(false);
 				currentPrinter = null;
-			} else
-			{
+			}
+			else {
 				currentPrinter = newPrinter;
 				newPrinter.getPrintEngine().printJobProperty().addListener(printJobChangeListener);
 				updateDisplay(newPrinter.getPrintEngine().printJobProperty().get());

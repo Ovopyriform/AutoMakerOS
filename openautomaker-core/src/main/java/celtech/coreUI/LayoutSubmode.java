@@ -4,8 +4,7 @@ package celtech.coreUI;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public enum LayoutSubmode
-{
+public enum LayoutSubmode {
 
 	/**
 	 * The next object to be clicked on should be selected.

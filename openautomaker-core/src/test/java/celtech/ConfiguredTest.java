@@ -20,10 +20,8 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author George Salter
  */
-public class ConfiguredTest
-{
-	static
-	{
+public class ConfiguredTest {
+	static {
 		// Set the libertySystems config file property..
 		// The property is set in this static initializer because the configuration is loaded before the test is run.
 		URL applicationURL = ConfiguredTest.class.getResource("/");
@@ -37,8 +35,7 @@ public class ConfiguredTest
 	public String userStorageFolderPath;
 
 	@Before
-	public void setUp()
-	{
+	public void setUp() {
 		Properties testProperties = new Properties();
 
 		testProperties.setProperty("language", "UK");

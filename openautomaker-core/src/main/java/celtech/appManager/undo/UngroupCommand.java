@@ -21,8 +21,7 @@ import celtech.modelcontrol.ModelGroup;
  *
  * @author tony
  */
-public class UngroupCommand extends Command
-{
+public class UngroupCommand extends Command {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			UngroupCommand.class.getName());
@@ -33,14 +32,11 @@ public class UngroupCommand extends Command
 	private Set<ItemState> newStates;
 	private Set<ModelContainer> containersToRecentre = new HashSet<>();
 
-	public UngroupCommand(ModelContainerProject project, Set<ModelContainer> modelContainers)
-	{
+	public UngroupCommand(ModelContainerProject project, Set<ModelContainer> modelContainers) {
 		this.project = project;
 		groupIds = new HashMap<>();
-		for (ModelContainer modelContainer : modelContainers)
-		{
-			if (modelContainer instanceof ModelGroup)
-			{
+		for (ModelContainer modelContainer : modelContainers) {
+			if (modelContainer instanceof ModelGroup) {
 				containersToRecentre.addAll(modelContainer.getChildModelContainers());
 				groupIds.put(modelContainer.getModelId(), (Set) ((ModelGroup) modelContainer).getChildModelContainers());
 			}
@@ -48,50 +44,42 @@ public class UngroupCommand extends Command
 	}
 
 	@Override
-	public void do_()
-	{
+	public void do_() {
 		redo();
 	}
 
 	@Override
-	public void undo()
-	{
-		for (int groupId : groupIds.keySet())
-		{
+	public void undo() {
+		for (int groupId : groupIds.keySet()) {
 			project.group(groupIds.get(groupId), groupId);
 		}
 		project.setModelStates(originalStates);
 	}
 
 	@Override
-	public void redo()
-	{
+	public void redo() {
 		originalStates = project.getModelStates();
-		try
-		{
-			try
-			{
+		try {
+			try {
 				project.ungroup(project.getModelContainersOfIds(groupIds.keySet()));
-			} catch (ModelContainerProject.ProjectLoadException ex)
-			{
+			}
+			catch (ModelContainerProject.ProjectLoadException ex) {
 				LOGGER.error("Could not ungroup", ex);
 			}
 			newStates = project.getModelStates();
-		} catch (Exception ex)
-		{
+		}
+		catch (Exception ex) {
 			LOGGER.error("Failed running command ", ex);
 		}
 	}
 
 	@Override
-	public boolean canMergeWith(Command command)
-	{
+	public boolean canMergeWith(Command command) {
 		return false;
 	}
 
 	@Override
-	public void merge(Command command)
-	{
+	public void merge(Command command) {
 		throw new UnsupportedOperationException("Should never be called");
 	}
 

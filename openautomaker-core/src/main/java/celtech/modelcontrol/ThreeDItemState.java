@@ -7,21 +7,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @author ianhudson
  */
-public class ThreeDItemState extends ItemState
-{
+public class ThreeDItemState extends ItemState {
 
 	/**
-	 * State captures the state of all the transforms being applied to this
-	 * Container. It is used as an efficient way of applying Undo and Redo
-	 * to changes to a Set of ModelContainers.
+	 * State captures the state of all the transforms being applied to this Container. It is used as an efficient way of applying Undo and Redo to changes to a Set of ModelContainers.
 	 */
 	public double z;
 	public double preferredZScale;
 	public double preferredRotationTwist;
 	public double preferredRotationLean;
 
-	public ThreeDItemState()
-	{
+	public ThreeDItemState() {
 	}
 
 	@JsonCreator
@@ -35,8 +31,7 @@ public class ThreeDItemState extends ItemState
 			@JsonProperty("preferredZScale") double preferredZScale,
 			@JsonProperty("preferredRotationTwist") double preferredRotationTwist,
 			@JsonProperty("preferredRotationTurn") double preferredRotationTurn,
-			@JsonProperty("preferredRotationLean") double preferredRotationLean)
-	{
+			@JsonProperty("preferredRotationLean") double preferredRotationLean) {
 		super(modelId);
 		this.x = x;
 		this.y = y;
@@ -55,10 +50,8 @@ public class ThreeDItemState extends ItemState
 	 * @param fromState
 	 */
 	@Override
-	public void assignFrom(ItemState fromState)
-	{
-		if (fromState instanceof ThreeDItemState)
-		{
+	public void assignFrom(ItemState fromState) {
+		if (fromState instanceof ThreeDItemState) {
 			ThreeDItemState convertedState = (ThreeDItemState) fromState;
 			this.x = convertedState.x;
 			this.y = convertedState.y;

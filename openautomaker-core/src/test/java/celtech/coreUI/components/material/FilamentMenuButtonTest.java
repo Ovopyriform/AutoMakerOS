@@ -15,12 +15,10 @@ import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
  * @author Ian
  */
 @Category(FXTest.class)
-public class FilamentMenuButtonTest extends JavaFXConfiguredTest
-{
+public class FilamentMenuButtonTest extends JavaFXConfiguredTest {
 
 	@Test
-	public void testCategoryComparator()
-	{
+	public void testCategoryComparator() {
 		Filament roboxCategory = FilamentContainer.UNKNOWN_FILAMENT.clone();
 		roboxCategory.setCategory("Robox");
 		Filament aCategory = FilamentContainer.UNKNOWN_FILAMENT.clone();
@@ -50,8 +48,7 @@ public class FilamentMenuButtonTest extends JavaFXConfiguredTest
 	}
 
 	@Test
-	public void testCategoryByNameComparator()
-	{
+	public void testCategoryByNameComparator() {
 		String roboxCategory = "Robox";
 		String aCategory = "A Category";
 		String zCategory = "Z Category";

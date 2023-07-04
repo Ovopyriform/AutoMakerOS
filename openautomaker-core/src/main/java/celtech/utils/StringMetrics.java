@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.utils;
 
 import celtech.configuration.ApplicationConfiguration;
@@ -12,11 +10,9 @@ import javafx.scene.text.Text;
  *
  * @author tony
  */
-public class StringMetrics
-{
+public class StringMetrics {
 
-	public static double getWidthOfString(String str, String styleClass, int fontSize)
-	{
+	public static double getWidthOfString(String str, String styleClass, int fontSize) {
 		final Text text = new Text(str);
 		Scene scene = new Scene(new Group(text));
 		scene.getStylesheets().add(ApplicationConfiguration.getMainCSSFile());

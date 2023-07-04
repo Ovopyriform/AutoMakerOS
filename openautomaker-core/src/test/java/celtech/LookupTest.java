@@ -10,9 +10,7 @@ import org.junit.rules.TemporaryFolder;
  *
  * @author tony
  */
-public class LookupTest extends ConfiguredTest
-{
-
+public class LookupTest extends ConfiguredTest {
 
 	@ClassRule
 	public static TemporaryFolder temporaryUserStorageFolder = new TemporaryFolder();
@@ -49,6 +47,5 @@ public class LookupTest extends ConfiguredTest
 	//        String mess = BaseLookup.substituteTemplates("ABCD *T01*T01 EFG *T02 ZZZ");
 	//        assertEquals("ABCD " + t01 + t01 + " EFG " + t02 + " ZZZ", mess);
 	//    }
-
 
 }

@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI.controllers.panels;
 
 import java.net.URL;
@@ -32,8 +30,7 @@ import xyz.openautomaker.base.printerControl.model.statetransitions.calibration.
  *
  * @author tony
  */
-class DiagramController implements Initializable
-{
+class DiagramController implements Initializable {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			DiagramController.class.getName());
@@ -91,36 +88,26 @@ class DiagramController implements Initializable
 	@FXML
 	private Button buttonA;
 
-	public void setStateTransitionManager(StateTransitionManager stateTransitionManager)
-	{
+	public void setStateTransitionManager(StateTransitionManager stateTransitionManager) {
 		this.stateTransitionManager = stateTransitionManager;
 
-		if (stateTransitionManager instanceof NozzleHeightStateTransitionManager)
-		{
-			ReadOnlyDoubleProperty zcoProperty
-			= ((NozzleHeightStateTransitionManager) stateTransitionManager).getZcoProperty();
-			if (calibrationTextField != null)
-			{
+		if (stateTransitionManager instanceof NozzleHeightStateTransitionManager) {
+			ReadOnlyDoubleProperty zcoProperty = ((NozzleHeightStateTransitionManager) stateTransitionManager).getZcoProperty();
+			if (calibrationTextField != null) {
 				calibrationTextField.setText(String.format("%1.2f", zcoProperty.get()));
 			}
 			setupZCoListener(zcoProperty);
 		}
-		if (stateTransitionManager instanceof SingleNozzleHeightStateTransitionManager)
-		{
-			ReadOnlyDoubleProperty zcoProperty
-			= ((SingleNozzleHeightStateTransitionManager) stateTransitionManager).getZcoProperty();
-			if (calibrationTextField != null)
-			{
+		if (stateTransitionManager instanceof SingleNozzleHeightStateTransitionManager) {
+			ReadOnlyDoubleProperty zcoProperty = ((SingleNozzleHeightStateTransitionManager) stateTransitionManager).getZcoProperty();
+			if (calibrationTextField != null) {
 				calibrationTextField.setText(String.format("%1.2f", zcoProperty.get()));
 			}
 			setupZCoListener(zcoProperty);
 		}
-		if (stateTransitionManager instanceof NozzleOpeningStateTransitionManager)
-		{
-			ReadOnlyFloatProperty bPositionProperty
-			= ((NozzleOpeningStateTransitionManager) stateTransitionManager).getBPositionProperty();
-			if (BPosition != null)
-			{
+		if (stateTransitionManager instanceof NozzleOpeningStateTransitionManager) {
+			ReadOnlyFloatProperty bPositionProperty = ((NozzleOpeningStateTransitionManager) stateTransitionManager).getBPositionProperty();
+			if (BPosition != null) {
 				BPosition.setText(String.format("%1.2f", bPositionProperty.get()));
 			}
 			setupBPositionListener(bPositionProperty);
@@ -128,70 +115,57 @@ class DiagramController implements Initializable
 	}
 
 	@FXML
-	void buttonAAction(ActionEvent event)
-	{
+	void buttonAAction(ActionEvent event) {
 		stateTransitionManager.followTransition(StateTransitionManager.GUIName.A_BUTTON);
 	}
 
 	@FXML
-	void buttonBAction(ActionEvent event)
-	{
+	void buttonBAction(ActionEvent event) {
 		stateTransitionManager.followTransition(StateTransitionManager.GUIName.B_BUTTON);
 	}
 
 	@FXML
-	void upButtonAction(ActionEvent event)
-	{
+	void upButtonAction(ActionEvent event) {
 		stateTransitionManager.followTransition(StateTransitionManager.GUIName.UP);
 	}
 
 	@FXML
-	void downButtonAction(ActionEvent event)
-	{
+	void downButtonAction(ActionEvent event) {
 		stateTransitionManager.followTransition(StateTransitionManager.GUIName.DOWN);
 	}
 
-	ChangeListener<Number> zcoListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-	{
+	ChangeListener<Number> zcoListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 		LOGGER.debug("zco listener fired");
-		if (calibrationTextField != null)
-		{
+		if (calibrationTextField != null) {
 			LOGGER.debug("set zco text to " + String.format("%1.2f", newValue));
 			calibrationTextField.setText(String.format("%1.2f", newValue));
-			if (newValue.floatValue() <= 0f)
-			{
+			if (newValue.floatValue() <= 0f) {
 				buttonA.setDisable(true);
-			} else
-			{
+			}
+			else {
 				buttonA.setDisable(false);
 			}
 		}
 	};
 
-	ChangeListener<Number> bPositionListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-	{
-		if (BPosition != null)
-		{
+	ChangeListener<Number> bPositionListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+		if (BPosition != null) {
 			BPosition.setText(String.format("%1.2f", newValue));
 		}
 	};
 
-	protected void setupZCoListener(ReadOnlyDoubleProperty zcoProperty)
-	{
+	protected void setupZCoListener(ReadOnlyDoubleProperty zcoProperty) {
 		zcoProperty.removeListener(zcoListener);
-		if (calibrationTextField != null)
-		{
+		if (calibrationTextField != null) {
 			LOGGER.debug("add zco listener");
 			calibrationTextField.setText(String.format("%1.2f", zcoProperty.get()));
 			zcoProperty.addListener(zcoListener);
 		}
 	}
 
-	protected void setupBPositionListener(ReadOnlyFloatProperty bPositionProperty)
-	{
+	protected void setupBPositionListener(ReadOnlyFloatProperty bPositionProperty) {
 		bPositionProperty.removeListener(bPositionListener);
-		if (BPosition != null)
-		{
+		if (BPosition != null) {
 			LOGGER.debug("add zco listener");
 			BPosition.setText(String.format("%1.2f", bPositionProperty.get()));
 			bPositionProperty.addListener(bPositionListener);
@@ -199,15 +173,12 @@ class DiagramController implements Initializable
 	}
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
+	public void initialize(URL location, ResourceBundle resources) {
 		setupOffsetCombos();
 	}
 
-	private void setupOffsetCombos()
-	{
-		if (cmbXOffset != null)
-		{
+	private void setupOffsetCombos() {
+		if (cmbXOffset != null) {
 			cmbXOffset.getItems().add("A");
 			cmbXOffset.getItems().add("B");
 			cmbXOffset.getItems().add("C");
@@ -232,20 +203,16 @@ class DiagramController implements Initializable
 			cmbYOffset.getItems().add("11");
 
 			cmbXOffset.valueProperty().addListener(
-					(ObservableValue observable, Object oldValue, Object newValue) ->
-					{
-						if (stateTransitionManager != null)
-						{
+					(ObservableValue observable, Object oldValue, Object newValue) -> {
+						if (stateTransitionManager != null) {
 							((XAndYStateTransitionManager) stateTransitionManager).setXOffset(
 									newValue.toString());
 						}
 					});
 
 			cmbYOffset.valueProperty().addListener(
-					(ObservableValue observable, Object oldValue, Object newValue) ->
-					{
-						if (stateTransitionManager != null)
-						{
+					(ObservableValue observable, Object oldValue, Object newValue) -> {
+						if (stateTransitionManager != null) {
 							((XAndYStateTransitionManager) stateTransitionManager).setYOffset(
 									Integer.parseInt(newValue.toString()));
 						}
@@ -259,15 +226,13 @@ class DiagramController implements Initializable
 		}
 	}
 
-	void setScale(double requiredScale, Node rootNode)
-	{
+	void setScale(double requiredScale, Node rootNode) {
 		rootNode.setScaleX(requiredScale);
 		rootNode.setScaleY(requiredScale);
 
 		double invertedScale = 1 / requiredScale;
 
-		if (cmbXOffset != null)
-		{
+		if (cmbXOffset != null) {
 			xOffsetComboContainer.setScaleX(invertedScale);
 			xOffsetComboContainer.setScaleY(invertedScale);
 			yOffsetComboContainer.setScaleX(invertedScale);
@@ -287,8 +252,7 @@ class DiagramController implements Initializable
 			perfectAlignmentContainer.setScaleY(invertedScale);
 		}
 
-		if (fineNozzleLbl != null)
-		{
+		if (fineNozzleLbl != null) {
 
 			fineNozzleLbl.setScaleX(invertedScale);
 			fineNozzleLbl.setScaleY(invertedScale);

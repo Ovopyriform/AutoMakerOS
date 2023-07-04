@@ -49,8 +49,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian
  */
-public class LoadModelInsetPanelController implements Initializable
-{
+public class LoadModelInsetPanelController implements Initializable {
 
 	private final FileChooser modelFileChooser = new FileChooser();
 	private DisplayManager displayManager = null;
@@ -68,20 +67,16 @@ public class LoadModelInsetPanelController implements Initializable
 	private InsetPanelMenu menu;
 
 	@FXML
-	void cancelPressed(ActionEvent event)
-	{
+	void cancelPressed(ActionEvent event) {
 		ApplicationStatus.getInstance().returnToLastMode();
 	}
 
 	@FXML
-	void addToProjectPressed(ActionEvent event)
-	{
-		Platform.runLater(() ->
-		{
+	void addToProjectPressed(ActionEvent event) {
+		Platform.runLater(() -> {
 			ListIterator iterator = modelFileChooser.getExtensionFilters().listIterator();
 
-			while (iterator.hasNext())
-			{
+			while (iterator.hasNext()) {
 				iterator.next();
 				iterator.remove();
 			}
@@ -99,8 +94,7 @@ public class LoadModelInsetPanelController implements Initializable
 
 			files = modelFileChooser.showOpenMultipleDialog(DisplayManager.getMainStage());
 
-			if (files != null && !files.isEmpty())
-			{
+			if (files != null && !files.isEmpty()) {
 				ApplicationConfiguration.setLastDirectory(
 						DirectoryMemoryProperty.LAST_MODEL_DIRECTORY,
 						files.get(0).getParentFile().getAbsolutePath());
@@ -111,8 +105,7 @@ public class LoadModelInsetPanelController implements Initializable
 	}
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
+	public void initialize(URL location, ResourceBundle resources) {
 		displayManager = DisplayManager.getInstance();
 
 		menu.setTitle(OpenAutoMakerEnv.getI18N().t("loadModel.menuTitle"));
@@ -133,10 +126,8 @@ public class LoadModelInsetPanelController implements Initializable
 								ProjectMode.NONE)));
 
 		ApplicationStatus.getInstance().modeProperty().addListener(
-				(ObservableValue<? extends ApplicationMode> observable, ApplicationMode oldValue, ApplicationMode newValue) ->
-				{
-					if (newValue == ApplicationMode.ADD_MODEL && oldValue != newValue)
-					{
+				(ObservableValue<? extends ApplicationMode> observable, ApplicationMode oldValue, ApplicationMode newValue) -> {
+					if (newValue == ApplicationMode.ADD_MODEL && oldValue != newValue) {
 						webContentContainer.getChildren().clear();
 
 						WebView webView = new WebView();
@@ -145,40 +136,33 @@ public class LoadModelInsetPanelController implements Initializable
 						final WebEngine webEngine = webView.getEngine();
 
 						webEngine.getLoadWorker().stateProperty().addListener(
-								new ChangeListener<State>()
-								{
+								new ChangeListener<State>() {
 									@Override
 									public void changed(ObservableValue<? extends State> ov,
-											State oldState, State newState)
-									{
-										switch (newState)
-										{
-										case RUNNING:
-											break;
-										case SUCCEEDED:
-											JSObject win = (JSObject) webEngine.executeScript("window");
-											win.setMember("automaker", new WebCallback());
-											break;
+											State oldState, State newState) {
+										switch (newState) {
+											case RUNNING:
+												break;
+											case SUCCEEDED:
+												JSObject win = (JSObject) webEngine.executeScript("window");
+												win.setMember("automaker", new WebCallback());
+												break;
 										}
 									}
-								}
-								);
+								});
 						webContentContainer.getChildren().addAll(webView);
 						webEngine.load("http://cel-robox.myminifactory.com");
 					}
 				});
 	}
 
-	public class WebCallback
-	{
+	public class WebCallback {
 
-		public void downloadFile(String fileURL)
-		{
+		public void downloadFile(String fileURL) {
 			LOGGER.debug("Got download URL of " + fileURL);
 
 			String tempID = SystemUtils.generate16DigitID();
-			try
-			{
+			try {
 				URL downloadURL = new URL(fileURL);
 
 				String extension = FilenameUtils.getExtension(fileURL);
@@ -189,23 +173,20 @@ public class LoadModelInsetPanelController implements Initializable
 
 				InputStream webInputStream = urlConn.getInputStream();
 
-				if (extension.equalsIgnoreCase("stl"))
-				{
+				if (extension.equalsIgnoreCase("stl")) {
 					LOGGER.debug("Got stl file from My Mini Factory");
 					final String targetname = BaseConfiguration.getUserStorageDirectory()
 							+ File.separator + FilenameUtils.getBaseName(fileURL);
 					writeStreamToFile(webInputStream, targetname);
-				} else if (extension.equalsIgnoreCase("zip"))
-				{
+				}
+				else if (extension.equalsIgnoreCase("zip")) {
 					LOGGER.debug("Got zip file from My Mini Factory");
 					writeStreamToFile(webInputStream, tempFilename);
 					ZipFile zipFile = new ZipFile(tempFilename);
-					try
-					{
+					try {
 						final Enumeration<? extends ZipEntry> entries = zipFile.entries();
 						final List<File> filesToLoad = new ArrayList<>();
-						while (entries.hasMoreElements())
-						{
+						while (entries.hasMoreElements()) {
 							final ZipEntry entry = entries.nextElement();
 							final String tempTargetname = BaseConfiguration.getUserStorageDirectory()
 									+ File.separator + entry.getName();
@@ -214,52 +195,46 @@ public class LoadModelInsetPanelController implements Initializable
 						}
 						modelLoader.loadExternalModels(Lookup.getSelectedProjectProperty().get(),
 								filesToLoad, null);
-					} finally
-					{
+					}
+					finally {
 						zipFile.close();
 					}
-				} else if (extension.equalsIgnoreCase("rar"))
-				{
+				}
+				else if (extension.equalsIgnoreCase("rar")) {
 					LOGGER.debug("Got rar file from My Mini Factory");
 				}
 
 				webInputStream.close();
 
-			} catch (IOException ex)
-			{
+			}
+			catch (IOException ex) {
 				LOGGER.error("Failed to download My Mini Factory file :" + fileURL);
 			}
 		}
 	}
 
-	private void writeStreamToFile(InputStream is, String localFilename) throws IOException
-	{
+	private void writeStreamToFile(InputStream is, String localFilename) throws IOException {
 		FileOutputStream fos = null;
 
-		try
-		{
-			fos = new FileOutputStream(localFilename);   //open outputstream to local file
+		try {
+			fos = new FileOutputStream(localFilename); //open outputstream to local file
 
-			byte[] buffer = new byte[4096];              //declare 4KB buffer
+			byte[] buffer = new byte[4096]; //declare 4KB buffer
 			int len;
 
 			//while we have availble data, continue downloading and storing to local file
-			while ((len = is.read(buffer)) > 0)
-			{
+			while ((len = is.read(buffer)) > 0) {
 				fos.write(buffer, 0, len);
 			}
-		} finally
-		{
-			try
-			{
-				if (is != null)
-				{
+		}
+		finally {
+			try {
+				if (is != null) {
 					is.close();
 				}
-			} finally
-			{
-				if (fos != null)
-				{
+			}
+			finally {
+				if (fos != null) {
 					fos.close();
 				}
 			}

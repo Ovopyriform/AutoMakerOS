@@ -9,14 +9,12 @@ import javafx.scene.transform.Translate;
  *
  * @author Ian
  */
-public class Xform extends Group
-{
+public class Xform extends Group {
 
 	/**
 	 *
 	 */
-	public enum RotateOrder
-	{
+	public enum RotateOrder {
 
 		/**
 		 *
@@ -69,7 +67,6 @@ public class Xform extends Group
 	 */
 	public Rotate rx = new Rotate();
 
-
 	{
 		rx.setAxis(Rotate.X_AXIS);
 	}
@@ -79,7 +76,6 @@ public class Xform extends Group
 	 */
 	public Rotate ry = new Rotate();
 
-
 	{
 		ry.setAxis(Rotate.Y_AXIS);
 	}
@@ -88,7 +84,6 @@ public class Xform extends Group
 	 *
 	 */
 	public Rotate rz = new Rotate();
-
 
 	{
 		rz.setAxis(Rotate.Z_AXIS);
@@ -102,8 +97,7 @@ public class Xform extends Group
 	/**
 	 *
 	 */
-	public Xform()
-	{
+	public Xform() {
 		super();
 		getTransforms().addAll(t, rz, ry, rx, s);
 	}
@@ -117,30 +111,28 @@ public class Xform extends Group
 	 *
 	 * @param rotateOrder
 	 */
-	public Xform(RotateOrder rotateOrder)
-	{
+	public Xform(RotateOrder rotateOrder) {
 		super();
 		// choose the order of rotations based on the rotateOrder
-		switch (rotateOrder)
-		{
-		case XYZ:
-			getTransforms().addAll(t, p, rz, ry, rx, s, ip);
-			break;
-		case XZY:
-			getTransforms().addAll(t, p, ry, rz, rx, s, ip);
-			break;
-		case YXZ:
-			getTransforms().addAll(t, p, rz, rx, ry, s, ip);
-			break;
-		case YZX:
-			getTransforms().addAll(t, p, rx, rz, ry, s, ip);  // For Camera
-			break;
-		case ZXY:
-			getTransforms().addAll(t, p, ry, rx, rz, s, ip);
-			break;
-		case ZYX:
-			getTransforms().addAll(t, p, rx, ry, rz, s, ip);
-			break;
+		switch (rotateOrder) {
+			case XYZ:
+				getTransforms().addAll(t, p, rz, ry, rx, s, ip);
+				break;
+			case XZY:
+				getTransforms().addAll(t, p, ry, rz, rx, s, ip);
+				break;
+			case YXZ:
+				getTransforms().addAll(t, p, rz, rx, ry, s, ip);
+				break;
+			case YZX:
+				getTransforms().addAll(t, p, rx, rz, ry, s, ip); // For Camera
+				break;
+			case ZXY:
+				getTransforms().addAll(t, p, ry, rx, rz, s, ip);
+				break;
+			case ZYX:
+				getTransforms().addAll(t, p, rx, ry, rz, s, ip);
+				break;
 		}
 	}
 
@@ -150,8 +142,7 @@ public class Xform extends Group
 	 * @param y
 	 * @param z
 	 */
-	public void setTranslate(double x, double y, double z)
-	{
+	public void setTranslate(double x, double y, double z) {
 		t.setX(x);
 		t.setY(y);
 		t.setZ(z);
@@ -162,8 +153,7 @@ public class Xform extends Group
 	 * @param x
 	 * @param y
 	 */
-	public void setTranslate(double x, double y)
-	{
+	public void setTranslate(double x, double y) {
 		t.setX(x);
 		t.setY(y);
 	}
@@ -178,8 +168,7 @@ public class Xform extends Group
 	 *
 	 * @param x
 	 */
-	public void setTx(double x)
-	{
+	public void setTx(double x) {
 		t.setX(x);
 	}
 
@@ -187,8 +176,7 @@ public class Xform extends Group
 	 *
 	 * @param y
 	 */
-	public void setTy(double y)
-	{
+	public void setTy(double y) {
 		t.setY(y);
 	}
 
@@ -196,8 +184,7 @@ public class Xform extends Group
 	 *
 	 * @param z
 	 */
-	public void setTz(double z)
-	{
+	public void setTz(double z) {
 		t.setZ(z);
 	}
 
@@ -205,8 +192,7 @@ public class Xform extends Group
 	 *
 	 * @return
 	 */
-	public double getTx()
-	{
+	public double getTx() {
 		return t.getTx();
 	}
 
@@ -214,8 +200,7 @@ public class Xform extends Group
 	 *
 	 * @return
 	 */
-	public double getTy()
-	{
+	public double getTy() {
 		return t.getTy();
 	}
 
@@ -223,8 +208,7 @@ public class Xform extends Group
 	 *
 	 * @return
 	 */
-	public double getTz()
-	{
+	public double getTz() {
 		return t.getTz();
 	}
 
@@ -234,8 +218,7 @@ public class Xform extends Group
 	 * @param y
 	 * @param z
 	 */
-	public void setRotate(double x, double y, double z)
-	{
+	public void setRotate(double x, double y, double z) {
 		rx.setAngle(x);
 		ry.setAngle(y);
 		rz.setAngle(z);
@@ -245,8 +228,7 @@ public class Xform extends Group
 	 *
 	 * @param x
 	 */
-	public void setRotateX(double x)
-	{
+	public void setRotateX(double x) {
 		rx.setAngle(x);
 	}
 
@@ -254,8 +236,7 @@ public class Xform extends Group
 	 *
 	 * @param y
 	 */
-	public void setRotateY(double y)
-	{
+	public void setRotateY(double y) {
 		ry.setAngle(y);
 	}
 
@@ -263,8 +244,7 @@ public class Xform extends Group
 	 *
 	 * @param z
 	 */
-	public void setRotateZ(double z)
-	{
+	public void setRotateZ(double z) {
 		rz.setAngle(z);
 	}
 
@@ -272,8 +252,7 @@ public class Xform extends Group
 	 *
 	 * @param x
 	 */
-	public void setRx(double x)
-	{
+	public void setRx(double x) {
 		rx.setAngle(x);
 	}
 
@@ -281,8 +260,7 @@ public class Xform extends Group
 	 *
 	 * @param y
 	 */
-	public void setRy(double y)
-	{
+	public void setRy(double y) {
 		ry.setAngle(y);
 	}
 
@@ -290,8 +268,7 @@ public class Xform extends Group
 	 *
 	 * @param z
 	 */
-	public void setRz(double z)
-	{
+	public void setRz(double z) {
 		rz.setAngle(z);
 	}
 
@@ -299,8 +276,7 @@ public class Xform extends Group
 	 *
 	 * @return
 	 */
-	public double getRotateX()
-	{
+	public double getRotateX() {
 		return rx.getAngle();
 	}
 
@@ -308,8 +284,7 @@ public class Xform extends Group
 	 *
 	 * @return
 	 */
-	public double getRotateY()
-	{
+	public double getRotateY() {
 		return ry.getAngle();
 	}
 
@@ -317,8 +292,7 @@ public class Xform extends Group
 	 *
 	 * @return
 	 */
-	public double getRotateZ()
-	{
+	public double getRotateZ() {
 		return rz.getAngle();
 	}
 
@@ -326,8 +300,7 @@ public class Xform extends Group
 	 *
 	 * @param scaleFactor
 	 */
-	public void setScale(double scaleFactor)
-	{
+	public void setScale(double scaleFactor) {
 		s.setX(scaleFactor);
 		s.setY(scaleFactor);
 		s.setZ(scaleFactor);
@@ -339,8 +312,7 @@ public class Xform extends Group
 	 * @param y
 	 * @param z
 	 */
-	public void setScale(double x, double y, double z)
-	{
+	public void setScale(double x, double y, double z) {
 		s.setX(x);
 		s.setY(y);
 		s.setZ(z);
@@ -356,8 +328,7 @@ public class Xform extends Group
 	 *
 	 * @param x
 	 */
-	public void setSx(double x)
-	{
+	public void setSx(double x) {
 		s.setX(x);
 	}
 
@@ -365,8 +336,7 @@ public class Xform extends Group
 	 *
 	 * @param y
 	 */
-	public void setSy(double y)
-	{
+	public void setSy(double y) {
 		s.setY(y);
 	}
 
@@ -374,8 +344,7 @@ public class Xform extends Group
 	 *
 	 * @param z
 	 */
-	public void setSz(double z)
-	{
+	public void setSz(double z) {
 		s.setZ(z);
 	}
 
@@ -385,8 +354,7 @@ public class Xform extends Group
 	 * @param y
 	 * @param z
 	 */
-	public void setPivot(double x, double y, double z)
-	{
+	public void setPivot(double x, double y, double z) {
 		p.setX(x);
 		p.setY(y);
 		p.setZ(z);
@@ -399,16 +367,14 @@ public class Xform extends Group
 	 *
 	 * @return
 	 */
-	public Translate getPivot()
-	{
+	public Translate getPivot() {
 		return p;
 	}
 
 	/**
 	 *
 	 */
-	public void reset()
-	{
+	public void reset() {
 		t.setX(0.0);
 		t.setY(0.0);
 		t.setZ(0.0);
@@ -429,8 +395,7 @@ public class Xform extends Group
 	/**
 	 *
 	 */
-	public void resetTSP()
-	{
+	public void resetTSP() {
 		t.setX(0.0);
 		t.setY(0.0);
 		t.setZ(0.0);
@@ -448,8 +413,7 @@ public class Xform extends Group
 	/**
 	 *
 	 */
-	public void debug()
-	{
+	public void debug() {
 		System.out.println("t = ("
 				+ t.getX() + ", "
 				+ t.getY() + ", "
@@ -473,8 +437,7 @@ public class Xform extends Group
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "XForm t = ("
 				+ t.getX() + ", "
 				+ t.getY() + ", "

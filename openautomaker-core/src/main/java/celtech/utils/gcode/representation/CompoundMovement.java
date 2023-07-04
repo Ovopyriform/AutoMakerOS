@@ -10,8 +10,7 @@ import java.util.ArrayList;
  *
  * @author ianhudson
  */
-public class CompoundMovement
-{
+public class CompoundMovement {
 
 	private MovementType type = null;
 	private final ArrayList<Movement> segments = new ArrayList<>();
@@ -22,8 +21,7 @@ public class CompoundMovement
 	 *
 	 * @param type
 	 */
-	public CompoundMovement(MovementType type)
-	{
+	public CompoundMovement(MovementType type) {
 		this.type = type;
 	}
 
@@ -31,8 +29,7 @@ public class CompoundMovement
 	 *
 	 * @return
 	 */
-	public MovementType getMovementType()
-	{
+	public MovementType getMovementType() {
 		return type;
 	}
 
@@ -40,8 +37,7 @@ public class CompoundMovement
 	 *
 	 * @param segment
 	 */
-	public void addMove(Movement segment)
-	{
+	public void addMove(Movement segment) {
 		segments.add(segment);
 	}
 
@@ -49,8 +45,7 @@ public class CompoundMovement
 	 *
 	 * @return
 	 */
-	public ArrayList<Movement> getSegments()
-	{
+	public ArrayList<Movement> getSegments() {
 		return segments;
 	}
 
@@ -58,8 +53,7 @@ public class CompoundMovement
 	 *
 	 * @return
 	 */
-	public int getStartingGCodeLine()
-	{
+	public int getStartingGCodeLine() {
 		return startingGCodeLine;
 	}
 
@@ -67,8 +61,7 @@ public class CompoundMovement
 	 *
 	 * @param startingGCodeLine
 	 */
-	public void setStartingGCodeLine(int startingGCodeLine)
-	{
+	public void setStartingGCodeLine(int startingGCodeLine) {
 		this.startingGCodeLine = startingGCodeLine;
 	}
 
@@ -76,8 +69,7 @@ public class CompoundMovement
 	 *
 	 * @return
 	 */
-	public int getEndingGCodeLine()
-	{
+	public int getEndingGCodeLine() {
 		return endingGCodeLine;
 	}
 
@@ -85,8 +77,7 @@ public class CompoundMovement
 	 *
 	 * @param endingGCodeLine
 	 */
-	public void setEndingGCodeLine(int endingGCodeLine)
-	{
+	public void setEndingGCodeLine(int endingGCodeLine) {
 		this.endingGCodeLine = endingGCodeLine;
 	}
 
@@ -95,16 +86,14 @@ public class CompoundMovement
 	 * @return
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder stringOut = new StringBuilder();
 
 		stringOut.append("Movement type ");
 		stringOut.append(type.name());
 		stringOut.append("\n");
 
-		for (Movement segment : segments)
-		{
+		for (Movement segment : segments) {
 			stringOut.append(segment.toString());
 			stringOut.append("\n");
 		}

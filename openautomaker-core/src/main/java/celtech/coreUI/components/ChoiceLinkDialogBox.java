@@ -24,13 +24,11 @@ import javafx.stage.StageStyle;
  *
  * @author Ian
  */
-public class ChoiceLinkDialogBox extends StackPane
-{
+public class ChoiceLinkDialogBox extends StackPane {
 
 	public class PrinterDisconnectedException extends Exception {
 
-		public PrinterDisconnectedException(String message)
-		{
+		public PrinterDisconnectedException(String message) {
 			super(message);
 		}
 
@@ -64,8 +62,7 @@ public class ChoiceLinkDialogBox extends StackPane
 	 * When the printer is disconnected close all related dialog boxes.
 	 */
 	public static void whenPrinterDisconnected() {
-		for (ChoiceLinkDialogBox openDialog : new ArrayList<>(openDialogs))
-		{
+		for (ChoiceLinkDialogBox openDialog : new ArrayList<>(openDialogs)) {
 			if (openDialog.closeOnPrinterDisconnect) {
 				openDialog.closeDueToPrinterDisconnect();
 			}
@@ -74,8 +71,8 @@ public class ChoiceLinkDialogBox extends StackPane
 
 	public static void whenPrinterConnected() {
 		openDialogs.stream()
-		.filter(openDialog -> openDialog.closeOnPrinterConnect)
-		.forEach(openDialog -> openDialog.close());
+				.filter(openDialog -> openDialog.closeOnPrinterConnect)
+				.forEach(openDialog -> openDialog.close());
 	}
 
 	public void closeDueToPrinterDisconnect() {
@@ -87,13 +84,11 @@ public class ChoiceLinkDialogBox extends StackPane
 		return closedDueToPrinterDisconnect;
 	}
 
-	public ChoiceLinkDialogBox()
-	{
+	public ChoiceLinkDialogBox() {
 		this.closeOnPrinterDisconnect = true;
 	}
 
-	public ChoiceLinkDialogBox(boolean closeOnPrinterDisconnect)
-	{
+	public ChoiceLinkDialogBox(boolean closeOnPrinterDisconnect) {
 
 		this.closeOnPrinterDisconnect = closeOnPrinterDisconnect;
 
@@ -108,11 +103,10 @@ public class ChoiceLinkDialogBox extends StackPane
 
 		fxmlLoader.setClassLoader(this.getClass().getClassLoader());
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 
@@ -125,24 +119,20 @@ public class ChoiceLinkDialogBox extends StackPane
 		//getStyleClass().add("error-dialog");
 	}
 
-	public ChoiceLinkDialogBox(boolean closeOnPrinterDisconnect, boolean closeOnPrinterConnect)
-	{
+	public ChoiceLinkDialogBox(boolean closeOnPrinterDisconnect, boolean closeOnPrinterConnect) {
 		this(closeOnPrinterDisconnect);
 		this.closeOnPrinterConnect = closeOnPrinterConnect;
 	}
 
-	public void setTitle(final String i18nTitle)
-	{
+	public void setTitle(final String i18nTitle) {
 		title.replaceText(i18nTitle);
 	}
 
-	public void setMessage(String i18nMessage)
-	{
+	public void setMessage(String i18nMessage) {
 		message.replaceText(i18nMessage);
 	}
 
-	public ChoiceLinkButton addChoiceLink(String i18Title, String i18nMessage)
-	{
+	public ChoiceLinkButton addChoiceLink(String i18Title, String i18nMessage) {
 		ChoiceLinkButton button = new ChoiceLinkButton();
 		button.setTitle(i18Title);
 		button.setMessage(i18nMessage);
@@ -151,8 +141,7 @@ public class ChoiceLinkDialogBox extends StackPane
 		return button;
 	}
 
-	public ChoiceLinkButton addChoiceLink(String i18Title)
-	{
+	public ChoiceLinkButton addChoiceLink(String i18Title) {
 		ChoiceLinkButton button = new ChoiceLinkButton();
 		button.setTitle(i18Title);
 		configureButtonListener(button);
@@ -164,14 +153,11 @@ public class ChoiceLinkDialogBox extends StackPane
 		buttonContainer.getChildren().add(control);
 	}
 
-	private void configureButtonListener(ChoiceLinkButton button)
-	{
-		button.pressedProperty().addListener(new ChangeListener<Boolean>()
-		{
+	private void configureButtonListener(ChoiceLinkButton button) {
+		button.pressedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(
-					ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
-			{
+					ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				chosenButton = Optional.of(button);
 				dialogStage.close();
 			}
@@ -179,8 +165,7 @@ public class ChoiceLinkDialogBox extends StackPane
 		buttonContainer.getChildren().add(button);
 	}
 
-	public ChoiceLinkButton addChoiceLink(ChoiceLinkButton preconfiguredButton)
-	{
+	public ChoiceLinkButton addChoiceLink(ChoiceLinkButton preconfiguredButton) {
 		configureButtonListener(preconfiguredButton);
 
 		return preconfiguredButton;
@@ -190,8 +175,7 @@ public class ChoiceLinkDialogBox extends StackPane
 	 *
 	 * @return
 	 */
-	public Optional<ChoiceLinkButton> getUserInput() throws PrinterDisconnectedException
-	{
+	public Optional<ChoiceLinkButton> getUserInput() throws PrinterDisconnectedException {
 		//        dialogStage.setWidth(DisplayManager.getMainStage().getWidth());
 		dialogStage.showAndWait();
 		openDialogs.remove(this);
@@ -208,13 +192,11 @@ public class ChoiceLinkDialogBox extends StackPane
 	 *
 	 * @return
 	 */
-	public boolean isShowing()
-	{
+	public boolean isShowing() {
 		return dialogStage.isShowing();
 	}
 
-	public void close()
-	{
+	public void close() {
 		openDialogs.remove(this);
 		dialogStage.close();
 	}

@@ -20,12 +20,10 @@ import javafx.scene.shape.TriangleMesh;
  *
  * @author tony
  */
-public class MeshSeparatorTest
-{
+public class MeshSeparatorTest {
 
 	@Test
-	public void testMeshOfOneObject() throws STLFileParsingException
-	{
+	public void testMeshOfOneObject() throws STLFileParsingException {
 		URL stlURL = this.getClass().getResource("/pyramid1.stl");
 		File singleObjectSTLFile = new File(stlURL.getFile());
 		TriangleMesh mesh = new STLImporter().processBinarySTLData(singleObjectSTLFile);
@@ -35,8 +33,7 @@ public class MeshSeparatorTest
 	}
 
 	@Test
-	public void testMeshOfTwoObjects() throws STLFileParsingException
-	{
+	public void testMeshOfTwoObjects() throws STLFileParsingException {
 		URL stlURL = this.getClass().getResource("/twodiscs.stl");
 		File singleObjectSTLFile = new File(stlURL.getFile());
 		TriangleMesh mesh = new STLImporter().processBinarySTLData(singleObjectSTLFile);

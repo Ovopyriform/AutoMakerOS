@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 package celtech.coreUI.visualisation;
 
@@ -10,7 +6,6 @@ package celtech.coreUI.visualisation;
  *
  * @author Ian
  */
-public class ViewControl
-{
+public class ViewControl {
 
 }

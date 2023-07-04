@@ -18,9 +18,7 @@ import javafx.geometry.Point3D;
 import javafx.scene.shape.TriangleMesh;
 
 /**
- * CutResult represents one of the two parts of the cut mesh. It is also responsible for identifying
- * the topology of the nested polygons forming the perimeters on the closing top face (i.e. which
- * perimeters/polygons are inside which other polygons).
+ * CutResult represents one of the two parts of the cut mesh. It is also responsible for identifying the topology of the nested polygons forming the perimeters on the closing top face (i.e. which perimeters/polygons are inside which other polygons).
  *
  * @author tony
  */
@@ -34,9 +32,7 @@ class CutResult {
 	 */
 	final TriangleMesh mesh;
 	/**
-	 * The indices of the vertices of the child mesh, in sequence, that form the perimeter of the
-	 * new open face that needs to be triangulated. Some loops (list of points) may be holes inside
-	 * other loops.
+	 * The indices of the vertices of the child mesh, in sequence, that form the perimeter of the new open face that needs to be triangulated. Some loops (list of points) may be holes inside other loops.
 	 */
 	final Set<PolygonIndices> loopsOfVerticesOnOpenFace;
 
@@ -53,9 +49,7 @@ class CutResult {
 	}
 
 	/**
-	 * Identify which of the loops in loopsOfVerticesOnOpenFace are internal to other loops. There
-	 * should not be any overlapping loops in the incoming data. Each LoopSet has one outer loop and
-	 * zero or more inner loops.
+	 * Identify which of the loops in loopsOfVerticesOnOpenFace are internal to other loops. There should not be any overlapping loops in the incoming data. Each LoopSet has one outer loop and zero or more inner loops.
 	 */
 	public Set<LoopSet> identifyOuterLoopsAndInnerLoops() {
 		Set<LoopSet> topLevelLoopSets = new HashSet<>();
@@ -111,13 +105,12 @@ class CutResult {
 
 		List<Integer> sharedIndices = new ArrayList<>(outerPolygon);
 		sharedIndices.retainAll(innerPolygon);
-		if (! sharedIndices.isEmpty()) {
+		if (!sharedIndices.isEmpty()) {
 			throw new RuntimeException("Inner and outer polygon share a vertex");
 		}
 
 		int numContained = 0;
-		for (int i = 0; i < innerPolygon.size(); i++)
-		{
+		for (int i = 0; i < innerPolygon.size(); i++) {
 			Point point = getPointAt(innerPolygon, i);
 			if (contains(point, outerPolygon)) {
 				numContained++;
@@ -133,8 +126,7 @@ class CutResult {
 	}
 
 	/**
-	 * Return if the given loop contains the given point. see
-	 * http://stackoverflow.com/questions/8721406/how-to-determine-if-a-point-is-inside-a-2d-convex-polygon
+	 * Return if the given loop contains the given point. see http://stackoverflow.com/questions/8721406/how-to-determine-if-a-point-is-inside-a-2d-convex-polygon
 	 */
 	public boolean contains(Point test, PolygonIndices loop) {
 		Point[] points = new Point[loop.size()];
@@ -178,8 +170,7 @@ class CutResult {
 	private void validateLoopSet(LoopSet loopSet) {
 		validateLoopSetsAreExclusive(loopSet.innerLoopSets);
 		for (LoopSet innerLoopSet : loopSet.innerLoopSets) {
-			assert loopSet.contains(innerLoopSet.outerLoop) :
-				loopSet.outerLoop.name + " does not enclose " + innerLoopSet.outerLoop.name;
+			assert loopSet.contains(innerLoopSet.outerLoop) : loopSet.outerLoop.name + " does not enclose " + innerLoopSet.outerLoop.name;
 		}
 		for (LoopSet innerLoopSet : loopSet.innerLoopSets) {
 			validateLoopSet(innerLoopSet);
@@ -190,8 +181,7 @@ class CutResult {
 }
 
 /**
- * PolygonIndices is a list of Integers each of which is a vertex (or face) id in the mesh. It is
- * therefore effectively a (usually closed) loop of vertices.
+ * PolygonIndices is a list of Integers each of which is a vertex (or face) id in the mesh. It is therefore effectively a (usually closed) loop of vertices.
  *
  * @author tony
  */
@@ -215,8 +205,7 @@ class PolygonIndices extends ArrayList<Integer> {
 }
 
 /**
- * A Region is an outer polygon and zero or more inner polygons (holes), forming a region that can
- * be triangulated.
+ * A Region is an outer polygon and zero or more inner polygons (holes), forming a region that can be triangulated.
  */
 class Region {
 
@@ -258,9 +247,7 @@ class LoopSet {
 	}
 
 	/**
-	 * Return all the Regions ({@link Region}) described by this LoopSet. The outerLoop of this
-	 * LoopSet must be the outer perimeter of a Region (i.e. do not call this method on LoopSets
-	 * whose outerLoop is an inner perimeter / hole).
+	 * Return all the Regions ({@link Region}) described by this LoopSet. The outerLoop of this LoopSet must be the outer perimeter of a Region (i.e. do not call this method on LoopSets whose outerLoop is an inner perimeter / hole).
 	 */
 	public Set<Region> getRegions() {
 		Set<Region> regions = new HashSet<>();
@@ -278,9 +265,8 @@ class LoopSet {
 	}
 
 	/**
-	 * If the given polygonIndices is contained by one of the inner LoopSets then ask that inner
-	 * LoopSet to add it to one of its inner (containing) children, otherwise if no inner LoopSet
-	 * contains the given polygonIndices then add it as another inner LoopSet of this LoopSet.
+	 * If the given polygonIndices is contained by one of the inner LoopSets then ask that inner LoopSet to add it to one of its inner (containing) children, otherwise if no inner LoopSet contains the given polygonIndices then add it as another inner
+	 * LoopSet of this LoopSet.
 	 */
 	public void addToContainingChild(PolygonIndices polygonIndices) {
 		if (!contains(polygonIndices)) {
@@ -321,9 +307,7 @@ class LoopSet {
 }
 
 /**
- * The X and Z coordinate of the point in the bed space maps to X and Y for polygon analysis. The
- * cut height (Y) is fixed in the bed coordinate system so we ignore that dimension for polygon
- * analysis.
+ * The X and Z coordinate of the point in the bed space maps to X and Y for polygon analysis. The cut height (Y) is fixed in the bed coordinate system so we ignore that dimension for polygon analysis.
  */
 class Point {
 

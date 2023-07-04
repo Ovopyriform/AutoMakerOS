@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package celtech.appManager;
 
 import java.util.Optional;
@@ -27,58 +23,46 @@ public class TimelapseSettingsData {
 	public TimelapseSettingsData() {
 	}
 
-	public void toggleDataChanged()
-	{
+	public void toggleDataChanged() {
 		dataChanged.set(dataChanged.not().get());
 	}
 
-	public ReadOnlyBooleanProperty getDataChanged()
-	{
+	public ReadOnlyBooleanProperty getDataChanged() {
 		return dataChanged;
 	}
 
-	public boolean getTimelapseTriggerEnabled()
-	{
+	public boolean getTimelapseTriggerEnabled() {
 		return timelapseTriggerEnabled;
 	}
 
-	public void setTimelapseTriggerEnabled(boolean triggerEnabled)
-	{
-		if (this.timelapseTriggerEnabled != triggerEnabled)
-		{
+	public void setTimelapseTriggerEnabled(boolean triggerEnabled) {
+		if (this.timelapseTriggerEnabled != triggerEnabled) {
 			this.timelapseTriggerEnabled = triggerEnabled;
 			toggleDataChanged();
 		}
 	}
 
-	public boolean isTimelapseEnabled()
-	{
+	public boolean isTimelapseEnabled() {
 		return timelapseTriggerEnabled && timelapseProfile.isPresent() && timelapseCamera.isPresent();
 	}
 
-	public Optional<CameraProfile> getTimelapseProfile()
-	{
+	public Optional<CameraProfile> getTimelapseProfile() {
 		return timelapseProfile;
 	}
 
-	public void setTimelapseProfile(Optional<CameraProfile> profile)
-	{
-		if (!timelapseProfile.equals(profile))
-		{
+	public void setTimelapseProfile(Optional<CameraProfile> profile) {
+		if (!timelapseProfile.equals(profile)) {
 			this.timelapseProfile = profile;
 			toggleDataChanged();
 		}
 	}
 
-	public Optional<CameraInfo> getTimelapseCamera()
-	{
+	public Optional<CameraInfo> getTimelapseCamera() {
 		return timelapseCamera;
 	}
 
-	public void setTimelapseCamera(Optional<CameraInfo> camera)
-	{
-		if (!timelapseCamera.equals(camera))
-		{
+	public void setTimelapseCamera(Optional<CameraInfo> camera) {
+		if (!timelapseCamera.equals(camera)) {
 			this.timelapseCamera = camera;
 			toggleDataChanged();
 		}

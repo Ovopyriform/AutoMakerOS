@@ -21,10 +21,8 @@ import javafx.scene.layout.GridPane;
  *
  * @author Tony Aldhous
  */
-public class CameraProfilesControlSettingsManager
-{
-	private class FieldHandler
-	{
+public class CameraProfilesControlSettingsManager {
+	private class FieldHandler {
 		// Uses controlSettings and populateGrid from enclosing class.
 		private TextField field;
 		private String control;
@@ -52,16 +50,14 @@ public class CameraProfilesControlSettingsManager
 			this.control = control;
 		}
 
-		public void onFocusChange(ObservableValue<? extends Boolean> observable, Boolean oldHasFocus, Boolean newHasFocus)
-		{
+		public void onFocusChange(ObservableValue<? extends Boolean> observable, Boolean oldHasFocus, Boolean newHasFocus) {
 			//System.out.println("OnFocusChange(" + control + ", " + oldHasFocus + ", " + newHasFocus + ")");
 			if (oldHasFocus) {
 				update();
 			}
 		}
 
-		public void onTextChange(ObservableValue<? extends String> observable, String oldText, String newText)
-		{
+		public void onTextChange(ObservableValue<? extends String> observable, String oldText, String newText) {
 			//System.out.println("onTextChange(" + control + ", \"" + oldText + "\", \"" + newText + "\")");
 			// Do nothing for the moment.
 		}
@@ -122,15 +118,15 @@ public class CameraProfilesControlSettingsManager
 		this.controlGrid = controlGrid;
 		this.isDirty = isDirty;
 		controlGrid.getChildren()
-		.stream()
-		.filter((c)-> c instanceof TextField)
-		.map((c) -> (TextField)c)
-		.forEach((field) -> {
-			FieldHandler handler = new FieldHandler();
-			handler.setField(field);
-			handler.setControl("");
-			fieldMap.put(field, handler);
-		});
+				.stream()
+				.filter((c) -> c instanceof TextField)
+				.map((c) -> (TextField) c)
+				.forEach((field) -> {
+					FieldHandler handler = new FieldHandler();
+					handler.setField(field);
+					handler.setControl("");
+					fieldMap.put(field, handler);
+				});
 	}
 
 	private TextField setupField(List<TextField> fields, int fieldIndex, int column, int row, String fieldControl, String fieldValue) {
@@ -159,15 +155,14 @@ public class CameraProfilesControlSettingsManager
 			field.setDisable(isSystemProfile);
 		}
 
-
 		return field;
 	}
 
 	public void populateGrid() {
 		List<Node> children = controlGrid.getChildren();
 		List<TextField> fields = children.stream()
-				.filter((c)-> c instanceof TextField)
-				.map((c) -> (TextField)c)
+				.filter((c) -> c instanceof TextField)
+				.map((c) -> (TextField) c)
 				.collect(Collectors.toList());
 		List<String> controlSet = new ArrayList<>(controlSettings.keySet());
 		Collections.sort(controlSet);
@@ -183,7 +178,7 @@ public class CameraProfilesControlSettingsManager
 				value = "";
 			}
 			else {
-				control = controlSet.get(row-1);
+				control = controlSet.get(row - 1);
 				value = controlSettings.get(control);
 			}
 			setupField(fields, fieldIndex, 0, row, control, control);

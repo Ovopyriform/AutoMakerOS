@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package celtech.utils;
 
 import static org.junit.Assert.assertEquals;
@@ -20,8 +16,7 @@ import xyz.openautomaker.base.configuration.fileRepresentation.CameraProfile;
  */
 public class CameraProfileStringConverterTest {
 	@Test
-	public void testStringConverter()
-	{
+	public void testStringConverter() {
 		// creating a Stream of strings
 		List<CameraProfile> l = new ArrayList<>();
 		CameraProfile cp = new CameraProfile();
@@ -55,7 +50,9 @@ public class CameraProfileStringConverterTest {
 		cp.setProfileName("Logitech StreamCam");
 		l.add(cp);
 
-		CameraProfileStringConverter cisc = new CameraProfileStringConverter(() -> { return l; });
+		CameraProfileStringConverter cisc = new CameraProfileStringConverter(() -> {
+			return l;
+		});
 
 		String cs0 = cisc.toString(l.get(0));
 		CameraProfile cp1 = cisc.fromString("Logitech 920");

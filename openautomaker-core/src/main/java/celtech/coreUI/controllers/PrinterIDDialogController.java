@@ -33,8 +33,7 @@ import xyz.openautomaker.base.printerControl.model.PrinterException;
  *
  * @author ianhudson
  */
-public class PrinterIDDialogController implements Initializable
-{
+public class PrinterIDDialogController implements Initializable {
 
 	private static final Logger LOGGER = LogManager.getLogger(PrinterIDDialogController.class.getName());
 
@@ -59,20 +58,17 @@ public class PrinterIDDialogController implements Initializable
 	private ToggleGroup colourButtonGroup;
 
 	@FXML
-	void okButtonPressed(MouseEvent event)
-	{
+	void okButtonPressed(MouseEvent event) {
 		okPressed = true;
 		myStage.close();
 	}
 
 	@FXML
-	void cancelButtonPressed(MouseEvent event)
-	{
-		try
-		{
+	void cancelButtonPressed(MouseEvent event) {
+		try {
 			printerToUse.readPrinterID();
-		} catch (PrinterException ex)
-		{
+		}
+		catch (PrinterException ex) {
 			LOGGER.error("Error reading printer ID");
 		}
 		okPressed = false;
@@ -97,16 +93,12 @@ public class PrinterIDDialogController implements Initializable
 	 * @param rb
 	 */
 	@Override
-	public void initialize(URL url, ResourceBundle rb)
-	{
+	public void initialize(URL url, ResourceBundle rb) {
 
-		textInputHandler = new EventHandler<>()
-		{
+		textInputHandler = new EventHandler<>() {
 			@Override
-			public void handle(KeyEvent event)
-			{
-				if (event.getCode() == KeyCode.ENTER)
-				{
+			public void handle(KeyEvent event) {
+				if (event.getCode() == KeyCode.ENTER) {
 					okButtonPressed(null);
 				}
 			}
@@ -114,19 +106,15 @@ public class PrinterIDDialogController implements Initializable
 
 		container.addEventHandler(KeyEvent.KEY_PRESSED, textInputHandler);
 
-		colourButtonGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>()
-		{
+		colourButtonGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
 			@Override
-			public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue)
-			{
+			public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
 				//The first time this gets set it will be to match the picked colour against the printer, so don't send anything through...
-				if (newValue != null)
-				{
-					try
-					{
+				if (newValue != null) {
+					try {
 						printerToUse.setAmbientLEDColour(colourMap.displayToPrinterColour(((ColourChooserButton) newValue).getDisplayColour()));
-					} catch (PrinterException ex)
-					{
+					}
+					catch (PrinterException ex) {
 						LOGGER.error("Error writing printer ID");
 					}
 				}
@@ -138,8 +126,7 @@ public class PrinterIDDialogController implements Initializable
 	 *
 	 * @param dialogStage
 	 */
-	public void configure(Stage dialogStage)
-	{
+	public void configure(Stage dialogStage) {
 		myStage = dialogStage;
 	}
 
@@ -147,13 +134,11 @@ public class PrinterIDDialogController implements Initializable
 	 *
 	 * @return
 	 */
-	public Color getChosenDisplayColour()
-	{
-		if (colourButtonGroup.getSelectedToggle() != null)
-		{
+	public Color getChosenDisplayColour() {
+		if (colourButtonGroup.getSelectedToggle() != null) {
 			return ((ColourChooserButton) colourButtonGroup.getSelectedToggle()).getDisplayColour();
-		} else
-		{
+		}
+		else {
 			return null;
 		}
 	}
@@ -162,8 +147,7 @@ public class PrinterIDDialogController implements Initializable
 	 *
 	 * @return
 	 */
-	public String getChosenPrinterName()
-	{
+	public String getChosenPrinterName() {
 		return roboxNameField.getText();
 	}
 
@@ -171,8 +155,7 @@ public class PrinterIDDialogController implements Initializable
 	 *
 	 * @param printerToUse
 	 */
-	public void setPrinterToUse(Printer printerToUse)
-	{
+	public void setPrinterToUse(Printer printerToUse) {
 		this.printerToUse = printerToUse;
 	}
 
@@ -180,14 +163,11 @@ public class PrinterIDDialogController implements Initializable
 	 *
 	 * @param colour
 	 */
-	public void setChosenColour(Color colour)
-	{
-		for (Toggle toggle : colourButtonGroup.getToggles())
-		{
+	public void setChosenColour(Color colour) {
+		for (Toggle toggle : colourButtonGroup.getToggles()) {
 			ColourChooserButton button = (ColourChooserButton) toggle;
 
-			if (button.getDisplayColour().equals(colour))
-			{
+			if (button.getDisplayColour().equals(colour)) {
 				colourButtonGroup.selectToggle(button);
 			}
 		}
@@ -197,8 +177,7 @@ public class PrinterIDDialogController implements Initializable
 	 *
 	 * @param printerName
 	 */
-	public void setChosenPrinterName(String printerName)
-	{
+	public void setChosenPrinterName(String printerName) {
 		roboxNameField.setText(printerName);
 	}
 
@@ -206,8 +185,7 @@ public class PrinterIDDialogController implements Initializable
 	 *
 	 * @return
 	 */
-	public boolean okPressed()
-	{
+	public boolean okPressed() {
 		return okPressed;
 	}
 }

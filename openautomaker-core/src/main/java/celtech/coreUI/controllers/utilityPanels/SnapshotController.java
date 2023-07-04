@@ -32,8 +32,7 @@ import xyz.openautomaker.base.configuration.fileRepresentation.CameraSettings;
  *
  * @author Ian
  */
-public abstract class SnapshotController implements Initializable
-{
+public abstract class SnapshotController implements Initializable {
 	private static final Logger LOGGER = LogManager.getLogger(SnapshotController.class.getName());
 	protected static final int SNAPSHOT_INTERVAL = 500;
 
@@ -53,8 +52,7 @@ public abstract class SnapshotController implements Initializable
 	protected Task<Void> snapshotTask = null;
 
 	@Override
-	public void initialize(URL url, ResourceBundle rb)
-	{
+	public void initialize(URL url, ResourceBundle rb) {
 		cameraProfileChooser.setConverter(new CameraProfileStringConverter(cameraProfileChooser::getItems));
 		cameraProfileChooser.valueProperty().addListener((observable, oldValue, newValue) -> {
 			selectProfile(newValue);
@@ -73,21 +71,25 @@ public abstract class SnapshotController implements Initializable
 	public void selectCameraAndProfile(String profileName, String cameraName) {
 		// Find the profile.
 		cameraProfileChooser.getItems()
-		.stream()
-		.filter(cp -> cp.getProfileName().equalsIgnoreCase(profileName))
-		.findFirst()
-		.ifPresent((p) -> {
-			selectedProfile = p;
-			BaseLookup.getTaskExecutor().runOnGUIThread(() -> { cameraProfileChooser.setValue(p); });
-		});
+				.stream()
+				.filter(cp -> cp.getProfileName().equalsIgnoreCase(profileName))
+				.findFirst()
+				.ifPresent((p) -> {
+					selectedProfile = p;
+					BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
+						cameraProfileChooser.setValue(p);
+					});
+				});
 		cameraChooser.getItems()
-		.stream()
-		.filter(ci -> ci.getCameraName().equalsIgnoreCase(cameraName))
-		.findFirst()
-		.ifPresent((c) -> {
-			selectedCamera = c;
-			BaseLookup.getTaskExecutor().runOnGUIThread(() -> { cameraChooser.setValue(c); });
-		});
+				.stream()
+				.filter(ci -> ci.getCameraName().equalsIgnoreCase(cameraName))
+				.findFirst()
+				.ifPresent((c) -> {
+					selectedCamera = c;
+					BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
+						cameraChooser.setValue(c);
+					});
+				});
 	}
 
 	protected void selectProfile(CameraProfile profile) {
@@ -96,22 +98,24 @@ public abstract class SnapshotController implements Initializable
 			populateCameraChooser();
 			if (profile != null) {
 				if (viewWidthFixed) {
-					double aspectRatio = profile.getCaptureHeight() / (double)profile.getCaptureWidth();
+					double aspectRatio = profile.getCaptureHeight() / (double) profile.getCaptureWidth();
 					double fitHeight = (aspectRatio * snapshotView.getFitWidth());
 					snapshotView.setFitHeight(fitHeight);
 				}
 				else {
-					double aspectRatio = profile.getCaptureWidth() / (double)profile.getCaptureHeight();
+					double aspectRatio = profile.getCaptureWidth() / (double) profile.getCaptureHeight();
 					double fitWidth = (aspectRatio * snapshotView.getFitHeight());
 					snapshotView.setFitWidth(fitWidth);
 				}
 				cameraChooser.getItems()
-				.stream()
-				.filter(ci -> profile.getCameraName().isBlank() ||
-						ci.getCameraName().equalsIgnoreCase(profile.getCameraName()))
-				.findFirst()
-				.ifPresentOrElse(cameraChooser::setValue,
-						() -> { cameraChooser.setValue(cameraChooser.getItems().size() > 0 ? cameraChooser.getItems().get(0) : null); });
+						.stream()
+						.filter(ci -> profile.getCameraName().isBlank() ||
+								ci.getCameraName().equalsIgnoreCase(profile.getCameraName()))
+						.findFirst()
+						.ifPresentOrElse(cameraChooser::setValue,
+								() -> {
+									cameraChooser.setValue(cameraChooser.getItems().size() > 0 ? cameraChooser.getItems().get(0) : null);
+								});
 			}
 			else
 				cameraChooser.setValue(cameraChooser.getItems().size() > 0 ? cameraChooser.getItems().get(0) : null);
@@ -189,20 +193,18 @@ public abstract class SnapshotController implements Initializable
 		if (connectedServer != null) {
 			ObservableList<CameraInfo> itemList = BaseLookup.getConnectedCameras().stream()
 					.filter(cc -> cc.getServer() == connectedServer &&
-					(cameraName.isBlank() ||
-							cameraName.equalsIgnoreCase(cc.getCameraName())))
+							(cameraName.isBlank() ||
+									cameraName.equalsIgnoreCase(cc.getCameraName())))
 					.collect(Collectors.toCollection(FXCollections::observableArrayList))
 					.sorted();
 			cameraChooser.setItems(itemList);
 		}
-		else
-		{
+		else {
 			cameraChooser.setItems(FXCollections.emptyObservableList());
 		}
 	}
 
-	protected void takeSnapshot()
-	{
+	protected void takeSnapshot() {
 		if (snapshotTask != null) {
 			snapshotTask.cancel();
 			snapshotTask = null;

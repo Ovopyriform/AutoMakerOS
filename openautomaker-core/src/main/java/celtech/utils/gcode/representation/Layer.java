@@ -10,8 +10,7 @@ import java.util.ArrayList;
  *
  * @author ianhudson
  */
-public class Layer
-{
+public class Layer {
 
 	private float zHeight;
 	private ArrayList<CompoundMovement> movements = new ArrayList<>();
@@ -21,8 +20,7 @@ public class Layer
 	 *
 	 * @param movement
 	 */
-	public void addMovement(CompoundMovement movement)
-	{
+	public void addMovement(CompoundMovement movement) {
 		movements.add(movement);
 	}
 
@@ -30,8 +28,7 @@ public class Layer
 	 *
 	 * @return
 	 */
-	public ArrayList<CompoundMovement> getMovements()
-	{
+	public ArrayList<CompoundMovement> getMovements() {
 		return movements;
 	}
 
@@ -39,8 +36,7 @@ public class Layer
 	 *
 	 * @param layerNumber
 	 */
-	public void setLayerNumber(int layerNumber)
-	{
+	public void setLayerNumber(int layerNumber) {
 		this.layerNumber = layerNumber;
 	}
 
@@ -48,8 +44,7 @@ public class Layer
 	 *
 	 * @return
 	 */
-	public int getLayerNumber()
-	{
+	public int getLayerNumber() {
 		return layerNumber;
 	}
 
@@ -58,16 +53,14 @@ public class Layer
 	 * @return
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder stringOut = new StringBuilder();
 
 		stringOut.append("There are ");
 		stringOut.append(movements.size());
 		stringOut.append(" moves\n");
 
-		for (CompoundMovement movement : movements)
-		{
+		for (CompoundMovement movement : movements) {
 			stringOut.append(movement.toString());
 		}
 

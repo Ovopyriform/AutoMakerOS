@@ -12,32 +12,27 @@ import java.util.Locale;
  *
  * @author Ian
  */
-public class CookieContainer
-{
+public class CookieContainer {
 
 	private String uri;
 	private ArrayList<String> headers = new ArrayList<>();
 
-	public CookieContainer()
-	{
+	public CookieContainer() {
 	}
 
-	public CookieContainer(String uri, List<HttpCookie> cookies)
-	{
+	public CookieContainer(String uri, List<HttpCookie> cookies) {
 		this.uri = uri;
 
-		cookies.stream().forEach(cookie ->
-		{
+		cookies.stream().forEach(cookie -> {
 			headers.add(cookieToHeader(cookie));
 		});
 	}
 
-	public static String cookieToHeader(HttpCookie cookie)
-	{
+	public static String cookieToHeader(HttpCookie cookie) {
 		SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("EEE, dd-MMM-yyyy H:m:s");
 		Calendar calendar = Calendar.getInstance(Locale.UK);
 		calendar.setTime(new Date());
-		calendar.add(Calendar.SECOND, (int)cookie.getMaxAge());
+		calendar.add(Calendar.SECOND, (int) cookie.getMaxAge());
 
 		StringBuilder header = new StringBuilder();
 
@@ -104,42 +99,33 @@ public class CookieContainer
 	//
 	//        return mapToReturn;
 	//    }
-	public String getUri()
-	{
+	public String getUri() {
 		return uri;
 	}
 
-	public void setUri(String uri)
-	{
+	public void setUri(String uri) {
 		this.uri = uri;
 	}
 
-	public ArrayList<String> getHeaders()
-	{
+	public ArrayList<String> getHeaders() {
 		return headers;
 	}
 
-	public void setHeaders(ArrayList<String> headers)
-	{
+	public void setHeaders(ArrayList<String> headers) {
 		this.headers = headers;
 	}
 
-	public List<HttpCookie> revealTheCookies()
-	{
+	public List<HttpCookie> revealTheCookies() {
 		ArrayList<HttpCookie> returnedCookies = new ArrayList<>();
 
-		headers.stream().forEach(header ->
-		{
+		headers.stream().forEach(header -> {
 			List<HttpCookie> cookies = HttpCookie.parse(header);
-			cookies.stream().forEach(cookie ->
-			{
-				if (!cookie.hasExpired())
-				{
+			cookies.stream().forEach(cookie -> {
+				if (!cookie.hasExpired()) {
 					returnedCookies.add(cookie);
 				}
 			});
-		}
-				);
+		});
 
 		return returnedCookies;
 	}

@@ -62,18 +62,15 @@ import xyz.openautomaker.base.utils.SystemUtils;
 /**
  * Obj file reader
  */
-public class ObjImporter
-{
+public class ObjImporter {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private int vertexIndex(int vertexIndex)
-	{
-		if (vertexIndex < 0)
-		{
+	private int vertexIndex(int vertexIndex) {
+		if (vertexIndex < 0) {
 			return vertexIndex + verticesFromFile.size() / 3;
-		} else
-		{
+		}
+		else {
 			return vertexIndex - 1;
 		}
 	}
@@ -89,20 +86,17 @@ public class ObjImporter
 	private int linesInFile = 0;
 	private DoubleProperty percentProgressProperty;
 
-	public ModelLoadResult loadURL(ModelLoaderTask parentTask, URL modelURLToLoad)
-	{
+	public ModelLoadResult loadURL(ModelLoaderTask parentTask, URL modelURLToLoad) {
 		return loadFile(parentTask, modelURLToLoad.toExternalForm(), null, true);
 	}
 
-	public ModelLoadResult loadFile(ModelLoaderTask parentTask, String modelFileToLoad)
-	{
+	public ModelLoadResult loadFile(ModelLoaderTask parentTask, String modelFileToLoad) {
 		return loadFile(parentTask, modelFileToLoad, null, false);
 	}
 
 	public ModelLoadResult loadFile(ModelLoaderTask parentTask, String modelFileToLoad,
 			DoubleProperty percentProgressProperty,
-			boolean isURL)
-	{
+			boolean isURL) {
 		this.objFileUrl = isURL ? modelFileToLoad : "file:///" + modelFileToLoad;
 		this.percentProgressProperty = percentProgressProperty;
 
@@ -110,13 +104,11 @@ public class ObjImporter
 
 		File modelFile = new File(objFileUrl);
 
-		if (percentProgressProperty != null)
-		{
+		if (percentProgressProperty != null) {
 			linesInFile = SystemUtils.countLinesInFile(new File(modelFileToLoad));
 		}
 
-		try (InputStream fileInputStream = new URL(objFileUrl).openStream())
-		{
+		try (InputStream fileInputStream = new URL(objFileUrl).openStream()) {
 			String filePath = modelFile.getParent();
 			filePath = filePath.replaceAll("\\\\", "/");
 			read(fileInputStream, filePath);
@@ -124,8 +116,7 @@ public class ObjImporter
 			ArrayList<MeshView> meshes_ = new ArrayList<>();
 			ArrayList<Integer> extruderAssociations = new ArrayList<>();
 
-			for (String key : meshes.keySet())
-			{
+			for (String key : meshes.keySet()) {
 				meshes_.add(buildMeshView(key));
 
 				int materialNumber = materialsForObjects.get(key);
@@ -136,8 +127,7 @@ public class ObjImporter
 
 			ModelLoadResultType resultType = null;
 
-			for (int i = 0; i < meshes_.size(); i++)
-			{
+			for (int i = 0; i < meshes_.size(); i++) {
 				MeshView meshView = meshes_.get(i);
 				int extruder = extruderAssociations.get(i);
 				ModelContainer childModelContainer = new ModelContainer(modelFile, meshView,
@@ -149,33 +139,29 @@ public class ObjImporter
 					ModelLoadResultType.Mesh,
 					modelFileToLoad,
 					modelFile.getName(),
-					(Set)modelContainers);
+					(Set) modelContainers);
 
-		} catch (Exception ex)
-		{
+		}
+		catch (Exception ex) {
 			ex.printStackTrace();
 			LOGGER.error("Exception whilst reading obj file " + modelFileToLoad + ":" + ex);
 		}
 
-		if (parentTask != null && parentTask.isCancelled())
-		{
+		if (parentTask != null && parentTask.isCancelled()) {
 			modelLoadResult = null;
 		}
 		return modelLoadResult;
 	}
 
-	public TriangleMesh getMesh()
-	{
+	public TriangleMesh getMesh() {
 		return meshes.values().iterator().next();
 	}
 
-	public TriangleMesh getMesh(String key)
-	{
+	public TriangleMesh getMesh(String key) {
 		return meshes.get(key);
 	}
 
-	public MeshView buildMeshView(String key)
-	{
+	public MeshView buildMeshView(String key) {
 		MeshView meshView = new MeshView();
 		meshView.setId(key);
 		meshView.setMaterial(ApplicationMaterials.getDefaultModelMaterial());
@@ -184,13 +170,11 @@ public class ObjImporter
 		return meshView;
 	}
 
-	public static void setDebug(boolean debug)
-	{
+	public static void setDebug(boolean debug) {
 		ObjImporter.debug = debug;
 	}
 
-	public static void setScale(float scale)
-	{
+	public static void setScale(float scale) {
 		ObjImporter.scale = scale;
 	}
 
@@ -199,8 +183,7 @@ public class ObjImporter
 	private int materialNumber = -1;
 	private int facesStart = 0;
 
-	private void read(InputStream inputStream, final String filePath) throws IOException
-	{
+	private void read(InputStream inputStream, final String filePath) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 		String line;
 		String key = "default";
@@ -208,26 +191,20 @@ public class ObjImporter
 		int lineNum = 0;
 		int progressPercent = 0;
 
-		while ((line = br.readLine()) != null)
-		{
-			if (percentProgressProperty != null && linesInFile > 0)
-			{
+		while ((line = br.readLine()) != null) {
+			if (percentProgressProperty != null && linesInFile > 0) {
 				int progressUpdate = (int) (((double) lineNum / (double) linesInFile) * 100);
-				if (progressUpdate != progressPercent)
-				{
+				if (progressUpdate != progressPercent) {
 					progressPercent = progressUpdate;
-					if (percentProgressProperty != null)
-					{
+					if (percentProgressProperty != null) {
 						percentProgressProperty.set(progressPercent);
 					}
 				}
 			}
 			lineNum++;
 
-			try
-			{
-				if (line.startsWith("v "))
-				{
+			try {
+				if (line.startsWith("v ")) {
 					String[] split = line.substring(2).trim().split(" +");
 					float x = Float.parseFloat(split[0]) * scale;
 					float y = Float.parseFloat(split[1]) * scale;
@@ -237,49 +214,42 @@ public class ObjImporter
 					verticesFromFile.add(x);
 					verticesFromFile.add(-z);
 					verticesFromFile.add(y);
-				} else if (line.startsWith("vt "))
-				{
+				}
+				else if (line.startsWith("vt ")) {
 					//Ignore vertex textures for the moment
 					//                    String[] split = line.substring(3).trim().split(" +");
 					//                    float u = Float.parseFloat(split[0]);
 					//                    float v = Float.parseFloat(split[1]);
 					//
 					//                log("u = " + u + ", v = " + v);
-				} else if (line.startsWith("f "))
-				{
+				}
+				else if (line.startsWith("f ")) {
 					//Faces
 					pendingObject = true;
 					String[] split = line.substring(2).trim().split(" +");
 					int[][] data = new int[split.length][];
 					boolean uvProvided = true;
 					boolean normalProvided = true;
-					for (int i = 0; i < split.length; i++)
-					{
+					for (int i = 0; i < split.length; i++) {
 						String[] split2 = split[i].split("/");
-						if (split2.length < 2)
-						{
+						if (split2.length < 2) {
 							uvProvided = false;
 						}
-						if (split2.length < 3)
-						{
+						if (split2.length < 3) {
 							normalProvided = false;
 						}
 						data[i] = new int[split2.length];
-						for (int j = 0; j < split2.length; j++)
-						{
-							if (split2[j].length() == 0)
-							{
+						for (int j = 0; j < split2.length; j++) {
+							if (split2[j].length() == 0) {
 								data[i][j] = 0;
-								if (j == 1)
-								{
+								if (j == 1) {
 									uvProvided = false;
 								}
-								if (j == 2)
-								{
+								if (j == 2) {
 									normalProvided = false;
 								}
-							} else
-							{
+							}
+							else {
 								data[i][j] = Integer.parseInt(split2[j]);
 							}
 						}
@@ -287,8 +257,7 @@ public class ObjImporter
 					int v1 = vertexIndex(data[0][0]);
 					int uv1 = -1;
 					int n1 = -1;
-					for (int i = 1; i < data.length - 1; i++)
-					{
+					for (int i = 1; i < data.length - 1; i++) {
 						int v2 = vertexIndex(data[i][0]);
 						int v3 = vertexIndex(data[i + 1][0]);
 						int uv2 = -1;
@@ -305,40 +274,37 @@ public class ObjImporter
 						facesFromFile.add(v3);
 						facesFromFile.add(uv3);
 					}
-				} else if (line.startsWith("mtllib "))
-				{
+				}
+				else if (line.startsWith("mtllib ")) {
 					// setting materials lib - just take the first one for the moment
 					String materialFilename = line.substring("mtllib ".length()).trim();
 					MtlReader mtlReader = new MtlReader(materialFilename, filePath);
 
 					materialNameAgainstIndex = mtlReader.getMaterials();
-				} else if (line.startsWith("usemtl "))
-				{
+				}
+				else if (line.startsWith("usemtl ")) {
 					// setting new material for next mesh
 					String materialName = line.substring("usemtl ".length());
 					Integer foundMaterial = materialNameAgainstIndex.get(materialName);
-					if (foundMaterial != null)
-					{
+					if (foundMaterial != null) {
 						materialNumber = foundMaterial;
 					}
-					else
-					{
+					else {
 						materialNumber = 0;
 					}
-				} else if (line.isEmpty() || line.startsWith("#"))
-				{
+				}
+				else if (line.isEmpty() || line.startsWith("#")) {
 					// comments and empty lines are ignored
-				} else if (line.startsWith("vn "))
-				{
+				}
+				else if (line.startsWith("vn ")) {
 					//Ignore vertex normals
 					//                    String[] split = line.substring(2).trim().split(" +");
 					//                    float x = Float.parseFloat(split[0]);
 					//                    float y = Float.parseFloat(split[1]);
 					//                    float z = Float.parseFloat(split[2]);
-				} else if (line.startsWith("o"))
-				{
-					if (pendingObject)
-					{
+				}
+				else if (line.startsWith("o")) {
+					if (pendingObject) {
 						addMesh(key);
 						pendingObject = false;
 					}
@@ -346,10 +312,9 @@ public class ObjImporter
 					String objectName = line.substring(1).trim();
 					LOGGER.debug("Got object name " + objectName);
 					key = objectName;
-				} else if (line.startsWith("g"))
-				{
-					if (pendingObject)
-					{
+				}
+				else if (line.startsWith("g")) {
+					if (pendingObject) {
 						addMesh(key);
 						pendingObject = false;
 					}
@@ -357,35 +322,31 @@ public class ObjImporter
 					String objectName = line.substring(1).trim();
 					LOGGER.debug("Got object name " + objectName);
 					key = objectName;
-				} else
-				{
+				}
+				else {
 					LOGGER.debug("line skipped: " + line);
 
 				}
-			} catch (Exception ex)
-			{
+			}
+			catch (Exception ex) {
 				LOGGER.info("Failed to parse line:" + line, ex);
 			}
 		}
 
-		if (pendingObject)
-		{
+		if (pendingObject) {
 			addMesh(key);
 		}
 	}
 
-	private void addMesh(final String key)
-	{
+	private void addMesh(final String key) {
 		Map<Integer, Integer> vertexMap = new HashMap<>(verticesFromFile.size() / 2);
 		FloatArrayList newVertices = new FloatArrayList(verticesFromFile.size() / 2);
 		IntegerArrayList newFaces = new IntegerArrayList();
 
-		for (int i = facesStart; i < facesFromFile.size(); i += 2)
-		{
+		for (int i = facesStart; i < facesFromFile.size(); i += 2) {
 			int vi = facesFromFile.get(i);
 			Integer nvi = vertexMap.get(vi);
-			if (nvi == null)
-			{
+			if (nvi == null) {
 				nvi = newVertices.size() / 3;
 				vertexMap.put(vi, nvi);
 				newVertices.add(verticesFromFile.get(vi * 3));
@@ -405,8 +366,7 @@ public class ObjImporter
 		mesh.getFaces().setAll(newFaces.toIntArray());
 
 		int[] smoothingGroups = new int[newFaces.size() / 6];
-		for (int i = 0; i < smoothingGroups.length; i++)
-		{
+		for (int i = 0; i < smoothingGroups.length; i++) {
 			smoothingGroups[i] = 0;
 		}
 		mesh.getFaceSmoothingGroups().addAll(smoothingGroups);
@@ -414,8 +374,7 @@ public class ObjImporter
 		meshes.put(key, mesh);
 
 		//Just in case the material number wasn't specified (mentioning no names Microsoft)
-		if (materialNumber < 0)
-		{
+		if (materialNumber < 0) {
 			materialNumber = 0;
 		}
 		materialsForObjects.put(key, materialNumber);
@@ -433,8 +392,7 @@ public class ObjImporter
 		facesStart = facesFromFile.size();
 	}
 
-	public static void setFlatXZ(boolean flatXZ)
-	{
+	public static void setFlatXZ(boolean flatXZ) {
 		ObjImporter.flatXZ = flatXZ;
 	}
 }

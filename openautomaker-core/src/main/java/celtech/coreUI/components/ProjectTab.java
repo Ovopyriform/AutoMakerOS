@@ -61,8 +61,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class ProjectTab extends Tab implements ProjectCallback
-{
+public class ProjectTab extends Tab implements ProjectCallback {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			ProjectTab.class.getName());
@@ -96,33 +95,28 @@ public class ProjectTab extends Tab implements ProjectCallback
 	private LoadedPanelData modelActionsInsetPanelData = null;
 	private LoadedPanelData timelapseInsetPanelData = null;
 
-	private class LoadedPanelData
-	{
+	private class LoadedPanelData {
 
 		private final Node node;
 		private final ProjectAwareController controller;
 
-		public LoadedPanelData(Node node, ProjectAwareController controller)
-		{
+		public LoadedPanelData(Node node, ProjectAwareController controller) {
 			this.node = node;
 			this.controller = controller;
 		}
 
-		public Node getNode()
-		{
+		public Node getNode() {
 			return node;
 		}
 
-		public ProjectAwareController getController()
-		{
+		public ProjectAwareController getController() {
 			return controller;
 		}
 	}
 
 	public ProjectTab(
 			ReadOnlyDoubleProperty tabDisplayWidthProperty,
-			ReadOnlyDoubleProperty tabDisplayHeightProperty)
-	{
+			ReadOnlyDoubleProperty tabDisplayHeightProperty) {
 		this.tabDisplayWidthProperty = tabDisplayWidthProperty;
 		this.tabDisplayHeightProperty = tabDisplayHeightProperty;
 		coreInitialisation();
@@ -131,8 +125,7 @@ public class ProjectTab extends Tab implements ProjectCallback
 	public ProjectTab(Project inboundProject,
 			ReadOnlyDoubleProperty tabDisplayWidthProperty,
 			ReadOnlyDoubleProperty tabDisplayHeightProperty,
-			boolean loadingAtStartup)
-	{
+			boolean loadingAtStartup) {
 		project = inboundProject;
 		this.tabDisplayWidthProperty = tabDisplayWidthProperty;
 		this.tabDisplayHeightProperty = tabDisplayHeightProperty;
@@ -140,61 +133,49 @@ public class ProjectTab extends Tab implements ProjectCallback
 		initialiseWithProject(loadingAtStartup);
 	}
 
-	public Project getProject()
-	{
+	public Project getProject() {
 		return project;
 	}
 
-	public ThreeDViewManager getThreeDViewManager()
-	{
+	public ThreeDViewManager getThreeDViewManager() {
 		return viewManager;
 	}
 
-	public SVGViewManager getSVGViewManager()
-	{
+	public SVGViewManager getSVGViewManager() {
 		return svgViewManager;
 	}
 
-	private void primeTabInsetPanels(boolean tabIsSelected)
-	{
-		if (rhInsetContainer != null)
-		{
-			if (!tabIsSelected)
-			{
-				if (timeCostInsetPanelData != null)
-				{
+	private void primeTabInsetPanels(boolean tabIsSelected) {
+		if (rhInsetContainer != null) {
+			if (!tabIsSelected) {
+				if (timeCostInsetPanelData != null) {
 					timeCostInsetPanelData.getController().shutdownController();
 					rhInsetContainer.getChildren().remove(timeCostInsetPanelData.getNode());
 					timeCostInsetPanelData = null;
 				}
-				if (settingsInsetPanelData != null)
-				{
+				if (settingsInsetPanelData != null) {
 					settingsInsetPanelData.getController().shutdownController();
 					rhInsetContainer.getChildren().remove(settingsInsetPanelData.getNode());
 					settingsInsetPanelData = null;
 				}
-				if (timelapseInsetPanelData != null)
-				{
+				if (timelapseInsetPanelData != null) {
 					timelapseInsetPanelData.getController().shutdownController();
 					rhInsetContainer.getChildren().remove(timelapseInsetPanelData.getNode());
 					timelapseInsetPanelData = null;
 				}
-			} else
-			{
-				if (timeCostInsetPanelData == null)
-				{
+			}
+			else {
+				if (timeCostInsetPanelData == null) {
 					timeCostInsetPanelData = loadInsetPanel("timeCostInsetPanel.fxml", project);
 					timeCostInsetPanelData.getNode().setVisible(false);
 					rhInsetContainer.getChildren().add(timeCostInsetPanelData.getNode());
 				}
-				if (settingsInsetPanelData == null)
-				{
+				if (settingsInsetPanelData == null) {
 					settingsInsetPanelData = loadInsetPanel("settingsInsetPanel.fxml", project);
 					settingsInsetPanelData.getNode().setVisible(false);
 					rhInsetContainer.getChildren().add(settingsInsetPanelData.getNode());
 				}
-				if (timelapseInsetPanelData == null)
-				{
+				if (timelapseInsetPanelData == null) {
 					timelapseInsetPanelData = loadInsetPanel("timelapseInsetPanel.fxml", project);
 					timelapseInsetPanelData.getNode().setVisible(false);
 					rhInsetContainer.getChildren().add(timelapseInsetPanelData.getNode());
@@ -203,20 +184,16 @@ public class ProjectTab extends Tab implements ProjectCallback
 		}
 	}
 
-	private void coreInitialisation()
-	{
-		setOnClosed((Event t) ->
-		{
+	private void coreInitialisation() {
+		setOnClosed((Event t) -> {
 			LOGGER.debug("Beginning project save");
 			saveAndCloseProject();
 			LOGGER.debug("Completed project save");
 			projectManager.saveState();
 		});
 
-		setOnSelectionChanged((Event t) ->
-		{
-			if (bedAxes != null)
-			{
+		setOnSelectionChanged((Event t) -> {
+			if (bedAxes != null) {
 				bedAxes.updateArrowAndTextPosition();
 			}
 		});
@@ -247,18 +224,15 @@ public class ProjectTab extends Tab implements ProjectCallback
 
 		this.setGraphic(nonEditableProjectNameField);
 
-		this.selectedProperty().addListener(new ChangeListener<Boolean>()
-		{
+		this.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
-			{
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				primeTabInsetPanels(newValue);
 			}
 		});
 	}
 
-	private void initialiseWithProject(boolean loadingAtStartup)
-	{
+	private void initialiseWithProject(boolean loadingAtStartup) {
 		rhInsetContainer = new VBox();
 		rhInsetContainer.setSpacing(30);
 
@@ -272,7 +246,6 @@ public class ProjectTab extends Tab implements ProjectCallback
 		//        AnchorPane.setRightAnchor(dimensionContainer, 0.0);
 		//        AnchorPane.setLeftAnchor(dimensionContainer, 0.0);
 
-
 		modelActionsInsetPanelData = loadInsetPanel("modelEditInsetPanel.fxml", project);
 		AnchorPane.setTopAnchor(modelActionsInsetPanelData.getNode(), 30.0);
 		AnchorPane.setLeftAnchor(modelActionsInsetPanelData.getNode(), 30.0);
@@ -282,24 +255,18 @@ public class ProjectTab extends Tab implements ProjectCallback
 
 		layoutSubmode = Lookup.getProjectGUIState(project).getLayoutSubmodeProperty();
 
-		layoutSubmode.addListener(new ChangeListener<LayoutSubmode>()
-		{
+		layoutSubmode.addListener(new ChangeListener<LayoutSubmode>() {
 			@Override
-			public void changed(ObservableValue<? extends LayoutSubmode> observable, LayoutSubmode oldValue, LayoutSubmode newValue)
-			{
-				if (newValue == LayoutSubmode.Z_CUT)
-				{
-					Set<ProjectifiableThing> selectedModelContainers
-					= Lookup.getProjectGUIState(project).getProjectSelection().getSelectedModelsSnapshot();
-					if (project instanceof ModelContainerProject)
-					{
+			public void changed(ObservableValue<? extends LayoutSubmode> observable, LayoutSubmode oldValue, LayoutSubmode newValue) {
+				if (newValue == LayoutSubmode.Z_CUT) {
+					Set<ProjectifiableThing> selectedModelContainers = Lookup.getProjectGUIState(project).getProjectSelection().getSelectedModelsSnapshot();
+					if (project instanceof ModelContainerProject) {
 						zCutEntryBox.prime((ModelContainer) selectedModelContainers.iterator().next());
 						overlayPane.getChildren().add(zCutEntryBox);
 					}
-				} else
-				{
-					if (overlayPane.getChildren().contains(zCutEntryBox))
-					{
+				}
+				else {
+					if (overlayPane.getChildren().contains(zCutEntryBox)) {
 						overlayPane.getChildren().remove(zCutEntryBox);
 					}
 				}
@@ -311,11 +278,10 @@ public class ProjectTab extends Tab implements ProjectCallback
 
 		setupNameFields();
 
-		if (project instanceof ModelContainerProject)
-		{
+		if (project instanceof ModelContainerProject) {
 			setup3DView();
-		} else if (project instanceof ShapeContainerProject)
-		{
+		}
+		else if (project instanceof ShapeContainerProject) {
 			setupSVGView();
 		}
 
@@ -324,14 +290,12 @@ public class ProjectTab extends Tab implements ProjectCallback
 		projectManager.projectOpened(project);
 		projectManager.saveState();
 
-		if (!loadingAtStartup)
-		{
+		if (!loadingAtStartup) {
 			primeTabInsetPanels(true);
 		}
 	}
 
-	private void setup3DView()
-	{
+	private void setup3DView() {
 		nonSpecificModelIndicator.setVisible(false);
 		viewManager = new ThreeDViewManager((ModelContainerProject) project,
 				tabDisplayWidthProperty,
@@ -350,8 +314,7 @@ public class ProjectTab extends Tab implements ProjectCallback
 
 	}
 
-	private void setupSVGView()
-	{
+	private void setupSVGView() {
 		nonSpecificModelIndicator.setVisible(false);
 		svgViewManager = new SVGViewManager(project);
 		svgViewManager.setMaxWidth(basePane.getWidth());
@@ -365,26 +328,23 @@ public class ProjectTab extends Tab implements ProjectCallback
 		basePane.getChildren().add(0, svgViewManager);
 	}
 
-	private LoadedPanelData loadInsetPanel(String innerPanelFXMLName, Project project)
-	{
+	private LoadedPanelData loadInsetPanel(String innerPanelFXMLName, Project project) {
 		URL settingsInsetPanelURL = getClass().getResource(
 				ApplicationConfiguration.fxmlPanelResourcePath + innerPanelFXMLName);
 		FXMLLoader loader = new FXMLLoader(settingsInsetPanelURL, BaseLookup.getLanguageBundle());
 		Node insetPanel = null;
-		try
-		{
+		try {
 			insetPanel = loader.load();
 			projectAwareController = (ProjectAwareController) loader.getController();
 			projectAwareController.setProject(project);
-		} catch (IOException ex)
-		{
+		}
+		catch (IOException ex) {
 			LOGGER.error("Unable to load inset panel: " + innerPanelFXMLName + "  " + ex);
 		}
 		return new LoadedPanelData(insetPanel, projectAwareController);
 	}
 
-	private void setupNameFields()
-	{
+	private void setupNameFields() {
 		nonEditableProjectNameField.getStyleClass().add("nonEditableProjectTab");
 		editableProjectNameField.getStyleClass().add("editableProjectTab");
 		editableProjectNameField.setDirectorySafeName(true);
@@ -394,10 +354,8 @@ public class ProjectTab extends Tab implements ProjectCallback
 		nonEditableProjectNameField.textProperty().bind(
 				project.projectNameProperty());
 
-		nonEditableProjectNameField.setOnMouseClicked((MouseEvent event) ->
-		{
-			if (event.getClickCount() == 2)
-			{
+		nonEditableProjectNameField.setOnMouseClicked((MouseEvent event) -> {
+			if (event.getClickCount() == 2) {
 				editableProjectNameField.setText(
 						nonEditableProjectNameField.getText());
 				setGraphic(editableProjectNameField);
@@ -408,72 +366,54 @@ public class ProjectTab extends Tab implements ProjectCallback
 		});
 
 		editableProjectNameField.focusedProperty().addListener(
-				new ChangeListener<Boolean>()
-				{
+				new ChangeListener<Boolean>() {
 					@Override
 					public void changed(ObservableValue<? extends Boolean> ov,
-							Boolean t, Boolean t1)
-					{
-						if (!t1)
-						{
+							Boolean t, Boolean t1) {
+						if (!t1) {
 							switchToNonEditableTitle();
 						}
 					}
 				});
 
-		editableProjectNameField.setOnAction((ActionEvent event) ->
-		{
+		editableProjectNameField.setOnAction((ActionEvent event) -> {
 			switchToNonEditableTitle();
 		});
 	}
 
-	private void setupDragHandlers()
-	{
-		basePane.setOnDragOver(new EventHandler<DragEvent>()
-		{
+	private void setupDragHandlers() {
+		basePane.setOnDragOver(new EventHandler<DragEvent>() {
 			@Override
-			public void handle(DragEvent event)
-			{
-				if (ApplicationStatus.getInstance().modeProperty().getValue()
-						== ApplicationMode.LAYOUT)
-				{
-					if (event.getGestureSource() != basePane)
-					{
+			public void handle(DragEvent event) {
+				if (ApplicationStatus.getInstance().modeProperty().getValue() == ApplicationMode.LAYOUT) {
+					if (event.getGestureSource() != basePane) {
 						Dragboard dragboard = event.getDragboard();
-						if (dragboard.hasFiles())
-						{
+						if (dragboard.hasFiles()) {
 							List<File> fileList = dragboard.getFiles();
 							boolean accept = true;
-							for (File file : fileList)
-							{
+							for (File file : fileList) {
 								boolean extensionFound = false;
 								ProjectMode projectMode = ProjectMode.NONE;
-								if (project != null)
-								{
+								if (project != null) {
 									projectMode = project.getMode();
 								}
-								List<String> extensions = ApplicationConfiguration.
-										getSupportedFileExtensions(projectMode);
+								List<String> extensions = ApplicationConfiguration.getSupportedFileExtensions(projectMode);
 
-								for (String extension : extensions)
-								{
+								for (String extension : extensions) {
 									if (file.getName().toUpperCase().endsWith(
-											extension.toUpperCase()))
-									{
+											extension.toUpperCase())) {
 										extensionFound = true;
 										break;
 									}
 								}
 
-								if (!extensionFound)
-								{
+								if (!extensionFound) {
 									accept = false;
 									break;
 								}
 							}
 
-							if (accept)
-							{
+							if (accept) {
 								event.acceptTransferModes(TransferMode.COPY);
 								event.consume();
 							}
@@ -483,51 +423,38 @@ public class ProjectTab extends Tab implements ProjectCallback
 			}
 		});
 
-		basePane.setOnDragEntered(new EventHandler<DragEvent>()
-		{
+		basePane.setOnDragEntered(new EventHandler<DragEvent>() {
 			@Override
-			public void handle(DragEvent event)
-			{
+			public void handle(DragEvent event) {
 				/* the drag-and-drop gesture entered the target */
 				/* show to the user that it is an actual gesture target */
-				if (ApplicationStatus.getInstance().modeProperty().getValue()
-						== ApplicationMode.LAYOUT)
-				{
-					if (event.getGestureSource() != basePane)
-					{
+				if (ApplicationStatus.getInstance().modeProperty().getValue() == ApplicationMode.LAYOUT) {
+					if (event.getGestureSource() != basePane) {
 						Dragboard dragboard = event.getDragboard();
-						if (dragboard.hasFiles())
-						{
+						if (dragboard.hasFiles()) {
 							List<File> fileList = dragboard.getFiles();
 							boolean accept = true;
-							for (File file : fileList)
-							{
+							for (File file : fileList) {
 								boolean extensionFound = false;
 								ProjectMode projectMode = ProjectMode.NONE;
-								if (project != null)
-								{
+								if (project != null) {
 									projectMode = project.getMode();
 								}
-								List<String> extensions = ApplicationConfiguration.
-										getSupportedFileExtensions(projectMode);
-								for (String extension : extensions)
-								{
-									if (file.getName().endsWith(extension))
-									{
+								List<String> extensions = ApplicationConfiguration.getSupportedFileExtensions(projectMode);
+								for (String extension : extensions) {
+									if (file.getName().endsWith(extension)) {
 										extensionFound = true;
 										break;
 									}
 								}
 
-								if (!extensionFound)
-								{
+								if (!extensionFound) {
 									accept = false;
 									break;
 								}
 							}
 
-							if (accept)
-							{
+							if (accept) {
 								basePane.setEffect(new Glow());
 								event.consume();
 							}
@@ -537,11 +464,9 @@ public class ProjectTab extends Tab implements ProjectCallback
 			}
 		});
 
-		basePane.setOnDragExited(new EventHandler<DragEvent>()
-		{
+		basePane.setOnDragExited(new EventHandler<DragEvent>() {
 			@Override
-			public void handle(DragEvent event)
-			{
+			public void handle(DragEvent event) {
 				/* mouse moved away, remove the graphical cues */
 				basePane.setEffect(null);
 
@@ -549,40 +474,37 @@ public class ProjectTab extends Tab implements ProjectCallback
 			}
 		});
 
-		basePane.setOnDragDropped((DragEvent event) ->
-		{
+		basePane.setOnDragDropped((DragEvent event) -> {
 			boolean success = false;
-			if (event.getGestureTarget() == basePane)
-			{
+			if (event.getGestureTarget() == basePane) {
 				/* data dropped */
 				LOGGER.debug("onDragDropped");
 				/* if there is a string data on dragboard, read it and use it */
 				Dragboard db = event.getDragboard();
-				if (db.hasFiles())
-				{
+				if (db.hasFiles()) {
 					modelLoader.loadExternalModels(project, db.getFiles(), true, this, false);
-				} else
-				{
+				}
+				else {
 					LOGGER.error("No files in dragboard");
 				}
-				/* let the source know whether the string was successfully
-				 * transferred and used */
+				/*
+				 * let the source know whether the string was successfully transferred and used
+				 */
 				event.setDropCompleted(success);
 
 				event.consume();
 			}
-			/* let the source know whether the string was successfully
-			 * transferred and used */
+			/*
+			 * let the source know whether the string was successfully transferred and used
+			 */
 			event.setDropCompleted(success);
 
 			event.consume();
 		});
 	}
 
-	private void switchToNonEditableTitle()
-	{
-		if (titleBeingEdited)
-		{
+	private void switchToNonEditableTitle() {
+		if (titleBeingEdited) {
 			String newProjectName = editableProjectNameField.getText();
 			Set<String> currentProjectNames = projectManager.getOpenAndAvailableProjectNames();
 			newProjectName = suggestNonDuplicateName(newProjectName, currentProjectNames);
@@ -593,12 +515,10 @@ public class ProjectTab extends Tab implements ProjectCallback
 		}
 	}
 
-	public void saveAndCloseProject()
-	{
+	public void saveAndCloseProject() {
 		if (viewManager != null)
 			viewManager.shutdown();
-		if (project != null)
-		{
+		if (project != null) {
 			Project.saveProject(project);
 			if (projectAwareController != null)
 				projectAwareController.setProject(null);
@@ -608,51 +528,41 @@ public class ProjectTab extends Tab implements ProjectCallback
 		}
 	}
 
-	public void fireProjectSelected()
-	{
+	public void fireProjectSelected() {
 		Lookup.setSelectedProject(project);
 	}
 
-	public void fireProjectDeselected()
-	{
-		if (project != null && !project.isProjectSaved())
-		{
+	public void fireProjectDeselected() {
+		if (project != null && !project.isProjectSaved()) {
 			Project.saveProject(project);
 		}
 	}
 
 	@Override
-	public void modelAddedToProject(Project project)
-	{
-		if (this.project == null)
-		{
+	public void modelAddedToProject(Project project) {
+		if (this.project == null) {
 			this.project = project;
 			initialiseWithProject(false);
 		}
 	}
 
-	public void initialiseBlank3DProject()
-	{
-		if (this.project == null)
-		{
+	public void initialiseBlank3DProject() {
+		if (this.project == null) {
 			ModelContainerProject newProject = new ModelContainerProject();
 			this.project = newProject;
 			initialiseWithProject(false);
 		}
 	}
 
-	public void initialiseBlank2DProject()
-	{
-		if (this.project == null)
-		{
+	public void initialiseBlank2DProject() {
+		if (this.project == null) {
 			ShapeContainerProject newProject = new ShapeContainerProject();
 			this.project = newProject;
 			initialiseWithProject(false);
 		}
 	}
 
-	public Rectangle2D getPreviewRectangle()
-	{
+	public Rectangle2D getPreviewRectangle() {
 		Rectangle2D nRectangle = null;
 		Node ss = viewManager.getSubScene();
 		Bounds ssBounds = ss.localToScreen(ss.getBoundsInLocal());

@@ -19,18 +19,15 @@ import javafx.scene.text.Text;
  * @author Ian
  */
 @Category(FXTest.class)
-public class HyperlinkedLabelTest extends JavaFXConfiguredTest
-{
+public class HyperlinkedLabelTest extends JavaFXConfiguredTest {
 
 	@Before
 	@Override
-	public void setUp()
-	{
+	public void setUp() {
 	}
 
 	@Test
-	public void testReplaceText_plaintextOnly()
-	{
+	public void testReplaceText_plaintextOnly() {
 		String newText = "Some plain text";
 		HyperlinkedLabel instance = new HyperlinkedLabel();
 		instance.replaceText(newText);
@@ -41,8 +38,7 @@ public class HyperlinkedLabelTest extends JavaFXConfiguredTest
 	}
 
 	@Test
-	public void testReplaceText_plaintextAndHyperlink()
-	{
+	public void testReplaceText_plaintextAndHyperlink() {
 		String newText = "Robox firmware update <a href=\"https://robox.freshdesk.com/solution/categories/1000090870/folders/1000214277/articles/1000180224-the-filament-isn-t-moving-as-expected\">Other article</a>";
 		String expectedTextContent = "Robox firmware update ";
 		String expectedHyperlinkContent = "Other article";
@@ -57,8 +53,7 @@ public class HyperlinkedLabelTest extends JavaFXConfiguredTest
 	}
 
 	@Test
-	public void testReplaceText_plaintextAndTwoHyperlinks()
-	{
+	public void testReplaceText_plaintextAndTwoHyperlinks() {
 		String newText = "Robox firmware update <a href=\"https://robox.freshdesk.com/support/home\">Robox solutions</a>more text<a href=\"https://robox.freshdesk.com/solution/categories/1000090870/folders/1000214277/articles/1000180224-the-filament-isn-t-moving-as-expected\">Other article</a>";
 
 		String expectedTextContent1 = "Robox firmware update ";
@@ -80,8 +75,7 @@ public class HyperlinkedLabelTest extends JavaFXConfiguredTest
 	}
 
 	@Test
-	public void testReplaceText_HyperlinkOnly()
-	{
+	public void testReplaceText_HyperlinkOnly() {
 		String newText = "<a href=\"https://robox.freshdesk.com/solution/categories/1000090870/folders/1000214277/articles/1000180224-the-filament-isn-t-moving-as-expected\">Other article</a>";
 		String expectedHyperlinkContent = "Other article";
 		HyperlinkedLabel instance = new HyperlinkedLabel();
@@ -94,8 +88,7 @@ public class HyperlinkedLabelTest extends JavaFXConfiguredTest
 	}
 
 	@Test
-	public void testReplaceText_HyperlinkInMiddleOfText()
-	{
+	public void testReplaceText_HyperlinkInMiddleOfText() {
 		final String NEW_TEXT = "PRECEDING TEXT <a href=\"https://example.web.page/home\">LINK</a> FOLLOWING TEXT";
 
 		final String EXPECTED_TEXT_CONTENT_1 = "PRECEDING TEXT ";

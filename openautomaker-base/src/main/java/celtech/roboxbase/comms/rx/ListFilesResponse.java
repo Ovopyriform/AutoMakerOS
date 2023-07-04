@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.roboxbase.comms.rx;
 
 import java.util.ArrayList;

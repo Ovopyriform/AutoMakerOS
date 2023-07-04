@@ -14,41 +14,33 @@ import com.sun.net.httpserver.HttpServer;
  *
  * @author Ian
  */
-public class LocalWebInterface
-{
+public class LocalWebInterface {
 
-	private static final Logger LOGGER = LogManager.getLogger(LocalWebInterface.class.
-			getName());
+	private static final Logger LOGGER = LogManager.getLogger(LocalWebInterface.class.getName());
 	private HttpServer server;
 
-	public LocalWebInterface()
-	{
-		try
-		{
+	public LocalWebInterface() {
+		try {
 			server = HttpServer.create(new InetSocketAddress(81), 0);
 			HttpContext context = server.createContext("/", new AutoMakerController());
-			context.setAuthenticator(new BasicAuthenticator("get")
-			{
+			context.setAuthenticator(new BasicAuthenticator("get") {
 				@Override
-				public boolean checkCredentials(String user, String pwd)
-				{
+				public boolean checkCredentials(String user, String pwd) {
 					return user.equals("admin") && pwd.equals("password");
 				}
 			});
-		} catch (IOException ex)
-		{
+		}
+		catch (IOException ex) {
 			LOGGER.error("Unable to start local web server");
 			ex.printStackTrace();
 		}
 	}
 
-	public void start()
-	{
+	public void start() {
 		server.start();
 	}
 
-	public void stop()
-	{
+	public void stop() {
 		server.stop(0);
 	}
 }

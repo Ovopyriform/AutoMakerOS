@@ -4,8 +4,7 @@ package celtech.coreUI.visualisation;
  *
  * @author Ian
  */
-public interface ScreenExtentsProviderThreeD extends ScreenExtentsProvider
-{
+public interface ScreenExtentsProviderThreeD extends ScreenExtentsProvider {
 
 	public double getTransformedHeight();
 

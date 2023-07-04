@@ -39,8 +39,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class GCodePanelController implements Initializable, StatusInsetController
-{
+public class GCodePanelController implements Initializable, StatusInsetController {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			GCodePanelController.class.getName());
@@ -63,22 +62,19 @@ public class GCodePanelController implements Initializable, StatusInsetControlle
 	private HBox gcodePanel;
 
 	@FXML
-	void sendGCodeM(MouseEvent event)
-	{
+	void sendGCodeM(MouseEvent event) {
 		fireGCodeAtPrinter();
 	}
 
 	@FXML
-	void sendGCodeA(ActionEvent event)
-	{
+	void sendGCodeA(ActionEvent event) {
 		fireGCodeAtPrinter();
 	}
 
 	Optional<String> getGCodeFileToUse(String text) {
 		String macroFilename;
 		Path gcodeFileWithPathApp;
-		if (text.startsWith("!!"))
-		{
+		if (text.startsWith("!!")) {
 			// with !! use scoring technique. Use current printer type
 			// and head type. Optionally add #N0 or #N1 to macro name to specify a nozzle
 			macroFilename = text.substring(2);
@@ -86,32 +82,29 @@ public class GCodePanelController implements Initializable, StatusInsetControlle
 			GCodeMacros.NozzleUseIndicator nozzleUse = GCodeMacros.NozzleUseIndicator.DONT_CARE;
 
 			int hashIx = macroFilename.indexOf('#');
-			if (hashIx != -1)
-			{
+			if (hashIx != -1) {
 				String nozzleSelect = macroFilename.substring(hashIx + 2);
-				if ("0".equals(nozzleSelect))
-				{
+				if ("0".equals(nozzleSelect)) {
 					nozzleUse = GCodeMacros.NozzleUseIndicator.NOZZLE_0;
-				} else if ("1".equals(nozzleSelect))
-				{
+				}
+				else if ("1".equals(nozzleSelect)) {
 					nozzleUse = GCodeMacros.NozzleUseIndicator.NOZZLE_1;
 				}
 				macroFilename = macroFilename.substring(0, hashIx);
 			}
 
-			try
-			{
+			try {
 				gcodeFileWithPathApp = GCodeMacros.getFilename(macroFilename,
 						Optional.of(currentPrinter.findPrinterType()),
 						currentPrinter.headProperty().get().typeCodeProperty().get(),
 						nozzleUse,
 						GCodeMacros.SafetyIndicator.DONT_CARE);
-			} catch (FileNotFoundException ex)
-			{
+			}
+			catch (FileNotFoundException ex) {
 				gcodeFileWithPathApp = null;
 			}
-		} else
-		{
+		}
+		else {
 			macroFilename = text.substring(1);
 			gcodeFileWithPathApp = OpenAutoMakerEnv.get().getApplicationPath(MACROS).resolve(macroFilename + ".gcode");
 		}
@@ -132,33 +125,29 @@ public class GCodePanelController implements Initializable, StatusInsetControlle
 		gcodeEntryField.selectAll();
 		String text = gcodeEntryField.getText();
 
-		if (text.startsWith("!"))
-		{
+		if (text.startsWith("!")) {
 			Optional<String> gcodeFileToUse = getGCodeFileToUse(text);
 
 			//See if we can run a macro
-			if (currentPrinter != null && gcodeFileToUse.isPresent())
-			{
-				try
-				{
+			if (currentPrinter != null && gcodeFileToUse.isPresent()) {
+				try {
 					currentPrinter.executeGCodeFile(Paths.get(gcodeFileToUse.get()), false);
 					currentPrinter.gcodeTranscriptProperty().add(text);
-				} catch (PrinterException ex)
-				{
+				}
+				catch (PrinterException ex) {
 					LOGGER.error("Failed to run macro: " + text, ex);
 				}
-			} else
-			{
+			}
+			else {
 				LOGGER.error("Can't run requested macro: " + text);
 			}
-		} else if (!text.equals(""))
-		{
+		}
+		else if (!text.equals("")) {
 			Lookup.getSelectedPrinterProperty().get().sendRawGCode(text.toUpperCase(), true);
 		}
 	}
 
-	private void selectLastItemInTranscript()
-	{
+	private void selectLastItemInTranscript() {
 		gcodeTranscript.getSelectionModel().selectLast();
 		gcodeTranscript.scrollTo(gcodeTranscript.getSelectionModel().getSelectedIndex());
 	}
@@ -166,17 +155,14 @@ public class GCodePanelController implements Initializable, StatusInsetControlle
 	private boolean suppressReactionToGCodeEntryChange = false;
 
 	@Override
-	public void initialize(URL url, ResourceBundle rb)
-	{
+	public void initialize(URL url, ResourceBundle rb) {
 		gcodeEntryField.disableProperty().bind(
 				Lookup.getUserPreferences().advancedModeProperty().not());
 		sendGCodeButton.disableProperty().bind(
 				Lookup.getUserPreferences().advancedModeProperty().not());
 
-		gcodeTranscriptListener = (ListChangeListener.Change<? extends String> change) ->
-		{
-			while (change.next())
-			{
+		gcodeTranscriptListener = (ListChangeListener.Change<? extends String> change) -> {
+			while (change.next()) {
 			}
 
 			suppressReactionToGCodeEntryChange = true;
@@ -184,32 +170,26 @@ public class GCodePanelController implements Initializable, StatusInsetControlle
 			suppressReactionToGCodeEntryChange = false;
 		};
 
-		gcodeTranscript.selectionModelProperty().get().selectedItemProperty().addListener(new ChangeListener<String>()
-		{
+		gcodeTranscript.selectionModelProperty().get().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
-			{
-				if (!suppressReactionToGCodeEntryChange)
-				{
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!suppressReactionToGCodeEntryChange) {
 					gcodeEntryField.setText(gcodeTranscript.getSelectionModel().getSelectedItem());
 				}
 			}
 		});
 
 		Lookup.getSelectedPrinterProperty().addListener(
-				(ObservableValue<? extends Printer> ov, Printer t, Printer t1) ->
-				{
-					if (currentPrinter != null)
-					{
+				(ObservableValue<? extends Printer> ov, Printer t, Printer t1) -> {
+					if (currentPrinter != null) {
 						currentPrinter.gcodeTranscriptProperty().removeListener(gcodeTranscriptListener);
 					}
 
-					if (t1 != null)
-					{
+					if (t1 != null) {
 						gcodeTranscript.setItems(t1.gcodeTranscriptProperty());
 						t1.gcodeTranscriptProperty().addListener(gcodeTranscriptListener);
-					} else
-					{
+					}
+					else {
 						gcodeTranscript.setItems(null);
 					}
 					currentPrinter = t1;
@@ -217,34 +197,27 @@ public class GCodePanelController implements Initializable, StatusInsetControlle
 
 		gcodeEditParent.visibleProperty().bind(Lookup.getSelectedPrinterProperty().isNotNull());
 
-		gcodeEntryField.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent t) ->
-		{
-			if (t.getCode() == KeyCode.UP)
-			{
+		gcodeEntryField.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent t) -> {
+			if (t.getCode() == KeyCode.UP) {
 				gcodeTranscript.getSelectionModel().selectPrevious();
 				t.consume();
-			} else if (t.getCode() == KeyCode.DOWN)
-			{
+			}
+			else if (t.getCode() == KeyCode.DOWN) {
 				gcodeTranscript.getSelectionModel().selectNext();
 				t.consume();
 			}
 		});
 
-		gcodeTranscript.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent t) ->
-		{
-			if (t.getCode() == KeyCode.ENTER)
-			{
+		gcodeTranscript.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent t) -> {
+			if (t.getCode() == KeyCode.ENTER) {
 				fireGCodeAtPrinter();
 			}
 		});
 
-		gcodeTranscript.setOnMouseClicked(new EventHandler<MouseEvent>()
-		{
+		gcodeTranscript.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
-			public void handle(MouseEvent event)
-			{
-				if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() > 1)
-				{
+			public void handle(MouseEvent event) {
+				if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() > 1) {
 					fireGCodeAtPrinter();
 				}
 			}

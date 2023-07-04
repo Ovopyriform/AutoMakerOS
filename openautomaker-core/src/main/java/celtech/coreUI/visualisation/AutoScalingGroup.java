@@ -16,13 +16,15 @@ public class AutoScalingGroup extends Group {
 	private double size;
 	private double twoSize;
 	private boolean autoScale = false;
-	private Translate translate = new Translate(0,0,0);
-	private Scale scale = new Scale(1,1,1,0,0,0);
+	private Translate translate = new Translate(0, 0, 0);
+	private Scale scale = new Scale(1, 1, 1, 0, 0, 0);
 	private SimpleBooleanProperty enabled = new SimpleBooleanProperty(false) {
-		@Override protected void invalidated() {
+		@Override
+		protected void invalidated() {
 			if (get()) {
 				getTransforms().setAll(scale, translate);
-			} else {
+			}
+			else {
 				getTransforms().clear();
 			}
 		}
@@ -36,7 +38,7 @@ public class AutoScalingGroup extends Group {
 	public AutoScalingGroup(double size) {
 		this.size = size;
 		this.twoSize = size * 2;
-		getTransforms().addAll(scale,translate);
+		getTransforms().addAll(scale, translate);
 	}
 
 	/**
@@ -66,7 +68,8 @@ public class AutoScalingGroup extends Group {
 		this.enabled.set(enabled);
 	}
 
-	@Override protected void layoutChildren() {
+	@Override
+	protected void layoutChildren() {
 		if (autoScale) {
 			List<Node> children = getChildren();
 			double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE, minZ = Double.MAX_VALUE;
@@ -77,7 +80,8 @@ public class AutoScalingGroup extends Group {
 					Bounds bounds = node.getBoundsInLocal();
 					// if the bounds of the child are invalid, we don't want
 					// to use those in the remaining computations.
-					if (bounds.isEmpty()) continue;
+					if (bounds.isEmpty())
+						continue;
 					if (first) {
 						minX = bounds.getMinX();
 						minY = bounds.getMinY();
@@ -86,7 +90,8 @@ public class AutoScalingGroup extends Group {
 						maxY = bounds.getMaxY();
 						maxZ = bounds.getMaxZ();
 						first = false;
-					} else {
+					}
+					else {
 						minX = Math.min(bounds.getMinX(), minX);
 						minY = Math.min(bounds.getMinY(), minY);
 						minZ = Math.min(bounds.getMinZ(), minZ);
@@ -97,19 +102,19 @@ public class AutoScalingGroup extends Group {
 				}
 			}
 
-			final double w = maxX-minX;
-			final double h = maxY-minY;
-			final double d = maxZ-minZ;
+			final double w = maxX - minX;
+			final double h = maxY - minY;
+			final double d = maxZ - minZ;
 
-			final double centerX = minX + (w/2);
-			final double centerY = minY + (h/2);
-			final double centerZ = minZ + (d/2);
+			final double centerX = minX + (w / 2);
+			final double centerY = minY + (h / 2);
+			final double centerZ = minZ + (d / 2);
 
-			double scaleX = twoSize/w;
-			double scaleY = twoSize/h;
-			double scaleZ = twoSize/d;
+			double scaleX = twoSize / w;
+			double scaleY = twoSize / h;
+			double scaleZ = twoSize / d;
 
-			double scale = Math.min(scaleX, Math.min(scaleY,scaleZ));
+			double scale = Math.min(scaleX, Math.min(scaleY, scaleZ));
 			this.scale.setX(scale);
 			this.scale.setY(scale);
 			this.scale.setZ(scale);

@@ -8,25 +8,20 @@ package celtech.services.gcodeLoader;
  *
  * @author ianhudson
  */
-public class GCodeParseException extends Exception
-{
+public class GCodeParseException extends Exception {
 
 	/**
-	 * Creates a new instance of
-	 * <code>GCodeParseException</code> without detail message.
+	 * Creates a new instance of <code>GCodeParseException</code> without detail message.
 	 */
-	public GCodeParseException()
-	{
+	public GCodeParseException() {
 	}
 
 	/**
-	 * Constructs an instance of
-	 * <code>GCodeParseException</code> with the specified detail message.
+	 * Constructs an instance of <code>GCodeParseException</code> with the specified detail message.
 	 *
 	 * @param msg the detail message.
 	 */
-	public GCodeParseException(String msg)
-	{
+	public GCodeParseException(String msg) {
 		super(msg);
 	}
 }

@@ -7,33 +7,27 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
  *
  * @author Ian
  */
-public class MaterialMetadata
-{
+public class MaterialMetadata {
 	@JacksonXmlProperty(isAttribute = true)
 	private String type = "Name";
 
 	@JacksonXmlText()
 	private String value;
 
-	public String getType()
-	{
+	public String getType() {
 		return type;
 	}
 
-	public void setType(String type)
-	{
+	public void setType(String type) {
 		this.type = type;
 	}
 
-	public String getValue()
-	{
+	public String getValue() {
 		return value;
 	}
 
-	public void setValue(String value)
-	{
+	public void setValue(String value) {
 		this.value = value;
 	}
-
 
 }

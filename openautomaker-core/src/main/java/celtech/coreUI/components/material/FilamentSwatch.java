@@ -13,8 +13,7 @@ import xyz.openautomaker.base.configuration.Filament;
  *
  * @author Ian
  */
-public class FilamentSwatch extends StackPane
-{
+public class FilamentSwatch extends StackPane {
 
 	@FXML
 	private Rectangle swatchPanel;
@@ -24,18 +23,15 @@ public class FilamentSwatch extends StackPane
 	private FilamentSelectionListener filamentSelectionListener;
 	private Filament currentFilament = null;
 
-	public FilamentSwatch()
-	{
+	public FilamentSwatch() {
 		initialise(null, null);
 	}
 
-	public FilamentSwatch(FilamentSelectionListener filamentSelectionListenerInput, Filament filament)
-	{
+	public FilamentSwatch(FilamentSelectionListener filamentSelectionListenerInput, Filament filament) {
 		initialise(filamentSelectionListenerInput, filament);
 	}
 
-	private void initialise(FilamentSelectionListener filamentSelectionListenerInput, Filament filament)
-	{
+	private void initialise(FilamentSelectionListener filamentSelectionListenerInput, Filament filament) {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
 				"/celtech/resources/fxml/components/material/filamentSwatch.fxml"));
 		fxmlLoader.setRoot(this);
@@ -43,21 +39,18 @@ public class FilamentSwatch extends StackPane
 
 		fxmlLoader.setClassLoader(this.getClass().getClassLoader());
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 
 		this.setPrefHeight(20);
 		this.setPrefWidth(20);
 
-		this.setOnMouseClicked((event) ->
-		{
-			if (filamentSelectionListener != null)
-			{
+		this.setOnMouseClicked((event) -> {
+			if (filamentSelectionListener != null) {
 				filamentSelectionListener.filamentSelected(filament);
 			}
 		});
@@ -66,20 +59,16 @@ public class FilamentSwatch extends StackPane
 		updateFilament(filament);
 	}
 
-	public void updateFilamentSelectionListener(FilamentSelectionListener filamentSelectionListener)
-	{
+	public void updateFilamentSelectionListener(FilamentSelectionListener filamentSelectionListener) {
 		this.filamentSelectionListener = filamentSelectionListener;
 	}
 
-	public void updateFilament(Filament filament)
-	{
-		if (ttip != null)
-		{
+	public void updateFilament(Filament filament) {
+		if (ttip != null) {
 			Tooltip.uninstall(this, ttip);
 		}
 
-		if (filament != null)
-		{
+		if (filament != null) {
 			ttip = new Tooltip(filament.getFriendlyFilamentName());
 			Tooltip.install(this, ttip);
 
@@ -89,8 +78,7 @@ public class FilamentSwatch extends StackPane
 		currentFilament = filament;
 	}
 
-	public Filament getFilament()
-	{
+	public Filament getFilament() {
 		return currentFilament;
 	}
 }

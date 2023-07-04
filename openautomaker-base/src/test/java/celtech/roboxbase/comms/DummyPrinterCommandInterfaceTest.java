@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.roboxbase.comms;
 
 import xyz.openautomaker.base.printerControl.model.HardwarePrinter;

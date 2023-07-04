@@ -7,17 +7,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @author ianhudson
  */
-public class TwoDItemState extends ItemState
-{
+public class TwoDItemState extends ItemState {
 
 	/**
-	 * State captures the state of all the transforms being applied to this
-	 * Container. It is used as an efficient way of applying Undo and Redo
-	 * to changes to a Set of Containers.
+	 * State captures the state of all the transforms being applied to this Container. It is used as an efficient way of applying Undo and Redo to changes to a Set of Containers.
 	 */
 
-	public TwoDItemState()
-	{
+	public TwoDItemState() {
 	}
 
 	@JsonCreator
@@ -27,8 +23,7 @@ public class TwoDItemState extends ItemState
 			@JsonProperty("y") double y,
 			@JsonProperty("preferredXScale") double preferredXScale,
 			@JsonProperty("preferredYScale") double preferredYScale,
-			@JsonProperty("preferredRotationTurn") double preferredRotationTurn)
-	{
+			@JsonProperty("preferredRotationTurn") double preferredRotationTurn) {
 		super(modelId);
 		this.x = x;
 		this.y = y;
@@ -43,10 +38,8 @@ public class TwoDItemState extends ItemState
 	 * @param fromState
 	 */
 	@Override
-	public void assignFrom(ItemState fromState)
-	{
-		if (fromState instanceof TwoDItemState)
-		{
+	public void assignFrom(ItemState fromState) {
+		if (fromState instanceof TwoDItemState) {
 			TwoDItemState convertedState = (TwoDItemState) fromState;
 			this.x = convertedState.x;
 			this.y = convertedState.y;

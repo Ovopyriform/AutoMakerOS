@@ -6,7 +6,7 @@ import javafx.scene.control.TextField;
 /**
  * Created by pedro_000 on 12/15/13.
  */
-public class MetroPasswordFieldSkin extends TextFieldWithButtonSkin{
+public class MetroPasswordFieldSkin extends TextFieldWithButtonSkin {
 	static final char BULLET = '\u25cf';
 	private boolean shouldMaskText = true;
 
@@ -23,14 +23,14 @@ public class MetroPasswordFieldSkin extends TextFieldWithButtonSkin{
 	}
 
 	@Override
-	protected  void rightButtonReleased()
-	{
+	protected void rightButtonReleased() {
 		TextField textField = getSkinnable();
 		textField.setText(textField.getText());
 		textField.end();
 	}
 
-	@Override protected String maskText(String txt) {
+	@Override
+	protected String maskText(String txt) {
 		if (getSkinnable() instanceof PasswordField && shouldMaskText) {
 			int n = txt.length();
 			StringBuilder passwordBuilder = new StringBuilder(n);
@@ -39,7 +39,8 @@ public class MetroPasswordFieldSkin extends TextFieldWithButtonSkin{
 			}
 
 			return passwordBuilder.toString();
-		} else {
+		}
+		else {
 			return txt;
 		}
 	}

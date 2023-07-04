@@ -8,15 +8,12 @@ import java.net.URI;
  *
  * @author Ian
  */
-public class AllCookiePolicy implements CookiePolicy
-{
+public class AllCookiePolicy implements CookiePolicy {
 	@Override
-	public boolean shouldAccept(URI uri, HttpCookie cookie)
-	{
+	public boolean shouldAccept(URI uri, HttpCookie cookie) {
 		boolean accept = false;
 
-		if (uri.getHost().equalsIgnoreCase("cel-robox.myminifactory.com"))
-		{
+		if (uri.getHost().equalsIgnoreCase("cel-robox.myminifactory.com")) {
 			accept = true;
 		}
 

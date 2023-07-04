@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI.controllers.panels;
 
 import java.net.URL;
@@ -15,18 +13,14 @@ import javafx.fxml.Initializable;
  *
  * @author tony
  */
-public class RegistrationInsetPanelController implements Initializable
-{
+public class RegistrationInsetPanelController implements Initializable {
 	@FXML
-	void backwardPressed(ActionEvent event)
-	{
+	void backwardPressed(ActionEvent event) {
 		ApplicationStatus.getInstance().returnToLastMode();
 	}
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
-
+	public void initialize(URL location, ResourceBundle resources) {
 
 	}
 

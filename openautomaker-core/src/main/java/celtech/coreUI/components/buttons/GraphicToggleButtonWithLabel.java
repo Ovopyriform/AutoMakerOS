@@ -14,15 +14,13 @@ import javafx.scene.layout.VBox;
  *
  * @author Ian
  */
-public class GraphicToggleButtonWithLabel extends Pane
-{
+public class GraphicToggleButtonWithLabel extends Pane {
 
 	private final VBox container = new VBox();
 	private final GraphicToggleButton button = new GraphicToggleButton();
 	private final Label label = new Label();
 
-	public GraphicToggleButtonWithLabel()
-	{
+	public GraphicToggleButtonWithLabel() {
 		this.setPrefWidth(80);
 		this.setPrefHeight(80);
 		this.setMinWidth(USE_PREF_SIZE);
@@ -45,58 +43,47 @@ public class GraphicToggleButtonWithLabel extends Pane
 		container.getChildren().add(label);
 	}
 
-	public String getFxmlFileName()
-	{
+	public String getFxmlFileName() {
 		return button.getFxmlFileName();
 	}
 
-	public void setFxmlFileName(String fxmlFileName)
-	{
+	public void setFxmlFileName(String fxmlFileName) {
 		button.setFxmlFileName(fxmlFileName);
 	}
 
-	public StringProperty getFxmlFileNameProperty()
-	{
+	public StringProperty getFxmlFileNameProperty() {
 		return button.getFxmlFileNameProperty();
 	}
 
-	public final ObjectProperty<EventHandler<ActionEvent>> onActionProperty()
-	{
+	public final ObjectProperty<EventHandler<ActionEvent>> onActionProperty() {
 		return button.onActionProperty();
 	}
 
-	public final void setOnAction(EventHandler<ActionEvent> value)
-	{
+	public final void setOnAction(EventHandler<ActionEvent> value) {
 		button.onActionProperty().set(value);
 	}
 
-	public final EventHandler<ActionEvent> getOnAction()
-	{
+	public final EventHandler<ActionEvent> getOnAction() {
 		return button.onActionProperty().get();
 	}
 
-	public String getLabelText()
-	{
+	public String getLabelText() {
 		return label.getText();
 	}
 
-	public void setLabelText(String text)
-	{
+	public void setLabelText(String text) {
 		label.setText(text);
 	}
 
-	public StringProperty getLabelTextProperty()
-	{
+	public StringProperty getLabelTextProperty() {
 		return label.textProperty();
 	}
 
-	public void setSelected(boolean selected)
-	{
+	public void setSelected(boolean selected) {
 		button.setSelected(selected);
 	}
 
-	public BooleanProperty selectedProperty()
-	{
+	public BooleanProperty selectedProperty() {
 		return button.selectedProperty();
 	}
 }

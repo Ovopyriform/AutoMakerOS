@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package celtech.coreUI.controllers;
 
 import java.net.URL;
@@ -19,8 +15,7 @@ import javafx.scene.shape.SVGPath;
  *
  * @author Ian
  */
-public class InfoScreenIndicatorController implements Initializable
-{
+public class InfoScreenIndicatorController implements Initializable {
 
 	@FXML
 	private Group blueParts;
@@ -29,32 +24,25 @@ public class InfoScreenIndicatorController implements Initializable
 	private Color whiteColour = Color.rgb(255, 255, 255);
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
+	public void initialize(URL location, ResourceBundle resources) {
 	}
 
 	/**
 	 *
 	 * @param selected
 	 */
-	public void setSelected(boolean selected)
-	{
+	public void setSelected(boolean selected) {
 		//TODO make this work with CSS
-		if (selected)
-		{
-			for (Node node : blueParts.getChildren())
-			{
-				if (node instanceof SVGPath)
-				{
+		if (selected) {
+			for (Node node : blueParts.getChildren()) {
+				if (node instanceof SVGPath) {
 					((SVGPath) node).setFill(whiteColour);
 				}
 			}
-		} else
-		{
-			for (Node node : blueParts.getChildren())
-			{
-				if (node instanceof SVGPath)
-				{
+		}
+		else {
+			for (Node node : blueParts.getChildren()) {
+				if (node instanceof SVGPath) {
 					((SVGPath) node).setFill(blueColour);
 				}
 			}

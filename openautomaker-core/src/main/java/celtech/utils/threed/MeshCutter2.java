@@ -27,35 +27,29 @@ import javafx.geometry.Point3D;
 import javafx.scene.shape.ObservableFaceArray;
 import javafx.scene.shape.TriangleMesh;
 
-
 /**
  *
  * @author tony
  */
-public class MeshCutter2
-{
+public class MeshCutter2 {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			MeshCutter2.class.getName());
 
+	public enum TopBottom {
 
-	public enum TopBottom
-	{
-
-		TOP, BOTTOM
+		TOP,
+		BOTTOM
 	}
 
-
-	public interface BedToLocalConverter
-	{
+	public interface BedToLocalConverter {
 
 		Point3D localToBed(Point3D point);
 
 		Point3D bedToLocal(Point3D point);
 	}
 
-	static Point3D makePoint3D(TriangleMesh mesh, int vertexIndex)
-	{
+	static Point3D makePoint3D(TriangleMesh mesh, int vertexIndex) {
 		float x = mesh.getPoints().get(vertexIndex * 3);
 		float y = mesh.getPoints().get(vertexIndex * 3 + 1);
 		float z = mesh.getPoints().get(vertexIndex * 3 + 2);
@@ -66,8 +60,7 @@ public class MeshCutter2
 	 * Cut the given mesh into two, at the given height.
 	 */
 	public static List<TriangleMesh> cut(TriangleMesh mesh, float cutHeight,
-			BedToLocalConverter bedToLocalConverter)
-	{
+			BedToLocalConverter bedToLocalConverter) {
 
 		LOGGER.debug("cut at " + cutHeight);
 
@@ -81,8 +74,7 @@ public class MeshCutter2
 		setTextureAndSmoothing(topMesh, topMesh.getFaces().size() / 6);
 
 		Optional<MeshUtils.MeshError> error = MeshUtils.validate(topMesh, bedToLocalConverter);
-		if (error.isPresent())
-		{
+		if (error.isPresent()) {
 			LOGGER.warn("Error in TOP mesh: " + error.toString());
 			throw new RuntimeException("Invalid mesh: " + error.toString());
 		}
@@ -96,8 +88,7 @@ public class MeshCutter2
 		setTextureAndSmoothing(bottomMesh, bottomMesh.getFaces().size() / 6);
 
 		error = MeshUtils.validate(bottomMesh, bedToLocalConverter);
-		if (error.isPresent())
-		{
+		if (error.isPresent()) {
 			LOGGER.warn("Error in BOTTOM mesh: " + error.toString());
 			throw new RuntimeException("Invalid mesh: " + error.toString());
 		}
@@ -107,19 +98,16 @@ public class MeshCutter2
 	}
 
 	/**
-	 * Cut the mesh at the given height and return it, without covering the holes created by the
-	 * cut.
+	 * Cut the mesh at the given height and return it, without covering the holes created by the cut.
 	 */
 	static CutResult getUncoveredMesh(TriangleMesh mesh,
 			float cutHeight, BedToLocalConverter bedToLocalConverter,
-			TopBottom topBottom)
-	{
+			TopBottom topBottom) {
 
 		TriangleMesh childMesh = makeSplitMesh(mesh, cutHeight, bedToLocalConverter, topBottom);
 
 		boolean orientable = MeshUtils.testMeshIsOrientable(childMesh);
-		if (!orientable)
-		{
+		if (!orientable) {
 			throw new RuntimeException("uncovered cut mesh is not orientable!");
 		}
 
@@ -141,20 +129,16 @@ public class MeshCutter2
 	}
 
 	/**
-	 * Given the mesh, cut faces and intersection points, create the child mesh. Copy the original
-	 * mesh, remove all the cut faces and replace with a new set of faces using the new intersection
-	 * points. Remove all the faces from above the cut faces.
+	 * Given the mesh, cut faces and intersection points, create the child mesh. Copy the original mesh, remove all the cut faces and replace with a new set of faces using the new intersection points. Remove all the faces from above the cut faces.
 	 */
 	static TriangleMesh makeSplitMesh(TriangleMesh mesh,
 			float cutHeight, MeshCutter2.BedToLocalConverter bedToLocalConverter,
-			MeshCutter2.TopBottom topBottom)
-	{
+			MeshCutter2.TopBottom topBottom) {
 		TriangleMesh childMesh = copyMesh(mesh);
 
 		Set<Integer> facesToRemove = new HashSet<>();
 
-		for (int i = 0; i < mesh.getFaces().size() / 6; i++)
-		{
+		for (int i = 0; i < mesh.getFaces().size() / 6; i++) {
 			TriangleCutter.splitFaceAndAddLowerFacesToMesh(childMesh, facesToRemove, i, cutHeight,
 					bedToLocalConverter, topBottom);
 		}
@@ -167,14 +151,11 @@ public class MeshCutter2
 	/**
 	 * Remove the given faces from the mesh.
 	 */
-	private static void removeFaces(TriangleMesh mesh, Set<Integer> facesToRemove)
-	{
+	private static void removeFaces(TriangleMesh mesh, Set<Integer> facesToRemove) {
 
 		ObservableFaceArray newFaceArray = new ObservableFaceArrayImpl();
-		for (int faceIndex = 0; faceIndex < mesh.getFaces().size() / 6; faceIndex++)
-		{
-			if (facesToRemove.contains(faceIndex))
-			{
+		for (int faceIndex = 0; faceIndex < mesh.getFaces().size() / 6; faceIndex++) {
+			if (facesToRemove.contains(faceIndex)) {
 				continue;
 			}
 			int[] vertices = new int[6];
@@ -190,15 +171,12 @@ public class MeshCutter2
 	static Map<PolygonIndices, List<ManifoldEdge>> debugLoopToEdges = new HashMap<>();
 
 	/**
-	 * Convert the edges to vertices, these are later used to determine which loops are holes within
-	 * others, and to triangulate the open loops of edges.
+	 * Convert the edges to vertices, these are later used to determine which loops are holes within others, and to triangulate the open loops of edges.
 	 *
 	 */
-	static Set<PolygonIndices> convertEdgesToVertices(Set<List<ManifoldEdge>> loops)
-	{
+	static Set<PolygonIndices> convertEdgesToVertices(Set<List<ManifoldEdge>> loops) {
 		Set<PolygonIndices> polygonIndicesSet = new HashSet<>();
-		for (List<ManifoldEdge> loop : loops)
-		{
+		for (List<ManifoldEdge> loop : loops) {
 			PolygonIndices polygonIndices = convertEdgesToPolygonIndices(loop).getFirst();
 			polygonIndicesSet.add(polygonIndices);
 			debugLoopToEdges.put(polygonIndices, loop);
@@ -207,11 +185,9 @@ public class MeshCutter2
 	}
 
 	/**
-	 * Convert the edges to a list of vertex indices. Each edge may be going forwards or backwards,
-	 * we can't assume a given direction or any consistency in direction.
+	 * Convert the edges to a list of vertex indices. Each edge may be going forwards or backwards, we can't assume a given direction or any consistency in direction.
 	 */
-	static Pair<PolygonIndices, List<Point3D>> convertEdgesToPolygonIndices(List<ManifoldEdge> loop)
-	{
+	static Pair<PolygonIndices, List<Point3D>> convertEdgesToPolygonIndices(List<ManifoldEdge> loop) {
 		PolygonIndices polygonIndices = new PolygonIndices();
 		List<Point3D> points = new ArrayList<>();
 
@@ -219,34 +195,30 @@ public class MeshCutter2
 		int firstVertexId = -1;
 		ManifoldEdge edge0 = loop.get(0);
 		ManifoldEdge edge1 = loop.get(1);
-		if (edge0.v0 == edge1.v0 || edge0.v0 == edge1.v1)
-		{
+		if (edge0.v0 == edge1.v0 || edge0.v0 == edge1.v1) {
 			// second vertex is edge0.v0
 			firstVertexId = edge0.v1;
 			polygonIndices.add(firstVertexId);
 			points.add(edge0.point1);
-		} else
-		{
+		}
+		else {
 			// second vertex is edge0.v1
 			firstVertexId = edge0.v0;
 			polygonIndices.add(firstVertexId);
 			points.add(edge0.point0);
 		}
 
-		for (ManifoldEdge edge : loop)
-		{
-			if (previousVertexId == -1)
-			{
+		for (ManifoldEdge edge : loop) {
+			if (previousVertexId == -1) {
 				// this is the first edge
 				previousVertexId = firstVertexId;
 			}
-			if (edge.v0 == previousVertexId)
-			{
+			if (edge.v0 == previousVertexId) {
 				polygonIndices.add(edge.v1);
 				points.add(edge.point1);
 				previousVertexId = edge.v1;
-			} else
-			{
+			}
+			else {
 				polygonIndices.add(edge.v0);
 				points.add(edge.point0);
 				previousVertexId = edge.v0;
@@ -256,23 +228,18 @@ public class MeshCutter2
 	}
 
 	private static Set<PolygonIndices> removeSequentialDuplicateVertices(
-			Set<PolygonIndices> polygonIndices)
-	{
+			Set<PolygonIndices> polygonIndices) {
 		Set<PolygonIndices> polygonIndicesClean = new HashSet<>();
-		for (PolygonIndices loop : polygonIndices)
-		{
+		for (PolygonIndices loop : polygonIndices) {
 			PolygonIndices cleanLoop = new PolygonIndices();
 			int previousVertexIndex = -1;
-			for (Integer vertexIndex : loop)
-			{
-				if (vertexIndex != previousVertexIndex)
-				{
+			for (Integer vertexIndex : loop) {
+				if (vertexIndex != previousVertexIndex) {
 					cleanLoop.add(vertexIndex);
 				}
 				previousVertexIndex = vertexIndex;
 			}
-			if (Objects.equals(cleanLoop.get(0), cleanLoop.get(cleanLoop.size() - 1)))
-			{
+			if (Objects.equals(cleanLoop.get(0), cleanLoop.get(cleanLoop.size() - 1))) {
 				cleanLoop.remove(cleanLoop.size() - 1);
 			}
 			polygonIndicesClean.add(cleanLoop);

@@ -51,8 +51,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian
  */
-public class SystemNotificationManagerJavaFX implements SystemNotificationManager
-{
+public class SystemNotificationManagerJavaFX implements SystemNotificationManager {
 	private final int DROOP_ERROR_CLEAR_TIME = 30000; // Milliseconds (= 30 seconds)
 
 	private static final Logger LOGGER = LogManager.getLogger(
@@ -104,15 +103,12 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	private ListChangeListener<? super FirmwareError> errorChangeListener = null;
 	private Thread clearDroopThread = null;
 
-	private void clearErrorChoiceDialog(Printer printer)
-	{
-		if (errorChangeListener != null)
-		{
+	private void clearErrorChoiceDialog(Printer printer) {
+		if (errorChangeListener != null) {
 			printer.getCurrentErrors().removeListener(errorChangeListener);
 			errorChangeListener = null;
 		}
-		if (errorChoiceBox != null)
-		{
+		if (errorChoiceBox != null) {
 			if (errorChoiceBox.isShowing())
 				errorChoiceBox.close();
 			errorChoiceBox = null;
@@ -120,176 +116,148 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void showErrorNotification(String title, String message)
-	{
-		BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-		{
+	public void showErrorNotification(String title, String message) {
+		BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 			Lookup.getNotificationDisplay().displayTimedNotification(title, message, NotificationType.CAUTION);
 		});
 	}
 
 	@Override
-	public void showWarningNotification(String title, String message)
-	{
-		BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-		{
+	public void showWarningNotification(String title, String message) {
+		BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 			Lookup.getNotificationDisplay().displayTimedNotification(title, message, NotificationType.WARNING);
 		});
 	}
 
 	@Override
-	public void showInformationNotification(String title, String message)
-	{
-		BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-		{
+	public void showInformationNotification(String title, String message) {
+		BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 			Lookup.getNotificationDisplay().displayTimedNotification(title, message, NotificationType.NOTE);
 		});
 	}
 
 	@Override
-	public void processErrorPacketFromPrinter(FirmwareError error, Printer printer)
-	{
-		BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-		{
-			switch (error)
-			{
-			case B_POSITION_LOST:
-				LOGGER.warn("B Position Lost error detected");
-				printer.clearError(error);
-				break;
+	public void processErrorPacketFromPrinter(FirmwareError error, Printer printer) {
+		BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
+			switch (error) {
+				case B_POSITION_LOST:
+					LOGGER.warn("B Position Lost error detected");
+					printer.clearError(error);
+					break;
 
-			case B_POSITION_WARNING:
-				LOGGER.warn("B Position Warning error detected");
-				printer.clearError(error);
-				break;
+				case B_POSITION_WARNING:
+					LOGGER.warn("B Position Warning error detected");
+					printer.clearError(error);
+					break;
 
-			case ERROR_BED_TEMPERATURE_DROOP:
-				if (clearDroopThread == null) {
-					LOGGER.warn("Bed Temperature Droop Warning error detected");
-					clearDroopThread = new Thread(() -> {
+				case ERROR_BED_TEMPERATURE_DROOP:
+					if (clearDroopThread == null) {
+						LOGGER.warn("Bed Temperature Droop Warning error detected");
+						clearDroopThread = new Thread(() -> {
+							try {
+								// Clear the error after 30 seconds.
+								// It is shown as a tooltip on the printerComponent.
+								Thread.sleep(DROOP_ERROR_CLEAR_TIME);
+								printer.clearError(error);
+							}
+							catch (Exception ex) {
+								// May get some errors if printer has been disconnected.
+							}
+							finally {
+								clearDroopThread = null;
+							}
+						});
+						clearDroopThread.setDaemon(true);
+						clearDroopThread.start();
+					}
+					break;
+
+				default:
+					if (errorChoiceBox == null) {
+						setupErrorOptions();
+						errorChoiceBox = new ChoiceLinkDialogBox(true);
+						String printerName = printer.getPrinterIdentity().printerFriendlyNameProperty().get();
+						if (printerName != null) {
+							errorChoiceBox.setTitle(printerName + ": " + OpenAutoMakerEnv.getI18N().t(error.getErrorTitleKey()));
+						}
+						else {
+							errorChoiceBox.setTitle(OpenAutoMakerEnv.getI18N().t(error.getErrorTitleKey()));
+						}
+						errorChoiceBox.setMessage(OpenAutoMakerEnv.getI18N().t(error.getErrorMessageKey()));
+						error.getOptions()
+								.stream()
+								.forEach(option -> errorChoiceBox.addChoiceLink(errorToButtonMap.get(option)));
+						errorChangeListener = (ListChangeListener.Change<? extends FirmwareError> c) -> {
+							if (!printer.getCurrentErrors().contains(error)) {
+								errorChoiceBox.closeDueToPrinterDisconnect();
+								clearErrorChoiceDialog(printer);
+							}
+						};
+						printer.getCurrentErrors().addListener(errorChangeListener);
+
+						Optional<ChoiceLinkButton> buttonPressed = Optional.empty();
 						try {
-							// Clear the error after 30 seconds.
-							// It is shown as a tooltip on the printerComponent.
-							Thread.sleep(DROOP_ERROR_CLEAR_TIME);
-							printer.clearError(error);
+							// This shows the dialog and waits for user input.
+							buttonPressed = errorChoiceBox.getUserInput();
 						}
-						catch (Exception ex)
-						{
-							// May get some errors if printer has been disconnected.
+						catch (PrinterDisconnectedException ex) {
+							buttonPressed = Optional.empty();
 						}
-						finally {
-							clearDroopThread = null;
-						}
-					});
-					clearDroopThread.setDaemon(true);
-					clearDroopThread.start();
-				}
-				break;
 
-			default:
-				if (errorChoiceBox == null)
-				{
-					setupErrorOptions();
-					errorChoiceBox = new ChoiceLinkDialogBox(true);
-					String printerName = printer.getPrinterIdentity().printerFriendlyNameProperty().get();
-					if (printerName != null)
-					{
-						errorChoiceBox.setTitle(printerName + ": " + OpenAutoMakerEnv.getI18N().t(error.getErrorTitleKey()));
-					} else
-					{
-						errorChoiceBox.setTitle(OpenAutoMakerEnv.getI18N().t(error.getErrorTitleKey()));
-					}
-					errorChoiceBox.setMessage(OpenAutoMakerEnv.getI18N().t(error.getErrorMessageKey()));
-					error.getOptions()
-					.stream()
-					.forEach(option -> errorChoiceBox.
-							addChoiceLink(errorToButtonMap.get(option)));
-					errorChangeListener = (ListChangeListener.Change<? extends FirmwareError> c) -> {
-						if (!printer.getCurrentErrors().contains(error)) {
-							errorChoiceBox.closeDueToPrinterDisconnect();
-							clearErrorChoiceDialog(printer);
-						}
-					};
-					printer.getCurrentErrors().addListener(errorChangeListener);
+						if (buttonPressed.isPresent()) {
+							for (Entry<SystemErrorHandlerOptions, ChoiceLinkButton> mapEntry : errorToButtonMap.entrySet()) {
+								if (buttonPressed.get() == mapEntry.getValue()) {
+									switch (mapEntry.getKey()) {
+										case ABORT:
+										case OK_ABORT:
+											try {
+												if (printer.canPauseProperty().get()) {
+													printer.pause();
+												}
+												if (printer.canCancelProperty().get()) {
+													printer.cancel(null, Lookup.getUserPreferences().isSafetyFeaturesOn());
+												}
+											}
+											catch (PrinterException ex) {
+												LOGGER.error(
+														"Error whilst cancelling print from error dialog");
+											}
+											break;
 
-					Optional<ChoiceLinkButton> buttonPressed = Optional.empty();
-					try
-					{
-						// This shows the dialog and waits for user input.
-						buttonPressed = errorChoiceBox.getUserInput();
-					}
-					catch (PrinterDisconnectedException ex)
-					{
-						buttonPressed = Optional.empty();
-					}
+										case CLEAR_CONTINUE:
+											try {
+												if (printer.canResumeProperty().get()) {
+													printer.resume();
+												}
+											}
+											catch (PrinterException ex) {
+												LOGGER.error(
+														"Error whilst resuming print from error dialog");
+											}
+											break;
 
-					if (buttonPressed.isPresent())
-					{
-						for (Entry<SystemErrorHandlerOptions, ChoiceLinkButton> mapEntry : errorToButtonMap.
-								entrySet())
-						{
-							if (buttonPressed.get() == mapEntry.getValue())
-							{
-								switch (mapEntry.getKey())
-								{
-								case ABORT:
-								case OK_ABORT:
-									try
-									{
-										if (printer.canPauseProperty().get())
-										{
-											printer.pause();
-										}
-										if (printer.canCancelProperty().get())
-										{
-											printer.cancel(null, Lookup.getUserPreferences().isSafetyFeaturesOn());
-										}
-									} catch (PrinterException ex)
-									{
-										LOGGER.error(
-												"Error whilst cancelling print from error dialog");
+										default:
+											break;
 									}
-									break;
 
-								case CLEAR_CONTINUE:
-									try
-									{
-										if (printer.canResumeProperty().get())
-										{
-											printer.resume();
-										}
-									} catch (PrinterException ex)
-									{
-										LOGGER.error(
-												"Error whilst resuming print from error dialog");
-									}
-									break;
-
-								default:
 									break;
 								}
-
-								break;
 							}
 						}
+						printer.clearError(error);
+						clearErrorChoiceDialog(printer);
 					}
-					printer.clearError(error);
-					clearErrorChoiceDialog(printer);
-				}
-				break;
+					break;
 			}
 		});
 	}
 
-	private void setupErrorOptions()
-	{
+	private void setupErrorOptions() {
 		// This can't be called from the constructor because the instance is constructed before
 		// i18n has been initialised.
-		if (errorToButtonMap == null)
-		{
+		if (errorToButtonMap == null) {
 			errorToButtonMap = new HashMap<>();
-			for (SystemErrorHandlerOptions option : SystemErrorHandlerOptions.values())
-			{
+			for (SystemErrorHandlerOptions option : SystemErrorHandlerOptions.values()) {
 				ChoiceLinkButton buttonToAdd = new ChoiceLinkButton();
 				buttonToAdd.setTitle(OpenAutoMakerEnv.getI18N().t(option.getErrorTitleKey()));
 				buttonToAdd.setMessage(OpenAutoMakerEnv.getI18N().t(option.getErrorMessageKey()));
@@ -299,13 +267,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void showCalibrationDialogue()
-	{
-		if (!calibrateDialogOnDisplay)
-		{
+	public void showCalibrationDialogue() {
+		if (!calibrateDialogOnDisplay) {
 			calibrateDialogOnDisplay = true;
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
 				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.headUpdateCalibrationRequiredTitle"));
 				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
@@ -316,21 +281,18 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 						OpenAutoMakerEnv.getI18N().t("dialogs.headUpdateCalibrationNo"));
 
 				Optional<ChoiceLinkButton> calibrationResponse;
-				try
-				{
+				try {
 					calibrationResponse = choiceLinkDialogBox.getUserInput();
-				} catch (PrinterDisconnectedException ex)
-				{
+				}
+				catch (PrinterDisconnectedException ex) {
 					return;
-				} finally
-				{
+				}
+				finally {
 					calibrateDialogOnDisplay = false;
 				}
 
-				if (calibrationResponse.isPresent())
-				{
-					if (calibrationResponse.get() == okCalibrateChoice)
-					{
+				if (calibrationResponse.isPresent()) {
+					if (calibrationResponse.get() == okCalibrateChoice) {
 						ApplicationStatus.getInstance().setMode(ApplicationMode.CALIBRATION_CHOICE);
 					}
 				}
@@ -339,10 +301,8 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void showHeadUpdatedNotification()
-	{
-		BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-		{
+	public void showHeadUpdatedNotification() {
+		BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 			showInformationNotification(
 					OpenAutoMakerEnv.getI18N().t("notification.headSettingsUpdatedTitle"),
 					OpenAutoMakerEnv.getI18N().t("notification.noActionRequired"));
@@ -350,12 +310,9 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void showSDCardNotification()
-	{
-		if (!sdDialogOnDisplay)
-		{
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
+	public void showSDCardNotification() {
+		if (!sdDialogOnDisplay) {
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				sdDialogOnDisplay = true;
 				showErrorNotification(OpenAutoMakerEnv.getI18N().t("dialogs.noSDCardTitle"),
 						OpenAutoMakerEnv.getI18N().t("dialogs.noSDCardMessage"));
@@ -365,36 +322,31 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void showSliceSuccessfulNotification()
-	{
+	public void showSliceSuccessfulNotification() {
 		showInformationNotification(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutoMakerEnv.getI18N().t(
 				"notification.sliceSuccessful"));
 	}
 
 	@Override
-	public void showGCodePostProcessSuccessfulNotification()
-	{
+	public void showGCodePostProcessSuccessfulNotification() {
 		showInformationNotification(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutoMakerEnv.getI18N().t(
 				"notification.gcodePostProcessSuccessful"));
 	}
 
 	@Override
-	public void showPrintJobCancelledNotification()
-	{
+	public void showPrintJobCancelledNotification() {
 		showInformationNotification(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutoMakerEnv.getI18N().t(
 				"notification.printJobCancelled"));
 	}
 
 	@Override
-	public void showPrintJobFailedNotification()
-	{
+	public void showPrintJobFailedNotification() {
 		showErrorNotification(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutoMakerEnv.getI18N().t(
 				"notification.printJobFailed"));
 	}
 
 	@Override
-	public void showPrintTransferSuccessfulNotification(String printerName)
-	{
+	public void showPrintTransferSuccessfulNotification(String printerName) {
 		showInformationNotification(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutoMakerEnv.getI18N().t(
 				"notification.printTransferredSuccessfully")
 				+ " "
@@ -407,14 +359,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	 * @param printerName
 	 */
 	@Override
-	public void showPrintTransferFailedNotification(String printerName)
-	{
-		if (failedTransferDialogBox == null)
-		{
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
-				if (failedTransferDialogBox == null)
-				{
+	public void showPrintTransferFailedNotification(String printerName) {
+		if (failedTransferDialogBox == null) {
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
+				if (failedTransferDialogBox == null) {
 					failedTransferDialogBox = new ChoiceLinkDialogBox(false);
 					failedTransferDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"));
 					failedTransferDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
@@ -422,11 +370,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 
 					failedTransferDialogBox.addChoiceLink(OpenAutoMakerEnv.getI18N().t("misc.OK"));
 
-					try
-					{
+					try {
 						failedTransferDialogBox.getUserInput();
-					} catch (PrinterDisconnectedException ex)
-					{
+					}
+					catch (PrinterDisconnectedException ex) {
 						// this should never happen
 						LOGGER.error("Print job transfer failed to printer " + printerName);
 					}
@@ -438,12 +385,9 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void removePrintTransferFailedNotification()
-	{
-		if (failedTransferDialogBox != null)
-		{
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
+	public void removePrintTransferFailedNotification() {
+		if (failedTransferDialogBox != null) {
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				failedTransferDialogBox.close();
 				failedTransferDialogBox = null;
 			});
@@ -451,45 +395,40 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void showPrintTransferInitiatedNotification()
-	{
+	public void showPrintTransferInitiatedNotification() {
 		showInformationNotification(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutoMakerEnv.getI18N().t(
 				"notification.printTransferInitiated"));
 	}
 
 	@Override
-	public void showReprintStartedNotification()
-	{
+	public void showReprintStartedNotification() {
 		showInformationNotification(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutoMakerEnv.getI18N().t(
 				"notification.reprintInitiated"));
 	}
 
 	@Override
-	public void showFirmwareUpgradeStatusNotification(FirmwareLoadResult result)
-	{
-		if (result != null)
-		{
-			switch (result.getStatus())
-			{
-			case FirmwareLoadResult.SDCARD_ERROR:
-				showErrorNotification(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedTitle"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.sdCardError"));
-				break;
-			case FirmwareLoadResult.FILE_ERROR:
-				showErrorNotification(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedTitle"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.firmwareFileError"));
-				break;
-			case FirmwareLoadResult.OTHER_ERROR:
-				showErrorNotification(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedTitle"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedMessage"));
-				break;
-			case FirmwareLoadResult.SUCCESS:
-				showInformationNotification(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateSuccessTitle"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateSuccessMessage"));
-				break;
+	public void showFirmwareUpgradeStatusNotification(FirmwareLoadResult result) {
+		if (result != null) {
+			switch (result.getStatus()) {
+				case FirmwareLoadResult.SDCARD_ERROR:
+					showErrorNotification(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedTitle"),
+							OpenAutoMakerEnv.getI18N().t("dialogs.sdCardError"));
+					break;
+				case FirmwareLoadResult.FILE_ERROR:
+					showErrorNotification(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedTitle"),
+							OpenAutoMakerEnv.getI18N().t("dialogs.firmwareFileError"));
+					break;
+				case FirmwareLoadResult.OTHER_ERROR:
+					showErrorNotification(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedTitle"),
+							OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedMessage"));
+					break;
+				case FirmwareLoadResult.SUCCESS:
+					showInformationNotification(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateSuccessTitle"),
+							OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateSuccessMessage"));
+					break;
 			}
-		} else
-		{
+		}
+		else {
 			showErrorNotification(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedTitle"),
 					OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedMessage"));
 		}
@@ -503,13 +442,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	 * @return True if the user has agreed to update, otherwise false
 	 */
 	@Override
-	public boolean askUserToUpdateFirmware(Printer printerToUpdate)
-	{
-		Callable<Boolean> askUserToUpgradeDialog = new Callable()
-		{
+	public boolean askUserToUpdateFirmware(Printer printerToUpdate) {
+		Callable<Boolean> askUserToUpgradeDialog = new Callable() {
 			@Override
-			public Boolean call() throws Exception
-			{
+			public Boolean call() throws Exception {
 				String printerName = printerToUpdate.getPrinterIdentity().printerFriendlyNameProperty().get();
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
 				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateTitle") + printerName);
@@ -521,13 +457,11 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 						OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateNotOKTitle"),
 						OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateNotOKMessage"));
 
-				Optional<ChoiceLinkButton> firmwareUpgradeResponse = choiceLinkDialogBox.
-						getUserInput();
+				Optional<ChoiceLinkButton> firmwareUpgradeResponse = choiceLinkDialogBox.getUserInput();
 
 				boolean updateConfirmed = false;
 
-				if (firmwareUpgradeResponse.isPresent())
-				{
+				if (firmwareUpgradeResponse.isPresent()) {
 					updateConfirmed = firmwareUpgradeResponse.get() == updateFirmwareChoice;
 				}
 
@@ -536,24 +470,20 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 		};
 		FutureTask<Boolean> askUserToUpgradeTask = new FutureTask<>(askUserToUpgradeDialog);
 		BaseLookup.getTaskExecutor().runOnGUIThread(askUserToUpgradeTask);
-		try
-		{
+		try {
 			return askUserToUpgradeTask.get();
-		} catch (InterruptedException | ExecutionException ex)
-		{
+		}
+		catch (InterruptedException | ExecutionException ex) {
 			LOGGER.error("Error during firmware upgrade query");
 			return false;
 		}
 	}
 
 	@Override
-	public boolean showDowngradeFirmwareDialog(Printer printerToUpdate)
-	{
-		Callable<Boolean> showDowngradeFirmwareDialog = new Callable()
-		{
+	public boolean showDowngradeFirmwareDialog(Printer printerToUpdate) {
+		Callable<Boolean> showDowngradeFirmwareDialog = new Callable() {
 			@Override
-			public Boolean call() throws Exception
-			{
+			public Boolean call() throws Exception {
 				String printerName = printerToUpdate.getPrinterIdentity().printerFriendlyNameProperty().get();
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
 				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareDowngradeTitle") + printerName);
@@ -565,13 +495,11 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 						OpenAutoMakerEnv.getI18N().t("dialogs.firmwareDowngradeNotOKTitle"),
 						OpenAutoMakerEnv.getI18N().t("dialogs.firmwareDowngradeNotOKMessage"));
 
-				Optional<ChoiceLinkButton> firmwareDowngradeResponse = choiceLinkDialogBox.
-						getUserInput();
+				Optional<ChoiceLinkButton> firmwareDowngradeResponse = choiceLinkDialogBox.getUserInput();
 
 				boolean downgradeConfirmed = false;
 
-				if (firmwareDowngradeResponse.isPresent())
-				{
+				if (firmwareDowngradeResponse.isPresent()) {
 					downgradeConfirmed = firmwareDowngradeResponse.get() == downgradeFirmwareChoice;
 				}
 
@@ -580,11 +508,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 		};
 		FutureTask<Boolean> askUserToDowngradeTask = new FutureTask<>(showDowngradeFirmwareDialog);
 		BaseLookup.getTaskExecutor().runOnGUIThread(askUserToDowngradeTask);
-		try
-		{
+		try {
 			return askUserToDowngradeTask.get();
-		} catch (InterruptedException | ExecutionException ex)
-		{
+		}
+		catch (InterruptedException | ExecutionException ex) {
 			LOGGER.error("Error during firmware downgrade query");
 			return false;
 		}
@@ -596,17 +523,13 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	 * @return 0 for failure, 1 for reset, 2 for temporary set.
 	 */
 	@Override
-	public RoboxResetIDResult askUserToResetPrinterID(Printer printerToUse, PrinterIDResponse printerID)
-	{
-		Callable<RoboxResetIDResult> resetPrinterIDCallable = new Callable()
-		{
+	public RoboxResetIDResult askUserToResetPrinterID(Printer printerToUse, PrinterIDResponse printerID) {
+		Callable<RoboxResetIDResult> resetPrinterIDCallable = new Callable() {
 			@Override
-			public RoboxResetIDResult call() throws Exception
-			{
+			public RoboxResetIDResult call() throws Exception {
 				Stage resetPrinterIDStage = null;
 				ResetPrinterIDController controller = null;
-				try
-				{
+				try {
 					URL fxmlFileName = getClass().getResource(ApplicationConfiguration.fxmlPopupResourcePath + "resetPrinterIDDialog.fxml");
 					FXMLLoader resetDialogLoader = new FXMLLoader(fxmlFileName, BaseLookup.getLanguageBundle());
 					VBox resetVBox = (VBox) resetDialogLoader.load();
@@ -620,8 +543,7 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 					resetPrinterIDStage.showAndWait();
 					return controller.getResetResult();
 				}
-				catch (Exception ex)
-				{
+				catch (Exception ex) {
 					LOGGER.error("Couldn't load reset printer Id dialog", ex);
 					return RoboxResetIDResult.RESET_FAILED;
 				}
@@ -630,34 +552,27 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 
 		FutureTask<RoboxResetIDResult> resetPrinterIDTask = new FutureTask<>(resetPrinterIDCallable);
 		BaseLookup.getTaskExecutor().runOnGUIThread(resetPrinterIDTask);
-		try
-		{
+		try {
 			return resetPrinterIDTask.get();
 		}
-		catch (InterruptedException | ExecutionException ex)
-		{
+		catch (InterruptedException | ExecutionException ex) {
 			LOGGER.error("Error during printer id reset");
 			return RoboxResetIDResult.RESET_FAILED;
 		}
 	}
 
 	@Override
-	public void configureFirmwareProgressDialog(FirmwareLoadService firmwareLoadService)
-	{
-		BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-		{
+	public void configureFirmwareProgressDialog(FirmwareLoadService firmwareLoadService) {
+		BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 			firmwareUpdateProgress = new ProgressDialog(firmwareLoadService);
 		});
 	}
 
 	@Override
-	public void showNoSDCardDialog()
-	{
-		if (!sdDialogOnDisplay)
-		{
+	public void showNoSDCardDialog() {
+		if (!sdDialogOnDisplay) {
 			sdDialogOnDisplay = true;
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(false);
 				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.noSDCardTitle"));
 				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
@@ -665,11 +580,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 				ChoiceLinkButton openTheLidChoice = choiceLinkDialogBox.addChoiceLink(
 						OpenAutoMakerEnv.getI18N().t("misc.OK"));
 
-				try
-				{
+				try {
 					choiceLinkDialogBox.getUserInput();
-				} catch (PrinterDisconnectedException ex)
-				{
+				}
+				catch (PrinterDisconnectedException ex) {
 					LOGGER.error("this should never happen");
 				}
 
@@ -679,16 +593,12 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void showNoPrinterIDDialog(Printer printer)
-	{
-		if (!printerIDDialog.isShowing())
-		{
+	public void showNoPrinterIDDialog(Printer printer) {
+		if (!printerIDDialog.isShowing()) {
 			printerIDDialog.setPrinterToUse(printer);
 
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
-				if (printerIDDialog == null)
-				{
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
+				if (printerIDDialog == null) {
 					printerIDDialog = new PrinterIDDialog();
 				}
 
@@ -698,13 +608,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public boolean showOpenDoorDialog()
-	{
-		Callable<Boolean> askUserWhetherToOpenDoorDialog = new Callable()
-		{
+	public boolean showOpenDoorDialog() {
+		Callable<Boolean> askUserWhetherToOpenDoorDialog = new Callable() {
 			@Override
-			public Boolean call() throws Exception
-			{
+			public Boolean call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
 				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.openLidPrinterHotTitle"));
 				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
@@ -715,13 +622,11 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 				ChoiceLinkButton dontOpenTheLidChoice = choiceLinkDialogBox.addChoiceLink(
 						OpenAutoMakerEnv.getI18N().t("dialogs.openLidPrinterHotDontOpenHeading"));
 
-				Optional<ChoiceLinkButton> doorOpenResponse = choiceLinkDialogBox.
-						getUserInput();
+				Optional<ChoiceLinkButton> doorOpenResponse = choiceLinkDialogBox.getUserInput();
 
 				boolean openTheLid = false;
 
-				if (doorOpenResponse.isPresent())
-				{
+				if (doorOpenResponse.isPresent()) {
 					openTheLid = doorOpenResponse.get() == openTheLidChoice;
 				}
 
@@ -732,11 +637,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 		FutureTask<Boolean> askUserWhetherToOpenDoorTask = new FutureTask<>(
 				askUserWhetherToOpenDoorDialog);
 		BaseLookup.getTaskExecutor().runOnGUIThread(askUserWhetherToOpenDoorTask);
-		try
-		{
+		try {
 			return askUserWhetherToOpenDoorTask.get();
-		} catch (InterruptedException | ExecutionException ex)
-		{
+		}
+		catch (InterruptedException | ExecutionException ex) {
 			LOGGER.error("Error during door open query");
 			return false;
 		}
@@ -748,13 +652,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	 * @return True if the user has opted to shrink the model
 	 */
 	@Override
-	public boolean showModelTooBigDialog(String modelFilename)
-	{
-		Callable<Boolean> askUserWhetherToLoadModel = new Callable()
-		{
+	public boolean showModelTooBigDialog(String modelFilename) {
+		Callable<Boolean> askUserWhetherToLoadModel = new Callable() {
 			@Override
-			public Boolean call() throws Exception
-			{
+			public Boolean call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(false);
 				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.ModelTooLargeTitle"));
 				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
@@ -764,13 +665,11 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 				ChoiceLinkButton dontShrinkChoice = choiceLinkDialogBox.addChoiceLink(
 						OpenAutoMakerEnv.getI18N().t("dialogs.dontShrink"));
 
-				Optional<ChoiceLinkButton> shrinkResponse = choiceLinkDialogBox.
-						getUserInput();
+				Optional<ChoiceLinkButton> shrinkResponse = choiceLinkDialogBox.getUserInput();
 
 				boolean shrinkModel = false;
 
-				if (shrinkResponse.isPresent())
-				{
+				if (shrinkResponse.isPresent()) {
 					shrinkModel = shrinkResponse.get() == shrinkChoice;
 				}
 
@@ -781,11 +680,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 		FutureTask<Boolean> askUserWhetherToLoadModelTask = new FutureTask<>(
 				askUserWhetherToLoadModel);
 		BaseLookup.getTaskExecutor().runOnGUIThread(askUserWhetherToLoadModelTask);
-		try
-		{
+		try {
 			return askUserWhetherToLoadModelTask.get();
-		} catch (InterruptedException | ExecutionException ex)
-		{
+		}
+		catch (InterruptedException | ExecutionException ex) {
 			LOGGER.error("Error during model too large query");
 			return false;
 		}
@@ -797,13 +695,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	 * @return True if the user has elected to upgrade
 	 */
 	@Override
-	public boolean showApplicationUpgradeDialog(String applicationName)
-	{
-		Callable<Boolean> askUserWhetherToUpgrade = new Callable()
-		{
+	public boolean showApplicationUpgradeDialog(String applicationName) {
+		Callable<Boolean> askUserWhetherToUpgrade = new Callable() {
 			@Override
-			public Boolean call() throws Exception
-			{
+			public Boolean call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(false);
 				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.updateApplicationTitle"));
 				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.updateApplicationMessagePart1")
@@ -818,13 +713,11 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 						OpenAutoMakerEnv.getI18N().t("misc.No"),
 						OpenAutoMakerEnv.getI18N().t("dialogs.updateContinueWithCurrent"));
 
-				Optional<ChoiceLinkButton> upgradeResponse = choiceLinkDialogBox.
-						getUserInput();
+				Optional<ChoiceLinkButton> upgradeResponse = choiceLinkDialogBox.getUserInput();
 
 				boolean upgradeApplication = false;
 
-				if (upgradeResponse.isPresent())
-				{
+				if (upgradeResponse.isPresent()) {
 					upgradeApplication = upgradeResponse.get() == upgradeChoice;
 				}
 
@@ -834,24 +727,20 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 
 		FutureTask<Boolean> askWhetherToUpgradeTask = new FutureTask<>(askUserWhetherToUpgrade);
 		BaseLookup.getTaskExecutor().runOnGUIThread(askWhetherToUpgradeTask);
-		try
-		{
+		try {
 			return askWhetherToUpgradeTask.get();
-		} catch (InterruptedException | ExecutionException ex)
-		{
+		}
+		catch (InterruptedException | ExecutionException ex) {
 			LOGGER.error("Error during model too large query");
 			return false;
 		}
 	}
 
 	@Override
-	public boolean showAreYouSureYouWantToDowngradeDialog()
-	{
-		Callable<Boolean> askUserWhetherToDowngrade = new Callable()
-		{
+	public boolean showAreYouSureYouWantToDowngradeDialog() {
+		Callable<Boolean> askUserWhetherToDowngrade = new Callable() {
 			@Override
-			public Boolean call() throws Exception
-			{
+			public Boolean call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(false);
 				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.downgradeWarning"));
 				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.downgradeMessage"));
@@ -862,8 +751,7 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 
 				boolean downgradeApplication = false;
 
-				if (downgradeResponse.isPresent())
-				{
+				if (downgradeResponse.isPresent()) {
 					downgradeApplication = downgradeResponse.get() == proceedChoice;
 				}
 
@@ -873,19 +761,17 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 
 		FutureTask<Boolean> askWhetherToDowngradeTask = new FutureTask<>(askUserWhetherToDowngrade);
 		BaseLookup.getTaskExecutor().runOnGUIThread(askWhetherToDowngradeTask);
-		try
-		{
+		try {
 			return askWhetherToDowngradeTask.get();
-		} catch (InterruptedException | ExecutionException ex)
-		{
+		}
+		catch (InterruptedException | ExecutionException ex) {
 			LOGGER.error("Error when asking user if they wish to contiunue with downgrade of root");
 			return false;
 		}
 	}
 
 	@Override
-	public PurgeResponse showPurgeDialog()
-	{
+	public PurgeResponse showPurgeDialog() {
 		return showPurgeDialog(true);
 	}
 
@@ -893,21 +779,17 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	 * @return True if the user has elected to purge
 	 */
 	@Override
-	public PurgeResponse showPurgeDialog(boolean allowAutoPrint)
-	{
-		Callable<PurgeResponse> askUserWhetherToPurge = new Callable()
-		{
+	public PurgeResponse showPurgeDialog(boolean allowAutoPrint) {
+		Callable<PurgeResponse> askUserWhetherToPurge = new Callable() {
 			@Override
-			public PurgeResponse call() throws Exception
-			{
+			public PurgeResponse call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
 				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.purgeRequiredTitle"));
 				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
 						"dialogs.purgeRequiredInstruction"));
 
 				ChoiceLinkButton purge = null;
-				if (allowAutoPrint)
-				{
+				if (allowAutoPrint) {
 					purge = choiceLinkDialogBox.addChoiceLink(
 							OpenAutoMakerEnv.getI18N().t("dialogs.goForPurgeTitle"),
 							OpenAutoMakerEnv.getI18N().t("dialogs.goForPurgeInstruction"));
@@ -919,19 +801,17 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 						OpenAutoMakerEnv.getI18N().t("dialogs.dontPrintTitle"),
 						OpenAutoMakerEnv.getI18N().t("dialogs.dontPrintInstruction"));
 
-				Optional<ChoiceLinkButton> purgeResponse = choiceLinkDialogBox.
-						getUserInput();
+				Optional<ChoiceLinkButton> purgeResponse = choiceLinkDialogBox.getUserInput();
 
 				PurgeResponse response = null;
 
-				if (purgeResponse.get() == purge)
-				{
+				if (purgeResponse.get() == purge) {
 					response = PurgeResponse.PRINT_WITH_PURGE;
-				} else if (purgeResponse.get() == dontPurge)
-				{
+				}
+				else if (purgeResponse.get() == dontPurge) {
 					response = PurgeResponse.PRINT_WITHOUT_PURGE;
-				} else if (purgeResponse.get() == dontPrint)
-				{
+				}
+				else if (purgeResponse.get() == dontPrint) {
 					response = PurgeResponse.DONT_PRINT;
 				}
 
@@ -941,11 +821,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 
 		FutureTask<PurgeResponse> askWhetherToPurgeTask = new FutureTask<>(askUserWhetherToPurge);
 		BaseLookup.getTaskExecutor().runOnGUIThread(askWhetherToPurgeTask);
-		try
-		{
+		try {
 			return askWhetherToPurgeTask.get();
-		} catch (InterruptedException | ExecutionException ex)
-		{
+		}
+		catch (InterruptedException | ExecutionException ex) {
 			LOGGER.error("Error during purge query");
 			return null;
 		}
@@ -955,13 +834,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	 * @return True if the user has elected to shutdown
 	 */
 	@Override
-	public boolean showJobsTransferringShutdownDialog()
-	{
-		Callable<Boolean> askUserWhetherToShutdown = new Callable()
-		{
+	public boolean showJobsTransferringShutdownDialog() {
+		Callable<Boolean> askUserWhetherToShutdown = new Callable() {
 			@Override
-			public Boolean call() throws Exception
-			{
+			public Boolean call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
 				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t(
 						"dialogs.printJobsAreStillTransferringTitle"));
@@ -974,8 +850,7 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 						OpenAutoMakerEnv.getI18N().t("dialogs.dontShutDownTitle"),
 						OpenAutoMakerEnv.getI18N().t("dialogs.dontShutDownMessage"));
 
-				Optional<ChoiceLinkButton> shutdownResponse = choiceLinkDialogBox.
-						getUserInput();
+				Optional<ChoiceLinkButton> shutdownResponse = choiceLinkDialogBox.getUserInput();
 
 				return shutdownResponse.get() == shutdown;
 			}
@@ -983,25 +858,20 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 
 		FutureTask<Boolean> askWhetherToShutdownTask = new FutureTask<>(askUserWhetherToShutdown);
 		BaseLookup.getTaskExecutor().runOnGUIThread(askWhetherToShutdownTask);
-		try
-		{
+		try {
 			return askWhetherToShutdownTask.get();
-		} catch (InterruptedException | ExecutionException ex)
-		{
+		}
+		catch (InterruptedException | ExecutionException ex) {
 			LOGGER.error("Error during shutdown whilst transferring query");
 			return false;
 		}
 	}
 
 	@Override
-	public void showProgramInvalidHeadDialog(TaskResponder<HeadFile> responder)
-	{
-		if (programInvalidHeadStage == null)
-		{
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
-				try
-				{
+	public void showProgramInvalidHeadDialog(TaskResponder<HeadFile> responder) {
+		if (programInvalidHeadStage == null) {
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
+				try {
 					URL fxmlFileName = getClass().getResource(ApplicationConfiguration.fxmlPopupResourcePath + "resetHeadDialog.fxml");
 					FXMLLoader resetDialogLoader = new FXMLLoader(fxmlFileName, BaseLookup.getLanguageBundle());
 					VBox resetDialog = (VBox) resetDialogLoader.load();
@@ -1010,8 +880,8 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 					programInvalidHeadStage.setScene(new Scene(resetDialog));
 					programInvalidHeadStage.initOwner(DisplayManager.getMainStage());
 					programInvalidHeadStage.show();
-				} catch (Exception ex)
-				{
+				}
+				catch (Exception ex) {
 					LOGGER.error("Couldn't load head reset dialog", ex);
 				}
 			});
@@ -1019,23 +889,18 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void hideProgramInvalidHeadDialog()
-	{
-		if (programInvalidHeadStage != null)
-		{
+	public void hideProgramInvalidHeadDialog() {
+		if (programInvalidHeadStage != null) {
 			programInvalidHeadStage.close();
 			programInvalidHeadStage = null;
 		}
 	}
 
 	@Override
-	public void showHeadNotRecognisedDialog(String printerName)
-	{
-		if (!headNotRecognisedDialogOnDisplay)
-		{
+	public void showHeadNotRecognisedDialog(String printerName) {
+		if (!headNotRecognisedDialogOnDisplay) {
 			headNotRecognisedDialogOnDisplay = true;
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
 				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t(
 						"dialogs.headNotRecognisedTitle"));
@@ -1050,11 +915,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 				ChoiceLinkButton openTheLidChoice = choiceLinkDialogBox.addChoiceLink(
 						OpenAutoMakerEnv.getI18N().t("misc.OK"));
 
-				try
-				{
+				try {
 					choiceLinkDialogBox.getUserInput();
-				} catch (PrinterDisconnectedException ex)
-				{
+				}
+				catch (PrinterDisconnectedException ex) {
 					LOGGER.error("printer disconnected");
 				}
 
@@ -1066,17 +930,13 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	@Override
 	public Optional<PrinterErrorChoice> showPrinterErrorDialog(String title, String message,
 			boolean showContinueOption, boolean showAbortOption, boolean showRetryOption,
-			boolean showOKOption)
-	{
-		if (!showContinueOption && !showAbortOption && !showRetryOption && !showOKOption)
-		{
+			boolean showOKOption) {
+		if (!showContinueOption && !showAbortOption && !showRetryOption && !showOKOption) {
 			throw new RuntimeException("Must allow one option to be shown");
 		}
-		Callable<Optional<PrinterErrorChoice>> askUserToRespondToPrinterError = new Callable()
-		{
+		Callable<Optional<PrinterErrorChoice>> askUserToRespondToPrinterError = new Callable() {
 			@Override
-			public Optional<PrinterErrorChoice> call() throws Exception
-			{
+			public Optional<PrinterErrorChoice> call() throws Exception {
 				ChoiceLinkDialogBox printerErrorDialogBox = new ChoiceLinkDialogBox(true);
 				printerErrorDialogBox.setTitle(title);
 				printerErrorDialogBox.setMessage(message);
@@ -1096,23 +956,19 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 				ChoiceLinkButton okChoice = new ChoiceLinkButton();
 				okChoice.setTitle(OpenAutoMakerEnv.getI18N().t("error.handler.OK.title"));
 
-				if (showContinueOption)
-				{
+				if (showContinueOption) {
 					printerErrorDialogBox.addChoiceLink(continueChoice);
 				}
 
-				if (showAbortOption)
-				{
+				if (showAbortOption) {
 					printerErrorDialogBox.addChoiceLink(abortChoice);
 				}
 
-				if (showRetryOption)
-				{
+				if (showRetryOption) {
 					printerErrorDialogBox.addChoiceLink(retryChoice);
 				}
 
-				if (showOKOption)
-				{
+				if (showOKOption) {
 					printerErrorDialogBox.addChoiceLink(okChoice);
 				}
 
@@ -1120,19 +976,17 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 
 				Optional<PrinterErrorChoice> userResponse = Optional.empty();
 
-				if (response.isPresent())
-				{
-					if (response.get() == continueChoice)
-					{
+				if (response.isPresent()) {
+					if (response.get() == continueChoice) {
 						userResponse = Optional.of(PrinterErrorChoice.CONTINUE);
-					} else if (response.get() == abortChoice)
-					{
+					}
+					else if (response.get() == abortChoice) {
 						userResponse = Optional.of(PrinterErrorChoice.ABORT);
-					} else if (response.get() == okChoice)
-					{
+					}
+					else if (response.get() == okChoice) {
 						userResponse = Optional.of(PrinterErrorChoice.OK);
-					} else if (response.get() == retryChoice)
-					{
+					}
+					else if (response.get() == retryChoice) {
 						userResponse = Optional.of(PrinterErrorChoice.RETRY);
 					}
 				}
@@ -1144,11 +998,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 		FutureTask<Optional<PrinterErrorChoice>> askContinueAbortTask = new FutureTask<>(
 				askUserToRespondToPrinterError);
 		BaseLookup.getTaskExecutor().runOnGUIThread(askContinueAbortTask);
-		try
-		{
+		try {
 			return askContinueAbortTask.get();
-		} catch (InterruptedException | ExecutionException ex)
-		{
+		}
+		catch (InterruptedException | ExecutionException ex) {
 			LOGGER.error("Error during printer error query");
 			return Optional.empty();
 		}
@@ -1156,23 +1009,18 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void showReelUpdatedNotification()
-	{
-		BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-		{
+	public void showReelUpdatedNotification() {
+		BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 			showInformationNotification(OpenAutoMakerEnv.getI18N().t("notification.reelDataUpdatedTitle"),
 					OpenAutoMakerEnv.getI18N().t("notification.noActionRequired"));
 		});
 	}
 
 	@Override
-	public void showReelNotRecognisedDialog(String printerName)
-	{
-		if (!reelNotRecognisedDialogOnDisplay)
-		{
+	public void showReelNotRecognisedDialog(String printerName) {
+		if (!reelNotRecognisedDialogOnDisplay) {
 			reelNotRecognisedDialogOnDisplay = true;
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
 				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.reelNotRecognisedTitle"));
 				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.reelNotRecognisedMessage1")
@@ -1185,11 +1033,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 
 				choiceLinkDialogBox.addChoiceLink(OpenAutoMakerEnv.getI18N().t("misc.OK"));
 
-				try
-				{
+				try {
 					choiceLinkDialogBox.getUserInput();
-				} catch (PrinterDisconnectedException ex)
-				{
+				}
+				catch (PrinterDisconnectedException ex) {
 					LOGGER.error("printer disconnected");
 				}
 
@@ -1199,24 +1046,20 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void askUserToClearBed()
-	{
-		if (!clearBedDialogOnDisplay)
-		{
+	public void askUserToClearBed() {
+		if (!clearBedDialogOnDisplay) {
 			clearBedDialogOnDisplay = true;
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(false);
 				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.clearBedTitle"));
 				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.clearBedInstruction"));
 
 				choiceLinkDialogBox.addChoiceLink(OpenAutoMakerEnv.getI18N().t("misc.OK"));
 
-				try
-				{
+				try {
 					choiceLinkDialogBox.getUserInput();
-				} catch (PrinterDisconnectedException ex)
-				{
+				}
+				catch (PrinterDisconnectedException ex) {
 					LOGGER.error("this should never happen");
 				}
 
@@ -1228,17 +1071,13 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	/**
 	 * Returns 0 for no downgrade and 1 for downgrade
 	 *
-	 * @return True if the user has decided to switch to Advanced Mode,
-	 * otherwise false
+	 * @return True if the user has decided to switch to Advanced Mode, otherwise false
 	 */
 	@Override
-	public boolean confirmAdvancedMode()
-	{
-		Callable<Boolean> confirmAdvancedModeDialog = new Callable()
-		{
+	public boolean confirmAdvancedMode() {
+		Callable<Boolean> confirmAdvancedModeDialog = new Callable() {
 			@Override
-			public Boolean call() throws Exception
-			{
+			public Boolean call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(false);
 				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.goToAdvancedModeTitle"));
 				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.goToAdvancedModeMessage"));
@@ -1249,13 +1088,11 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 						OpenAutoMakerEnv.getI18N().t("dialogs.goToAdvancedModeNoTitle"),
 						OpenAutoMakerEnv.getI18N().t("dialogs.goToAdvancedModeNoMessage"));
 
-				Optional<ChoiceLinkButton> goToAdvancedModeResponse
-				= choiceLinkDialogBox.getUserInput();
+				Optional<ChoiceLinkButton> goToAdvancedModeResponse = choiceLinkDialogBox.getUserInput();
 
 				boolean goToAdvancedMode = false;
 
-				if (goToAdvancedModeResponse.isPresent())
-				{
+				if (goToAdvancedModeResponse.isPresent()) {
 					goToAdvancedMode = goToAdvancedModeResponse.get() == goToAdvancedModeChoice;
 				}
 
@@ -1265,11 +1102,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 
 		FutureTask<Boolean> confirmAdvancedModeTask = new FutureTask<>(confirmAdvancedModeDialog);
 		BaseLookup.getTaskExecutor().runOnGUIThread(confirmAdvancedModeTask);
-		try
-		{
+		try {
 			return confirmAdvancedModeTask.get();
-		} catch (InterruptedException | ExecutionException ex)
-		{
+		}
+		catch (InterruptedException | ExecutionException ex) {
 			LOGGER.error("Error during advanced mode query: " + ex);
 			return false;
 		}
@@ -1280,24 +1116,19 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	 * @param printerName
 	 */
 	@Override
-	public void showKeepPushingFilamentNotification()
-	{
-		if (keepPushingFilamentDialogBox == null)
-		{
-			Platform.runLater(() ->
-			{
-				if (keepPushingFilamentDialogBox == null)
-				{
+	public void showKeepPushingFilamentNotification() {
+		if (keepPushingFilamentDialogBox == null) {
+			Platform.runLater(() -> {
+				if (keepPushingFilamentDialogBox == null) {
 					keepPushingFilamentDialogBox = new ChoiceLinkDialogBox(true);
 					keepPushingFilamentDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t(
 							"notification.keepPushingFilamentTitle"));
 					keepPushingFilamentDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
 							"notification.keepPushingFilament"));
-					try
-					{
+					try {
 						keepPushingFilamentDialogBox.getUserInput();
-					} catch (PrinterDisconnectedException ex)
-					{
+					}
+					catch (PrinterDisconnectedException ex) {
 						LOGGER.error("printer disconnected");
 					}
 				}
@@ -1306,14 +1137,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void hideKeepPushingFilamentNotification()
-	{
-		if (keepPushingFilamentDialogBox != null)
-		{
-			Platform.runLater(() ->
-			{
-				if (keepPushingFilamentDialogBox != null)
-				{
+	public void hideKeepPushingFilamentNotification() {
+		if (keepPushingFilamentDialogBox != null) {
+			Platform.runLater(() -> {
+				if (keepPushingFilamentDialogBox != null) {
 					keepPushingFilamentDialogBox.close();
 					keepPushingFilamentDialogBox = null;
 				}
@@ -1328,12 +1155,9 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	 * @param error
 	 */
 	@Override
-	public void showEjectFailedDialog(Printer printer, int nozzleNumber, FirmwareError error)
-	{
-		if (failedEjectDialogBox == null)
-		{
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
+	public void showEjectFailedDialog(Printer printer, int nozzleNumber, FirmwareError error) {
+		if (failedEjectDialogBox == null) {
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				failedEjectDialogBox = new ChoiceLinkDialogBox(true);
 				failedEjectDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("error.ERROR_UNLOAD"));
 				failedEjectDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
@@ -1347,34 +1171,29 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 				boolean runEjectStuckMaterial = false;
 
 				Optional<ChoiceLinkButton> choice;
-				try
-				{
+				try {
 					choice = failedEjectDialogBox.getUserInput();
-				} catch (PrinterDisconnectedException ex)
-				{
+				}
+				catch (PrinterDisconnectedException ex) {
 					return;
 				}
-				if (choice.isPresent())
-				{
-					if (choice.get() == ejectStuckMaterial)
-					{
+				if (choice.isPresent()) {
+					if (choice.get() == ejectStuckMaterial) {
 						runEjectStuckMaterial = true;
 					}
 				}
 				failedEjectDialogBox = null;
 
-				if (runEjectStuckMaterial)
-				{
+				if (runEjectStuckMaterial) {
 					LOGGER.error("Eject failed - user chose to eject stuck material");
-					try
-					{
+					try {
 						printer.ejectStuckMaterial(nozzleNumber, false, null, Lookup.getUserPreferences().isSafetyFeaturesOn());
-					} catch (PrinterException ex)
-					{
+					}
+					catch (PrinterException ex) {
 						LOGGER.error("Error when automatically invoking eject stuck material");
 					}
-				} else
-				{
+				}
+				else {
 					LOGGER.error("Eject failed - user chose not to run eject stuck material");
 				}
 
@@ -1384,26 +1203,21 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void showFilamentStuckMessage()
-	{
-		if (filamentStuckDialogBox == null)
-		{
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
+	public void showFilamentStuckMessage() {
+		if (filamentStuckDialogBox == null) {
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				filamentStuckDialogBox = new ChoiceLinkDialogBox(true);
-				filamentStuckDialogBox.
-				setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.filamentStuck.title"));
+				filamentStuckDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.filamentStuck.title"));
 				filamentStuckDialogBox.setMessage(
 						OpenAutoMakerEnv.getI18N().t("dialogs.filamentStuck.message"));
 
 				ChoiceLinkButton ok = filamentStuckDialogBox.addChoiceLink(
 						OpenAutoMakerEnv.getI18N().t("misc.OK"));
 
-				try
-				{
+				try {
 					Optional<ChoiceLinkButton> choice = filamentStuckDialogBox.getUserInput();
-				} catch (PrinterDisconnectedException ex)
-				{
+				}
+				catch (PrinterDisconnectedException ex) {
 					return;
 				}
 
@@ -1414,26 +1228,21 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void showLoadFilamentNowMessage()
-	{
-		if (loadFilamentNowDialogBox == null)
-		{
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
+	public void showLoadFilamentNowMessage() {
+		if (loadFilamentNowDialogBox == null) {
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				loadFilamentNowDialogBox = new ChoiceLinkDialogBox(true);
-				loadFilamentNowDialogBox.
-				setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.loadFilamentNow.title"));
+				loadFilamentNowDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.loadFilamentNow.title"));
 				loadFilamentNowDialogBox.setMessage(
 						OpenAutoMakerEnv.getI18N().t("dialogs.loadFilamentNow.message"));
 
 				ChoiceLinkButton ok = loadFilamentNowDialogBox.addChoiceLink(
 						OpenAutoMakerEnv.getI18N().t("misc.OK"));
 
-				try
-				{
+				try {
 					Optional<ChoiceLinkButton> choice = loadFilamentNowDialogBox.getUserInput();
-				} catch (PrinterDisconnectedException ex)
-				{
+				}
+				catch (PrinterDisconnectedException ex) {
 					LOGGER.error("printer disconnected");
 				}
 
@@ -1444,23 +1253,18 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void showFilamentMotionCheckBanner()
-	{
-		if (filamentMotionCheckDialogBox == null)
-		{
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
+	public void showFilamentMotionCheckBanner() {
+		if (filamentMotionCheckDialogBox == null) {
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				filamentMotionCheckDialogBox = new ChoiceLinkDialogBox(true);
-				filamentMotionCheckDialogBox.
-				setTitle(OpenAutoMakerEnv.getI18N().t("notification.printManagement.title"));
+				filamentMotionCheckDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("notification.printManagement.title"));
 				filamentMotionCheckDialogBox.setMessage(
 						OpenAutoMakerEnv.getI18N().t("notification.filamentMotionCheck"));
 
-				try
-				{
+				try {
 					filamentMotionCheckDialogBox.getUserInput();
-				} catch (PrinterDisconnectedException ex)
-				{
+				}
+				catch (PrinterDisconnectedException ex) {
 					LOGGER.error("printer disconnected");
 				}
 			});
@@ -1468,14 +1272,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public void hideFilamentMotionCheckBanner()
-	{
-		if (filamentMotionCheckDialogBox != null)
-		{
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
-				if (filamentMotionCheckDialogBox != null)
-				{
+	public void hideFilamentMotionCheckBanner() {
+		if (filamentMotionCheckDialogBox != null) {
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
+				if (filamentMotionCheckDialogBox != null) {
 					filamentMotionCheckDialogBox.close();
 					filamentMotionCheckDialogBox = null;
 				}
@@ -1484,13 +1284,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	}
 
 	@Override
-	public boolean showModelIsInvalidDialog(Set<String> modelNames)
-	{
-		Callable<Boolean> askUserWhetherToLoadModel = new Callable()
-		{
+	public boolean showModelIsInvalidDialog(Set<String> modelNames) {
+		Callable<Boolean> askUserWhetherToLoadModel = new Callable() {
 			@Override
-			public Boolean call() throws Exception
-			{
+			public Boolean call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(false);
 				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.modelInvalidTitle"));
 				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
@@ -1510,8 +1307,7 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 
 				boolean loadModel = false;
 
-				if (loadResponse.isPresent())
-				{
+				if (loadResponse.isPresent()) {
 					loadModel = loadResponse.get() == loadChoice;
 				}
 
@@ -1521,33 +1317,27 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 
 		FutureTask<Boolean> askInvalidModelTask = new FutureTask<>(askUserWhetherToLoadModel);
 		BaseLookup.getTaskExecutor().runOnGUIThread(askInvalidModelTask);
-		try
-		{
+		try {
 			return askInvalidModelTask.get();
-		} catch (InterruptedException | ExecutionException ex)
-		{
+		}
+		catch (InterruptedException | ExecutionException ex) {
 			LOGGER.error("Error during model invalid query");
 			return false;
 		}
 	}
 
 	@Override
-	public void clearAllDialogsOnDisconnect()
-	{
-		if (errorChoiceBox != null)
-		{
-			BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-			{
+	public void clearAllDialogsOnDisconnect() {
+		if (errorChoiceBox != null) {
+			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				errorChoiceBox.closeDueToPrinterDisconnect();
 			});
 		}
 	}
 
 	@Override
-	public void showDismissableNotification(String message, String buttonText, NotificationType notificationType)
-	{
-		BaseLookup.getTaskExecutor().runOnGUIThread(() ->
-		{
+	public void showDismissableNotification(String message, String buttonText, NotificationType notificationType) {
+		BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 			Lookup.getNotificationDisplay().displayDismissableNotification(message, buttonText, notificationType);
 		});
 	}

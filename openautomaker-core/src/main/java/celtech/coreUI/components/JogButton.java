@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package celtech.coreUI.components;
 
 import javafx.beans.property.BooleanProperty;
@@ -20,8 +16,7 @@ import xyz.openautomaker.base.utils.AxisSpecifier;
  *
  * @author Ian
  */
-public class JogButton extends Button
-{
+public class JogButton extends Button {
 
 	private final ObjectProperty<AxisSpecifier> axis = new SimpleObjectProperty<>();
 	private final FloatProperty distance = new SimpleFloatProperty();
@@ -32,8 +27,7 @@ public class JogButton extends Button
 	 *
 	 * @param value
 	 */
-	public void setAxis(AxisSpecifier value)
-	{
+	public void setAxis(AxisSpecifier value) {
 		axis.set(value);
 	}
 
@@ -41,8 +35,7 @@ public class JogButton extends Button
 	 *
 	 * @return
 	 */
-	public AxisSpecifier getAxis()
-	{
+	public AxisSpecifier getAxis() {
 		return axis.get();
 	}
 
@@ -50,8 +43,7 @@ public class JogButton extends Button
 	 *
 	 * @return
 	 */
-	public ObjectProperty<AxisSpecifier> getAxisProperty()
-	{
+	public ObjectProperty<AxisSpecifier> getAxisProperty() {
 		return axis;
 	}
 
@@ -59,8 +51,7 @@ public class JogButton extends Button
 	 *
 	 * @param value
 	 */
-	public void setDistance(float value)
-	{
+	public void setDistance(float value) {
 		distance.set(value);
 	}
 
@@ -68,8 +59,7 @@ public class JogButton extends Button
 	 *
 	 * @return
 	 */
-	public float getDistance()
-	{
+	public float getDistance() {
 		return distance.get();
 	}
 
@@ -77,8 +67,7 @@ public class JogButton extends Button
 	 *
 	 * @return
 	 */
-	public FloatProperty getDistanceProperty()
-	{
+	public FloatProperty getDistanceProperty() {
 		return distance;
 	}
 
@@ -86,8 +75,7 @@ public class JogButton extends Button
 	 *
 	 * @param value
 	 */
-	public void setUseG1(boolean value)
-	{
+	public void setUseG1(boolean value) {
 		useG1.set(value);
 	}
 
@@ -95,8 +83,7 @@ public class JogButton extends Button
 	 *
 	 * @return
 	 */
-	public boolean getUseG1()
-	{
+	public boolean getUseG1() {
 		return useG1.get();
 	}
 
@@ -104,8 +91,7 @@ public class JogButton extends Button
 	 *
 	 * @return
 	 */
-	public BooleanProperty getUseG1Property()
-	{
+	public BooleanProperty getUseG1Property() {
 		return useG1;
 	}
 
@@ -113,8 +99,7 @@ public class JogButton extends Button
 	 *
 	 * @param value
 	 */
-	public void setFeedRate(int value)
-	{
+	public void setFeedRate(int value) {
 		feedRate.set(value);
 	}
 
@@ -122,8 +107,7 @@ public class JogButton extends Button
 	 *
 	 * @return
 	 */
-	public int getFeedRate()
-	{
+	public int getFeedRate() {
 		return feedRate.get();
 	}
 
@@ -131,16 +115,14 @@ public class JogButton extends Button
 	 *
 	 * @return
 	 */
-	public IntegerProperty getFeedRateProperty()
-	{
+	public IntegerProperty getFeedRateProperty() {
 		return feedRate;
 	}
 
 	/**
 	 *
 	 */
-	public JogButton()
-	{
+	public JogButton() {
 		getStyleClass().add("jog-button");
 		setPickOnBounds(false);
 	}

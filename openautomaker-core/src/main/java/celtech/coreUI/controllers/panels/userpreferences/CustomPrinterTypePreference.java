@@ -30,18 +30,15 @@ public class CustomPrinterTypePreference implements PreferencesInnerPanelControl
 		control.setPrefWidth(200);
 		control.getItems().setAll(PrinterType.values());
 		control.getSelectionModel().selectedItemProperty()
-		.addListener((observable, oldValue, newValue) -> updateValueFromControl());
-		control.setConverter(new StringConverter<PrinterType>()
-		{
+				.addListener((observable, oldValue, newValue) -> updateValueFromControl());
+		control.setConverter(new StringConverter<PrinterType>() {
 			@Override
-			public String toString(PrinterType printerType)
-			{
+			public String toString(PrinterType printerType) {
 				return printerType.getDisplayName();
 			}
 
 			@Override
-			public PrinterType fromString(String displayName)
-			{
+			public PrinterType fromString(String displayName) {
 				return PrinterType.getPrinterTypeForDisplayName(displayName);
 			}
 		});
@@ -56,7 +53,7 @@ public class CustomPrinterTypePreference implements PreferencesInnerPanelControl
 		comms.setDummyPrinterType(printerType);
 
 		Optional<DetectedDevice> dummyPrinterHandle = comms.getDummyPrinter(RoboxCommsManager.CUSTOM_CONNECTION_HANDLE);
-		if(dummyPrinterHandle.isPresent()) {
+		if (dummyPrinterHandle.isPresent()) {
 			comms.removeDummyPrinter(dummyPrinterHandle.get());
 			comms.addDummyPrinter(true);
 		}

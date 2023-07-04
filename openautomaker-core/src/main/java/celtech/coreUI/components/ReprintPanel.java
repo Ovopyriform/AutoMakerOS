@@ -35,8 +35,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian
  */
-public class ReprintPanel extends VBox
-{
+public class ReprintPanel extends VBox {
 
 	private Stage dialogStage = new Stage(StageStyle.UNDECORATED);
 	private final MasterDetailPane masterDetailsPane = new MasterDetailPane(Side.RIGHT);
@@ -59,8 +58,7 @@ public class ReprintPanel extends VBox
 
 	private Printer printerToUse = null;
 
-	public ReprintPanel()
-	{
+	public ReprintPanel() {
 		masterDetailsPane.setMasterNode(tableView);
 		masterDetailsPane.setDetailNode(detailsPanel);
 		masterDetailsPane.setDividerPosition(0.4);
@@ -80,11 +78,9 @@ public class ReprintPanel extends VBox
 
 		tableView.getColumns().add(nameColumn);
 		tableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<SuitablePrintJob>()
-		{
+		tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<SuitablePrintJob>() {
 			@Override
-			public void changed(ObservableValue observable, SuitablePrintJob oldValue, SuitablePrintJob newValue)
-			{
+			public void changed(ObservableValue observable, SuitablePrintJob oldValue, SuitablePrintJob newValue) {
 				displayDetails(newValue);
 			}
 		});
@@ -111,15 +107,13 @@ public class ReprintPanel extends VBox
 		detailsPanel.setPadding(new Insets(10, 10, 10, 10));
 
 		closeButton.setText(OpenAutoMakerEnv.getI18N().t("buttonText.close"));
-		closeButton.setOnAction(event ->
-		{
+		closeButton.setOnAction(event -> {
 			close();
 		});
 
 		printButton.setText(OpenAutoMakerEnv.getI18N().t("buttonText.make"));
 		printButton.disableProperty().bind(tableView.getSelectionModel().selectedItemProperty().isNull());
-		printButton.setOnAction(event ->
-		{
+		printButton.setOnAction(event -> {
 			printerToUse.printJob(tableView.getSelectionModel().getSelectedItem().getPrintJobID());
 			close();
 		});
@@ -140,44 +134,38 @@ public class ReprintPanel extends VBox
 		dialogStage.initModality(Modality.WINDOW_MODAL);
 	}
 
-	public void show(Printer printer)
-	{
+	public void show(Printer printer) {
 		printerToUse = printer;
 		List<SuitablePrintJob> suitablePrintJobs = printer.listJobsReprintableByMe();
 		ObservableList<SuitablePrintJob> observablePrintJobs = FXCollections.observableArrayList(suitablePrintJobs);
 		tableView.setItems(observablePrintJobs);
-		if (observablePrintJobs.isEmpty())
-		{
+		if (observablePrintJobs.isEmpty()) {
 			displayDetails(null);
-		} else
-		{
+		}
+		else {
 			tableView.getSelectionModel().selectFirst();
 		}
 		dialogStage.showAndWait();
 	}
 
-	public void close()
-	{
+	public void close() {
 		dialogStage.close();
 		printerToUse = null;
 	}
 
-	private String convertToHoursMinutes(int seconds)
-	{
+	private String convertToHoursMinutes(int seconds) {
 		int minutes = seconds / 60;
 		int hours = minutes / 60;
 		minutes = minutes - (60 * hours);
 		return String.format("%02d:%02d", hours, minutes);
 	}
 
-	private void displayDetails(SuitablePrintJob printJob)
-	{
-		if (printJob == null)
-		{
+	private void displayDetails(SuitablePrintJob printJob) {
+		if (printJob == null) {
 			detailsPanel.setVisible(false);
 			tableView.getSelectionModel().clearSelection();
-		} else
-		{
+		}
+		else {
 			creationDate.setText(printJob.getCreationDate());
 			printProfile.setText(printJob.getPrintProfileName());
 			double eLength = printJob.geteVolume() * VOLUME_TO_LENGTH_1_75MM;
