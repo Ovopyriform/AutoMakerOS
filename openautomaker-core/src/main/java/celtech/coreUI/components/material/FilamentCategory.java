@@ -18,8 +18,7 @@ import xyz.openautomaker.base.configuration.Filament;
  *
  * @author Ian
  */
-public class FilamentCategory extends VBox
-{
+public class FilamentCategory extends VBox {
 
 	@FXML
 	private Text swatchPatchTitle;
@@ -27,16 +26,13 @@ public class FilamentCategory extends VBox
 	@FXML
 	private VBox swatchContainer;
 
-	private Comparator<Entry<MaterialType, List<Filament>>> byMaterialName
-	= (Entry<MaterialType, List<Filament>> o1, Entry<MaterialType, List<Filament>> o2) -> o1.getKey().getFriendlyName().compareTo(o2.getKey().getFriendlyName());
-	private Comparator<Filament> byColour
-	= (Filament o1, Filament o2) -> o1.getDisplayColour().toString().compareTo(o2.getDisplayColour().toString());
+	private Comparator<Entry<MaterialType, List<Filament>>> byMaterialName = (Entry<MaterialType, List<Filament>> o1, Entry<MaterialType, List<Filament>> o2) -> o1.getKey().getFriendlyName().compareTo(o2.getKey().getFriendlyName());
+	private Comparator<Filament> byColour = (Filament o1, Filament o2) -> o1.getDisplayColour().toString().compareTo(o2.getDisplayColour().toString());
 
 	private final FilamentSelectionListener materialSelectionListener;
 	private Map<String, Map<MaterialType, List<Filament>>> filamentCategoryMap = null;
 
-	public FilamentCategory(FilamentSelectionListener materialSelectionListener)
-	{
+	public FilamentCategory(FilamentSelectionListener materialSelectionListener) {
 		this.materialSelectionListener = materialSelectionListener;
 
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
@@ -46,37 +42,33 @@ public class FilamentCategory extends VBox
 
 		fxmlLoader.setClassLoader(this.getClass().getClassLoader());
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 
 		this.getStyleClass().add("filament-category");
 	}
 
-	public void setCategoryData(String brand, Map<String, Map<MaterialType, List<Filament>>> filamentCategoryMap)
-	{
+	public void setCategoryData(String brand, Map<String, Map<MaterialType, List<Filament>>> filamentCategoryMap) {
 		swatchPatchTitle.setText(brand);
 
 		swatchContainer.getChildren().clear();
 
 		this.filamentCategoryMap = filamentCategoryMap;
 
-		filamentCategoryMap.entrySet().stream().forEach((categoryEntry) ->
-		{
+		filamentCategoryMap.entrySet().stream().forEach((categoryEntry) -> {
 			String category = categoryEntry.getKey();
 			Map<MaterialType, List<Filament>> materialMap = categoryEntry.getValue();
 
 			boolean needToAddCategory = false;
 
-			if (materialMap.keySet().size() == 1)
-			{
+			if (materialMap.keySet().size() == 1) {
 				needToAddCategory = true;
-			} else
-			{
+			}
+			else {
 				Text categoryTitle = new Text(category);
 				categoryTitle.getStyleClass().add("filament-display-category");
 				swatchContainer.getChildren().add(categoryTitle);
@@ -84,20 +76,17 @@ public class FilamentCategory extends VBox
 
 			final boolean addCategoryDirective = needToAddCategory;
 
-			materialMap.entrySet().stream().sorted(byMaterialName).forEach((materialEntry) ->
-			{
+			materialMap.entrySet().stream().sorted(byMaterialName).forEach((materialEntry) -> {
 				MaterialType material = materialEntry.getKey();
 				List<Filament> filaments = materialEntry.getValue();
 
 				Text materialTitle = new Text();
 				materialTitle.getStyleClass().add("filament-display-material");
 
-				if (addCategoryDirective)
-				{
+				if (addCategoryDirective) {
 					materialTitle.setText(category + " " + material.getFriendlyName());
 				}
-				else
-				{
+				else {
 					materialTitle.setText(material.getFriendlyName());
 				}
 
@@ -106,8 +95,7 @@ public class FilamentCategory extends VBox
 				FlowPane flowPane = new FlowPane();
 				swatchContainer.getChildren().add(flowPane);
 
-				for (Filament filament : filaments)
-				{
+				for (Filament filament : filaments) {
 					FilamentSwatch swatch = new FilamentSwatch(materialSelectionListener, filament);
 					flowPane.getChildren().add(swatch);
 				}
@@ -115,8 +103,7 @@ public class FilamentCategory extends VBox
 		});
 	}
 
-	public Map<String, Map<MaterialType, List<Filament>>> getFilamentMap()
-	{
+	public Map<String, Map<MaterialType, List<Filament>>> getFilamentMap() {
 		return filamentCategoryMap;
 	}
 

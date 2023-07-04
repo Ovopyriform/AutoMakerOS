@@ -10,8 +10,7 @@ import java.util.ArrayList;
  *
  * @author ianhudson
  */
-public class GCodeFile
-{
+public class GCodeFile {
 	private ArrayList<Layer> layers = new ArrayList<>();
 	private ExtrusionMode extrusionMode = ExtrusionMode.RELATIVE;
 	private MovementMode movementMode = MovementMode.ABSOLUTE;
@@ -20,8 +19,7 @@ public class GCodeFile
 	 *
 	 * @param layer
 	 */
-	public void addLayer(Layer layer)
-	{
+	public void addLayer(Layer layer) {
 		layers.add(layer);
 	}
 
@@ -29,8 +27,7 @@ public class GCodeFile
 	 *
 	 * @return
 	 */
-	public ArrayList<Layer> getLayers()
-	{
+	public ArrayList<Layer> getLayers() {
 		return layers;
 	}
 
@@ -38,8 +35,7 @@ public class GCodeFile
 	 *
 	 * @return
 	 */
-	public ExtrusionMode getExtrusionMode()
-	{
+	public ExtrusionMode getExtrusionMode() {
 		return extrusionMode;
 	}
 
@@ -47,8 +43,7 @@ public class GCodeFile
 	 *
 	 * @param extrusionMode
 	 */
-	public void setExtrusionMode(ExtrusionMode extrusionMode)
-	{
+	public void setExtrusionMode(ExtrusionMode extrusionMode) {
 		this.extrusionMode = extrusionMode;
 	}
 
@@ -56,8 +51,7 @@ public class GCodeFile
 	 *
 	 * @return
 	 */
-	public MovementMode getMovementMode()
-	{
+	public MovementMode getMovementMode() {
 		return movementMode;
 	}
 
@@ -65,8 +59,7 @@ public class GCodeFile
 	 *
 	 * @param movementMode
 	 */
-	public void setMovementMode(MovementMode movementMode)
-	{
+	public void setMovementMode(MovementMode movementMode) {
 		this.movementMode = movementMode;
 	}
 
@@ -75,8 +68,7 @@ public class GCodeFile
 	 * @return
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder stringOutput = new StringBuilder();
 		int layerNumber = 1;
 
@@ -84,8 +76,7 @@ public class GCodeFile
 		stringOutput.append(layers.size());
 		stringOutput.append(" layers\n");
 
-		for (Layer layer: layers)
-		{
+		for (Layer layer : layers) {
 			stringOutput.append("Layer ");
 			stringOutput.append(layerNumber);
 			stringOutput.append("\n");

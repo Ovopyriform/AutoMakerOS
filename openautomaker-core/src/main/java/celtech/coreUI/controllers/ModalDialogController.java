@@ -28,8 +28,7 @@ import javafx.stage.Stage;
  *
  * @author ianhudson
  */
-public class ModalDialogController implements Initializable
-{
+public class ModalDialogController implements Initializable {
 
 	private static final Logger LOGGER = LogManager.getLogger(ModalDialogController.class.getName());
 	@FXML
@@ -50,116 +49,104 @@ public class ModalDialogController implements Initializable
 	/*
 	 *
 	 */
-	 private ArrayList<Button> buttons = new ArrayList<>();
+	private ArrayList<Button> buttons = new ArrayList<>();
 
-	 /**
-	  *
-	  */
-	 public ModalDialogController()
-	 {
-		 buttonHandler = new EventHandler<>()
-		 {
-			 @Override
-			 public void handle(ActionEvent t)
-			 {
-				 buttonValue = buttons.indexOf(t.getSource());
-				 myStage.close();
-			 }
-		 };
+	/**
+	 *
+	 */
+	public ModalDialogController() {
+		buttonHandler = new EventHandler<>() {
+			@Override
+			public void handle(ActionEvent t) {
+				buttonValue = buttons.indexOf(t.getSource());
+				myStage.close();
+			}
+		};
 
-	 }
+	}
 
-	 /**
-	  * Initializes the controller class.
-	  * @param url
-	  * @param rb
-	  */
-	 @Override
-	 public void initialize(URL url, ResourceBundle rb)
-	 {
-		 dialogTitle.setText("");
-	 }
+	/**
+	 * Initializes the controller class.
+	 * 
+	 * @param url
+	 * @param rb
+	 */
+	@Override
+	public void initialize(URL url, ResourceBundle rb) {
+		dialogTitle.setText("");
+	}
 
-	 /**
-	  *
-	  * @param title
-	  */
-	 public void setDialogTitle(String title)
-	 {
-		 dialogTitle.setText(title);
-	 }
+	/**
+	 *
+	 * @param title
+	 */
+	public void setDialogTitle(String title) {
+		dialogTitle.setText(title);
+	}
 
-	 /**
-	  *
-	  * @param message
-	  */
-	 public void setDialogMessage(String message)
-	 {
-		 dialogMessage.setText(message);
-	 }
+	/**
+	 *
+	 * @param message
+	 */
+	public void setDialogMessage(String message) {
+		dialogMessage.setText(message);
+	}
 
-	 /**
-	  *
-	  * @param text
-	  * @return
-	  */
-	 public int addButton(String text)
-	 {
-		 return addButton(text, null);
-	 }
+	/**
+	 *
+	 * @param text
+	 * @return
+	 */
+	public int addButton(String text) {
+		return addButton(text, null);
+	}
 
-	 /**
-	  *
-	  * @param text
-	  * @param disabler
-	  * @return
-	  */
-	 public int addButton(String text, ReadOnlyBooleanProperty disabler)
-	 {
-		 Button newButton = new Button(text);
-		 newButton.setOnAction(buttonHandler);
-		 buttonHolder.getChildren().add(newButton);
-		 buttons.add(newButton);
+	/**
+	 *
+	 * @param text
+	 * @param disabler
+	 * @return
+	 */
+	public int addButton(String text, ReadOnlyBooleanProperty disabler) {
+		Button newButton = new Button(text);
+		newButton.setOnAction(buttonHandler);
+		buttonHolder.getChildren().add(newButton);
+		buttons.add(newButton);
 
-		 if (disabler != null)
-		 {
-			 newButton.disableProperty().bind(disabler);
-		 }
+		if (disabler != null) {
+			newButton.disableProperty().bind(disabler);
+		}
 
-		 return buttons.indexOf(newButton);
-	 }
+		return buttons.indexOf(newButton);
+	}
 
-	 /**
-	  *
-	  * @return
-	  */
-	 public int getButtonValue()
-	 {
-		 return buttonValue;
-	 }
+	/**
+	 *
+	 * @return
+	 */
+	public int getButtonValue() {
+		return buttonValue;
+	}
 
-	 /**
-	  *
-	  * @param dialogStage
-	  */
-	 public void configure(Stage dialogStage)
-	 {
-		 myStage = dialogStage;
-	 }
+	/**
+	 *
+	 * @param dialogStage
+	 */
+	public void configure(Stage dialogStage) {
+		myStage = dialogStage;
+	}
 
-	 /**
-	  *
-	  * @param content
-	  */
-	 public void setContent(Node content)
-	 {
-		 defaultContent.setVisible(false);
-		 if (customContent != null)
-		 {
-			 container.getChildren().remove(customContent);
-		 }
+	/**
+	 *
+	 * @param content
+	 */
+	public void setContent(Node content) {
+		defaultContent.setVisible(false);
+		if (customContent != null) {
+			container.getChildren().remove(customContent);
+		}
 
-		 customContent = content;
-		 container.getChildren().add(0, customContent);
-	 }
+		customContent = content;
+		container.getChildren().add(0, customContent);
+	}
 }

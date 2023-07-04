@@ -59,8 +59,7 @@ public class TriangleCutter {
 	}
 
 	/**
-	 * Add the vertex if it does not already exist in the mesh, and return its index. This is
-	 * inefficient and could easily be improved by caching vertices.
+	 * Add the vertex if it does not already exist in the mesh, and return its index. This is inefficient and could easily be improved by caching vertices.
 	 */
 	static int addNewOrGetVertex(TriangleMesh mesh, Vertex intersectingVertex) {
 		for (int i = 0; i < mesh.getPoints().size() / 3; i++) {
@@ -79,8 +78,7 @@ public class TriangleCutter {
 	}
 
 	/**
-	 * Calculate the coordinates of the intersection with the edge, add a new vertex at that point
-	 * and return the index of the new vertex.
+	 * Calculate the coordinates of the intersection with the edge, add a new vertex at that point and return the index of the new vertex.
 	 */
 	static Integer makeIntersectingVertex(TriangleMesh mesh, Edge edge, float cutHeight,
 			MeshCutter2.BedToLocalConverter bedToLocalConverter) {
@@ -169,7 +167,8 @@ public class TriangleCutter {
 			v0aboveCut = v0Height < cutHeight - epsilon;
 			v1aboveCut = v1Height < cutHeight - epsilon;
 			v2aboveCut = v2Height < cutHeight - epsilon;
-		} else {
+		}
+		else {
 			v0belowCut = v0Height < cutHeight - epsilon;
 			v1belowCut = v1Height < cutHeight - epsilon;
 			v2belowCut = v2Height < cutHeight - epsilon;
@@ -179,7 +178,7 @@ public class TriangleCutter {
 		}
 
 		//        LOGGER.debug(
-				//            v0belowCut + " " +
+		//            v0belowCut + " " +
 		//            v1belowCut + " " +
 		//            v2belowCut + " " +
 		//            v0aboveCut+ " " +
@@ -221,7 +220,8 @@ public class TriangleCutter {
 					mesh, faceIndex, cutHeight, bedToLocalConverter,
 					initialNormal);
 			return;
-		} else {
+		}
+		else {
 			assert vertexIndices.isEmpty();
 		}
 
@@ -268,15 +268,18 @@ public class TriangleCutter {
 				c0 = v0;
 				c1 = v01;
 				c2 = v02;
-			} else if (v1belowCut) {
+			}
+			else if (v1belowCut) {
 				c0 = v1;
 				c1 = v12;
 				c2 = v01;
-			} else if (v2belowCut) {
+			}
+			else if (v2belowCut) {
 				c0 = v2;
 				c1 = v02;
 				c2 = v12;
-			} else {
+			}
+			else {
 				throw new RuntimeException("Unexpected condition");
 			}
 
@@ -290,7 +293,8 @@ public class TriangleCutter {
 				mesh.getFaces().addAll(vertices);
 			}
 
-		} else {
+		}
+		else {
 			// add faces A and B
 			if (v0belowCut && v1belowCut) {
 				c0 = v0;
@@ -299,21 +303,24 @@ public class TriangleCutter {
 				c3 = v0;
 				c4 = v12;
 				c5 = v02;
-			} else if (v1belowCut && v2belowCut) {
+			}
+			else if (v1belowCut && v2belowCut) {
 				c0 = v1;
 				c1 = v2;
 				c2 = v02;
 				c3 = v1;
 				c4 = v02;
 				c5 = v01;
-			} else if (v2belowCut && v0belowCut) {
+			}
+			else if (v2belowCut && v0belowCut) {
 				c0 = v2;
 				c1 = v0;
 				c2 = v01;
 				c3 = v2;
 				c4 = v01;
 				c5 = v12;
-			} else {
+			}
+			else {
 				throw new RuntimeException("Unexpected condition");
 			}
 
@@ -336,7 +343,7 @@ public class TriangleCutter {
 	}
 
 	static void reverseLastFaceNormal(TriangleMesh mesh) {
-		reverseFaceNormal(mesh, mesh.getFaces().size()/6 - 1);
+		reverseFaceNormal(mesh, mesh.getFaces().size() / 6 - 1);
 	}
 
 	static void reverseFaceNormal(TriangleMesh mesh, int faceIndex) {
@@ -387,27 +394,32 @@ public class TriangleCutter {
 				c0 = v0;
 				c1 = vertexIndexOnPlane;
 				c2 = vertexIndexCutting;
-			} else {
+			}
+			else {
 				c0 = v0;
 				c1 = vertexIndexCutting;
 				c2 = vertexIndexOnPlane;
 			}
-		} else if (v1belowCut) {
+		}
+		else if (v1belowCut) {
 			if (vertexIndexOnPlane == v0) {
 				c0 = vertexIndexOnPlane;
 				c1 = v1;
 				c2 = vertexIndexCutting;
-			} else {
+			}
+			else {
 				c0 = vertexIndexCutting;
 				c1 = v1;
 				c2 = vertexIndexOnPlane;
 			}
-		} else if (v2belowCut) {
+		}
+		else if (v2belowCut) {
 			if (vertexIndexOnPlane == v0) {
 				c0 = vertexIndexOnPlane;
 				c1 = vertexIndexCutting;
 				c2 = v2;
-			} else {
+			}
+			else {
 				c0 = vertexIndexCutting;
 				c1 = vertexIndexOnPlane;
 				c2 = v2;
@@ -440,7 +452,8 @@ public class TriangleCutter {
 		if (Math.abs(v1Y - v0Y) < 1e-7) {
 			assert false;
 			proportionAlongEdge = 0;
-		} else {
+		}
+		else {
 			proportionAlongEdge = (cutHeight - v0Y) / (v1Y - v0Y);
 		}
 		float interX = (float) (v0X + (v1X - v0X) * proportionAlongEdge);

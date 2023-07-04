@@ -5,8 +5,7 @@ package celtech.configuration.units;
  * @author Ian
  */
 //TODO: use java currency rather than bespoke  JavaMoney for conversion if needed
-public enum CurrencySymbol
-{
+public enum CurrencySymbol {
 
 	POUND("£"),
 	DOLLAR("$"),
@@ -21,13 +20,11 @@ public enum CurrencySymbol
 
 	private final String currencySymbol;
 
-	private CurrencySymbol(String currencySymbol)
-	{
+	private CurrencySymbol(String currencySymbol) {
 		this.currencySymbol = currencySymbol;
 	}
 
-	public String getDisplayString()
-	{
+	public String getDisplayString() {
 		return currencySymbol;
 	}
 }

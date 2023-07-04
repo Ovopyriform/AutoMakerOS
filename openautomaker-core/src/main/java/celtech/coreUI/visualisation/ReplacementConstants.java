@@ -9,8 +9,7 @@ package celtech.coreUI.visualisation;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class ReplacementConstants
-{
+public class ReplacementConstants {
 
 	/**
 	 *

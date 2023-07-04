@@ -297,26 +297,31 @@ public class ModelContainerProject extends Project {
 			for (ModelContainer subModel : ((ModelGroup) modelContainer).getChildModelContainers()) {
 				getUsedExtruders(subModel, usedExtruders, printer);
 			}
-		} else {
+		}
+		else {
 			if (printer != null && printer.headProperty().get() != null) {
 				//Single material heads can only use 1 material
 				if (printer.headProperty().get().headTypeProperty().get() == HeadType.SINGLE_MATERIAL_HEAD) {
 					usedExtruders.set(0, true);
-				} else if (printer.headProperty().get().headTypeProperty().get() == HeadType.DUAL_MATERIAL_HEAD) {
+				}
+				else if (printer.headProperty().get().headTypeProperty().get() == HeadType.DUAL_MATERIAL_HEAD) {
 					if (printer.extrudersProperty().get(0).isFittedProperty().get() && printer.extrudersProperty().get(1).isFittedProperty().get()) {
 						usedExtruders.set(modelContainer.getAssociateWithExtruderNumberProperty().get(), true);
-					} else {
+					}
+					else {
 						//Yikes - DM head with less than 2 extruders...
 						if (printer.extrudersProperty().get(0).isFittedProperty().get()) {
 							//We have to use extruder 0
 							usedExtruders.set(0, true);
-						} else {
+						}
+						else {
 							//We have to use extruder 1
 							usedExtruders.set(1, true);
 						}
 					}
 				}
-			} else {
+			}
+			else {
 				usedExtruders.set(modelContainer.getAssociateWithExtruderNumberProperty().get(), true);
 			}
 		}
@@ -337,11 +342,13 @@ public class ModelContainerProject extends Project {
 				if (!localUsedExtruders.get(0)) {
 					localUsedExtruders.set(0, true);
 				}
-			} else if (printerSettings.getPrintSupportTypeOverride() == SupportType.MATERIAL_2 && printer != null && printer.extrudersProperty().get(1).isFittedProperty().get()) {
+			}
+			else if (printerSettings.getPrintSupportTypeOverride() == SupportType.MATERIAL_2 && printer != null && printer.extrudersProperty().get(1).isFittedProperty().get()) {
 				if (!localUsedExtruders.get(1)) {
 					localUsedExtruders.set(1, true);
 				}
-			} else if (printerSettings.getPrintSupportTypeOverride() == SupportType.AS_PROFILE) {
+			}
+			else if (printerSettings.getPrintSupportTypeOverride() == SupportType.AS_PROFILE) {
 				if (printer != null && printer.headProperty().get() != null) {
 
 					Head head = printer.headProperty().get();
@@ -350,7 +357,8 @@ public class ModelContainerProject extends Project {
 						if (!localUsedExtruders.get(0)) {
 							localUsedExtruders.set(0, true);
 						}
-					} else {
+					}
+					else {
 						// Here we must check the actual profile settings for the support nozzles and
 						// determine manually which extruders are being used. It's not a neat solution.
 						RoboxProfile settings = printerSettings.getSettings(head.typeCodeProperty().get(), SlicerType.Cura4);
@@ -567,7 +575,8 @@ public class ModelContainerProject extends Project {
 		for (ModelContainer model : modelGroup.getChildModelContainers()) {
 			if (model instanceof ModelGroup) {
 				modelsInGroups.addAll(getDescendentModelsInGroup((ModelGroup) model));
-			} else {
+			}
+			else {
 				modelsInGroups.add(model);
 			}
 		}
@@ -669,7 +678,8 @@ public class ModelContainerProject extends Project {
 			Optional<ModelContainer> modelContainer = getModelContainerOfModelId(modelId);
 			if (modelContainer.isPresent()) {
 				modelContainers.add(modelContainer.get());
-			} else {
+			}
+			else {
 				throw new ProjectLoadException("unexpected model id when recreating groups");
 			}
 		}
@@ -708,7 +718,8 @@ public class ModelContainerProject extends Project {
 		if (Lookup.getSelectedPrinterProperty().get() != null && Lookup.getSelectedPrinterProperty().get().printerConfigurationProperty().get() != null) {
 			printVolumeWidth = Lookup.getSelectedPrinterProperty().get().printerConfigurationProperty().get().getPrintVolumeWidth();
 			printVolumeDepth = Lookup.getSelectedPrinterProperty().get().printerConfigurationProperty().get().getPrintVolumeDepth();
-		} else {
+		}
+		else {
 			PrinterDefinitionFile defaultPrinterConfiguration = PrinterContainer.getPrinterByID(PrinterContainer.defaultPrinterID);
 			printVolumeWidth = defaultPrinterConfiguration.getPrintVolumeWidth();
 			printVolumeDepth = defaultPrinterConfiguration.getPrintVolumeDepth();
@@ -776,7 +787,8 @@ public class ModelContainerProject extends Project {
 			MArea[] unplacedParts = null;
 			unplacedParts = layoutBin.BBCompleteStrategy(partsToLayout);
 			LOGGER.info("Unplaced = " + unplacedParts.length);
-		} else {
+		}
+		else {
 			Bin[] bins = BinPacking.BinPackingStrategy(partsToLayout, binDimension, binDimension);
 			layoutBin = bins[0];
 		}
@@ -828,7 +840,8 @@ public class ModelContainerProject extends Project {
 				//Only auto centre if we're laying out all of the parts
 				if (numberOfPartsNotToLayout == 0) {
 					container.translateTo(newXPosition[pieceNumber] + xCentringOffset, newDepthPosition[pieceNumber] + yCentringOffset);
-				} else {
+				}
+				else {
 					container.translateTo(newXPosition[pieceNumber], newDepthPosition[pieceNumber]);
 				}
 				//                LOGGER.info("Thing " + area.getID() + " is at cX" + container.getTransformedCentreX() + " cY" + container.getTransformedCentreDepth() + " r" + container.getRotationTurn());
@@ -928,7 +941,8 @@ public class ModelContainerProject extends Project {
 		if (!usingDifferentExtruders) {
 			if (Lookup.getUserPreferences().getSlicerType() == SlicerType.Cura4) {
 				printerSettings.getPrintSupportTypeOverrideProperty().set(SupportType.AS_PROFILE);
-			} else {
+			}
+			else {
 				printerSettings.getPrintSupportTypeOverrideProperty().set(useExtruder0 ? SupportType.MATERIAL_1 : SupportType.MATERIAL_2);
 			}
 			fireWhenPrinterSettingsChanged(printerSettings);

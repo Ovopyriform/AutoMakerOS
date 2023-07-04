@@ -18,33 +18,27 @@ import xyz.openautomaker.base.camera.CameraInfo;
  *
  * @author tonya
  */
-public class CameraInfoStringConverter extends StringConverter<CameraInfo>
-{
+public class CameraInfoStringConverter extends StringConverter<CameraInfo> {
 	static final Pattern r = Pattern.compile("\\[(\\d+)\\] (.*)");
 	Supplier<List<CameraInfo>> listSupplier;
 
-	public CameraInfoStringConverter(Supplier<List<CameraInfo>> ls)
-	{
+	public CameraInfoStringConverter(Supplier<List<CameraInfo>> ls) {
 		listSupplier = ls;
 	}
 
 	@Override
-	public String toString(CameraInfo camera)
-	{
-		if (camera == null)
-		{
+	public String toString(CameraInfo camera) {
+		if (camera == null) {
 			return "";
 		}
 		return "[" + camera.getCameraNumber() + "] " + camera.getCameraName();
 	}
 
 	@Override
-	public CameraInfo fromString(String string)
-	{
+	public CameraInfo fromString(String string) {
 		CameraInfo camera = null;
 		Matcher m = r.matcher(string);
-		if (m.find())
-		{
+		if (m.find()) {
 			int cameraNumber = Integer.parseInt(m.group(1));
 			String cameraName = m.group(2).trim();
 			Optional<CameraInfo> cOpt = listSupplier.get()
@@ -52,8 +46,8 @@ public class CameraInfoStringConverter extends StringConverter<CameraInfo>
 					.filter(c -> (c.getCameraName().equals(cameraName) && c.getCameraNumber() == cameraNumber))
 					.findFirst();
 			// Unwrap optional as return type is "bare".
-					if (cOpt.isPresent())
-						camera = cOpt.get();
+			if (cOpt.isPresent())
+				camera = cOpt.get();
 		}
 		return camera;
 	}

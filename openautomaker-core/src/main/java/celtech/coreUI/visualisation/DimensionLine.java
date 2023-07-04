@@ -27,8 +27,7 @@ import javafx.scene.transform.Translate;
  *
  * @author Ian
  */
-class DimensionLine extends Pane implements ScreenExtentsProvider.ScreenExtentsListener
-{
+class DimensionLine extends Pane implements ScreenExtentsProvider.ScreenExtentsListener {
 
 	private static final Logger LOGGER = LogManager.getLogger(DimensionLine.class.getName());
 	private final RestrictedNumberField dimensionLabel = new RestrictedNumberField();
@@ -48,42 +47,38 @@ class DimensionLine extends Pane implements ScreenExtentsProvider.ScreenExtentsL
 	private ResizeableTwoD container;
 	private UndoableProject undoableproject;
 
-	private final ChangeListener<Boolean> dimensionEntryChangeListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-	{
-		switch (direction)
-		{
-		case FORWARD_BACK:
-			if (ResizeableThreeD.class.isInstance(container))
-			{
-				Set<ResizeableThreeD> containerSet = new HashSet<>();
-				containerSet.add((ResizeableThreeD) container);
-				undoableproject.resizeModelsDepth(containerSet, dimensionLabel.getAsFloat());
-			}
-			break;
-		case HORIZONTAL:
-			Set<ResizeableTwoD> hcontainerSet = new HashSet<>();
-			hcontainerSet.add(container);
-			undoableproject.resizeModelsWidth(hcontainerSet, dimensionLabel.getAsFloat());
-			break;
-		case VERTICAL:
-			Set<ResizeableTwoD> vcontainerSet = new HashSet<>();
-			vcontainerSet.add(container);
-			undoableproject.resizeModelsHeight(vcontainerSet, dimensionLabel.getAsFloat());
-			break;
+	private final ChangeListener<Boolean> dimensionEntryChangeListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+		switch (direction) {
+			case FORWARD_BACK:
+				if (ResizeableThreeD.class.isInstance(container)) {
+					Set<ResizeableThreeD> containerSet = new HashSet<>();
+					containerSet.add((ResizeableThreeD) container);
+					undoableproject.resizeModelsDepth(containerSet, dimensionLabel.getAsFloat());
+				}
+				break;
+			case HORIZONTAL:
+				Set<ResizeableTwoD> hcontainerSet = new HashSet<>();
+				hcontainerSet.add(container);
+				undoableproject.resizeModelsWidth(hcontainerSet, dimensionLabel.getAsFloat());
+				break;
+			case VERTICAL:
+				Set<ResizeableTwoD> vcontainerSet = new HashSet<>();
+				vcontainerSet.add(container);
+				undoableproject.resizeModelsHeight(vcontainerSet, dimensionLabel.getAsFloat());
+				break;
 		}
 	};
 
-	public enum LineDirection
-	{
+	public enum LineDirection {
 
-		HORIZONTAL, VERTICAL, FORWARD_BACK
+		HORIZONTAL,
+		VERTICAL,
+		FORWARD_BACK
 	}
 
-	public void initialise(Project project, ScreenExtentsProviderTwoD screenExtentsProvider, LineDirection direction)
-	{
+	public void initialise(Project project, ScreenExtentsProviderTwoD screenExtentsProvider, LineDirection direction) {
 		undoableproject = new UndoableProject(project);
-		if (ResizeableTwoD.class.isInstance(screenExtentsProvider))
-		{
+		if (ResizeableTwoD.class.isInstance(screenExtentsProvider)) {
 			container = (ResizeableTwoD) screenExtentsProvider;
 		}
 
@@ -123,38 +118,30 @@ class DimensionLine extends Pane implements ScreenExtentsProvider.ScreenExtentsL
 	}
 
 	@Override
-	public void screenExtentsChanged(ScreenExtentsProvider screenExtentsProvider)
-	{
+	public void screenExtentsChanged(ScreenExtentsProvider screenExtentsProvider) {
 		updateArrowAndTextPosition(screenExtentsProvider);
 	}
 
-	private void updateArrowAndTextPosition(ScreenExtentsProvider extentsProvider)
-	{
-		if (extentsProvider instanceof ScreenExtentsProviderThreeD)
-		{
+	private void updateArrowAndTextPosition(ScreenExtentsProvider extentsProvider) {
+		if (extentsProvider instanceof ScreenExtentsProviderThreeD) {
 			updateArrowAndTextPosition_3D((ScreenExtentsProviderThreeD) extentsProvider);
-		} else if (extentsProvider instanceof ScreenExtentsProviderTwoD)
-		{
+		}
+		else if (extentsProvider instanceof ScreenExtentsProviderTwoD) {
 			updateArrowAndTextPosition_2D((ScreenExtentsProviderTwoD) extentsProvider);
 		}
 	}
 
-	private void updateArrowAndTextPosition_2D(ScreenExtentsProviderTwoD extentsProvider)
-	{
+	private void updateArrowAndTextPosition_2D(ScreenExtentsProviderTwoD extentsProvider) {
 		ScreenExtents extents = extentsProvider.getScreenExtents();
 		double transformedWidth = extentsProvider.getTransformedWidth();
 		double transformedHeight = extentsProvider.getTransformedHeight();
 
-		if (direction == LineDirection.VERTICAL)
-		{
+		if (direction == LineDirection.VERTICAL) {
 			dimensionLabel.setValue(transformedHeight);
 
 			Edge heightEdge = extents.heightEdges.get(0);
-			for (int edgeIndex = 1; edgeIndex < extents.heightEdges.size(); edgeIndex++)
-			{
-				if (extents.heightEdges.get(edgeIndex).getFirstPoint().getX() < heightEdge.
-						getFirstPoint().getX())
-				{
+			for (int edgeIndex = 1; edgeIndex < extents.heightEdges.size(); edgeIndex++) {
+				if (extents.heightEdges.get(edgeIndex).getFirstPoint().getX() < heightEdge.getFirstPoint().getX()) {
 					heightEdge = extents.heightEdges.get(edgeIndex);
 				}
 			}
@@ -162,12 +149,11 @@ class DimensionLine extends Pane implements ScreenExtentsProvider.ScreenExtentsL
 			Point2D topVerticalPoint = null;
 			Point2D bottomVerticalPoint = null;
 
-			if (heightEdge.getFirstPoint().getY() < heightEdge.getSecondPoint().getY())
-			{
+			if (heightEdge.getFirstPoint().getY() < heightEdge.getSecondPoint().getY()) {
 				topVerticalPoint = heightEdge.getFirstPoint();
 				bottomVerticalPoint = heightEdge.getSecondPoint();
-			} else
-			{
+			}
+			else {
 				topVerticalPoint = heightEdge.getSecondPoint();
 				bottomVerticalPoint = heightEdge.getFirstPoint();
 			}
@@ -179,19 +165,17 @@ class DimensionLine extends Pane implements ScreenExtentsProvider.ScreenExtentsL
 			Point2D bottomPoint = screenToLocal(bottomVerticalPoint);
 
 			if (topPoint != null
-					&& bottomPoint != null)
-			{
+					&& bottomPoint != null) {
 				double xComponent = topPoint.getX() - bottomPoint.getX();
 				double yComponent = topPoint.getY() - bottomPoint.getY();
 				double lineLength = Math.sqrt((xComponent * xComponent) + (yComponent * yComponent));
 				double angle = (RAD_TO_DEG * Math.atan2(xComponent, -yComponent));
 
-				if (lineLength < arrowHeight * 2 + 5)
-				{
+				if (lineLength < arrowHeight * 2 + 5) {
 					upArrow.setVisible(false);
 					downArrow.setVisible(false);
-				} else
-				{
+				}
+				else {
 					upArrow.setVisible(true);
 					downArrow.setVisible(true);
 				}
@@ -212,28 +196,24 @@ class DimensionLine extends Pane implements ScreenExtentsProvider.ScreenExtentsL
 				secondArrowTranslate.setY(bottomPoint.getY());
 				arrowRotate.setAngle(angle);
 			}
-		} else if (direction == LineDirection.HORIZONTAL)
-		{
+		}
+		else if (direction == LineDirection.HORIZONTAL) {
 			dimensionLabel.setValue(transformedWidth);
 
 			Edge widthEdge = extents.widthEdges.get(0);
-			if (extents.widthEdges.get(1).getFirstPoint().getY()
-					> widthEdge.getFirstPoint().getY()
-					&& extents.widthEdges.get(1).getSecondPoint().getY()
-					> widthEdge.getSecondPoint().getY())
-			{
+			if (extents.widthEdges.get(1).getFirstPoint().getY() > widthEdge.getFirstPoint().getY()
+					&& extents.widthEdges.get(1).getSecondPoint().getY() > widthEdge.getSecondPoint().getY()) {
 				widthEdge = extents.widthEdges.get(1);
 			}
 
 			Point2D leftHorizontalPoint = widthEdge.getFirstPoint();
 			Point2D rightHorizontalPoint = widthEdge.getSecondPoint();
 
-			if (widthEdge.getFirstPoint().getX() < widthEdge.getSecondPoint().getX())
-			{
+			if (widthEdge.getFirstPoint().getX() < widthEdge.getSecondPoint().getX()) {
 				leftHorizontalPoint = widthEdge.getFirstPoint();
 				rightHorizontalPoint = widthEdge.getSecondPoint();
-			} else
-			{
+			}
+			else {
 				leftHorizontalPoint = widthEdge.getSecondPoint();
 				rightHorizontalPoint = widthEdge.getFirstPoint();
 			}
@@ -245,19 +225,17 @@ class DimensionLine extends Pane implements ScreenExtentsProvider.ScreenExtentsL
 			Point2D rightPoint = screenToLocal(rightHorizontalPoint);
 
 			if (leftPoint != null
-					&& rightPoint != null)
-			{
+					&& rightPoint != null) {
 				double xComponent = rightPoint.getX() - leftPoint.getX();
 				double yComponent = rightPoint.getY() - leftPoint.getY();
 				double lineLength = Math.sqrt((xComponent * xComponent) + (yComponent * yComponent));
 				double angle = (RAD_TO_DEG * Math.atan2(xComponent, -yComponent)) - 180;
 
-				if (lineLength < arrowHeight * 2 + 5)
-				{
+				if (lineLength < arrowHeight * 2 + 5) {
 					upArrow.setVisible(false);
 					downArrow.setVisible(false);
-				} else
-				{
+				}
+				else {
 					upArrow.setVisible(true);
 					downArrow.setVisible(true);
 				}
@@ -282,35 +260,29 @@ class DimensionLine extends Pane implements ScreenExtentsProvider.ScreenExtentsL
 		}
 	}
 
-	private void updateArrowAndTextPosition_3D(ScreenExtentsProviderThreeD extentsProvider)
-	{
+	private void updateArrowAndTextPosition_3D(ScreenExtentsProviderThreeD extentsProvider) {
 		updateArrowAndTextPosition_2D((ScreenExtentsProviderTwoD) extentsProvider);
 
 		ScreenExtents extents = extentsProvider.getScreenExtents();
 		double transformedDepth = extentsProvider.getTransformedDepth();
 
-		if (direction == LineDirection.FORWARD_BACK)
-		{
+		if (direction == LineDirection.FORWARD_BACK) {
 			dimensionLabel.setValue(transformedDepth);
 
 			Edge depthEdge = extents.depthEdges.get(0);
-			if (extents.depthEdges.get(1).getFirstPoint().getY()
-					> depthEdge.getFirstPoint().getY()
-					&& extents.depthEdges.get(1).getSecondPoint().getY()
-					> depthEdge.getSecondPoint().getY())
-			{
+			if (extents.depthEdges.get(1).getFirstPoint().getY() > depthEdge.getFirstPoint().getY()
+					&& extents.depthEdges.get(1).getSecondPoint().getY() > depthEdge.getSecondPoint().getY()) {
 				depthEdge = extents.depthEdges.get(1);
 			}
 
 			Point2D backHorizontalPoint = null;
 			Point2D frontHorizontalPoint = null;
 
-			if (depthEdge.getFirstPoint().getX() < depthEdge.getSecondPoint().getX())
-			{
+			if (depthEdge.getFirstPoint().getX() < depthEdge.getSecondPoint().getX()) {
 				backHorizontalPoint = depthEdge.getFirstPoint();
 				frontHorizontalPoint = depthEdge.getSecondPoint();
-			} else
-			{
+			}
+			else {
 				backHorizontalPoint = depthEdge.getSecondPoint();
 				frontHorizontalPoint = depthEdge.getFirstPoint();
 			}
@@ -322,19 +294,17 @@ class DimensionLine extends Pane implements ScreenExtentsProvider.ScreenExtentsL
 			Point2D frontPoint = screenToLocal(frontHorizontalPoint);
 
 			if (backPoint != null
-					&& frontPoint != null)
-			{
+					&& frontPoint != null) {
 				double xComponent = backPoint.getX() - frontPoint.getX();
 				double yComponent = backPoint.getY() - frontPoint.getY();
 				double lineLength = Math.sqrt((xComponent * xComponent) + (yComponent * yComponent));
 				double angle = (RAD_TO_DEG * Math.atan2(xComponent, -yComponent));
 
-				if (lineLength < arrowHeight * 2 + 5)
-				{
+				if (lineLength < arrowHeight * 2 + 5) {
 					upArrow.setVisible(false);
 					downArrow.setVisible(false);
-				} else
-				{
+				}
+				else {
 					upArrow.setVisible(true);
 					downArrow.setVisible(true);
 				}
@@ -357,8 +327,7 @@ class DimensionLine extends Pane implements ScreenExtentsProvider.ScreenExtentsL
 		}
 	}
 
-	public RestrictedNumberField getDimensionLabel()
-	{
+	public RestrictedNumberField getDimensionLabel() {
 		return dimensionLabel;
 	}
 }

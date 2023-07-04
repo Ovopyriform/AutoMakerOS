@@ -85,7 +85,7 @@ public class SymbolicSubdivisionBuilder {
 			int[] oldFaces = oldMesh.faces[f];
 			for (int p = 0; p < oldFaces.length; p += 2) {
 				faces[newFacesInd][0] = getPointNewIndex(oldFaces[p]);
-				faces[newFacesInd][1] = getTexCoordNewIndex(faceInfo, oldFaces[p], oldFaces[p+1]);
+				faces[newFacesInd][1] = getTexCoordNewIndex(faceInfo, oldFaces[p], oldFaces[p + 1]);
 				newFacesInd++;
 			}
 		}
@@ -148,8 +148,8 @@ public class SymbolicSubdivisionBuilder {
 			if (n < 3) {
 				continue;
 			}
-			int from = face[(n-1) * 2];
-			int texFrom = face[(n-1) * 2 + 1];
+			int from = face[(n - 1) * 2];
+			int texFrom = face[(n - 1) * 2 + 1];
 			double fu, fv;
 			double tu, tv;
 			double u = 0, v = 0;
@@ -167,8 +167,10 @@ public class SymbolicSubdivisionBuilder {
 				addEdge(edge, faceInfo);
 				addPoint(to, faceInfo, edge);
 				addPoint(from, edge);
-				fu = tu; fv = tv;
-				u += tu / n; v += tv / n;
+				fu = tu;
+				fv = tv;
+				u += tu / n;
+				v += tv / n;
 				from = to;
 				texFrom = texTo;
 			}
@@ -187,7 +189,7 @@ public class SymbolicSubdivisionBuilder {
 			faceInfos[f].facePoint = points.addFacePoint(faceVertices);
 		}
 
-		for(EdgeInfo edgeInfo : edgeInfos.values()) {
+		for (EdgeInfo edgeInfo : edgeInfos.values()) {
 			int[] edgeFacePoints = new int[edgeInfo.faces.size()];
 			for (int f = 0; f < edgeInfo.faces.size(); f++) {
 				edgeFacePoints[f] = edgeInfo.faces.get(f).facePoint;
@@ -221,7 +223,7 @@ public class SymbolicSubdivisionBuilder {
 		return destPointIndex;
 	}
 
-	private void calcControlTexCoord(FaceInfo faceInfo, int srcPointIndex, int srcTexCoordIndex, int destTexCoordIndex){
+	private void calcControlTexCoord(FaceInfo faceInfo, int srcPointIndex, int srcTexCoordIndex, int destTexCoordIndex) {
 		PointInfo pointInfo = pointInfos[srcPointIndex];
 		boolean pointBelongsToCrease = oldMesh.points instanceof OriginalPointArray;
 		if ((mapBorderMode == MapBorderMode.SMOOTH_ALL && (pointInfo.isBoundary() || pointBelongsToCrease)) ||
@@ -236,7 +238,8 @@ public class SymbolicSubdivisionBuilder {
 			}
 			texCoords[destTexCoordIndex * 2] = (float) u;
 			texCoords[destTexCoordIndex * 2 + 1] = (float) v;
-		} else {
+		}
+		else {
 			texCoords[destTexCoordIndex * 2] = oldMesh.texCoords[srcTexCoordIndex * 2];
 			texCoords[destTexCoordIndex * 2 + 1] = oldMesh.texCoords[srcTexCoordIndex * 2 + 1];
 		}

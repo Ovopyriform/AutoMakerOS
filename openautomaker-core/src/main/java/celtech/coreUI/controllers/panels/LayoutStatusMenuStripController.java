@@ -380,7 +380,8 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 
 			if (purgeConsent == PurgeResponse.PRINT_WITH_PURGE) {
 				displayManager.getPurgeInsetPanelController().purgeAndPrint((ModelContainerProject) currentProject, printer);
-			} else if (purgeConsent == PurgeResponse.PRINT_WITHOUT_PURGE || purgeConsent == PurgeResponse.NOT_NECESSARY) {
+			}
+			else if (purgeConsent == PurgeResponse.PRINT_WITHOUT_PURGE || purgeConsent == PurgeResponse.NOT_NECESSARY) {
 				ObservableList<Boolean> usedExtruders = ((ModelContainerProject) currentProject).getUsedExtruders(printer);
 				printableProject.setUsedExtruders(usedExtruders);
 				for (int extruderNumber = 0; extruderNumber < usedExtruders.size(); extruderNumber++) {
@@ -388,10 +389,12 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 						if (extruderNumber == 0) {
 							if (currentPrinter.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD) {
 								currentPrinter.resetPurgeTemperatureForNozzleHeater(currentPrinter.headProperty().get(), 1);
-							} else {
+							}
+							else {
 								currentPrinter.resetPurgeTemperatureForNozzleHeater(currentPrinter.headProperty().get(), 0);
 							}
-						} else {
+						}
+						else {
 							currentPrinter.resetPurgeTemperatureForNozzleHeater(currentPrinter.headProperty().get(), 0);
 						}
 					}
@@ -647,13 +650,15 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 
 			if (printer.reelsProperty().containsKey(0)) {
 				cm1Text = "1: " + printer.reelsProperty().get(0).friendlyFilamentNameProperty().get();
-			} else {
+			}
+			else {
 				cm1Text = "1: " + OpenAutoMakerEnv.getI18N().t("materialComponent.unknown");
 			}
 
 			if (printer.reelsProperty().containsKey(1)) {
 				cm2Text = "2: " + printer.reelsProperty().get(1).friendlyFilamentNameProperty().get();
-			} else {
+			}
+			else {
 				cm2Text = "2: " + OpenAutoMakerEnv.getI18N().t("materialComponent.unknown");
 			}
 
@@ -679,9 +684,11 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 			double cm2Width = getWidthOfString(cm2Text, "lightText", 14);
 
 			contextMenu.show(ejectFilamentButton, Side.TOP, 35 - ((max(cm1Width, cm2Width) + 20) / 2.0), -25);
-		} else if (printer.extrudersProperty().get(0).filamentLoadedProperty().get()) {
+		}
+		else if (printer.extrudersProperty().get(0).filamentLoadedProperty().get()) {
 			ejectFilament(0);
-		} else if (printer.extrudersProperty().get(1).filamentLoadedProperty().get()) {
+		}
+		else if (printer.extrudersProperty().get(1).filamentLoadedProperty().get()) {
 			ejectFilament(1);
 		}
 	}
@@ -777,7 +784,8 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 		try {
 			if (currentPrinter.getPrinterAncillarySystems().headFanOnProperty().get()) {
 				currentPrinter.switchOffHeadFan();
-			} else {
+			}
+			else {
 				currentPrinter.switchOnHeadFan();
 			}
 		}
@@ -793,7 +801,8 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 			if (headLEDOn) {
 				currentPrinter.switchOffHeadLEDs();
 				headLEDOn = false;
-			} else {
+			}
+			else {
 				currentPrinter.switchOnHeadLEDs();
 				headLEDOn = true;
 			}
@@ -843,7 +852,8 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 		if (taskResponse.succeeded()) {
 			BaseLookup.getSystemNotificationHandler().showInformationNotification(OpenAutoMakerEnv.getI18N().t("removeHead.title"), OpenAutoMakerEnv.getI18N().t("removeHead.finished"));
 			LOGGER.debug("Head remove completed");
-		} else {
+		}
+		else {
 			BaseLookup.getSystemNotificationHandler().showWarningNotification(OpenAutoMakerEnv.getI18N().t("removeHead.title"), OpenAutoMakerEnv.getI18N().t("removeHead.failed"));
 		}
 	}
@@ -1027,7 +1037,8 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 	ChangeListener<Printer> printerSettingsListener = (ObservableValue<? extends Printer> observable, Printer oldValue, Printer newValue) -> {
 		if (newValue != null) {
 			whenProjectOrSettingsPrinterChange();
-		} else {
+		}
+		else {
 			printButton.disableProperty().unbind();
 			printButton.setDisable(true);
 		}
@@ -1058,7 +1069,8 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 			dmHeadOnSingleExtruderMachineNotificationBar.setAppearanceCondition(printer.headProperty().get().headTypeProperty().isEqualTo(Head.HeadType.DUAL_MATERIAL_HEAD)
 					.and(printer.extrudersProperty().get(0).isFittedProperty().not().or(printer.extrudersProperty().get(1).isFittedProperty().not())));
 			headIsSingleX.set(printer.headProperty().get().typeCodeProperty().get().equalsIgnoreCase("RBXDV-S1"));
-		} else
+		}
+		else
 			headIsSingleX.set(false);
 
 		if (project instanceof ModelContainerProject) {
@@ -1163,7 +1175,8 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 
 				currentPrinter = newValue;
 
-			} else {
+			}
+			else {
 				printerAvailable.set(false);
 				clearConditionalNotificationBarConditions();
 			}
@@ -1409,7 +1422,8 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 							.and(printer.extrudersProperty().get(1).filamentLoadedProperty().and(printer.headPowerOnFlagProperty())).and(modelsOffBed.not()).and(modelsOffBedWithHead.not()).and(modelsOffBedWithRaft.not())
 							.and(modelOffBedWithSpiral.not()).and(headIsSingleX.or(printer.effectiveFilamentsProperty().get(0).getFilledProperty().not().and(printer.effectiveFilamentsProperty().get(1).getFilledProperty().not())))
 							.and(printerConnectionOffline.not()));
-				} else {
+				}
+				else {
 					// only one extruder required, which one is it?
 					int extruderNumber = (((ModelContainerProject) project).getUsedExtruders(printer).get(0)) ? 0 : 1;
 					BooleanBinding filamentPresentBinding = Bindings.valueAt(printer.effectiveFilamentsProperty(), extruderNumber).isNotEqualTo(FilamentContainer.UNKNOWN_FILAMENT);

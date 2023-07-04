@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI.components.printerstatus;
 
 import java.io.IOException;
@@ -16,8 +14,7 @@ import javafx.scene.transform.Scale;
  *
  * @author tony
  */
-public class PrinterSVGComponent extends Pane
-{
+public class PrinterSVGComponent extends Pane {
 	private final String printerIconSuffix = "PrinterIcon";
 	private final String defaultPrinterTypeCode = "RBX01";
 	Pane printerIcon = null;
@@ -35,36 +32,31 @@ public class PrinterSVGComponent extends Pane
 	@FXML
 	Pane rootIndicator;
 
-	private void hideAllIcons()
-	{
+	private void hideAllIcons() {
 		readyIcon.setVisible(false);
 		printingIcon.setVisible(false);
 		pausedIcon.setVisible(false);
 		notificationIcon.setVisible(false);
 	}
 
-	public PrinterSVGComponent()
-	{
+	public PrinterSVGComponent() {
 		URL fxml = getClass().getResource("/celtech/resources/fxml/printerstatus/printerSVG.fxml");
 		FXMLLoader fxmlLoader = new FXMLLoader(fxml);
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 
 		errorIcon.setVisible(false);
 	}
 
-	public void setPrinterIcon(String printerTypeCode)
-	{
-		if (printerIcon != null)
-		{
+	public void setPrinterIcon(String printerTypeCode) {
+		if (printerIcon != null) {
 			printerIcon.setVisible(false);
 			printerIcon = null;
 		}
@@ -72,16 +64,13 @@ public class PrinterSVGComponent extends Pane
 		Pane defaultPrinterIcon = null;
 		String printerIconName = printerTypeCode.toUpperCase() + printerIconSuffix;
 		String defaultPrinterIconName = defaultPrinterTypeCode + printerIconSuffix;
-		for (Node pNode : getChildren())
-		{
+		for (Node pNode : getChildren()) {
 			String pNodeName = pNode.getId();
-			if (pNodeName != null && pNodeName.endsWith(printerIconSuffix))
-			{
-				Pane p =  (Pane)pNode;
+			if (pNodeName != null && pNodeName.endsWith(printerIconSuffix)) {
+				Pane p = (Pane) pNode;
 				if (pNodeName.equals(printerIconName))
 					printerIcon = p;
-				else
-				{
+				else {
 					p.setVisible(false);
 					if (defaultPrinterIcon == null && pNodeName.equals(defaultPrinterIconName))
 						defaultPrinterIcon = p;
@@ -96,43 +85,38 @@ public class PrinterSVGComponent extends Pane
 			printerIcon.setVisible(true);
 	}
 
-	public void setStatus(PrinterComponent.Status status)
-	{
+	public void setStatus(PrinterComponent.Status status) {
 		hideAllIcons();
 
-		switch (status)
-		{
-		case READY:
-			readyIcon.setVisible(true);
-			break;
-		case PAUSED:
-			pausedIcon.setVisible(true);
-			break;
-		case NOTIFICATION:
-			notificationIcon.setVisible(true);
-			break;
-		case PRINTING:
-			printingIcon.setVisible(true);
-			break;
-		case NO_INDICATOR:
-			break;
+		switch (status) {
+			case READY:
+				readyIcon.setVisible(true);
+				break;
+			case PAUSED:
+				pausedIcon.setVisible(true);
+				break;
+			case NOTIFICATION:
+				notificationIcon.setVisible(true);
+				break;
+			case PRINTING:
+				printingIcon.setVisible(true);
+				break;
+			case NO_INDICATOR:
+				break;
 		}
 	}
 
-	public void showErrorIndicator(boolean showErrorIndicator)
-	{
+	public void showErrorIndicator(boolean showErrorIndicator) {
 		errorIcon.setVisible(showErrorIndicator);
 	}
 
-	public void setSize(double size)
-	{
+	public void setSize(double size) {
 		Scale scale = new Scale(size / 260.0, size / 260.0, 0, 0);
 		getTransforms().clear();
 		getTransforms().add(scale);
 	}
 
-	public void setIsRoot(boolean isARoot)
-	{
+	public void setIsRoot(boolean isARoot) {
 		rootIndicator.setVisible(isARoot);
 	}
 }

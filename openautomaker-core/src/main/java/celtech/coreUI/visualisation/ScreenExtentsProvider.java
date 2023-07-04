@@ -4,8 +4,7 @@ package celtech.coreUI.visualisation;
  *
  * @author Ian
  */
-public interface ScreenExtentsProvider
-{
+public interface ScreenExtentsProvider {
 
 	public ScreenExtents getScreenExtents();
 
@@ -13,8 +12,7 @@ public interface ScreenExtentsProvider
 
 	public void removeScreenExtentsChangeListener(ScreenExtentsListener listener);
 
-	public interface ScreenExtentsListener
-	{
+	public interface ScreenExtentsListener {
 		public void screenExtentsChanged(ScreenExtentsProvider screenExtentsProvider);
 	}
 }

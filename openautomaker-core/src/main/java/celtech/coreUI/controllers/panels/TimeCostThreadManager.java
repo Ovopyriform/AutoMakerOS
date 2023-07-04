@@ -15,18 +15,15 @@ import xyz.openautomaker.base.utils.tasks.Cancellable;
  *
  * @author tony
  */
-public class TimeCostThreadManager
-{
+public class TimeCostThreadManager {
 
 	private final ExecutorService executorService;
 	private Future timeCostFuture;
 	private Cancellable cancellable;
 	private static TimeCostThreadManager instance;
 
-	private TimeCostThreadManager()
-	{
-		ThreadFactory threadFactory = (Runnable runnable) ->
-		{
+	private TimeCostThreadManager() {
+		ThreadFactory threadFactory = (Runnable runnable) -> {
 			Thread thread = Executors.defaultThreadFactory().newThread(runnable);
 			thread.setDaemon(true);
 			return thread;
@@ -34,36 +31,31 @@ public class TimeCostThreadManager
 		executorService = Executors.newFixedThreadPool(1, threadFactory);
 	}
 
-	public static TimeCostThreadManager getInstance()
-	{
-		if (instance == null)
-		{
+	public static TimeCostThreadManager getInstance() {
+		if (instance == null) {
 			instance = new TimeCostThreadManager();
 		}
 
 		return instance;
 	}
 
-	public void cancelRunningTimeCostTasks()
-	{
+	public void cancelRunningTimeCostTasks() {
 		//        executorService.shutdownNow();
-		if (cancellable != null)
-		{
+		if (cancellable != null) {
 			cancellable.cancelled().set(true);
 			timeCostFuture.cancel(true);
 			cancellable = null;
 		}
 	}
 
-	public void cancelRunningTimeCostTasksAndRun(Runnable runnable, Cancellable cancellable)
-	{
+	public void cancelRunningTimeCostTasksAndRun(Runnable runnable, Cancellable cancellable) {
 		cancelRunningTimeCostTasks();
 		this.cancellable = cancellable;
-		timeCostFuture = executorService.submit(() ->
-		{
+		timeCostFuture = executorService.submit(() -> {
 			try {
 				runnable.run();
-			} catch (Exception ex) {
+			}
+			catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		});

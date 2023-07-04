@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI.controllers.panels;
 
 import celtech.Lookup;
@@ -17,8 +15,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author tony
  */
-public class CalibrationMenuConfiguration
-{
+public class CalibrationMenuConfiguration {
 
 	public BooleanProperty nozzleOpeningCalibrationEnabled = new SimpleBooleanProperty(false);
 	public BooleanProperty nozzleHeightCalibrationEnabled = new SimpleBooleanProperty(false);
@@ -34,26 +31,21 @@ public class CalibrationMenuConfiguration
 
 	public CalibrationMenuConfiguration(boolean displayOpening,
 			boolean displayHeight,
-			boolean displayAlignment)
-	{
+			boolean displayAlignment) {
 		this.displayOpening = displayOpening;
 		this.displayHeight = displayHeight;
 		this.displayAlignment = displayAlignment;
 	}
 
 	public void configureCalibrationMenu(VerticalMenu calibrationMenu,
-			CalibrationInsetPanelController calibrationInsetPanelController)
-	{
+			CalibrationInsetPanelController calibrationInsetPanelController) {
 
-		if (currentlySelectedPrinter != null)
-		{
-			if (currentlySelectedPrinter.headProperty().get() != null)
-			{
+		if (currentlySelectedPrinter != null) {
+			if (currentlySelectedPrinter.headProperty().get() != null) {
 				nozzleOpeningCalibrationRequired.bind(currentlySelectedPrinter.headProperty().get().valveTypeProperty().isEqualTo(Head.ValveType.FITTED));
 				xyAlignmentCalibrationRequired.bind(currentlySelectedPrinter.headProperty().get().valveTypeProperty().isEqualTo(Head.ValveType.FITTED));
 			}
-			else
-			{
+			else {
 				nozzleOpeningCalibrationRequired.set(false);
 				xyAlignmentCalibrationRequired.set(false);
 			}
@@ -68,10 +60,8 @@ public class CalibrationMenuConfiguration
 
 		calibrationMenu.setTitle(OpenAutoMakerEnv.getI18N().t("calibrationPanel.title"));
 
-		if (displayOpening)
-		{
-			VerticalMenu.NoArgsVoidFunc doOpeningCalibration = () ->
-			{
+		if (displayOpening) {
+			VerticalMenu.NoArgsVoidFunc doOpeningCalibration = () -> {
 				calibrationInsetPanelController.setCalibrationMode(
 						CalibrationMode.NOZZLE_OPENING);
 			};
@@ -79,10 +69,8 @@ public class CalibrationMenuConfiguration
 					doOpeningCalibration, nozzleOpeningCalibrationEnabled);
 		}
 
-		if (displayHeight)
-		{
-			VerticalMenu.NoArgsVoidFunc doHeightCalibration = () ->
-			{
+		if (displayHeight) {
+			VerticalMenu.NoArgsVoidFunc doHeightCalibration = () -> {
 				calibrationInsetPanelController.setCalibrationMode(
 						CalibrationMode.NOZZLE_HEIGHT);
 			};
@@ -90,10 +78,8 @@ public class CalibrationMenuConfiguration
 					doHeightCalibration, nozzleHeightCalibrationEnabled);
 		}
 
-		if (displayAlignment)
-		{
-			VerticalMenu.NoArgsVoidFunc doXYAlignmentCalibration = () ->
-			{
+		if (displayAlignment) {
+			VerticalMenu.NoArgsVoidFunc doXYAlignmentCalibration = () -> {
 				calibrationInsetPanelController.setCalibrationMode(
 						CalibrationMode.X_AND_Y_OFFSET);
 			};
@@ -104,8 +90,7 @@ public class CalibrationMenuConfiguration
 		Lookup.getSelectedPrinterProperty().addListener(selectedPrinterListener);
 	}
 
-	private ChangeListener<Printer> selectedPrinterListener = (ObservableValue<? extends Printer> observable, Printer oldValue, Printer newPrinter) ->
-	{
+	private ChangeListener<Printer> selectedPrinterListener = (ObservableValue<? extends Printer> observable, Printer oldValue, Printer newPrinter) -> {
 		currentlySelectedPrinter = newPrinter;
 		nozzleOpeningCalibrationRequired.unbind();
 		nozzleOpeningCalibrationRequired.set(false);
@@ -118,10 +103,8 @@ public class CalibrationMenuConfiguration
 		xyAlignmentCalibrationEnabled.unbind();
 		xyAlignmentCalibrationEnabled.set(false);
 
-		if (newPrinter != null)
-		{
-			if (newPrinter.headProperty().get() != null)
-			{
+		if (newPrinter != null) {
+			if (newPrinter.headProperty().get() != null) {
 				nozzleOpeningCalibrationRequired.bind(newPrinter.headProperty().get().valveTypeProperty().isEqualTo(Head.ValveType.FITTED));
 				xyAlignmentCalibrationRequired.bind(newPrinter.headProperty().get().valveTypeProperty().isEqualTo(Head.ValveType.FITTED));
 			}

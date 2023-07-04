@@ -11,14 +11,12 @@ import javafx.scene.image.ImageView;
  *
  * @author George Salter
  */
-public class RootCameraTableCell extends TableCell<DetectedServer, Boolean>
-{
+public class RootCameraTableCell extends TableCell<DetectedServer, Boolean> {
 	private final ImageView imageContainer;
 	private final Image connectedImage;
 	private final Image disconnectedImage;
 
-	public RootCameraTableCell()
-	{
+	public RootCameraTableCell() {
 		imageContainer = new ImageView();
 		connectedImage = new Image(ApplicationConfiguration.imageResourcePath + "webcam.png");
 		disconnectedImage = new Image(ApplicationConfiguration.imageResourcePath + "webcam_disconnected.png");
@@ -26,22 +24,18 @@ public class RootCameraTableCell extends TableCell<DetectedServer, Boolean>
 	}
 
 	@Override
-	protected void updateItem(Boolean cameraDetected, boolean empty)
-	{
+	protected void updateItem(Boolean cameraDetected, boolean empty) {
 		super.updateItem(cameraDetected, empty);
-		if (cameraDetected != null && !empty)
-		{
+		if (cameraDetected != null && !empty) {
 			setGraphic(imageContainer);
-			if (cameraDetected)
-			{
+			if (cameraDetected) {
 				imageContainer.setImage(connectedImage);
 			}
-			else
-			{
+			else {
 				imageContainer.setImage(disconnectedImage);
 			}
-		} else
-		{
+		}
+		else {
 			setGraphic(null);
 		}
 	}

@@ -51,8 +51,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian
  */
-public class ResetPrinterIDController implements Initializable
-{
+public class ResetPrinterIDController implements Initializable {
 	private static final String KEY_TO_THE_CRYPT = "4304504C02D05504B05204F04204F058";
 
 	private RoboxResetIDResult resetResult = RoboxResetIDResult.RESET_NOT_DONE;
@@ -121,85 +120,70 @@ public class ResetPrinterIDController implements Initializable
 	private Button resetButton;
 
 	@FXML
-	private void resetPrinterID()
-	{
+	private void resetPrinterID() {
 		resetResult = RoboxResetIDResult.RESET_NOT_DONE;
 
-		if (printerToUse != null)
-		{
-			if (tempSetRadioButton.isSelected())
-			{
+		if (printerToUse != null) {
+			if (tempSetRadioButton.isSelected()) {
 				printerToUse.setPrinterConfiguration(printerTypeChoice.getValue());
 				printerToUse.setPrinterEdition(printerEditionChoice.getValue());
 				resetResult = RoboxResetIDResult.RESET_TEMPORARY;
 			}
-			else if (permSetRadioButton.isSelected())
-			{
-				PrinterIdentity  newIdentity = decryptIDCode(printerIDCodeField.getText().trim());
-				if (newIdentity != null)
-				{
+			else if (permSetRadioButton.isSelected()) {
+				PrinterIdentity newIdentity = decryptIDCode(printerIDCodeField.getText().trim());
+				if (newIdentity != null) {
 					PrinterDefinitionFile printerConfigFile = PrinterContainer.getPrinterByID(newIdentity.printermodelProperty().get());
-					if (printerConfigFile != null)
-					{
+					if (printerConfigFile != null) {
 						printerToUse.setPrinterConfiguration(printerConfigFile);
 						printerConfigFile.getEditions().stream()
-						.filter(configEdition -> configEdition.getTypeCode().equalsIgnoreCase(newIdentity.printereditionProperty().get()))
-						.findAny()
-						.ifPresent(foundEdition->
-						{
-							if (printerConfigFile.getTypeCode().equalsIgnoreCase("RBX10"))
-								newIdentity.printerFriendlyNameProperty().set("RoboxPro");
-							else
-								newIdentity.printerFriendlyNameProperty().set("Robox");
+								.filter(configEdition -> configEdition.getTypeCode().equalsIgnoreCase(newIdentity.printereditionProperty().get()))
+								.findAny()
+								.ifPresent(foundEdition -> {
+									if (printerConfigFile.getTypeCode().equalsIgnoreCase("RBX10"))
+										newIdentity.printerFriendlyNameProperty().set("RoboxPro");
+									else
+										newIdentity.printerFriendlyNameProperty().set("Robox");
 
-							printerToUse.setPrinterConfiguration(printerConfigFile);
-							printerToUse.setPrinterEdition(foundEdition);
-							try
-							{
-								printerToUse.updatePrinterIdentity(newIdentity);
-								resetResult = RoboxResetIDResult.RESET_SUCCESSFUL;
-							}
-							catch (PrinterException ex)
-							{
-								LOGGER.warn("Couldn't reset Printer ID");
-							}
-						});
+									printerToUse.setPrinterConfiguration(printerConfigFile);
+									printerToUse.setPrinterEdition(foundEdition);
+									try {
+										printerToUse.updatePrinterIdentity(newIdentity);
+										resetResult = RoboxResetIDResult.RESET_SUCCESSFUL;
+									}
+									catch (PrinterException ex) {
+										LOGGER.warn("Couldn't reset Printer ID");
+									}
+								});
 					}
 				}
 			}
-			if (resetResult != RoboxResetIDResult.RESET_NOT_DONE)
-			{
+			if (resetResult != RoboxResetIDResult.RESET_NOT_DONE) {
 				closeDialog();
 			}
 		}
 	}
 
 	@FXML
-	private void cancel()
-	{
+	private void cancel() {
 		resetResult = RoboxResetIDResult.RESET_CANCELLED;
 		closeDialog();
 	}
 
-	private void closeDialog()
-	{
-		Stage dialogStage = (Stage)mainVBox.getScene().getWindow();
+	private void closeDialog() {
+		Stage dialogStage = (Stage) mainVBox.getScene().getWindow();
 		dialogStage.close();
 	}
 
-	public RoboxResetIDResult getResetResult()
-	{
+	public RoboxResetIDResult getResetResult() {
 		return resetResult;
 	}
 
-	public void setPrinterToUse(Printer printerToUse)
-	{
+	public void setPrinterToUse(Printer printerToUse) {
 		this.printerToUse = printerToUse;
 	}
 
 	@Override
-	public void initialize(URL url, ResourceBundle rb)
-	{
+	public void initialize(URL url, ResourceBundle rb) {
 		resetInstructionLabel.replaceText(OpenAutoMakerEnv.getI18N().t("resetPIDD.resetInstructions"));
 		resetInstructionLabel.setTextAlignment(TextAlignment.LEFT); // Ignores this in the FXML for some reason.
 		printerIDLabel.disableProperty().bind(tempSetRadioButton.selectedProperty());
@@ -214,11 +198,9 @@ public class ResetPrinterIDController implements Initializable
 		printerChecksumField.disableProperty().bind(tempSetRadioButton.selectedProperty());
 		printerElectronicsVersionField.disableProperty().bind(tempSetRadioButton.selectedProperty());
 
-		printerIDCodeField.textProperty().addListener((observable, oldValue, newValue) ->
-		{
-			PrinterIdentity  identity = decryptIDCode(newValue.trim());
-			if (identity != null)
-			{
+		printerIDCodeField.textProperty().addListener((observable, oldValue, newValue) -> {
+			PrinterIdentity identity = decryptIDCode(newValue.trim());
+			if (identity != null) {
 				printerTypeCodeField.setText(identity.printermodelProperty().get());
 				printerEditionField.setText(identity.printereditionProperty().get());
 				printerWeekField.setText(identity.printerweekOfManufactureProperty().get());
@@ -232,8 +214,7 @@ public class ResetPrinterIDController implements Initializable
 					printerElectronicsVersionField.clear();
 				identityValid.set(true);
 			}
-			else
-			{
+			else {
 				printerTypeCodeField.clear();
 				printerEditionField.clear();
 				printerWeekField.clear();
@@ -251,17 +232,15 @@ public class ResetPrinterIDController implements Initializable
 		printerEditionChoice.disableProperty().bind(permSetRadioButton.selectedProperty());
 
 		printerTypeChoice.getSelectionModel()
-		.selectedIndexProperty()
-		.addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-		{
-			updateEditionChoice(printerTypeChoice.getItems().get(newValue.intValue()));
-		});
+				.selectedIndexProperty()
+				.addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+					updateEditionChoice(printerTypeChoice.getItems().get(newValue.intValue()));
+				});
 
 		resetButton.disableProperty().bind(permSetRadioButton.selectedProperty().and(identityValid.not()));
 	}
 
-	public void updateFieldsFromPrinterID(PrinterIDResponse printerID)
-	{
+	public void updateFieldsFromPrinterID(PrinterIDResponse printerID) {
 		tempSetRadioButton.setSelected(true);
 		printerTypeCodeField.clear();
 		printerEditionField.clear();
@@ -276,24 +255,20 @@ public class ResetPrinterIDController implements Initializable
 		updateEditionChoice(printerTypeChoice.getItems().get(0));
 	}
 
-	private void updateEditionChoice(PrinterDefinitionFile printerConfigFile)
-	{
+	private void updateEditionChoice(PrinterDefinitionFile printerConfigFile) {
 		List<String> l = new ArrayList<>();
 		printerConfigFile.getEditions()
-		.forEach((edition) ->
-		{
-			l.add(edition.getTypeCode());
-		});
+				.forEach((edition) -> {
+					l.add(edition.getTypeCode());
+				});
 		printerEditionChoice.setItems(FXCollections.observableList(printerConfigFile.getEditions()));
 		printerEditionChoice.setValue(printerEditionChoice.getItems().get(0));
 	}
 
 	private static String encrypt(final String plainMessage,
-			final String symKeyHex)
-	{
+			final String symKeyHex) {
 
-		try
-		{
+		try {
 			final byte[] symKeyData = Hex.decodeHex(symKeyHex.toCharArray());
 			final byte[] encodedMessage = plainMessage.getBytes(Charset.forName("UTF-8"));
 			final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
@@ -315,7 +290,7 @@ public class ResetPrinterIDController implements Initializable
 
 			// concatenate IV and encrypted message
 			final byte[] ivAndEncryptedMessage = new byte[ivData.length
-			                                              + encryptedMessage.length];
+					+ encryptedMessage.length];
 			System.arraycopy(ivData, 0, ivAndEncryptedMessage, 0, blockSize);
 			System.arraycopy(encryptedMessage, 0, ivAndEncryptedMessage,
 					blockSize, encryptedMessage.length);
@@ -324,25 +299,20 @@ public class ResetPrinterIDController implements Initializable
 
 			return ivAndEncryptedMessageBase64;
 		}
-		catch (DecoderException e)
-		{
+		catch (DecoderException e) {
 			throw new IllegalArgumentException("Cannot decode symKeyHex");
 		}
-		catch (InvalidKeyException e)
-		{
+		catch (InvalidKeyException e) {
 			throw new IllegalArgumentException("key argument does not contain a valid AES key");
 		}
-		catch (GeneralSecurityException e)
-		{
+		catch (GeneralSecurityException e) {
 			throw new IllegalStateException("Unexpected exception during encryption", e);
 		}
 	}
 
 	private static String decrypt(final String ivAndEncryptedMessageBase64,
-			final String symKeyHex)
-	{
-		try
-		{
+			final String symKeyHex) {
+		try {
 			final byte[] symKeyData = Hex.decodeHex(symKeyHex.toCharArray());
 			final byte[] ivAndEncryptedMessage = Base64.getDecoder().decode(ivAndEncryptedMessageBase64);
 			final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
@@ -358,7 +328,7 @@ public class ResetPrinterIDController implements Initializable
 
 			// retrieve the encrypted message itself
 			final byte[] encryptedMessage = new byte[ivAndEncryptedMessage.length
-			                                         - blockSize];
+					- blockSize];
 			System.arraycopy(ivAndEncryptedMessage, blockSize,
 					encryptedMessage, 0, encryptedMessage.length);
 
@@ -372,34 +342,27 @@ public class ResetPrinterIDController implements Initializable
 
 			return message;
 		}
-		catch (DecoderException e)
-		{
+		catch (DecoderException e) {
 			throw new IllegalArgumentException("Cannot decode symKeyHex");
 		}
-		catch (InvalidKeyException e)
-		{
+		catch (InvalidKeyException e) {
 			throw new IllegalArgumentException("key argument does not contain a valid AES key");
 		}
-		catch (BadPaddingException e)
-		{
+		catch (BadPaddingException e) {
 			// you'd better know about padding oracle attacks
 			return null;
 		}
-		catch (GeneralSecurityException e)
-		{
+		catch (GeneralSecurityException e) {
 			throw new IllegalStateException("Unexpected exception during decryption", e);
 		}
 	}
 
-	private PrinterIdentity decryptIDCode(String encryptedIDCode)
-	{
+	private PrinterIdentity decryptIDCode(String encryptedIDCode) {
 		PrinterIdentity identity = null;
-		try
-		{
+		try {
 			String decrypted = decrypt(encryptedIDCode, KEY_TO_THE_CRYPT);
 			String[] components = decrypted.split("-");
-			if (components.length == 7)
-			{
+			if (components.length == 7) {
 				PrinterIdentity newIdentity = new PrinterIdentity();
 				newIdentity.printerColourProperty().set(Color.BLUE);
 				newIdentity.printermodelProperty().set(components[0].trim().toUpperCase());
@@ -417,14 +380,12 @@ public class ResetPrinterIDController implements Initializable
 				newIdentity.printercheckByteProperty().set(checkByte);
 				newIdentity.printerelectronicsVersionProperty().set(electronicsVersion);
 				newIdentity.firmwareVersionProperty().set("r762"); // Force a reload of the firmware.
-				if (newIdentity.isValid())
-				{
+				if (newIdentity.isValid()) {
 					identity = newIdentity;
 				}
 			}
 		}
-		catch (IllegalArgumentException |  IllegalStateException ex)
-		{
+		catch (IllegalArgumentException | IllegalStateException ex) {
 		}
 		return identity;
 	}

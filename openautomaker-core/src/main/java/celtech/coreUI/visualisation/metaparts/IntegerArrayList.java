@@ -271,7 +271,8 @@ public class IntegerArrayList extends AbstractList<Integer> implements List<Inte
 			v.elementData = Arrays.copyOf(elementData, size);
 			v.modCount = 0;
 			return v;
-		} catch (CloneNotSupportedException e) {
+		}
+		catch (CloneNotSupportedException e) {
 			// this shouldn't happen, since we are Cloneable
 			throw new InternalError();
 		}
@@ -587,7 +588,8 @@ public class IntegerArrayList extends AbstractList<Integer> implements List<Inte
 			for (; r < size; r++)
 				if (c.contains(elementData[r]) == complement)
 					elementData[w++] = elementData[r];
-		} finally {
+		}
+		finally {
 			// Preserve behavioral compatibility with AbstractCollection,
 			// even if c.contains() throws.
 			if (r != size) {
@@ -720,7 +722,8 @@ public class IntegerArrayList extends AbstractList<Integer> implements List<Inte
 				cursor = lastRet;
 				lastRet = -1;
 				expectedModCount = modCount;
-			} catch (IndexOutOfBoundsException ex) {
+			}
+			catch (IndexOutOfBoundsException ex) {
 				throw new ConcurrentModificationException();
 			}
 		}
@@ -775,7 +778,8 @@ public class IntegerArrayList extends AbstractList<Integer> implements List<Inte
 
 			try {
 				IntegerArrayList.this.set(lastRet, e);
-			} catch (IndexOutOfBoundsException ex) {
+			}
+			catch (IndexOutOfBoundsException ex) {
 				throw new ConcurrentModificationException();
 			}
 		}
@@ -790,7 +794,8 @@ public class IntegerArrayList extends AbstractList<Integer> implements List<Inte
 				cursor = i + 1;
 				lastRet = -1;
 				expectedModCount = modCount;
-			} catch (IndexOutOfBoundsException ex) {
+			}
+			catch (IndexOutOfBoundsException ex) {
 				throw new ConcurrentModificationException();
 			}
 		}
@@ -999,7 +1004,8 @@ public class IntegerArrayList extends AbstractList<Integer> implements List<Inte
 						cursor = lastRet;
 						lastRet = -1;
 						expectedModCount = IntegerArrayList.this.modCount;
-					} catch (IndexOutOfBoundsException ex) {
+					}
+					catch (IndexOutOfBoundsException ex) {
 						throw new ConcurrentModificationException();
 					}
 				}
@@ -1012,7 +1018,8 @@ public class IntegerArrayList extends AbstractList<Integer> implements List<Inte
 
 					try {
 						IntegerArrayList.this.set(offset + lastRet, e);
-					} catch (IndexOutOfBoundsException ex) {
+					}
+					catch (IndexOutOfBoundsException ex) {
 						throw new ConcurrentModificationException();
 					}
 				}
@@ -1027,7 +1034,8 @@ public class IntegerArrayList extends AbstractList<Integer> implements List<Inte
 						cursor = i + 1;
 						lastRet = -1;
 						expectedModCount = IntegerArrayList.this.modCount;
-					} catch (IndexOutOfBoundsException ex) {
+					}
+					catch (IndexOutOfBoundsException ex) {
 						throw new ConcurrentModificationException();
 					}
 				}

@@ -12,14 +12,12 @@ import xyz.openautomaker.environment.LogLevel;
  *
  * @author Ian
  */
-public class LogLevelPreference implements PreferencesInnerPanelController.Preference
-{
+public class LogLevelPreference implements PreferencesInnerPanelController.Preference {
 
 	private final ComboBox<LogLevel> control;
 	private final UserPreferences userPreferences;
 
-	public LogLevelPreference(UserPreferences userPreferences)
-	{
+	public LogLevelPreference(UserPreferences userPreferences) {
 		this.userPreferences = userPreferences;
 
 		control = new ComboBox<>();
@@ -28,40 +26,34 @@ public class LogLevelPreference implements PreferencesInnerPanelController.Prefe
 		control.setMinWidth(control.getPrefWidth());
 		control.getItems().setAll(LogLevel.values());
 		control.getSelectionModel().selectedItemProperty()
-		.addListener(
-				(ObservableValue<? extends LogLevel> observable, LogLevel oldValue, LogLevel newValue) ->
-				{
-					updateValueFromControl();
-				});
+				.addListener(
+						(ObservableValue<? extends LogLevel> observable, LogLevel oldValue, LogLevel newValue) -> {
+							updateValueFromControl();
+						});
 	}
 
 	@Override
-	public void updateValueFromControl()
-	{
+	public void updateValueFromControl() {
 		//userPreferences.setLoggingLevel(control.getSelectionModel().selectedItemProperty().get());
 	}
 
 	@Override
-	public void populateControlWithCurrentValue()
-	{
+	public void populateControlWithCurrentValue() {
 		//control.getSelectionModel().select(userPreferences.getLoggingLevel());
 	}
 
 	@Override
-	public Control getControl()
-	{
+	public Control getControl() {
 		return control;
 	}
 
 	@Override
-	public String getDescription()
-	{
+	public String getDescription() {
 		return OpenAutoMakerEnv.getI18N().t("preferences.logLevel");
 	}
 
 	@Override
-	public void disableProperty(ObservableValue<Boolean> disableProperty)
-	{
+	public void disableProperty(ObservableValue<Boolean> disableProperty) {
 		control.disableProperty().unbind();
 		control.disableProperty().bind(disableProperty);
 	}

@@ -16,8 +16,7 @@ import javafx.beans.property.StringProperty;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class RestrictedCustomTextField extends CustomTextField
-{
+public class RestrictedCustomTextField extends CustomTextField {
 
 	private final StringProperty restrict = new SimpleStringProperty("");
 	private final IntegerProperty maxLength = new SimpleIntegerProperty(-1);
@@ -30,8 +29,7 @@ public class RestrictedCustomTextField extends CustomTextField
 	 *
 	 * @return
 	 */
-	public int getMaxLength()
-	{
+	public int getMaxLength() {
 		return maxLength.get();
 	}
 
@@ -40,8 +38,7 @@ public class RestrictedCustomTextField extends CustomTextField
 	 *
 	 * @param maxLength The max length.
 	 */
-	public void setMaxLength(int maxLength)
-	{
+	public void setMaxLength(int maxLength) {
 		this.maxLength.set(maxLength);
 	}
 
@@ -49,8 +46,7 @@ public class RestrictedCustomTextField extends CustomTextField
 	 *
 	 * @return
 	 */
-	public IntegerProperty maxLengthProperty()
-	{
+	public IntegerProperty maxLengthProperty() {
 		return maxLength;
 	}
 
@@ -58,8 +54,7 @@ public class RestrictedCustomTextField extends CustomTextField
 	 *
 	 * @param forceUpperCase
 	 */
-	public void setForceUpperCase(boolean forceUpperCase)
-	{
+	public void setForceUpperCase(boolean forceUpperCase) {
 		this.forceUpperCase.set(forceUpperCase);
 	}
 
@@ -67,8 +62,7 @@ public class RestrictedCustomTextField extends CustomTextField
 	 *
 	 * @return
 	 */
-	public boolean getForceUpperCase()
-	{
+	public boolean getForceUpperCase() {
 		return this.forceUpperCase.get();
 	}
 
@@ -76,19 +70,16 @@ public class RestrictedCustomTextField extends CustomTextField
 	 *
 	 * @return
 	 */
-	public BooleanProperty forceUpperCaseProperty()
-	{
+	public BooleanProperty forceUpperCaseProperty() {
 		return forceUpperCase;
 	}
 
 	/**
-	 * Sets a regular expression character class which restricts the user input.
-	 * E.g. 0-9 only allows numeric values.
+	 * Sets a regular expression character class which restricts the user input. E.g. 0-9 only allows numeric values.
 	 *
 	 * @param restrict The regular expression.
 	 */
-	public void setRestrict(String restrict)
-	{
+	public void setRestrict(String restrict) {
 		String restrictString = "[" + restrict + standardAllowedCharacters + "]+";
 		this.restrict.set(restrictString);
 	}
@@ -97,8 +88,7 @@ public class RestrictedCustomTextField extends CustomTextField
 	 *
 	 * @return
 	 */
-	public String getRestrict()
-	{
+	public String getRestrict() {
 		return restrict.get();
 	}
 
@@ -106,42 +96,35 @@ public class RestrictedCustomTextField extends CustomTextField
 	 *
 	 * @return
 	 */
-	public StringProperty restrictProperty()
-	{
+	public StringProperty restrictProperty() {
 		return restrict;
 	}
 
 	/**
 	 *
 	 */
-	public RestrictedCustomTextField()
-	{
+	public RestrictedCustomTextField() {
 		this.getStyleClass().add(this.getClass().getSimpleName());
 	}
 
 	@Override
-	public void replaceText(int start, int end, String text)
-	{
+	public void replaceText(int start, int end, String text) {
 		text = applyRestriction(text);
 		int length = this.getText().length() + text.length() - (end - start);
 
 		if ( //Control characters - always let them through
-				text.equals("")
-				|| (text.matches(restrict.get()) && length <= maxLength.getValue()))
-		{
+		text.equals("")
+				|| (text.matches(restrict.get()) && length <= maxLength.getValue())) {
 			super.replaceText(start, end, text);
 		}
 	}
 
-	private String applyRestriction(String text)
-	{
-		if (forceUpperCase.getValue())
-		{
+	private String applyRestriction(String text) {
+		if (forceUpperCase.getValue()) {
 			text = text.toUpperCase();
 		}
 		if (directorySafeName.get()) {
-			for (char disallowedChar : "/<>:\"\\|?*".toCharArray())
-			{
+			for (char disallowedChar : "/<>:\"\\|?*".toCharArray()) {
 				char[] toReplace = new char[1];
 				toReplace[0] = disallowedChar;
 				text = text.replace(new String(toReplace), "");
@@ -151,13 +134,11 @@ public class RestrictedCustomTextField extends CustomTextField
 	}
 
 	@Override
-	public void replaceSelection(String text)
-	{
+	public void replaceSelection(String text) {
 		text = applyRestriction(text);
 		int length = this.getText().length() + text.length();
 
-		if ((text.matches(restrict.get()) && length <= maxLength.getValue()) || text.equals(""))
-		{
+		if ((text.matches(restrict.get()) && length <= maxLength.getValue()) || text.equals("")) {
 			super.replaceSelection(text);
 		}
 	}
@@ -165,16 +146,14 @@ public class RestrictedCustomTextField extends CustomTextField
 	/**
 	 * @return the directorySafeName
 	 */
-	public boolean getDirectorySafeName()
-	{
+	public boolean getDirectorySafeName() {
 		return directorySafeName.get();
 	}
 
 	/**
 	 * @param directorySafeName the directorySafeName to set
 	 */
-	public void setDirectorySafeName(boolean directorySafeName)
-	{
+	public void setDirectorySafeName(boolean directorySafeName) {
 		this.directorySafeName.set(directorySafeName);
 	}
 

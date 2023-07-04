@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI.components.Notifications;
 
 import celtech.Lookup;
@@ -24,301 +22,268 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author tony
  */
-public class PrintStatusBar extends AppearingProgressBar implements Initializable
-{
+public class PrintStatusBar extends AppearingProgressBar implements Initializable {
 
 	private Printer printer = null;
 
-	private final ChangeListener<Number> printerNumberElementListener = (ObservableValue<? extends Number> ov, Number lastState, Number newState) ->
-	{
+	private final ChangeListener<Number> printerNumberElementListener = (ObservableValue<? extends Number> ov, Number lastState, Number newState) -> {
 		reassessStatus();
 	};
 
-	private final ChangeListener<PrinterStatus> printerStatusChangeListener = (ObservableValue<? extends PrinterStatus> ov, PrinterStatus lastState, PrinterStatus newState) ->
-	{
+	private final ChangeListener<PrinterStatus> printerStatusChangeListener = (ObservableValue<? extends PrinterStatus> ov, PrinterStatus lastState, PrinterStatus newState) -> {
 		reassessStatus();
 	};
 
-	private final ChangeListener<PrintQueueStatus> printQueueStatusChangeListener = (ObservableValue<? extends PrintQueueStatus> ov, PrintQueueStatus lastState, PrintQueueStatus newState) ->
-	{
+	private final ChangeListener<PrintQueueStatus> printQueueStatusChangeListener = (ObservableValue<? extends PrintQueueStatus> ov, PrintQueueStatus lastState, PrintQueueStatus newState) -> {
 		reassessStatus();
 	};
 
-	private final ChangeListener<PauseStatus> pauseStatusChangeListener = (ObservableValue<? extends PauseStatus> ov, PauseStatus lastState, PauseStatus newState) ->
-	{
+	private final ChangeListener<PauseStatus> pauseStatusChangeListener = (ObservableValue<? extends PauseStatus> ov, PauseStatus lastState, PauseStatus newState) -> {
 		reassessStatus();
 	};
 
-	private final ChangeListener<BusyStatus> busyStatusChangeListener = (ObservableValue<? extends BusyStatus> ov, BusyStatus lastState, BusyStatus newState) ->
-	{
+	private final ChangeListener<BusyStatus> busyStatusChangeListener = (ObservableValue<? extends BusyStatus> ov, BusyStatus lastState, BusyStatus newState) -> {
 		reassessStatus();
 	};
 
-	private final EventHandler<ActionEvent> pauseEventHandler = (ActionEvent t) ->
-	{
-		try
-		{
+	private final EventHandler<ActionEvent> pauseEventHandler = (ActionEvent t) -> {
+		try {
 			printer.pause();
-		} catch (PrinterException ex)
-		{
+		}
+		catch (PrinterException ex) {
 			System.out.println("Couldn't pause printer");
 		}
 	};
 
-	private final EventHandler<ActionEvent> resumeEventHandler = (ActionEvent t) ->
-	{
-		try
-		{
+	private final EventHandler<ActionEvent> resumeEventHandler = (ActionEvent t) -> {
+		try {
 			printer.resume();
-		} catch (PrinterException ex)
-		{
+		}
+		catch (PrinterException ex) {
 			System.out.println("Couldn't resume print");
 		}
 	};
 
-	private final EventHandler<ActionEvent> cancelEventHandler = (ActionEvent t) ->
-	{
-		try
-		{
+	private final EventHandler<ActionEvent> cancelEventHandler = (ActionEvent t) -> {
+		try {
 			printer.cancel(null, Lookup.getUserPreferences().isSafetyFeaturesOn());
-		} catch (PrinterException ex)
-		{
+		}
+		catch (PrinterException ex) {
 			System.out.println("Couldn't resume print");
 		}
 	};
 
 	private final BooleanProperty buttonsAllowed = new SimpleBooleanProperty(false);
 
-	public PrintStatusBar()
-	{
+	public PrintStatusBar() {
 		super();
 	}
 
-	private void reassessStatus()
-	{
+	private void reassessStatus() {
 		boolean statusProcessed = false;
 		boolean barShouldBeDisplayed = false;
 
 		//Now busy status
-		switch (printer.busyStatusProperty().get())
-		{
-		case NOT_BUSY:
-			break;
-		case BUSY:
-			break;
-		case LOADING_FILAMENT_E:
-		case UNLOADING_FILAMENT_E:
-		case LOADING_FILAMENT_D:
-		case UNLOADING_FILAMENT_D:
-			statusProcessed = true;
-			barShouldBeDisplayed = true;
-			largeProgressDescription.setText(OpenAutoMakerEnv.getI18N().t(printer.busyStatusProperty().get().getI18nString()));
-			progressRequired(false);
-			targetLegendRequired(false);
-			targetValueRequired(false);
-			currentValueRequired(false);
-			layerDataRequired(false);
-			buttonsAllowed.set(false);
-			break;
-		default:
-			break;
-		}
-
-		//Pause status takes precedence
-		if (!statusProcessed)
-		{
-			switch (printer.pauseStatusProperty().get())
-			{
-			case NOT_PAUSED:
+		switch (printer.busyStatusProperty().get()) {
+			case NOT_BUSY:
 				break;
-			case PAUSED:
-			case PAUSE_PENDING:
-			case RESUME_PENDING:
-			case SELFIE_PAUSE:
+			case BUSY:
+				break;
+			case LOADING_FILAMENT_E:
+			case UNLOADING_FILAMENT_E:
+			case LOADING_FILAMENT_D:
+			case UNLOADING_FILAMENT_D:
 				statusProcessed = true;
 				barShouldBeDisplayed = true;
-				largeProgressDescription.setText(OpenAutoMakerEnv.getI18N().t(printer.pauseStatusProperty().get().getI18nString()));
+				largeProgressDescription.setText(OpenAutoMakerEnv.getI18N().t(printer.busyStatusProperty().get().getI18nString()));
 				progressRequired(false);
 				targetLegendRequired(false);
 				targetValueRequired(false);
 				currentValueRequired(false);
 				layerDataRequired(false);
-				buttonsAllowed.set(true);
+				buttonsAllowed.set(false);
 				break;
 			default:
 				break;
-			}
 		}
 
-		//Now print status
-		if (!statusProcessed)
-		{
-			switch (printer.printerStatusProperty().get())
-			{
-			case IDLE:
-				break;
-			case PRINTING_PROJECT:
-				statusProcessed = true;
-				barShouldBeDisplayed = true;
-				largeProgressDescription.setText(printer.printerStatusProperty().get().getI18nString());
-
-				if (printer.getPrintEngine().etcAvailableProperty().get())
-				{
-					int secondsRemaining = printer.getPrintEngine().progressETCProperty().intValue();
-					secondsRemaining += 30;
-					if (secondsRemaining > 60)
-					{
-						String hoursMinutes = convertToHoursMinutes(
-								secondsRemaining);
-						currentValue.setText(hoursMinutes);
-					} else
-					{
-						currentValue.setText(OpenAutoMakerEnv.getI18N().t("dialogs.lessThanOneMinute"));
-					}
-
-					largeTargetLegend.setText(OpenAutoMakerEnv.getI18N().t("dialogs.progressETCLabel"));
-
-					layerN.setText(String.format("%d",printer.getPrintEngine().progressCurrentLayerProperty().get()));
-					layerTotal.setText(String.format("%d",printer.getPrintEngine().progressNumLayersProperty().get()));
-					targetLegendRequired(true);
-					targetValueRequired(false);
-					currentValueRequired(true);
-					layerDataRequired(true);
-				} else
-				{
+		//Pause status takes precedence
+		if (!statusProcessed) {
+			switch (printer.pauseStatusProperty().get()) {
+				case NOT_PAUSED:
+					break;
+				case PAUSED:
+				case PAUSE_PENDING:
+				case RESUME_PENDING:
+				case SELFIE_PAUSE:
+					statusProcessed = true;
+					barShouldBeDisplayed = true;
+					largeProgressDescription.setText(OpenAutoMakerEnv.getI18N().t(printer.pauseStatusProperty().get().getI18nString()));
+					progressRequired(false);
 					targetLegendRequired(false);
 					targetValueRequired(false);
 					currentValueRequired(false);
 					layerDataRequired(false);
-				}
-
-				if (progressBar.progressProperty().isBound())
-				{
-					progressBar.progressProperty().unbind();
-				}
-
-				progressBar.progressProperty().bind(printer.getPrintEngine().progressProperty());
-				progressRequired(true);
-				buttonsAllowed.set(true);
-				break;
-			case RUNNING_MACRO_FILE:
-				statusProcessed = true;
-				barShouldBeDisplayed = true;
-				largeProgressDescription.setText(printer.getPrintEngine().macroBeingRun.get().getFriendlyName());
-
-				targetLegendRequired(false);
-				targetValueRequired(false);
-				currentValueRequired(false);
-				layerDataRequired(false);
-
-				if (progressBar.progressProperty().isBound())
-				{
-					progressBar.progressProperty().unbind();
-				}
-
-				if (printer.getPrintEngine().macroBeingRun.get() != Macro.CANCEL_PRINT)
-				{
-					if (printer.getPrintEngine().linesInPrintingFileProperty().get() > 0)
-					{
-						progressBar.progressProperty().bind(printer.getPrintEngine().progressProperty());
-						progressRequired(true);
-					} else
-					{
-						progressRequired(false);
-					}
-				} else
-				{
-					progressRequired(false);
-				}
-				buttonsAllowed.set(true);
-				break;
-			case CALIBRATING_NOZZLE_ALIGNMENT:
-				statusProcessed = true;
-				barShouldBeDisplayed = true;
-				largeProgressDescription.setText(printer.printerStatusProperty().get().getI18nString());
-
-				targetLegendRequired(false);
-				targetValueRequired(false);
-				currentValueRequired(false);
-				layerDataRequired(false);
-
-				if (progressBar.progressProperty().isBound())
-				{
-					progressBar.progressProperty().unbind();
-				}
-
-				if (printer.getPrintEngine().macroBeingRun.get() != Macro.CANCEL_PRINT)
-				{
-					if (printer.getPrintEngine().linesInPrintingFileProperty().get() > 0)
-					{
-						progressBar.progressProperty().bind(printer.getPrintEngine().progressProperty());
-						progressRequired(true);
-					} else
-					{
-						progressRequired(false);
-					}
-				} else
-				{
-					progressRequired(false);
-				}
-				buttonsAllowed.set(false);
-				break;
-			case PURGING_HEAD:
-				statusProcessed = true;
-				barShouldBeDisplayed = true;
-				largeProgressDescription.setText(printer.printerStatusProperty().get().getI18nString());
-
-				targetLegendRequired(false);
-				targetValueRequired(false);
-				currentValueRequired(false);
-				layerDataRequired(false);
-
-				if (progressBar.progressProperty().isBound())
-				{
-					progressBar.progressProperty().unbind();
-				}
-
-				if (printer.getPrintEngine().macroBeingRun.get() != Macro.CANCEL_PRINT)
-				{
-					if (printer.getPrintEngine().linesInPrintingFileProperty().get() > 0)
-					{
-						progressBar.progressProperty().bind(printer.getPrintEngine().progressProperty());
-						progressRequired(true);
-					} else
-					{
-						progressRequired(false);
-					}
-				} else
-				{
-					progressRequired(false);
-				}
-				buttonsAllowed.set(false);
-				break;
-			default:
-				statusProcessed = true;
-				barShouldBeDisplayed = true;
-				targetLegendRequired(false);
-				targetValueRequired(false);
-				currentValueRequired(false);
-				progressRequired(false);
-				layerDataRequired(false);
-				largeProgressDescription.setText(printer.printerStatusProperty().get().getI18nString());
-				buttonsAllowed.set(false);
-				break;
+					buttonsAllowed.set(true);
+					break;
+				default:
+					break;
 			}
 		}
 
-		if (barShouldBeDisplayed)
-		{
+		//Now print status
+		if (!statusProcessed) {
+			switch (printer.printerStatusProperty().get()) {
+				case IDLE:
+					break;
+				case PRINTING_PROJECT:
+					statusProcessed = true;
+					barShouldBeDisplayed = true;
+					largeProgressDescription.setText(printer.printerStatusProperty().get().getI18nString());
+
+					if (printer.getPrintEngine().etcAvailableProperty().get()) {
+						int secondsRemaining = printer.getPrintEngine().progressETCProperty().intValue();
+						secondsRemaining += 30;
+						if (secondsRemaining > 60) {
+							String hoursMinutes = convertToHoursMinutes(
+									secondsRemaining);
+							currentValue.setText(hoursMinutes);
+						}
+						else {
+							currentValue.setText(OpenAutoMakerEnv.getI18N().t("dialogs.lessThanOneMinute"));
+						}
+
+						largeTargetLegend.setText(OpenAutoMakerEnv.getI18N().t("dialogs.progressETCLabel"));
+
+						layerN.setText(String.format("%d", printer.getPrintEngine().progressCurrentLayerProperty().get()));
+						layerTotal.setText(String.format("%d", printer.getPrintEngine().progressNumLayersProperty().get()));
+						targetLegendRequired(true);
+						targetValueRequired(false);
+						currentValueRequired(true);
+						layerDataRequired(true);
+					}
+					else {
+						targetLegendRequired(false);
+						targetValueRequired(false);
+						currentValueRequired(false);
+						layerDataRequired(false);
+					}
+
+					if (progressBar.progressProperty().isBound()) {
+						progressBar.progressProperty().unbind();
+					}
+
+					progressBar.progressProperty().bind(printer.getPrintEngine().progressProperty());
+					progressRequired(true);
+					buttonsAllowed.set(true);
+					break;
+				case RUNNING_MACRO_FILE:
+					statusProcessed = true;
+					barShouldBeDisplayed = true;
+					largeProgressDescription.setText(printer.getPrintEngine().macroBeingRun.get().getFriendlyName());
+
+					targetLegendRequired(false);
+					targetValueRequired(false);
+					currentValueRequired(false);
+					layerDataRequired(false);
+
+					if (progressBar.progressProperty().isBound()) {
+						progressBar.progressProperty().unbind();
+					}
+
+					if (printer.getPrintEngine().macroBeingRun.get() != Macro.CANCEL_PRINT) {
+						if (printer.getPrintEngine().linesInPrintingFileProperty().get() > 0) {
+							progressBar.progressProperty().bind(printer.getPrintEngine().progressProperty());
+							progressRequired(true);
+						}
+						else {
+							progressRequired(false);
+						}
+					}
+					else {
+						progressRequired(false);
+					}
+					buttonsAllowed.set(true);
+					break;
+				case CALIBRATING_NOZZLE_ALIGNMENT:
+					statusProcessed = true;
+					barShouldBeDisplayed = true;
+					largeProgressDescription.setText(printer.printerStatusProperty().get().getI18nString());
+
+					targetLegendRequired(false);
+					targetValueRequired(false);
+					currentValueRequired(false);
+					layerDataRequired(false);
+
+					if (progressBar.progressProperty().isBound()) {
+						progressBar.progressProperty().unbind();
+					}
+
+					if (printer.getPrintEngine().macroBeingRun.get() != Macro.CANCEL_PRINT) {
+						if (printer.getPrintEngine().linesInPrintingFileProperty().get() > 0) {
+							progressBar.progressProperty().bind(printer.getPrintEngine().progressProperty());
+							progressRequired(true);
+						}
+						else {
+							progressRequired(false);
+						}
+					}
+					else {
+						progressRequired(false);
+					}
+					buttonsAllowed.set(false);
+					break;
+				case PURGING_HEAD:
+					statusProcessed = true;
+					barShouldBeDisplayed = true;
+					largeProgressDescription.setText(printer.printerStatusProperty().get().getI18nString());
+
+					targetLegendRequired(false);
+					targetValueRequired(false);
+					currentValueRequired(false);
+					layerDataRequired(false);
+
+					if (progressBar.progressProperty().isBound()) {
+						progressBar.progressProperty().unbind();
+					}
+
+					if (printer.getPrintEngine().macroBeingRun.get() != Macro.CANCEL_PRINT) {
+						if (printer.getPrintEngine().linesInPrintingFileProperty().get() > 0) {
+							progressBar.progressProperty().bind(printer.getPrintEngine().progressProperty());
+							progressRequired(true);
+						}
+						else {
+							progressRequired(false);
+						}
+					}
+					else {
+						progressRequired(false);
+					}
+					buttonsAllowed.set(false);
+					break;
+				default:
+					statusProcessed = true;
+					barShouldBeDisplayed = true;
+					targetLegendRequired(false);
+					targetValueRequired(false);
+					currentValueRequired(false);
+					progressRequired(false);
+					layerDataRequired(false);
+					largeProgressDescription.setText(printer.printerStatusProperty().get().getI18nString());
+					buttonsAllowed.set(false);
+					break;
+			}
+		}
+
+		if (barShouldBeDisplayed) {
 			startSlidingInToView();
-		} else
-		{
+		}
+		else {
 			startSlidingOutOfView();
 		}
 	}
 
-	private String convertToHoursMinutes(int seconds)
-	{
+	private String convertToHoursMinutes(int seconds) {
 		int minutes = seconds / 60;
 		int hours = minutes / 60;
 		minutes = minutes - (60 * hours);
@@ -346,10 +311,8 @@ public class PrintStatusBar extends AppearingProgressBar implements Initializabl
 		reassessStatus();
 	}
 
-	public void unbindAll()
-	{
-		if (printer != null)
-		{
+	public void unbindAll() {
+		if (printer != null) {
 			printer.printerStatusProperty().removeListener(printerStatusChangeListener);
 			printer.pauseStatusProperty().removeListener(pauseStatusChangeListener);
 			printer.busyStatusProperty().removeListener(busyStatusChangeListener);

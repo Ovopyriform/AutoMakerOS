@@ -4,8 +4,7 @@ package celtech.configuration.units;
  *
  * @author Ian
  */
-public class CelsiusToFahrenheitConverter implements UnitConverter
-{
+public class CelsiusToFahrenheitConverter implements UnitConverter {
 
 	//@Override
 	//	public double convertToImperial(double value)

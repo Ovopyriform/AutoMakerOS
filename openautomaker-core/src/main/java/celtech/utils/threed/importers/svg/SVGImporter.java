@@ -38,23 +38,20 @@ import xyz.openautomaker.base.importers.twod.svg.metadata.Units;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class SVGImporter
-{
+public class SVGImporter {
 
 	private static final Logger LOGGER = LogManager.getLogger(SVGImporter.class.getName());
 	private ModelLoaderTask parentTask = null;
 	private DoubleProperty percentProgressProperty = null;
 
 	public ModelLoadResult loadFile(ModelLoaderTask parentTask, File modelFile,
-			DoubleProperty percentProgressProperty)
-	{
+			DoubleProperty percentProgressProperty) {
 		this.parentTask = parentTask;
 		this.percentProgressProperty = percentProgressProperty;
 
 		List<Shape> shapes = new ArrayList<>();
 
-		try
-		{
+		try {
 			String parser = XMLResourceDescriptor.getXMLParserClassName();
 			SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
 			String modelURL = modelFile.toURI().toString();
@@ -92,12 +89,10 @@ public class SVGImporter
 
 			Node viewBoxNode = svgAttributes.getNamedItem("viewBox");
 			if (viewBoxNode != null
-					&& viewBoxNode.getNodeValue() != null)
-			{
+					&& viewBoxNode.getNodeValue() != null) {
 				String viewBoxString = viewBoxNode.getNodeValue();
 				String[] viewBoxParts = viewBoxString.split(" ");
-				if (viewBoxParts.length == 4)
-				{
+				if (viewBoxParts.length == 4) {
 					viewBoxOriginX = Float.valueOf(viewBoxParts[0]);
 					viewBoxOriginY = Float.valueOf(viewBoxParts[1]);
 					viewBoxWidth = Float.valueOf(viewBoxParts[2]);
@@ -105,8 +100,8 @@ public class SVGImporter
 
 					converterConfiguration.setxPointCoefficient(documentWidth / viewBoxWidth);
 					converterConfiguration.setyPointCoefficient(documentHeight / viewBoxHeight);
-				} else
-				{
+				}
+				else {
 					LOGGER.warn("Got viewBox directive but had wrong number of parts");
 				}
 			}
@@ -119,8 +114,7 @@ public class SVGImporter
 			//
 			//            PathParser pathParser = new PathParser();
 			//            pathParser.setPathHandler(parserThing);
-			for (int pathIndex = 0; pathIndex < paths.getLength(); pathIndex++)
-			{
+			for (int pathIndex = 0; pathIndex < paths.getLength(); pathIndex++) {
 				Node pathNode = paths.item(pathIndex);
 				NamedNodeMap nodeMap = pathNode.getAttributes();
 				Node dNode = nodeMap.getNamedItem("d");
@@ -138,8 +132,7 @@ public class SVGImporter
 			threeDPformatter.setMaximumFractionDigits(3);
 			threeDPformatter.setGroupingUsed(false);
 
-			for (int rectIndex = 0; rectIndex < rects.getLength(); rectIndex++)
-			{
+			for (int rectIndex = 0; rectIndex < rects.getLength(); rectIndex++) {
 				Node rectNode = rects.item(rectIndex);
 				NamedNodeMap nodeMap = rectNode.getAttributes();
 				Node xNode = nodeMap.getNamedItem("x");
@@ -173,8 +166,7 @@ public class SVGImporter
 			//            PointsParser pp = new PointsParser();
 			//            PointParserThing pointParserThing = new PointParserThing(metaparts);
 			//            pp.setPointsHandler(pointParserThing);
-			for (int polygonIndex = 0; polygonIndex < polygons.getLength(); polygonIndex++)
-			{
+			for (int polygonIndex = 0; polygonIndex < polygons.getLength(); polygonIndex++) {
 				Node polygonNode = polygons.item(polygonIndex);
 				NamedNodeMap nodeMap = polygonNode.getAttributes();
 
@@ -183,8 +175,7 @@ public class SVGImporter
 				//                pp.parse(points.getNodeValue());
 				Polygon displayablePoly = new Polygon();
 				String[] pointPairs = points.getNodeValue().split(" ");
-				for (String pointPair : pointPairs)
-				{
+				for (String pointPair : pointPairs) {
 					String[] pointPairSplit = pointPair.split(",");
 					double x = Double.parseDouble(pointPairSplit[0]);
 					double y = Double.parseDouble(pointPairSplit[1]);
@@ -194,8 +185,8 @@ public class SVGImporter
 				shapes.add(displayablePoly);
 				//                renderableSVG.getChildren().add(displayablePoly);
 			}
-		} catch (IOException ex)
-		{
+		}
+		catch (IOException ex) {
 			LOGGER.error("Failed to process SVG file " + modelFile.getAbsolutePath(), ex);
 		}
 

@@ -64,8 +64,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author ianhudson
  */
-public class SVGViewManager extends Pane implements Project.ProjectChangesListener
-{
+public class SVGViewManager extends Pane implements Project.ProjectChangesListener {
 
 	private static final Logger LOGGER = LogManager.getLogger(SVGViewManager.class.getName());
 	private final Project project;
@@ -99,8 +98,7 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 
 	private ContextMenu bedContextMenu = null;
 
-	public SVGViewManager(Project project)
-	{
+	public SVGViewManager(Project project) {
 		this.project = project;
 		this.undoableProject = new UndoableProject(project);
 
@@ -132,20 +130,16 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 		parentPane.addEventHandler(ScrollEvent.ANY, scrollEventHandler);
 
 		//        setStyle("-fx-background-color: blue;");
-		this.maxWidthProperty().addListener(new ChangeListener<Number>()
-		{
+		this.maxWidthProperty().addListener(new ChangeListener<Number>() {
 			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
-			{
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				resizeBed();
 			}
 		});
 
-		this.maxHeightProperty().addListener(new ChangeListener<Number>()
-		{
+		this.maxHeightProperty().addListener(new ChangeListener<Number>() {
 			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
-			{
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				resizeBed();
 			}
 		});
@@ -155,16 +149,14 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 		 */
 		project.addProjectChangesListener(this);
 
-		for (ProjectifiableThing projectifiableThing : project.getAllModels())
-		{
+		for (ProjectifiableThing projectifiableThing : project.getAllModels()) {
 			projectifiableThing.setBedReference(gCodeOverlay);
 			parts.getChildren().add(projectifiableThing);
 			//            projectifiableThing.shrinkToFitBed();
 		}
 	}
 
-	private void createBed()
-	{
+	private void createBed() {
 		bed.setFill(Color.ANTIQUEWHITE);
 		// The bed is in mm units
 
@@ -180,8 +172,7 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 		MenuItem addCircleMenuItem = new MenuItem(cm3Text);
 		MenuItem generateGCodeMenuItem = new MenuItem(cm4Text);
 
-		addTextMenuItem.setOnAction((ActionEvent e) ->
-		{
+		addTextMenuItem.setOnAction((ActionEvent e) -> {
 			TextPath newPath = new TextPath();
 
 			ShapeContainer newShapeContainer = new ShapeContainer("Text", newPath);
@@ -193,8 +184,7 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 			Lookup.getSelectedProjectProperty().get().addModel(newShapeContainer);
 		});
 
-		addRectangleMenuItem.setOnAction((ActionEvent e) ->
-		{
+		addRectangleMenuItem.setOnAction((ActionEvent e) -> {
 			Rectangle newShape = new Rectangle(10, 10);
 
 			ShapeContainer newShapeContainer = new ShapeContainer("Rectangle", newShape);
@@ -206,8 +196,7 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 			Lookup.getSelectedProjectProperty().get().addModel(newShapeContainer);
 		});
 
-		addCircleMenuItem.setOnAction((ActionEvent e) ->
-		{
+		addCircleMenuItem.setOnAction((ActionEvent e) -> {
 
 			Circle newShape = new Circle(10);
 			newShape.setSmooth(true);
@@ -220,16 +209,12 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 			Lookup.getSelectedProjectProperty().get().addModel(newShapeContainer);
 		});
 
-		generateGCodeMenuItem.setOnAction((ActionEvent e) ->
-		{
+		generateGCodeMenuItem.setOnAction((ActionEvent e) -> {
 			List<ShapeForProcessing> shapes = new ArrayList<>();
-			parts.getChildren().forEach(child ->
-			{
-				if (child instanceof ShapeContainer)
-				{
+			parts.getChildren().forEach(child -> {
+				if (child instanceof ShapeContainer) {
 					ShapeContainer shapeContainer = (ShapeContainer) child;
-					shapeContainer.getShapes().forEach((shape) ->
-					{
+					shapeContainer.getShapes().forEach((shape) -> {
 						shapes.add(new ShapeForProcessing(shape, shapeContainer));
 					});
 				}
@@ -246,19 +231,16 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 
 		bedContextMenu.getItems().addAll(addTextMenuItem, addRectangleMenuItem, addCircleMenuItem, generateGCodeMenuItem);
 
-		bed.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>()
-		{
+		bed.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 			@Override
-			public void handle(ContextMenuEvent event)
-			{
+			public void handle(ContextMenuEvent event) {
 				Point3D parentPoint = partsAndBed.localToParent(event.getPickResult().getIntersectedPoint());
 				bedContextMenu.show(parentPane, Side.TOP, parentPoint.getX(), parentPoint.getY());
 			}
 		});
 	}
 
-	private void resizeBed()
-	{
+	private void resizeBed() {
 		double viewAreaWidth = maxWidthProperty().get();
 		double viewAreaHeight = maxHeightProperty().get();
 		double displayAspect = viewAreaWidth / viewAreaHeight;
@@ -266,13 +248,12 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 
 		double newWidth = 0;
 		double newHeight = 0;
-		if (displayAspect >= aspect)
-		{
+		if (displayAspect >= aspect) {
 			// Drive from height
 			newWidth = (viewAreaHeight * aspect) - bedBorder;
 			newHeight = viewAreaHeight - bedBorder;
-		} else
-		{
+		}
+		else {
 			//Drive from width
 			newHeight = (viewAreaWidth / aspect) - bedBorder;
 			newWidth = viewAreaWidth - bedBorder;
@@ -291,8 +272,7 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 	}
 
 	@Override
-	public void whenModelAdded(ProjectifiableThing projectifiableThing)
-	{
+	public void whenModelAdded(ProjectifiableThing projectifiableThing) {
 		LOGGER.info("Bounds are " + projectifiableThing.getBoundsInLocal());
 		projectifiableThing.setBedReference(gCodeOverlay);
 		parts.getChildren().add(projectifiableThing);
@@ -300,72 +280,57 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 	}
 
 	@Override
-	public void whenModelsRemoved(Set<ProjectifiableThing> projectifiableThing)
-	{
+	public void whenModelsRemoved(Set<ProjectifiableThing> projectifiableThing) {
 		parts.getChildren().removeAll(projectifiableThing);
 	}
 
 	@Override
-	public void whenAutoLaidOut()
-	{
+	public void whenAutoLaidOut() {
 	}
 
 	@Override
-	public void whenModelsTransformed(Set<ProjectifiableThing> projectifiableThing
-			)
-	{
+	public void whenModelsTransformed(Set<ProjectifiableThing> projectifiableThing) {
 	}
 
 	@Override
-	public void whenModelChanged(ProjectifiableThing modelContainer, String propertyName
-			)
-	{
+	public void whenModelChanged(ProjectifiableThing modelContainer, String propertyName) {
 	}
 
 	@Override
-	public void whenPrinterSettingsChanged(PrinterSettingsOverrides printerSettings
-			)
-	{
+	public void whenPrinterSettingsChanged(PrinterSettingsOverrides printerSettings) {
 	}
 
 	@Override
-	public void whenTimelapseSettingsChanged(TimelapseSettingsData timelapseSettings)
-	{
+	public void whenTimelapseSettingsChanged(TimelapseSettingsData timelapseSettings) {
 	}
 
-
-	private final EventHandler<MouseEvent> mouseEventHandler = event ->
-	{
+	private final EventHandler<MouseEvent> mouseEventHandler = event -> {
 
 		mouseOldX = mousePosX;
 		mouseOldY = mousePosY;
 		mousePosX = event.getSceneX();
 		mousePosY = event.getSceneY();
 
-		if (event.getEventType() == MouseEvent.MOUSE_PRESSED)
-		{
+		if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
 			if (event.isPrimaryButtonDown()
-					|| event.isSecondaryButtonDown())
-			{
+					|| event.isSecondaryButtonDown()) {
 				handleMouseSingleClickedEvent(event);
 			}
 
-		} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED)
-		{
+		}
+		else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
 			dragShape(shapeBeingDragged, event);
 
-		} else if (event.getEventType() == MouseEvent.MOUSE_RELEASED)
-		{
+		}
+		else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {
 			shapeBeingDragged = null;
 			dragMode.set(DragMode.IDLE);
 		}
 	};
 
-	private final EventHandler<ZoomEvent> zoomEventHandler = event ->
-	{
+	private final EventHandler<ZoomEvent> zoomEventHandler = event -> {
 		if (!Double.isNaN(event.getZoomFactor()) && event.getZoomFactor() > 0.8
-				&& event.getZoomFactor() < 1.2)
-		{
+				&& event.getZoomFactor() < 1.2) {
 			double newScale = bedScale.getX() * event.getZoomFactor();
 
 			bedScale.setX(newScale);
@@ -373,22 +338,18 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 		}
 	};
 
-	private final EventHandler<ScrollEvent> scrollEventHandler = event ->
-	{
+	private final EventHandler<ScrollEvent> scrollEventHandler = event -> {
 		double newScale = bedScale.getX() + (0.01 * event.getDeltaY());
 		bedScale.setX(newScale);
 		bedScale.setY(newScale);
 	};
 
-	private ShapeContainer findShapeContainerParent(Node shape)
-	{
+	private ShapeContainer findShapeContainerParent(Node shape) {
 		ShapeContainer sc = null;
 		Node currentNode = shape;
 
-		while (currentNode != null)
-		{
-			if (currentNode instanceof ShapeContainer)
-			{
+		while (currentNode != null) {
+			if (currentNode instanceof ShapeContainer) {
 				sc = (ShapeContainer) currentNode;
 			}
 			currentNode = currentNode.getParent();
@@ -397,8 +358,7 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 		return sc;
 	}
 
-	private void handleMouseSingleClickedEvent(MouseEvent event)
-	{
+	private void handleMouseSingleClickedEvent(MouseEvent event) {
 		boolean handleThisEvent = true;
 		LOGGER.info("source was " + event.getSource());
 		LOGGER.info("target was " + event.getTarget());
@@ -409,23 +369,18 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 
 		boolean shortcut = event.isShortcutDown();
 
-		if (intersectedNode != bed)
-		{
+		if (intersectedNode != bed) {
 			bedContextMenu.hide();
 		}
-		if (event.isPrimaryButtonDown())
-		{
+		if (event.isPrimaryButtonDown()) {
 			if (intersectedNode != bed
-					&& intersectedNode instanceof Shape)
-			{
+					&& intersectedNode instanceof Shape) {
 				ShapeContainer sc = findShapeContainerParent(intersectedNode);
-				if (sc != null)
-				{
-					if (event.isShortcutDown())
-					{
+				if (sc != null) {
+					if (event.isShortcutDown()) {
 						projectSelection.addSelectedItem(sc);
-					} else
-					{
+					}
+					else {
 						projectSelection.deselectAllModels();
 						projectSelection.addSelectedItem(sc);
 					}
@@ -434,8 +389,8 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 				dragMode.set(DragMode.TRANSLATING);
 				justEnteredDragMode = true;
 				dragShape((Shape) intersectedNode, event);
-			} else
-			{
+			}
+			else {
 				projectSelection.deselectAllModels();
 			}
 		}
@@ -449,11 +404,9 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 		//        }
 	}
 
-	private void dragShape(Shape shapeToDrag, MouseEvent event)
-	{
+	private void dragShape(Shape shapeToDrag, MouseEvent event) {
 		Point2D newPosition = new Point2D(event.getSceneX(), event.getSceneY());
-		if (shapeBeingDragged != null)
-		{
+		if (shapeBeingDragged != null) {
 			LOGGER.info("New position = " + newPosition);
 			Point2D resultantPosition = partsAndBed.sceneToLocal(newPosition).subtract(partsAndBed.sceneToLocal(lastDragPosition));
 			LOGGER.info("Resultant " + resultantPosition);
@@ -474,70 +427,56 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 		lastDragPosition = newPosition;
 	}
 
-	private final ChangeListener<ApplicationMode> applicationModeListener
-	= (ObservableValue<? extends ApplicationMode> ov, ApplicationMode oldMode, ApplicationMode newMode) ->
-	{
-		if (oldMode != newMode)
-		{
-			switch (newMode)
-			{
-			case SETTINGS:
-				parentPane.removeEventHandler(MouseEvent.ANY, mouseEventHandler);
-				deselectAllModels();
-				break;
-			default:
-				parentPane.addEventHandler(MouseEvent.ANY, mouseEventHandler);
-				parentPane.addEventHandler(ZoomEvent.ANY, zoomEventHandler);
-				parentPane.addEventHandler(ScrollEvent.ANY, scrollEventHandler);
-				break;
+	private final ChangeListener<ApplicationMode> applicationModeListener = (ObservableValue<? extends ApplicationMode> ov, ApplicationMode oldMode, ApplicationMode newMode) -> {
+		if (oldMode != newMode) {
+			switch (newMode) {
+				case SETTINGS:
+					parentPane.removeEventHandler(MouseEvent.ANY, mouseEventHandler);
+					deselectAllModels();
+					break;
+				default:
+					parentPane.addEventHandler(MouseEvent.ANY, mouseEventHandler);
+					parentPane.addEventHandler(ZoomEvent.ANY, zoomEventHandler);
+					parentPane.addEventHandler(ScrollEvent.ANY, scrollEventHandler);
+					break;
 			}
 			//                    updateModelColours();
 		}
 	};
 
-	private void selectModel(ShapeContainer selectedNode, boolean multiSelect)
-	{
-		if (selectedNode == null)
-		{
+	private void selectModel(ShapeContainer selectedNode, boolean multiSelect) {
+		if (selectedNode == null) {
 			projectSelection.deselectAllModels();
-		} else if (!selectedNode.isSelected())
-		{
-			if (!multiSelect)
-			{
+		}
+		else if (!selectedNode.isSelected()) {
+			if (!multiSelect) {
 				projectSelection.deselectAllModels();
 			}
 			projectSelection.addSelectedItem(selectedNode);
 		}
 	}
 
-	private void deselectAllModels()
-	{
-		for (ProjectifiableThing modelContainer : loadedModels)
-		{
+	private void deselectAllModels() {
+		for (ProjectifiableThing modelContainer : loadedModels) {
 			deselectModel((ShapeContainer) modelContainer);
 		}
 	}
 
-	public void deselectModel(ShapeContainer pickedModel)
-	{
-		if (pickedModel.isSelected())
-		{
+	public void deselectModel(ShapeContainer pickedModel) {
+		if (pickedModel.isSelected()) {
 			projectSelection.removeModelContainer(pickedModel);
 		}
 	}
 
-	private void renderGCode(List<GCodeEventNode> gcodeNodes)
-	{
+	private void renderGCode(List<GCodeEventNode> gcodeNodes) {
 		gCodeOverlay.getChildren().clear();
 
 		double currentX = 0;
 		double currentY = 0;
 		boolean isInContact = false;
 
-		for (GCodeEventNode node : gcodeNodes)
-		{
-			if (node instanceof StylusLiftNode)
-			{
+		for (GCodeEventNode node : gcodeNodes) {
+			if (node instanceof StylusLiftNode) {
 				//Not in contact
 				isInContact = false;
 				//                Circle contactCircle = new Circle(0.5);
@@ -545,8 +484,8 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 				//                contactCircle.setCenterX(currentX);
 				//                contactCircle.setCenterY(currentY);
 				//                gCodeOverlay.getChildren().add(contactCircle);
-			} else if (node instanceof StylusPlungeNode)
-			{
+			}
+			else if (node instanceof StylusPlungeNode) {
 				//Now in contact
 				isInContact = true;
 				//                Circle contactCircle = new Circle(0.5);
@@ -554,8 +493,8 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 				//                contactCircle.setCenterX(currentX);
 				//                contactCircle.setCenterY(currentY);
 				//                gCodeOverlay.getChildren().add(contactCircle);
-			} else if (node instanceof StylusScribeNode)
-			{
+			}
+			else if (node instanceof StylusScribeNode) {
 				StylusScribeNode scribeNode = (StylusScribeNode) node;
 				Line newLine = new Line();
 				newLine.setStartX(currentX);
@@ -566,16 +505,15 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 				newLine.setEndY(currentY);
 				newLine.setStrokeWidth(0.1);
 
-				if (isInContact)
-				{
+				if (isInContact) {
 					newLine.setStroke(Color.GREEN);
-				} else
-				{
+				}
+				else {
 					newLine.setStroke(Color.RED);
 				}
 				gCodeOverlay.getChildren().add(newLine);
-			} else if (node instanceof StylusSwivelNode)
-			{
+			}
+			else if (node instanceof StylusSwivelNode) {
 				StylusSwivelNode scribeNode = (StylusSwivelNode) node;
 				Line newLine = new Line();
 				newLine.setStartX(currentX);
@@ -586,16 +524,15 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 				newLine.setEndY(currentY);
 				newLine.setStrokeWidth(0.1);
 
-				if (isInContact)
-				{
+				if (isInContact) {
 					newLine.setStroke(Color.PURPLE);
-				} else
-				{
+				}
+				else {
 					newLine.setStroke(Color.BLUE);
 				}
 				gCodeOverlay.getChildren().add(newLine);
-			} else if (node instanceof TravelNode)
-			{
+			}
+			else if (node instanceof TravelNode) {
 				TravelNode travelNode = (TravelNode) node;
 				Line newLine = new Line();
 				newLine.setStartX(currentX);
@@ -606,11 +543,10 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 				newLine.setEndY(currentY);
 				newLine.setStrokeWidth(0.5);
 
-				if (isInContact)
-				{
+				if (isInContact) {
 					newLine.setStroke(Color.GREEN);
-				} else
-				{
+				}
+				else {
 					newLine.setStroke(Color.RED);
 				}
 				gCodeOverlay.getChildren().add(newLine);

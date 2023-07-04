@@ -36,8 +36,7 @@ import javafx.scene.shape.TriangleMesh;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class STLImporter
-{
+public class STLImporter {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			STLImporter.class.getName());
@@ -47,8 +46,7 @@ public class STLImporter
 	private final String spacePattern = "[ ]+";
 
 	public ModelLoadResult loadFile(ModelLoaderTask parentTask, File modelFile,
-			DoubleProperty percentProgressProperty)
-	{
+			DoubleProperty percentProgressProperty) {
 		this.parentTask = parentTask;
 		this.percentProgressProperty = percentProgressProperty;
 		boolean fileIsBinary;
@@ -56,53 +54,48 @@ public class STLImporter
 		LOGGER.debug("Starting STL load");
 
 		//Note that FileReader is used, not File, since File is not Closeable
-		try
-		{
+		try {
 			Scanner scanner = new Scanner(new FileReader(modelFile));
 			fileIsBinary = isFileBinary(modelFile);
 			int lineNumber = 1;
 
-			if (!fileIsBinary)
-			{
+			if (!fileIsBinary) {
 				LOGGER.debug("I have an ASCII file");
-			} else
-			{
+			}
+			else {
 				LOGGER.debug("I'm guessing I have a binary file");
 				fileIsBinary = true;
 			}
 
-			try
-			{
-				if (fileIsBinary)
-				{
+			try {
+				if (fileIsBinary) {
 					meshToOutput = processBinarySTLData(modelFile);
 
-				} else
-				{
+				}
+				else {
 
 					meshToOutput = processAsciiSTLData(modelFile);
 				}
-			} catch (STLFileParsingException ex)
-			{
+			}
+			catch (STLFileParsingException ex) {
 				LOGGER.error("File parsing exception whilst processing " + modelFile.getName()
-				+ " : " + ex + " on line " + lineNumber);
-			} finally
-			{
+						+ " : " + ex + " on line " + lineNumber);
+			}
+			finally {
 				//ensure the underlying stream is always closed
 				//this only has any effect if the item passed to the Scanner
 				//constructor implements Closeable (which it does in this case).
 				scanner.close();
 			}
 
-		} catch (FileNotFoundException ex)
-		{
+		}
+		catch (FileNotFoundException ex) {
 			LOGGER.error("Couldn't find or open " + modelFile.getName());
 		}
 
 		LOGGER.debug("loaded and processing mesh");
 
-		if (parentTask == null || (!parentTask.isCancelled()))
-		{
+		if (parentTask == null || (!parentTask.isCancelled())) {
 			MeshView meshView = new MeshView();
 
 			meshView.setMesh(meshToOutput);
@@ -118,50 +111,45 @@ public class STLImporter
 					ModelLoadResultType.Mesh,
 					modelFile.getAbsolutePath(),
 					modelFile.getName(),
-					(Set)modelContainers);
+					(Set) modelContainers);
 			return result;
-		} else
-		{
+		}
+		else {
 			return null;
 		}
 	}
 
 	@SuppressWarnings("empty-statement")
-	private int getLines(File aFile)
-	{
+	private int getLines(File aFile) {
 		LineNumberReader reader = null;
-		try
-		{
+		try {
 			reader = new LineNumberReader(new FileReader(aFile));
-			while ((reader.readLine()) != null);
+			while ((reader.readLine()) != null)
+				;
 			return reader.getLineNumber();
-		} catch (Exception ex)
-		{
+		}
+		catch (Exception ex) {
 			return -1;
-		} finally
-		{
-			if (reader != null)
-			{
-				try
-				{
+		}
+		finally {
+			if (reader != null) {
+				try {
 					reader.close();
-				} catch (IOException ex)
-				{
+				}
+				catch (IOException ex) {
 					LOGGER.error("Failed to close file during line number read: " + ex);
 				}
 			}
 		}
 	}
 
-	private boolean isFileBinary(File stlFile)
-	{
+	private boolean isFileBinary(File stlFile) {
 		boolean fileIsBinary = false;
 		BufferedInputStream inputFileStream;
 		ByteBuffer dataBuffer;
-		byte[] facetBytes = new byte[4];     // Holds the number of faces
+		byte[] facetBytes = new byte[4]; // Holds the number of faces
 
-		try
-		{
+		try {
 			inputFileStream = new BufferedInputStream(new FileInputStream(stlFile));
 			inputFileStream.mark(4000);
 			byte[] asciiHeaderBytes = new byte[80];
@@ -169,20 +157,19 @@ public class STLImporter
 			String asciiHeader = new String(asciiHeaderBytes, "UTF-8");
 			LOGGER.debug("The header was: " + asciiHeader);
 
-			bytesRead = inputFileStream.read(facetBytes);                      // We get the 4 bytes
-			dataBuffer = ByteBuffer.wrap(facetBytes);   // ByteBuffer for reading correctly the int
-			dataBuffer.order(ByteOrder.nativeOrder());    // Set the right order
+			bytesRead = inputFileStream.read(facetBytes); // We get the 4 bytes
+			dataBuffer = ByteBuffer.wrap(facetBytes); // ByteBuffer for reading correctly the int
+			dataBuffer.order(ByteOrder.nativeOrder()); // Set the right order
 			int numberOfFacets = dataBuffer.getInt();
 
 			int filesize = (numberOfFacets * 50) + 84;
 			inputFileStream.reset();
 
-			if (stlFile.length() == filesize)
-			{
+			if (stlFile.length() == filesize) {
 				fileIsBinary = true;
 			}
-		} catch (IOException ex)
-		{
+		}
+		catch (IOException ex) {
 			LOGGER.error("Failed to determine whether " + stlFile.getName() + " was binary or ascii."
 					+ ex.toString());
 		}
@@ -190,10 +177,9 @@ public class STLImporter
 		return fileIsBinary;
 	}
 
-	public TriangleMesh processBinarySTLData(File stlFile) throws STLFileParsingException
-	{
+	public TriangleMesh processBinarySTLData(File stlFile) throws STLFileParsingException {
 		ByteBuffer dataBuffer;
-		byte[] facetBytes = new byte[4];     // Holds the number of faces
+		byte[] facetBytes = new byte[4]; // Holds the number of faces
 		byte[] facetData = new byte[50]; // Each face has 50 bytes of data
 		int progressPercent = 0;
 
@@ -201,18 +187,16 @@ public class STLImporter
 
 		TriangleMesh triangleMesh = new TriangleMesh();
 		HashMap<Vector3D, Integer> graph = new HashMap<>();
-		try
-		{
-			try (DataInputStream inputFileStream = new DataInputStream(new FileInputStream(stlFile)))
-			{
+		try {
+			try (DataInputStream inputFileStream = new DataInputStream(new FileInputStream(stlFile))) {
 				byte[] asciiHeaderBytes = new byte[80];
 				inputFileStream.read(asciiHeaderBytes);
 				String asciiHeader = new String(asciiHeaderBytes, "UTF-8");
 				LOGGER.debug("The header was: " + asciiHeader);
 
-				inputFileStream.read(facetBytes);                      // We get the 4 bytes
-				dataBuffer = ByteBuffer.wrap(facetBytes);   // ByteBuffer for reading correctly the int
-				dataBuffer.order(ByteOrder.nativeOrder());    // Set the right order
+				inputFileStream.read(facetBytes); // We get the 4 bytes
+				dataBuffer = ByteBuffer.wrap(facetBytes); // ByteBuffer for reading correctly the int
+				dataBuffer.order(ByteOrder.nativeOrder()); // Set the right order
 				int numberOfFacets = dataBuffer.getInt();
 
 				LOGGER.debug("There are " + numberOfFacets + " faces");
@@ -221,25 +205,21 @@ public class STLImporter
 
 				int vertexCounter = 0;
 
-				for (int facetNum = 0; facetNum < numberOfFacets; facetNum++)
-				{
-					if ((parentTask != null) && parentTask.isCancelled())
-					{
+				for (int facetNum = 0; facetNum < numberOfFacets; facetNum++) {
+					if ((parentTask != null) && parentTask.isCancelled()) {
 						break;
 					}
 
 					int progressUpdate = (int) (((double) facetNum / (double) numberOfFacets) * 100);
-					if (progressUpdate != progressPercent)
-					{
+					if (progressUpdate != progressPercent) {
 						progressPercent = progressUpdate;
-						if (percentProgressProperty != null)
-						{
+						if (percentProgressProperty != null) {
 							percentProgressProperty.set(progressPercent);
 						}
 					}
 
-					inputFileStream.read(facetData);              // We get the rest of the file
-					dataBuffer = ByteBuffer.wrap(facetData);      // Now we have all the data in this ByteBuffer
+					inputFileStream.read(facetData); // We get the rest of the file
+					dataBuffer = ByteBuffer.wrap(facetData); // Now we have all the data in this ByteBuffer
 					dataBuffer.order(ByteOrder.nativeOrder());
 
 					// Read the Normal and place it 3 times (one for each vertex)
@@ -247,8 +227,7 @@ public class STLImporter
 					dataBuffer.getFloat();
 					dataBuffer.getFloat();
 
-					for (int vertexNumber = 0; vertexNumber < 3; vertexNumber++)
-					{
+					for (int vertexNumber = 0; vertexNumber < 3; vertexNumber++) {
 						float inputVertexX, inputVertexY, inputVertexZ;
 
 						inputVertexX = dataBuffer.getFloat();
@@ -259,13 +238,12 @@ public class STLImporter
 								-inputVertexZ,
 								inputVertexY);
 
-						if (!graph.containsKey(generatedVertex))
-						{
+						if (!graph.containsKey(generatedVertex)) {
 							graph.put(generatedVertex, vertexCounter);
 							faceIndexArray[vertexNumber * 2] = vertexCounter;
 							vertexCounter++;
-						} else
-						{
+						}
+						else {
 							faceIndexArray[vertexNumber * 2] = graph.get(generatedVertex);
 						}
 					}
@@ -275,8 +253,7 @@ public class STLImporter
 
 					// After each facet there are 2 bytes without information
 					// In the last iteration we dont have to skip those bytes..
-					if (facetNum != numberOfFacets - 1)
-					{
+					if (facetNum != numberOfFacets - 1) {
 						dataBuffer.get();
 						dataBuffer.get();
 					}
@@ -287,28 +264,25 @@ public class STLImporter
 
 				float[] tempVertexPointArray = new float[3];
 				graph.entrySet()
-				.stream()
-				.sorted((s1, s2) ->
-				{
-					if (s1.getValue() == s2.getValue())
-					{
-						return 0;
-					} else if (s1.getValue() > s2.getValue())
-					{
-						return 1;
-					} else
-					{
-						return -1;
-					}
-				})
-				.forEach(vertexEntry ->
-				{
-					tempVertexPointArray[0] = (float) vertexEntry.getKey().getX();
-					tempVertexPointArray[1] = (float) vertexEntry.getKey().getY();
-					tempVertexPointArray[2] = (float) vertexEntry.getKey().getZ();
+						.stream()
+						.sorted((s1, s2) -> {
+							if (s1.getValue() == s2.getValue()) {
+								return 0;
+							}
+							else if (s1.getValue() > s2.getValue()) {
+								return 1;
+							}
+							else {
+								return -1;
+							}
+						})
+						.forEach(vertexEntry -> {
+							tempVertexPointArray[0] = (float) vertexEntry.getKey().getX();
+							tempVertexPointArray[1] = (float) vertexEntry.getKey().getY();
+							tempVertexPointArray[2] = (float) vertexEntry.getKey().getZ();
 
-					triangleMesh.getPoints().addAll(tempVertexPointArray, 0, 3);
-				});
+							triangleMesh.getPoints().addAll(tempVertexPointArray, 0, 3);
+						});
 
 				FloatArrayList texCoords = new FloatArrayList();
 				texCoords.add(0f);
@@ -316,8 +290,7 @@ public class STLImporter
 				triangleMesh.getTexCoords().addAll(texCoords.toFloatArray());
 
 				int[] smoothingGroups = new int[numberOfFacets];
-				for (int i = 0; i < smoothingGroups.length; i++)
-				{
+				for (int i = 0; i < smoothingGroups.length; i++) {
 					smoothingGroups[i] = 0;
 				}
 				triangleMesh.getFaceSmoothingGroups().addAll(smoothingGroups);
@@ -326,19 +299,18 @@ public class STLImporter
 						+ triangleMesh.getFaces().size() / 6 + " faces");
 			}
 
-		} catch (FileNotFoundException ex)
-		{
+		}
+		catch (FileNotFoundException ex) {
 			LOGGER.error(ex.toString());
-		} catch (IOException ex)
-		{
+		}
+		catch (IOException ex) {
 			LOGGER.error(ex.toString());
 		}
 
 		return triangleMesh;
 	}
 
-	private TriangleMesh processAsciiSTLData(File modelFile)
-	{
+	private TriangleMesh processAsciiSTLData(File modelFile) {
 		TriangleMesh triangleMesh = new TriangleMesh();
 
 		int linesInFile = getLines(modelFile);
@@ -348,8 +320,7 @@ public class STLImporter
 
 		HashMap<Vector3D, Integer> graph = new HashMap<>();
 
-		try
-		{
+		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
 					modelFile)));
 
@@ -360,15 +331,12 @@ public class STLImporter
 			int facetCounter = 0;
 
 			while ((line = reader.readLine()) != null
-					&& !parentTask.isCancelled())
-			{
+					&& !parentTask.isCancelled()) {
 
-				if (line.trim().startsWith("vertex"))
-				{
+				if (line.trim().startsWith("vertex")) {
 					facetCounter++;
 
-					for (int vertexNumber = 0; vertexNumber < 3; vertexNumber++)
-					{
+					for (int vertexNumber = 0; vertexNumber < 3; vertexNumber++) {
 						String[] lineBits = line.trim().split(spacePattern);
 
 						Vector3D generatedVertex = new Vector3D(
@@ -376,20 +344,18 @@ public class STLImporter
 								-Float.valueOf(lineBits[3]),
 								Float.valueOf(lineBits[2]));
 
-						if (!graph.containsKey(generatedVertex))
-						{
+						if (!graph.containsKey(generatedVertex)) {
 							graph.put(generatedVertex, vertexCounter);
 							faceIndexArray[vertexNumber * 2] = vertexCounter;
 							vertexCounter++;
-						} else
-						{
+						}
+						else {
 							faceIndexArray[vertexNumber * 2] = graph.get(generatedVertex);
 						}
 
 						lineNumber++;
 
-						if (vertexNumber < 2)
-						{
+						if (vertexNumber < 2) {
 							line = reader.readLine();
 						}
 					}
@@ -397,14 +363,13 @@ public class STLImporter
 					// Add the face to the triangle mesh
 					triangleMesh.getFaces().addAll(faceIndexArray, 0, 6);
 
-				} else
-				{
+				}
+				else {
 					lineNumber++;
 				}
 
 				int progressUpdate = (int) (((double) lineNumber / (double) linesInFile) * 100);
-				if (progressUpdate != progressPercent)
-				{
+				if (progressUpdate != progressPercent) {
 					progressPercent = progressUpdate;
 					percentProgressProperty.set(progressPercent);
 				}
@@ -417,28 +382,25 @@ public class STLImporter
 
 			float[] tempVertexPointArray = new float[3];
 			graph.entrySet()
-			.stream()
-			.sorted((s1, s2) ->
-			{
-				if (s1.getValue() == s2.getValue())
-				{
-					return 0;
-				} else if (s1.getValue() > s2.getValue())
-				{
-					return 1;
-				} else
-				{
-					return -1;
-				}
-			})
-			.forEach(vertexEntry ->
-			{
-				tempVertexPointArray[0] = (float) vertexEntry.getKey().getX();
-				tempVertexPointArray[1] = (float) vertexEntry.getKey().getY();
-				tempVertexPointArray[2] = (float) vertexEntry.getKey().getZ();
+					.stream()
+					.sorted((s1, s2) -> {
+						if (s1.getValue() == s2.getValue()) {
+							return 0;
+						}
+						else if (s1.getValue() > s2.getValue()) {
+							return 1;
+						}
+						else {
+							return -1;
+						}
+					})
+					.forEach(vertexEntry -> {
+						tempVertexPointArray[0] = (float) vertexEntry.getKey().getX();
+						tempVertexPointArray[1] = (float) vertexEntry.getKey().getY();
+						tempVertexPointArray[2] = (float) vertexEntry.getKey().getZ();
 
-				triangleMesh.getPoints().addAll(tempVertexPointArray, 0, 3);
-			});
+						triangleMesh.getPoints().addAll(tempVertexPointArray, 0, 3);
+					});
 
 			FloatArrayList texCoords = new FloatArrayList();
 			texCoords.add(0f);
@@ -446,8 +408,7 @@ public class STLImporter
 			triangleMesh.getTexCoords().addAll(texCoords.toFloatArray());
 
 			int[] smoothingGroups = new int[triangleMesh.getFaces().size() / 6];
-			for (int i = 0; i < smoothingGroups.length; i++)
-			{
+			for (int i = 0; i < smoothingGroups.length; i++) {
 				smoothingGroups[i] = 0;
 			}
 			triangleMesh.getFaceSmoothingGroups().addAll(smoothingGroups);
@@ -455,11 +416,11 @@ public class STLImporter
 					+ " points, " + triangleMesh.getTexCoords().size() + " tex coords and "
 					+ triangleMesh.getFaces().size() + " faces");
 
-		} catch (FileNotFoundException ex)
-		{
+		}
+		catch (FileNotFoundException ex) {
 			LOGGER.error("Failed to open STL file " + modelFile.getAbsolutePath() + " for reading");
-		} catch (IOException ex)
-		{
+		}
+		catch (IOException ex) {
 			LOGGER.error("IO Exception on line " + lineNumber + " when reading STL file "
 					+ modelFile.getAbsolutePath());
 		}

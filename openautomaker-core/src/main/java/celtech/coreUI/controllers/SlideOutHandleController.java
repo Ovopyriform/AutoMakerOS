@@ -23,8 +23,7 @@ import javafx.util.Duration;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class SlideOutHandleController implements Initializable
-{
+public class SlideOutHandleController implements Initializable {
 
 	@FXML
 	VBox handleContainer;
@@ -33,8 +32,7 @@ public class SlideOutHandleController implements Initializable
 	Button handle;
 
 	@FXML
-	void toggleSlide(ActionEvent event)
-	{
+	void toggleSlide(ActionEvent event) {
 		toggleSlide();
 	}
 
@@ -51,58 +49,47 @@ public class SlideOutHandleController implements Initializable
 	/**
 	 *
 	 */
-	public SlideOutHandleController()
-	{
-		hideSidebar = new Transition()
-		{
+	public SlideOutHandleController() {
+		hideSidebar = new Transition() {
 			{
 				setCycleDuration(Duration.millis(delayTime));
 			}
 
 			@Override
-			public void interpolate(double frac)
-			{
+			public void interpolate(double frac) {
 				slideMenuPanel(1.0 - frac);
 			}
 		};
 
-		hideSidebar.onFinishedProperty().set(new EventHandler<ActionEvent>()
-		{
+		hideSidebar.onFinishedProperty().set(new EventHandler<ActionEvent>() {
 			@Override
-			public void handle(ActionEvent event)
-			{
+			public void handle(ActionEvent event) {
 				slidIn = true;
 			}
 		});
 
 		// create an animation to show a sidebar.
-		showSidebar = new Transition()
-		{
+		showSidebar = new Transition() {
 			{
 				setCycleDuration(Duration.millis(delayTime));
 			}
 
 			@Override
-			public void interpolate(double frac)
-			{
+			public void interpolate(double frac) {
 				slideMenuPanel(frac);
 			}
 		};
 
-		showSidebar.onFinishedProperty().set(new EventHandler<ActionEvent>()
-		{
+		showSidebar.onFinishedProperty().set(new EventHandler<ActionEvent>() {
 			@Override
-			public void handle(ActionEvent event)
-			{
+			public void handle(ActionEvent event) {
 				slidIn = false;
 			}
 		});
 	}
 
-	private void setup()
-	{
-		if (paneToSlide == null)
-		{
+	private void setup() {
+		if (paneToSlide == null) {
 			paneToSlide = (HBox) (handleContainer.getParent());
 			handleWidth = handleContainer.getWidth();
 			paneToSlide.setMinWidth(handleWidth);
@@ -114,14 +101,12 @@ public class SlideOutHandleController implements Initializable
 	/**
 	 *
 	 */
-	public void toggleSlide()
-	{
+	public void toggleSlide() {
 		setup();
-		if (slidIn)
-		{
+		if (slidIn) {
 			startSlidingOut();
-		} else
-		{
+		}
+		else {
 			startSlidingIn();
 		}
 	}
@@ -129,8 +114,7 @@ public class SlideOutHandleController implements Initializable
 	/**
 	 *
 	 */
-	public void slideIn()
-	{
+	public void slideIn() {
 		setup();
 		slideMenuPanel(0.0);
 		slidIn = true;
@@ -140,8 +124,7 @@ public class SlideOutHandleController implements Initializable
 	 *
 	 * @param amountToShow
 	 */
-	public void slideMenuPanel(double amountToShow)
-	{
+	public void slideMenuPanel(double amountToShow) {
 		double adjustedWidth = (panelWidth * amountToShow) + handleWidth;
 		paneToSlide.setMinWidth(adjustedWidth);
 		paneToSlide.setPrefWidth(adjustedWidth);
@@ -151,15 +134,13 @@ public class SlideOutHandleController implements Initializable
 	 *
 	 * @return
 	 */
-	public boolean startSlidingOut()
-	{
-		if (hideSidebar.statusProperty().get() == Animation.Status.STOPPED)
-		{
+	public boolean startSlidingOut() {
+		if (hideSidebar.statusProperty().get() == Animation.Status.STOPPED) {
 			//            LOGGER.info("Pulling out");
 			showSidebar.play();
 			return true;
-		} else
-		{
+		}
+		else {
 			return false;
 		}
 	}
@@ -168,17 +149,15 @@ public class SlideOutHandleController implements Initializable
 	 *
 	 * @return
 	 */
-	public boolean startSlidingIn()
-	{
-		if (showSidebar.statusProperty().get() == Animation.Status.STOPPED)
-		{
+	public boolean startSlidingIn() {
+		if (showSidebar.statusProperty().get() == Animation.Status.STOPPED) {
 			//            LOGGER.info("Hiding");
 			panelWidth = paneToSlide.getWidth();
 			paneToSlide.setMaxWidth(panelWidth);
 			hideSidebar.play();
 			return true;
-		} else
-		{
+		}
+		else {
 			return false;
 		}
 	}
@@ -187,14 +166,12 @@ public class SlideOutHandleController implements Initializable
 	 *
 	 * @return
 	 */
-	public boolean isSlidIn()
-	{
+	public boolean isSlidIn() {
 		return slidIn;
 	}
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
+	public void initialize(URL location, ResourceBundle resources) {
 	}
 
 }

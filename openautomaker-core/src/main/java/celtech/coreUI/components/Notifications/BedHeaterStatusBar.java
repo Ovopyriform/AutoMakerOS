@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI.components.Notifications;
 
 import java.net.URL;
@@ -19,8 +17,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author tony
  */
-public class BedHeaterStatusBar extends AppearingProgressBar implements Initializable
-{
+public class BedHeaterStatusBar extends AppearingProgressBar implements Initializable {
 
 	private ReadOnlyObjectProperty<HeaterMode> heaterMode;
 	private ReadOnlyIntegerProperty bedTemperature;
@@ -29,18 +26,15 @@ public class BedHeaterStatusBar extends AppearingProgressBar implements Initiali
 
 	private static final double showBarIfMoreThanXDegreesOut = 5;
 
-	private final ChangeListener<Number> numberChangeListener = (ObservableValue<? extends Number> ov, Number lastState, Number newState) ->
-	{
+	private final ChangeListener<Number> numberChangeListener = (ObservableValue<? extends Number> ov, Number lastState, Number newState) -> {
 		reassessStatus();
 	};
 
-	private final ChangeListener<HeaterMode> heaterModeChangeListener = (ObservableValue<? extends HeaterMode> ov, HeaterMode lastState, HeaterMode newState) ->
-	{
+	private final ChangeListener<HeaterMode> heaterModeChangeListener = (ObservableValue<? extends HeaterMode> ov, HeaterMode lastState, HeaterMode newState) -> {
 		reassessStatus();
 	};
 
-	public BedHeaterStatusBar()
-	{
+	public BedHeaterStatusBar() {
 		super();
 
 		getStyleClass().add("secondaryStatusBar");
@@ -50,8 +44,7 @@ public class BedHeaterStatusBar extends AppearingProgressBar implements Initiali
 	}
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
+	public void initialize(URL location, ResourceBundle resources) {
 		super.initialize(location, resources);
 		targetLegendRequired(true);
 		targetValueRequired(true);
@@ -60,77 +53,68 @@ public class BedHeaterStatusBar extends AppearingProgressBar implements Initiali
 		layerDataRequired(false);
 	}
 
-	private void reassessStatus()
-	{
+	private void reassessStatus() {
 		boolean showHeaterBar = false;
 
-		switch (heaterMode.get())
-		{
-		case OFF:
-			break;
-		case FIRST_LAYER:
-			if (Math.abs(bedTemperature.get() - bedFirstLayerTargetTemperature.get())
-					> showBarIfMoreThanXDegreesOut)
-			{
-				largeProgressDescription.setText(OpenAutoMakerEnv.getI18N().t("printerStatus.heatingBed"));
+		switch (heaterMode.get()) {
+			case OFF:
+				break;
+			case FIRST_LAYER:
+				if (Math.abs(bedTemperature.get() - bedFirstLayerTargetTemperature.get()) > showBarIfMoreThanXDegreesOut) {
+					largeProgressDescription.setText(OpenAutoMakerEnv.getI18N().t("printerStatus.heatingBed"));
 
-				largeTargetLegend.textProperty().set(OpenAutoMakerEnv.getI18N().t("progressBar.targetTemperature"));
-				largeTargetValue.textProperty().set(bedFirstLayerTargetTemperature.asString("%d").get()
-						.concat(OpenAutoMakerEnv.getI18N().t("misc.degreesC")));
-				currentValue.textProperty().set(bedTemperature.asString("%d").get()
-						.concat(OpenAutoMakerEnv.getI18N().t("misc.degreesC")));
+					largeTargetLegend.textProperty().set(OpenAutoMakerEnv.getI18N().t("progressBar.targetTemperature"));
+					largeTargetValue.textProperty().set(bedFirstLayerTargetTemperature.asString("%d").get()
+							.concat(OpenAutoMakerEnv.getI18N().t("misc.degreesC")));
+					currentValue.textProperty().set(bedTemperature.asString("%d").get()
+							.concat(OpenAutoMakerEnv.getI18N().t("misc.degreesC")));
 
-				if (bedFirstLayerTargetTemperature.doubleValue() > 0)
-				{
-					double normalisedProgress = 0;
-					normalisedProgress = bedTemperature.doubleValue() / bedFirstLayerTargetTemperature.doubleValue();
-					normalisedProgress = Math.max(0, normalisedProgress);
-					normalisedProgress = Math.min(1, normalisedProgress);
+					if (bedFirstLayerTargetTemperature.doubleValue() > 0) {
+						double normalisedProgress = 0;
+						normalisedProgress = bedTemperature.doubleValue() / bedFirstLayerTargetTemperature.doubleValue();
+						normalisedProgress = Math.max(0, normalisedProgress);
+						normalisedProgress = Math.min(1, normalisedProgress);
 
-					progressBar.setProgress(normalisedProgress);
-				} else
-				{
-					progressBar.setProgress(0);
+						progressBar.setProgress(normalisedProgress);
+					}
+					else {
+						progressBar.setProgress(0);
+					}
+					showHeaterBar = true;
 				}
-				showHeaterBar = true;
-			}
-			break;
-		case NORMAL:
-			if (Math.abs(bedTemperature.get() - bedTargetTemperature.get())
-					> showBarIfMoreThanXDegreesOut)
-			{
-				largeProgressDescription.setText(OpenAutoMakerEnv.getI18N().t("printerStatus.heatingBed"));
+				break;
+			case NORMAL:
+				if (Math.abs(bedTemperature.get() - bedTargetTemperature.get()) > showBarIfMoreThanXDegreesOut) {
+					largeProgressDescription.setText(OpenAutoMakerEnv.getI18N().t("printerStatus.heatingBed"));
 
-				largeTargetLegend.textProperty().set(OpenAutoMakerEnv.getI18N().t("progressBar.targetTemperature"));
-				largeTargetValue.textProperty().set(bedTargetTemperature.asString("%d").get()
-						.concat(OpenAutoMakerEnv.getI18N().t("misc.degreesC")));
-				currentValue.textProperty().set(bedTemperature.asString("%d").get()
-						.concat(OpenAutoMakerEnv.getI18N().t("misc.degreesC")));
+					largeTargetLegend.textProperty().set(OpenAutoMakerEnv.getI18N().t("progressBar.targetTemperature"));
+					largeTargetValue.textProperty().set(bedTargetTemperature.asString("%d").get()
+							.concat(OpenAutoMakerEnv.getI18N().t("misc.degreesC")));
+					currentValue.textProperty().set(bedTemperature.asString("%d").get()
+							.concat(OpenAutoMakerEnv.getI18N().t("misc.degreesC")));
 
-				if (bedTargetTemperature.doubleValue() > 0)
-				{
-					double normalisedProgress = 0;
-					normalisedProgress = bedTemperature.doubleValue() / bedTargetTemperature.doubleValue();
-					normalisedProgress = Math.max(0, normalisedProgress);
-					normalisedProgress = Math.min(1, normalisedProgress);
+					if (bedTargetTemperature.doubleValue() > 0) {
+						double normalisedProgress = 0;
+						normalisedProgress = bedTemperature.doubleValue() / bedTargetTemperature.doubleValue();
+						normalisedProgress = Math.max(0, normalisedProgress);
+						normalisedProgress = Math.min(1, normalisedProgress);
 
-					progressBar.setProgress(normalisedProgress);
-				} else
-				{
-					progressBar.setProgress(0);
+						progressBar.setProgress(normalisedProgress);
+					}
+					else {
+						progressBar.setProgress(0);
+					}
+					showHeaterBar = true;
 				}
-				showHeaterBar = true;
-			}
-			break;
-		default:
-			break;
+				break;
+			default:
+				break;
 		}
 
-		if (showHeaterBar)
-		{
+		if (showHeaterBar) {
 			startSlidingInToView();
-		} else
-		{
+		}
+		else {
 			startSlidingOutOfView();
 		}
 	}
@@ -149,28 +133,23 @@ public class BedHeaterStatusBar extends AppearingProgressBar implements Initiali
 		reassessStatus();
 	}
 
-	public void unbindAll()
-	{
-		if (heaterMode != null)
-		{
+	public void unbindAll() {
+		if (heaterMode != null) {
 			heaterMode.removeListener(heaterModeChangeListener);
 			heaterMode = null;
 		}
 
-		if (bedTemperature != null)
-		{
+		if (bedTemperature != null) {
 			bedTemperature.removeListener(numberChangeListener);
 			bedTemperature = null;
 		}
 
-		if (bedFirstLayerTargetTemperature != null)
-		{
+		if (bedFirstLayerTargetTemperature != null) {
 			bedFirstLayerTargetTemperature.removeListener(numberChangeListener);
 			bedFirstLayerTargetTemperature = null;
 		}
 
-		if (bedTargetTemperature != null)
-		{
+		if (bedTargetTemperature != null) {
 			bedTargetTemperature.removeListener(numberChangeListener);
 			bedTargetTemperature = null;
 		}

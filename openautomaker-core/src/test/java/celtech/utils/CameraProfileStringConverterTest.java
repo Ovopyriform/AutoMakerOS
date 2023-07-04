@@ -20,8 +20,7 @@ import xyz.openautomaker.base.configuration.fileRepresentation.CameraProfile;
  */
 public class CameraProfileStringConverterTest {
 	@Test
-	public void testStringConverter()
-	{
+	public void testStringConverter() {
 		// creating a Stream of strings
 		List<CameraProfile> l = new ArrayList<>();
 		CameraProfile cp = new CameraProfile();
@@ -55,7 +54,9 @@ public class CameraProfileStringConverterTest {
 		cp.setProfileName("Logitech StreamCam");
 		l.add(cp);
 
-		CameraProfileStringConverter cisc = new CameraProfileStringConverter(() -> { return l; });
+		CameraProfileStringConverter cisc = new CameraProfileStringConverter(() -> {
+			return l;
+		});
 
 		String cs0 = cisc.toString(l.get(0));
 		CameraProfile cp1 = cisc.fromString("Logitech 920");

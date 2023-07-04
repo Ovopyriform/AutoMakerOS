@@ -26,8 +26,7 @@ import xyz.openautomaker.base.printerControl.model.PrinterIdentity;
  *
  * @author Ian
  */
-public class AboutPanelController implements Initializable
-{
+public class AboutPanelController implements Initializable {
 
 	private final Clipboard clipboard = Clipboard.getSystemClipboard();
 	private final ClipboardContent content = new ClipboardContent();
@@ -80,139 +79,120 @@ public class AboutPanelController implements Initializable
 	private Printer currentPrinter = null;
 
 	@FXML
-	private void viewREADME(ActionEvent event)
-	{
+	private void viewREADME(ActionEvent event) {
 		ApplicationStatus.getInstance().setMode(ApplicationMode.WELCOME);
 	}
 
 	@FXML
-	private void okPressed(ActionEvent event)
-	{
+	private void okPressed(ActionEvent event) {
 		ApplicationStatus.getInstance().returnToLastMode();
 	}
 
 	@FXML
-	private void copyPrinterSerialNumber(ActionEvent event)
-	{
+	private void copyPrinterSerialNumber(ActionEvent event) {
 		content.putString(roboxSerialNumber.getText());
 		clipboard.setContent(content);
 	}
 
 	@FXML
-	private void copyHeadSerialNumber(ActionEvent event)
-	{
+	private void copyHeadSerialNumber(ActionEvent event) {
 		content.putString(headSerialNumber.getText());
 		clipboard.setContent(content);
 	}
 
 	@FXML
-	private void systemInformationPressed(ActionEvent event)
-	{
+	private void systemInformationPressed(ActionEvent event) {
 		ApplicationStatus.getInstance().setMode(ApplicationMode.SYSTEM_INFORMATION);
 	}
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
+	public void initialize(URL location, ResourceBundle resources) {
 		version.setText(BaseConfiguration.getApplicationVersion());
 
-		DisplayManager.getInstance().getDisplayScalingModeProperty().addListener(new ChangeListener<DisplayManager.DisplayScalingMode>()
-		{
+		DisplayManager.getInstance().getDisplayScalingModeProperty().addListener(new ChangeListener<DisplayManager.DisplayScalingMode>() {
 			@Override
-			public void changed(ObservableValue<? extends DisplayManager.DisplayScalingMode> ov, DisplayManager.DisplayScalingMode t, DisplayManager.DisplayScalingMode scalingMode)
-			{
-				switch (scalingMode)
-				{
-				case NORMAL:
-					infoLabel.setStyle("-fx-font-size: 21px");
-					hwengLabel.setStyle("-fx-font-size: 21px");
-					hwengNames.setStyle("-fx-font-size: 21px");
-					swengLabel.setStyle("-fx-font-size: 21px");
-					swengNames.setStyle("-fx-font-size: 21px");
-					bdLabel.setStyle("-fx-font-size: 21px");
-					bdNames.setStyle("-fx-font-size: 21px");
-					amTitleText1.setStyle("-fx-font-size: 100px");
-					amTitleText2.setStyle("-fx-font-size: 100px");
-					amTitleText3.setStyle("-fx-font-size: 14px");
-					logoBox.setScaleX(1);
-					logoBox.setScaleY(1);
-					break;
-				default:
-					infoLabel.setStyle("-fx-font-size: 14px");
-					hwengLabel.setStyle("-fx-font-size: 14px");
-					hwengNames.setStyle("-fx-font-size: 14px");
-					swengLabel.setStyle("-fx-font-size: 14px");
-					swengNames.setStyle("-fx-font-size: 14px");
-					bdLabel.setStyle("-fx-font-size: 14px");
-					bdNames.setStyle("-fx-font-size: 14px");
-					amTitleText1.setStyle("-fx-font-size: 70px");
-					amTitleText2.setStyle("-fx-font-size: 70px");
-					amTitleText3.setStyle("-fx-font-size: 10px");
-					logoBox.setScaleX(0.8);
-					logoBox.setScaleY(0.8);
-					break;
+			public void changed(ObservableValue<? extends DisplayManager.DisplayScalingMode> ov, DisplayManager.DisplayScalingMode t, DisplayManager.DisplayScalingMode scalingMode) {
+				switch (scalingMode) {
+					case NORMAL:
+						infoLabel.setStyle("-fx-font-size: 21px");
+						hwengLabel.setStyle("-fx-font-size: 21px");
+						hwengNames.setStyle("-fx-font-size: 21px");
+						swengLabel.setStyle("-fx-font-size: 21px");
+						swengNames.setStyle("-fx-font-size: 21px");
+						bdLabel.setStyle("-fx-font-size: 21px");
+						bdNames.setStyle("-fx-font-size: 21px");
+						amTitleText1.setStyle("-fx-font-size: 100px");
+						amTitleText2.setStyle("-fx-font-size: 100px");
+						amTitleText3.setStyle("-fx-font-size: 14px");
+						logoBox.setScaleX(1);
+						logoBox.setScaleY(1);
+						break;
+					default:
+						infoLabel.setStyle("-fx-font-size: 14px");
+						hwengLabel.setStyle("-fx-font-size: 14px");
+						hwengNames.setStyle("-fx-font-size: 14px");
+						swengLabel.setStyle("-fx-font-size: 14px");
+						swengNames.setStyle("-fx-font-size: 14px");
+						bdLabel.setStyle("-fx-font-size: 14px");
+						bdNames.setStyle("-fx-font-size: 14px");
+						amTitleText1.setStyle("-fx-font-size: 70px");
+						amTitleText2.setStyle("-fx-font-size: 70px");
+						amTitleText3.setStyle("-fx-font-size: 10px");
+						logoBox.setScaleX(0.8);
+						logoBox.setScaleY(0.8);
+						break;
 
 				}
 			}
 		});
 
-		Lookup.getSelectedPrinterProperty().addListener((ObservableValue<? extends Printer> observable, Printer oldValue, Printer newValue) ->
-		{
+		Lookup.getSelectedPrinterProperty().addListener((ObservableValue<? extends Printer> observable, Printer oldValue, Printer newValue) -> {
 			bindToPrinter(newValue);
 		});
 		bindToPrinter(Lookup.getSelectedPrinterProperty().get());
 	}
 
-	private void updateHeadData(Head head)
-	{
-		if (head != null)
-		{
+	private void updateHeadData(Head head) {
+		if (head != null) {
 			headSerialNumber.setText(head.getFormattedSerial());
-		} else
-		{
+		}
+		else {
 			headSerialNumber.setText("");
 		}
 	}
 
-	private void updateIDData(PrinterIdentity identity)
-	{
-		if (identity != null)
-		{
+	private void updateIDData(PrinterIdentity identity) {
+		if (identity != null) {
 			roboxSerialNumber.setText(identity.toString());
 			if (!identity.printerelectronicsVersionProperty().get().isEmpty())
 				roboxElectronicsVersion.setText("E" + identity.printerelectronicsVersionProperty().get());
 			else
 				roboxElectronicsVersion.setText("");
-		} else
-		{
+		}
+		else {
 			roboxSerialNumber.setText("");
 			roboxElectronicsVersion.setText("");
 		}
 	}
 
-	private ChangeListener<Head> headChangeListener = new ChangeListener<>()
-	{
+	private ChangeListener<Head> headChangeListener = new ChangeListener<>() {
 		@Override
-		public void changed(ObservableValue<? extends Head> observable, Head oldValue, Head newValue)
-		{
+		public void changed(ObservableValue<? extends Head> observable, Head oldValue, Head newValue) {
 			updateHeadData(newValue);
 		}
 	};
 
-	private void bindToPrinter(Printer printer)
-	{
-		if (currentPrinter != null)
-		{
+	private void bindToPrinter(Printer printer) {
+		if (currentPrinter != null) {
 			currentPrinter.headProperty().removeListener(headChangeListener);
 		}
 
-		if (printer != null)
-		{
+		if (printer != null) {
 			printer.headProperty().addListener(headChangeListener);
 			updateHeadData(printer.headProperty().get());
 			updateIDData(printer.getPrinterIdentity());
-		} else
-		{
+		}
+		else {
 			updateHeadData(null);
 			updateIDData(null);
 		}

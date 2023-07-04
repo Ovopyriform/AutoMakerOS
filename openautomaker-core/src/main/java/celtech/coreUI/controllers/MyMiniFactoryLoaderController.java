@@ -223,10 +223,12 @@ public class MyMiniFactoryLoaderController implements Initializable {
 
 			if (responseCode == 200) {
 				available = true;
-			} else {
+			}
+			else {
 				LOGGER.warn("My Mini Factory site unavailable");
 			}
-		} catch (IOException ex) {
+		}
+		catch (IOException ex) {
 			LOGGER.error("Exception whilst attempting to contact My Mini Factory site");
 			LOGGER.debug("Exception - " + ex.toString());
 		}

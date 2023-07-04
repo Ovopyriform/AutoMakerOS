@@ -21,8 +21,7 @@ import xyz.openautomaker.base.utils.Math.MathUtils;
  *
  * @author Ian
  */
-public class BedAxes extends Pane implements CameraViewChangeListener
-{
+public class BedAxes extends Pane implements CameraViewChangeListener {
 
 	private static final Logger LOGGER = LogManager.getLogger(BedAxes.class.getName());
 	private final Text xText = new Text();
@@ -52,14 +51,12 @@ public class BedAxes extends Pane implements CameraViewChangeListener
 
 	private final ScreenCoordinateConverter screenCoordinateConverter;
 
-	public BedAxes(ScreenCoordinateConverter screenCoordinateConverter)
-	{
+	public BedAxes(ScreenCoordinateConverter screenCoordinateConverter) {
 		this.screenCoordinateConverter = screenCoordinateConverter;
 		initialise();
 	}
 
-	private void initialise()
-	{
+	private void initialise() {
 		setVisible(false);
 		xText.getTransforms().add(xTextTranslate);
 		xText.getStyleClass().add("bed-axis-label");
@@ -114,8 +111,7 @@ public class BedAxes extends Pane implements CameraViewChangeListener
 		setMouseTransparent(true);
 	}
 
-	private double calculateAngle(Point2D origin, Point2D end)
-	{
+	private double calculateAngle(Point2D origin, Point2D end) {
 		double xDifference = end.getX() - origin.getX();
 		double yDifference = end.getY() - origin.getY();
 
@@ -125,13 +121,11 @@ public class BedAxes extends Pane implements CameraViewChangeListener
 		double theta = Math.atan(opposite / adjacent);
 		double angle = theta * MathUtils.RAD_TO_DEG;
 
-		if (xDifference < 0)
-		{
-			if (angle < 0)
-			{
+		if (xDifference < 0) {
+			if (angle < 0) {
 				angle = 180 + angle;
-			} else
-			{
+			}
+			else {
 				angle = -180 + angle;
 			}
 		}
@@ -139,8 +133,7 @@ public class BedAxes extends Pane implements CameraViewChangeListener
 		return angle;
 	}
 
-	public void updateArrowAndTextPosition()
-	{
+	public void updateArrowAndTextPosition() {
 		Point2D origin = screenCoordinateConverter.convertWorldCoordinatesToScreen(0, 0, 0);
 		Point2D xAxisVector = screenCoordinateConverter.convertWorldCoordinatesToScreen(lineLength, 0, 0);
 		Point2D xTextPosition = screenCoordinateConverter.convertWorldCoordinatesToScreen(lineLength + textOffsetFromOrigin, 0, 0);
@@ -149,8 +142,7 @@ public class BedAxes extends Pane implements CameraViewChangeListener
 		Point2D zAxisVector = screenCoordinateConverter.convertWorldCoordinatesToScreen(0, -lineLength, 0);
 		Point2D zTextPosition = screenCoordinateConverter.convertWorldCoordinatesToScreen(0, -lineLength - textOffsetFromOrigin, 0);
 
-		if (origin != null)
-		{
+		if (origin != null) {
 			Point2D originLocal = screenToLocal(origin);
 			Point2D xAxisLocalEnd = screenToLocal(xAxisVector);
 			Point2D xTextPositionLocal = screenToLocal(xTextPosition);
@@ -159,8 +151,7 @@ public class BedAxes extends Pane implements CameraViewChangeListener
 			Point2D zAxisLocalEnd = screenToLocal(zAxisVector);
 			Point2D zTextPositionLocal = screenToLocal(zTextPosition);
 
-			if (originLocal != null)
-			{
+			if (originLocal != null) {
 				xTextTranslate.setX(xTextPositionLocal.getX() - xText.boundsInLocalProperty().get().getWidth() / 2.0);
 				xTextTranslate.setY(xTextPositionLocal.getY() + xText.boundsInLocalProperty().get().getHeight() / 2.0);
 				xAxis.setStartX(originLocal.getX());
@@ -200,15 +191,11 @@ public class BedAxes extends Pane implements CameraViewChangeListener
 	}
 
 	@Override
-	public void heresYourCamera(Camera camera
-			)
-	{
+	public void heresYourCamera(Camera camera) {
 	}
 
 	@Override
-	public void cameraViewOfYouHasChanged(double cameraDistance
-			)
-	{
+	public void cameraViewOfYouHasChanged(double cameraDistance) {
 		updateArrowAndTextPosition();
 	}
 }

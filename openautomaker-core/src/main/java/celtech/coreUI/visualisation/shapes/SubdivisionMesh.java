@@ -72,7 +72,8 @@ public class SubdivisionMesh extends PolygonMesh {
 			public void onChanged(ObservableFloatArray observableArray, boolean sizeChanged, int from, int to) {
 				if (sizeChanged) {
 					meshDirty = true;
-				} else {
+				}
+				else {
 					pointValuesDirty = true;
 				}
 			}
@@ -86,8 +87,7 @@ public class SubdivisionMesh extends PolygonMesh {
 	}
 
 	/**
-	 * Updates the variables of the underlying polygon mesh.
-	 * It only updates the fields that need to be updated.
+	 * Updates the variables of the underlying polygon mesh. It only updates the fields that need to be updated.
 	 */
 	public void update() {
 		if (meshDirty) {
@@ -98,7 +98,7 @@ public class SubdivisionMesh extends PolygonMesh {
 		}
 
 		while (subdivisionLevel >= symbolicMeshes.size()) {
-			symbolicMeshes.add(SymbolicSubdivisionBuilder.subdivide(symbolicMeshes.get(symbolicMeshes.size()-1), boundaryMode, mapBorderMode));
+			symbolicMeshes.add(SymbolicSubdivisionBuilder.subdivide(symbolicMeshes.get(symbolicMeshes.size() - 1), boundaryMode, mapBorderMode));
 			pointValuesDirty = true;
 			subdivisionLevelDirty = true;
 		}

@@ -174,7 +174,8 @@ public abstract class Project {
 			if (projectFile instanceof ModelContainerProjectFile) {
 				project = new ModelContainerProject();
 				project.load(projectFile, basePath);
-			} else if (projectFile instanceof ShapeContainerProjectFile) {
+			}
+			else if (projectFile instanceof ShapeContainerProjectFile) {
 				project = new ShapeContainerProject();
 				project.load(projectFile, basePath);
 			}
@@ -381,10 +382,12 @@ public abstract class Project {
 			double ratio = newScale / projectifiableThing.getXScale();
 			if (projectifiableThing instanceof ScaleableThreeD) {
 				scaleXYZRatioSelection((Set) projectifiableThings, ratio);
-			} else {
+			}
+			else {
 				scaleXYRatioSelection(projectifiableThings, ratio);
 			}
-		} else {
+		}
+		else {
 			for (ScaleableTwoD projectifiableThing : projectifiableThings) {
 				{
 					projectifiableThing.setXScale(newScale, true);
@@ -404,10 +407,12 @@ public abstract class Project {
 
 			if (projectifiableThing instanceof ScaleableThreeD) {
 				scaleXYZRatioSelection((Set) projectifiableThings, ratio);
-			} else {
+			}
+			else {
 				scaleXYRatioSelection(projectifiableThings, ratio);
 			}
-		} else {
+		}
+		else {
 			for (ScaleableTwoD projectifiableThing : projectifiableThings) {
 				{
 					projectifiableThing.setYScale(newScale, true);
@@ -425,7 +430,8 @@ public abstract class Project {
 			ScaleableThreeD projectifiableThing = projectifiableThings.iterator().next();
 			double ratio = newScale / projectifiableThing.getZScale();
 			scaleXYZRatioSelection(projectifiableThings, ratio);
-		} else {
+		}
+		else {
 			for (ScaleableThreeD projectifiableThing : projectifiableThings) {
 				{
 					projectifiableThing.setZScale(newScale, true);

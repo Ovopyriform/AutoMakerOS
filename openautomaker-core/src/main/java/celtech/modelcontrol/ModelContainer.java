@@ -134,9 +134,11 @@ public class ModelContainer extends ProjectifiableThing implements Serializable,
 	public ModelContainer getParentModelContainer() {
 		if (getParent() instanceof ModelContainer) {
 			return (ModelContainer) getParent();
-		} else if (getParent() != null && getParent().getParent() instanceof ModelContainer) {
+		}
+		else if (getParent() != null && getParent().getParent() instanceof ModelContainer) {
 			return (ModelContainer) getParent().getParent();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -237,7 +239,8 @@ public class ModelContainer extends ProjectifiableThing implements Serializable,
 		if (modelFile != null) {
 			setModelName(modelFile.getName());
 			this.setId(modelFile.getName() + Integer.toString(modelId));
-		} else {
+		}
+		else {
 			setModelName("group " + modelId);
 			this.setId("group " + modelId);
 		}
@@ -339,7 +342,8 @@ public class ModelContainer extends ProjectifiableThing implements Serializable,
 			Parent parent = currentNode.getParent();
 			if (parent instanceof ModelContainer) {
 				useMyTransforms.add((ModelContainer) parent);
-			} else if (parent instanceof ModelGroup) {
+			}
+			else if (parent instanceof ModelGroup) {
 				useMyTransforms.add((ModelGroup) parent);
 			}
 
@@ -351,7 +355,8 @@ public class ModelContainer extends ProjectifiableThing implements Serializable,
 			try {
 				Transform concatenatedTransforms = parentTransforms.get(2).createInverse().createConcatenation(parentTransforms.get(1).createInverse().createConcatenation(parentTransforms.get(0).createInverse()));
 				localPoint = concatenatedTransforms.deltaTransform(localPoint);
-			} catch (NonInvertibleTransformException ex) {
+			}
+			catch (NonInvertibleTransformException ex) {
 				LOGGER.error("Couldn't invert rotation transform");
 			}
 		}
@@ -424,12 +429,14 @@ public class ModelContainer extends ProjectifiableThing implements Serializable,
 			if (relativeXSize > 1) {
 				scaling = 1 / relativeXSize;
 			}
-		} else if (relativeYSize > relativeXSize && relativeYSize > relativeZSize) {
+		}
+		else if (relativeYSize > relativeXSize && relativeYSize > relativeZSize) {
 			if (relativeYSize > 1) {
 				scaling = 1 / relativeYSize;
 			}
 
-		} else {
+		}
+		else {
 			//Z size must be the largest
 			if (relativeZSize > 1) {
 				scaling = 1 / relativeZSize;
@@ -675,7 +682,8 @@ public class ModelContainer extends ProjectifiableThing implements Serializable,
 				addSelectionHighlighter();
 			}
 			showSelectionHighlighter();
-		} else {
+		}
+		else {
 			hideSelectionHighlighter();
 		}
 	}
@@ -772,7 +780,8 @@ public class ModelContainer extends ProjectifiableThing implements Serializable,
 			meshView.setMaterial(ApplicationMaterials.getDefaultModelMaterial());
 			meshView.setCullFace(CullFace.BACK);
 			meshView.setId(modelName + "_mesh");
-		} catch (IOException ex) {
+		}
+		catch (IOException ex) {
 			meshView = readContainer_1_03_00_Contents(in);
 			was_legacy_model = true;
 		}
@@ -804,7 +813,8 @@ public class ModelContainer extends ProjectifiableThing implements Serializable,
 			if (storedModelId > 0) {
 				modelId = storedModelId;
 			}
-		} else {
+		}
+		else {
 			convertSnapFace = true;
 		}
 
@@ -912,7 +922,8 @@ public class ModelContainer extends ProjectifiableThing implements Serializable,
 
 		if (newMinX < 0) {
 			finalXPosition += -newMinX;
-		} else if (newMaxX > printVolumeWidth) {
+		}
+		else if (newMaxX > printVolumeWidth) {
 			finalXPosition -= (newMaxX - printVolumeWidth);
 		}
 
@@ -942,7 +953,8 @@ public class ModelContainer extends ProjectifiableThing implements Serializable,
 
 		if (newMinZ < 0) {
 			finalZPosition += -newMinZ;
-		} else if (newMaxZ > printVolumeDepth) {
+		}
+		else if (newMaxZ > printVolumeDepth) {
 			finalZPosition -= (newMaxZ - printVolumeDepth);
 		}
 
@@ -1022,7 +1034,8 @@ public class ModelContainer extends ProjectifiableThing implements Serializable,
 					|| MathUtils.compareDouble(bounds.getMinZ(), 0, epsilon) == MathUtils.LESS_THAN || MathUtils.compareDouble(bounds.getMaxZ(), printVolumeDepth, epsilon) == MathUtils.MORE_THAN
 					|| MathUtils.compareDouble(bounds.getMaxY(), 0, epsilon) == MathUtils.MORE_THAN || MathUtils.compareDouble(bounds.getMinY(), -printVolumeHeight, epsilon) == MathUtils.LESS_THAN) {
 				isOffBed.set(true);
-			} else {
+			}
+			else {
 				isOffBed.set(false);
 			}
 		}
@@ -1541,7 +1554,8 @@ public class ModelContainer extends ProjectifiableThing implements Serializable,
 		if (showMisplacedColour) {
 			if (offBed) {
 				meshView.setMaterial(ApplicationMaterials.getOffBedModelMaterial());
-			} else if (isCollided) {
+			}
+			else if (isCollided) {
 				meshView.setMaterial(ApplicationMaterials.getCollidedModelMaterial());
 			}
 		}
@@ -1550,14 +1564,16 @@ public class ModelContainer extends ProjectifiableThing implements Serializable,
 				case 0:
 					if (extruder0Material == null) {
 						meshView.setMaterial(ApplicationMaterials.getDefaultModelMaterial());
-					} else {
+					}
+					else {
 						meshView.setMaterial(extruder0Material);
 					}
 					break;
 				case 1:
 					if (extruder1Material == null) {
 						meshView.setMaterial(ApplicationMaterials.getDefaultModelMaterial());
-					} else {
+					}
+					else {
 						meshView.setMaterial(extruder1Material);
 					}
 					break;

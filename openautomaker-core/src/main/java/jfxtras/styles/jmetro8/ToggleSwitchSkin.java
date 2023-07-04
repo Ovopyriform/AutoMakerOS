@@ -12,7 +12,7 @@ import javafx.util.Duration;
 /**
  * Created by pedro_000 on 12/4/13.
  */
-public class ToggleSwitchSkin extends SkinBase<ToggleSwitch>{
+public class ToggleSwitchSkin extends SkinBase<ToggleSwitch> {
 	StackPane thumb;
 	StackPane thumbArea;
 	LabeledText label;
@@ -88,19 +88,18 @@ public class ToggleSwitchSkin extends SkinBase<ToggleSwitch>{
 		labelContainer.resize(contentWidth - thumbAreaWidth, thumbAreaHeight);
 		labelContainer.setLayoutY(thumbAreaY);
 
-		if (!toggleSwitch.isSelected())
-		{
+		if (!toggleSwitch.isSelected()) {
 			thumb.setLayoutX(thumbArea.getLayoutX());
 			thumb.setLayoutY(thumbAreaY);
-		} else
-		{
+		}
+		else {
 			thumb.setLayoutX(thumbArea.getLayoutX() + thumbAreaWidth - thumbWidth);
 			thumb.setLayoutY(thumbAreaY);
 		}
 	}
 
-
-	@Override protected double computeMinWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+	@Override
+	protected double computeMinWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
 		final String labelText = label.getText();
 		final Font font = label.getFont();
 		double textWidth = Utils.computeTextWidth(font, labelText, 0);
@@ -108,7 +107,8 @@ public class ToggleSwitchSkin extends SkinBase<ToggleSwitch>{
 		return leftInset + textWidth + thumbArea.prefWidth(-1) + rightInset;
 	}
 
-	@Override protected double computeMinHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+	@Override
+	protected double computeMinHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
 		final Font font = label.getFont();
 		final String labelText = label.getText();
 		final double textHeight = Utils.computeTextHeight(font, labelText, 0, label.getLineSpacing(), label.getBoundsType());
@@ -116,7 +116,8 @@ public class ToggleSwitchSkin extends SkinBase<ToggleSwitch>{
 		return topInset + Math.max(thumb.prefHeight(-1), textHeight) + bottomInset;
 	}
 
-	@Override protected double computePrefWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+	@Override
+	protected double computePrefWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
 		final String labelText = label.getText();
 		final Font font = label.getFont();
 		double textWidth = Utils.computeTextWidth(font, labelText, 0);
@@ -124,8 +125,8 @@ public class ToggleSwitchSkin extends SkinBase<ToggleSwitch>{
 		return leftInset + textWidth + 20 + thumbArea.prefWidth(-1) + rightInset;
 	}
 
-	@Override protected double computePrefHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset)
-	{
+	@Override
+	protected double computePrefHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
 		final Font font = label.getFont();
 		final String labelText = label.getText();
 		final double textHeight = Utils.computeTextHeight(font, labelText, 0, label.getLineSpacing(), label.getBoundsType());

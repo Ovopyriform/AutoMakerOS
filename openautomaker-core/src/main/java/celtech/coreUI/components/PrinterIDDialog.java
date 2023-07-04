@@ -23,8 +23,7 @@ import xyz.openautomaker.base.printerControl.model.Printer;
  *
  * @author ianhudson
  */
-public class PrinterIDDialog
-{
+public class PrinterIDDialog {
 
 	private static final Logger LOGGER = LogManager.getLogger(PrinterIDDialog.class.getName());
 	private Stage dialogStage = null;
@@ -33,13 +32,11 @@ public class PrinterIDDialog
 	/**
 	 *
 	 */
-	public PrinterIDDialog()
-	{
+	public PrinterIDDialog() {
 		dialogStage = new Stage(StageStyle.TRANSPARENT);
 		URL dialogFXMLURL = PrinterIDDialog.class.getResource(ApplicationConfiguration.fxmlResourcePath + "PrinterIDDialog.fxml");
 		FXMLLoader dialogLoader = new FXMLLoader(dialogFXMLURL, BaseLookup.getLanguageBundle());
-		try
-		{
+		try {
 			Parent dialogBoxScreen = (Parent) dialogLoader.load();
 			dialogController = (PrinterIDDialogController) dialogLoader.getController();
 
@@ -49,8 +46,8 @@ public class PrinterIDDialog
 			dialogStage.initOwner(DisplayManager.getMainStage());
 			dialogStage.initModality(Modality.APPLICATION_MODAL);
 			dialogController.configure(dialogStage);
-		} catch (IOException ex)
-		{
+		}
+		catch (IOException ex) {
 			LOGGER.error("Couldn't load printer ID dialog box FXML");
 		}
 	}
@@ -59,8 +56,7 @@ public class PrinterIDDialog
 	 *
 	 * @return
 	 */
-	public boolean show()
-	{
+	public boolean show() {
 		dialogStage.showAndWait();
 		return dialogController.okPressed();
 	}
@@ -68,8 +64,7 @@ public class PrinterIDDialog
 	/**
 	 *
 	 */
-	public void close()
-	{
+	public void close() {
 		dialogStage.hide();
 	}
 
@@ -77,8 +72,7 @@ public class PrinterIDDialog
 	 *
 	 * @return
 	 */
-	public boolean isShowing()
-	{
+	public boolean isShowing() {
 		return dialogStage.isShowing();
 	}
 
@@ -86,8 +80,7 @@ public class PrinterIDDialog
 	 *
 	 * @return
 	 */
-	public String getChosenPrinterName()
-	{
+	public String getChosenPrinterName() {
 		return dialogController.getChosenPrinterName();
 	}
 
@@ -95,8 +88,7 @@ public class PrinterIDDialog
 	 *
 	 * @param printerToUse
 	 */
-	public void setPrinterToUse(Printer printerToUse)
-	{
+	public void setPrinterToUse(Printer printerToUse) {
 		dialogController.setPrinterToUse(printerToUse);
 	}
 
@@ -104,8 +96,7 @@ public class PrinterIDDialog
 	 *
 	 * @param colour
 	 */
-	public void setChosenDisplayColour(Color colour)
-	{
+	public void setChosenDisplayColour(Color colour) {
 		dialogController.setChosenColour(colour);
 	}
 
@@ -113,8 +104,7 @@ public class PrinterIDDialog
 	 *
 	 * @return
 	 */
-	public Color getChosenDisplayColour()
-	{
+	public Color getChosenDisplayColour() {
 		return dialogController.getChosenDisplayColour();
 	}
 
@@ -122,8 +112,7 @@ public class PrinterIDDialog
 	 *
 	 * @param printerName
 	 */
-	public void setChosenPrinterName(String printerName)
-	{
+	public void setChosenPrinterName(String printerName) {
 		dialogController.setChosenPrinterName(printerName);
 	}
 }

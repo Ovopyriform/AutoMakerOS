@@ -10,8 +10,7 @@ package celtech.utils;
  *
  * @author Ian
  */
-public interface AutoUpdateCompletionListener
-{
+public interface AutoUpdateCompletionListener {
 
 	/**
 	 *

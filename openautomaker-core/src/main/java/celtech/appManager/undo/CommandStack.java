@@ -16,14 +16,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- * The CommandStack is a stack of Commands that has an index into the current
- * stack position. When an undo is applied the Command at the current index is
- * undone, and the index is reduced by 1.
+ * The CommandStack is a stack of Commands that has an index into the current stack position. When an undo is applied the Command at the current index is undone, and the index is reduced by 1.
  *
  * @author tony
  */
-public class CommandStack
-{
+public class CommandStack {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			CommandStack.class.getName());
@@ -36,24 +33,20 @@ public class CommandStack
 	 */
 	private final IntegerProperty index = new SimpleIntegerProperty(-1);
 
-	public class UndoException extends Exception
-	{
+	public class UndoException extends Exception {
 
-		public UndoException(String message)
-		{
+		public UndoException(String message) {
 			super(message);
 		}
 	}
 
-	public CommandStack()
-	{
+	public CommandStack() {
 		commands = FXCollections.observableArrayList();
 		canUndo.bind(index.greaterThan(-1));
 		canRedo.bind(Bindings.size(commands).greaterThan(index.add(1)));
 	}
 
-	public void do_(Command command)
-	{
+	public void do_(Command command) {
 		clearEndOfList();
 		commands.add(command);
 		command.do_();
@@ -68,8 +61,7 @@ public class CommandStack
 	/**
 	 * Clear all list entries that are after the current index.
 	 */
-	private void clearEndOfList()
-	{
+	private void clearEndOfList() {
 		commands.subList(index.get() + 1, commands.size()).clear();
 		//        List<Command> commandsToClear = commands.subList(index.get() + 1, commands.size());
 		//        if (!commandsToClear.isEmpty())
@@ -78,10 +70,8 @@ public class CommandStack
 		//        }
 	}
 
-	public void undo() throws UndoException
-	{
-		if (canUndo.not().get())
-		{
+	public void undo() throws UndoException {
+		if (canUndo.not().get()) {
 			throw new UndoException("Cannot undo - nothing to undo");
 		}
 		Command currentCommand = commands.get(index.get());
@@ -90,10 +80,8 @@ public class CommandStack
 		index.set(index.get() - 1);
 	}
 
-	public void redo() throws UndoException
-	{
-		if (canRedo.not().get())
-		{
+	public void redo() throws UndoException {
+		if (canRedo.not().get()) {
 			throw new UndoException("Cannot redo - nothing to redo");
 		}
 		Command followingCommand = commands.get(index.get() + 1);
@@ -102,29 +90,24 @@ public class CommandStack
 		index.set(index.get() + 1);
 	}
 
-	public ReadOnlyBooleanProperty getCanRedo()
-	{
+	public ReadOnlyBooleanProperty getCanRedo() {
 		return canRedo;
 	}
 
-	public ReadOnlyBooleanProperty getCanUndo()
-	{
+	public ReadOnlyBooleanProperty getCanUndo() {
 		return canUndo;
 	}
 
 	/**
 	 * Try to merge the previous command with the last run command.
 	 */
-	private void tryMerge()
-	{
-		if (index.get() < 1)
-		{
+	private void tryMerge() {
+		if (index.get() < 1) {
 			return;
 		}
 		Command lastCommand = commands.get(index.get());
 		Command previousCommand = commands.get(index.get() - 1);
-		if (previousCommand.canMergeWith(lastCommand))
-		{
+		if (previousCommand.canMergeWith(lastCommand)) {
 			previousCommand.merge(lastCommand);
 			// remove last command from list
 			commands.remove(commands.size() - 1);

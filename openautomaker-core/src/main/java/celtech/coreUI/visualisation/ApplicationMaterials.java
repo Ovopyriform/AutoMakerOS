@@ -18,8 +18,7 @@ import javafx.scene.paint.PhongMaterial;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class ApplicationMaterials
-{
+public class ApplicationMaterials {
 
 	public static final Color roboxBlue = Color.rgb(38, 125, 216);
 	private static final PhongMaterial defaultModelMaterial = new PhongMaterial(roboxBlue);
@@ -42,8 +41,7 @@ public class ApplicationMaterials
 	 *
 	 * @return
 	 */
-	public static PhongMaterial getDefaultModelMaterial()
-	{
+	public static PhongMaterial getDefaultModelMaterial() {
 		defaultModelMaterial.setSpecularColor(roboxBlue);
 		defaultModelMaterial.setSpecularPower(1.0);
 		return defaultModelMaterial;
@@ -53,8 +51,7 @@ public class ApplicationMaterials
 	 *
 	 * @return
 	 */
-	public static PhongMaterial getSelectedModelMaterial()
-	{
+	public static PhongMaterial getSelectedModelMaterial() {
 		return selectedModelMaterial;
 	}
 
@@ -62,8 +59,7 @@ public class ApplicationMaterials
 	 *
 	 * @return
 	 */
-	public static PhongMaterial getCollidedModelMaterial()
-	{
+	public static PhongMaterial getCollidedModelMaterial() {
 		return collidedModelMaterial;
 	}
 
@@ -71,8 +67,7 @@ public class ApplicationMaterials
 	 *
 	 * @return
 	 */
-	public static PhongMaterial getCollidedSelectedModelMaterial()
-	{
+	public static PhongMaterial getCollidedSelectedModelMaterial() {
 		return collidedSelectedModelMaterial;
 	}
 
@@ -80,8 +75,7 @@ public class ApplicationMaterials
 	 *
 	 * @return
 	 */
-	public static PhongMaterial getOffBedModelMaterial()
-	{
+	public static PhongMaterial getOffBedModelMaterial() {
 		return offBedModelMaterial;
 	}
 
@@ -89,10 +83,8 @@ public class ApplicationMaterials
 	 *
 	 * @return
 	 */
-	public static PhongMaterial getSelectionBoxMaterial()
-	{
-		if (selectionBoxMaterial == null)
-		{
+	public static PhongMaterial getSelectionBoxMaterial() {
+		if (selectionBoxMaterial == null) {
 			selectionBoxMaterial = new PhongMaterial(StandardColours.SELECTION_HIGHLIGHTER_GREEN);
 			Image illuminationMap = new Image(SelectionHighlighter.class.getResource(ApplicationConfiguration.imageResourcePath + "greenIlluminationMap.png").toExternalForm());
 			selectionBoxMaterial.setSelfIlluminationMap(illuminationMap);
@@ -104,8 +96,7 @@ public class ApplicationMaterials
 	 *
 	 * @return
 	 */
-	public static Material getExtrusionMaterial()
-	{
+	public static Material getExtrusionMaterial() {
 		return extrusionMaterial;
 	}
 
@@ -113,8 +104,7 @@ public class ApplicationMaterials
 	 *
 	 * @return
 	 */
-	public static Material getRetractMaterial()
-	{
+	public static Material getRetractMaterial() {
 		return retractMaterial;
 	}
 
@@ -122,8 +112,7 @@ public class ApplicationMaterials
 	 *
 	 * @return
 	 */
-	public static Material getUnretractMaterial()
-	{
+	public static Material getUnretractMaterial() {
 		return unretractMaterial;
 	}
 
@@ -131,8 +120,7 @@ public class ApplicationMaterials
 	 *
 	 * @return
 	 */
-	public static Material getSupportMaterial()
-	{
+	public static Material getSupportMaterial() {
 		return supportMaterial;
 	}
 
@@ -140,8 +128,7 @@ public class ApplicationMaterials
 	 *
 	 * @return
 	 */
-	public static Material getTravelMaterial()
-	{
+	public static Material getTravelMaterial() {
 		return travelMaterial;
 	}
 
@@ -151,39 +138,35 @@ public class ApplicationMaterials
 	 * @param selected
 	 * @return
 	 */
-	public static Material getGCodeMaterial(MovementType movementType, boolean selected)
-	{
+	public static Material getGCodeMaterial(MovementType movementType, boolean selected) {
 		Material returnVal = extrusionMaterial;
 
-		if (!selected)
-		{
-			switch (movementType)
-			{
-			case EXTRUDE:
-				returnVal = extrusionMaterial;
-				break;
-			case EXTRUDE_SUPPORT:
-				returnVal = supportMaterial;
-				break;
-			case RETRACT:
-				returnVal = retractMaterial;
-				break;
-			case TRAVEL:
-				returnVal = travelMaterial;
-				break;
-			case UNRETRACT:
-				returnVal = unretractMaterial;
-				break;
-			default:
-				break;
+		if (!selected) {
+			switch (movementType) {
+				case EXTRUDE:
+					returnVal = extrusionMaterial;
+					break;
+				case EXTRUDE_SUPPORT:
+					returnVal = supportMaterial;
+					break;
+				case RETRACT:
+					returnVal = retractMaterial;
+					break;
+				case TRAVEL:
+					returnVal = travelMaterial;
+					break;
+				case UNRETRACT:
+					returnVal = unretractMaterial;
+					break;
+				default:
+					break;
 			}
-		} else
-		{
-			switch (movementType)
-			{
-			default:
-				returnVal = pickedGCodeMaterial;
-				break;
+		}
+		else {
+			switch (movementType) {
+				default:
+					returnVal = pickedGCodeMaterial;
+					break;
 			}
 		}
 

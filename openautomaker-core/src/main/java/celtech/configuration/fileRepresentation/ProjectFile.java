@@ -7,8 +7,7 @@ import xyz.openautomaker.base.configuration.fileRepresentation.CameraProfile;
 
 //@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 //@JsonDeserialize(using = ProjectFileDeserialiser.class)
-public abstract class ProjectFile
-{
+public abstract class ProjectFile {
 	private ProjectFileTypeEnum projectType;
 	private int version = 5;
 	private String projectName;
@@ -19,93 +18,75 @@ public abstract class ProjectFile
 	private String timelapseProfileName = "";
 	private String timelapseCameraID = "";
 
-	public ProjectFileTypeEnum getProjectType()
-	{
+	public ProjectFileTypeEnum getProjectType() {
 		return projectType;
 	}
 
-	public void setProjectType(ProjectFileTypeEnum projectType)
-	{
+	public void setProjectType(ProjectFileTypeEnum projectType) {
 		this.projectType = projectType;
 	}
 
-	public final Date getLastModifiedDate()
-	{
+	public final Date getLastModifiedDate() {
 		return lastModifiedDate;
 	}
 
-	public final void setLastModifiedDate(Date lastModifiedDate)
-	{
+	public final void setLastModifiedDate(Date lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
 	}
 
-	public final String getLastPrintJobID()
-	{
+	public final String getLastPrintJobID() {
 		return lastPrintJobID;
 	}
 
-	public final void setLastPrintJobID(String lastPrintJobID)
-	{
+	public final void setLastPrintJobID(String lastPrintJobID) {
 		this.lastPrintJobID = lastPrintJobID;
 	}
 
-	public final String getProjectName()
-	{
+	public final String getProjectName() {
 		return projectName;
 	}
 
-	public final void setProjectName(String projectName)
-	{
+	public final void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
 
-	public final int getVersion()
-	{
+	public final int getVersion() {
 		return version;
 	}
 
-	public final void setVersion(int version)
-	{
+	public final void setVersion(int version) {
 		this.version = version;
 	}
 
-	public boolean isProjectNameModified()
-	{
+	public boolean isProjectNameModified() {
 		return projectNameModified;
 	}
 
-	public void setProjectNameModified(boolean projectNameModified)
-	{
+	public void setProjectNameModified(boolean projectNameModified) {
 		this.projectNameModified = projectNameModified;
 	}
 
-	public boolean isTimelapseTriggerEnabled()
-	{
+	public boolean isTimelapseTriggerEnabled() {
 		return timelapseTriggerEnabled;
 	}
 
-	public void setTimelapseTriggerEnabled(boolean timelapseTriggerEnabled)
-	{
+	public void setTimelapseTriggerEnabled(boolean timelapseTriggerEnabled) {
 		this.timelapseTriggerEnabled = timelapseTriggerEnabled;
 	}
 
-	public String getTimelapseProfileName()
-	{
+	public String getTimelapseProfileName() {
 		return timelapseProfileName;
 	}
 
-	public void setTimelapseProfileName(String timelapseProfileName)
-	{
+	public void setTimelapseProfileName(String timelapseProfileName) {
 		this.timelapseProfileName = timelapseProfileName;
 	}
 
-	public String getTimelapseCameraID()
-	{
+	public String getTimelapseCameraID() {
 		return timelapseCameraID;
 	}
 
-	public void setTimelapseCameraID(String timelapseCameraID)
-	{
+	public void setTimelapseCameraID(String timelapseCameraID) {
 		this.timelapseCameraID = timelapseCameraID;
 	}
 

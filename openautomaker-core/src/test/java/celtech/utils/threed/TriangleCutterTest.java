@@ -28,11 +28,9 @@ import javafx.scene.shape.TriangleMesh;
  *
  * @author tony
  */
-public class TriangleCutterTest
-{
+public class TriangleCutterTest {
 
-	public static TriangleMesh createSimpleCube()
-	{
+	public static TriangleMesh createSimpleCube() {
 		TriangleMesh mesh = new TriangleMesh();
 		mesh.getPoints().addAll(0, 0, 0);
 		mesh.getPoints().addAll(0, 0, 2);
@@ -58,8 +56,7 @@ public class TriangleCutterTest
 		return mesh;
 	}
 
-	public static TriangleMesh createMeshWithPointsOnCutPlane()
-	{
+	public static TriangleMesh createMeshWithPointsOnCutPlane() {
 		TriangleMesh mesh = new TriangleMesh();
 		mesh.getPoints().addAll(0, 0, 0);
 		mesh.getPoints().addAll(0, 0, 1);
@@ -97,8 +94,7 @@ public class TriangleCutterTest
 		return mesh;
 	}
 
-	public static TriangleMesh createMeshWithOneVertexOnPlane()
-	{
+	public static TriangleMesh createMeshWithOneVertexOnPlane() {
 		TriangleMesh mesh = new TriangleMesh();
 		mesh.getPoints().addAll(0, 0, 0);
 		mesh.getPoints().addAll(0, 0, 1);
@@ -132,20 +128,16 @@ public class TriangleCutterTest
 		return mesh;
 	}
 
-	public static MeshCutter2.BedToLocalConverter makeNullConverter()
-	{
-		MeshCutter2.BedToLocalConverter nullBedToLocalConverter = new MeshCutter2.BedToLocalConverter()
-		{
+	public static MeshCutter2.BedToLocalConverter makeNullConverter() {
+		MeshCutter2.BedToLocalConverter nullBedToLocalConverter = new MeshCutter2.BedToLocalConverter() {
 
 			@Override
-			public Point3D localToBed(Point3D point)
-			{
+			public Point3D localToBed(Point3D point) {
 				return point;
 			}
 
 			@Override
-			public Point3D bedToLocal(Point3D point)
-			{
+			public Point3D bedToLocal(Point3D point) {
 				return point;
 			}
 		};
@@ -153,14 +145,12 @@ public class TriangleCutterTest
 	}
 
 	@Test
-	public void testTriangulateForFaceWithVertexVeryCloseToCutPlane()
-	{
+	public void testTriangulateForFaceWithVertexVeryCloseToCutPlane() {
 		TriangleMesh mesh = createMeshWithPointsOnCutPlane();
 
 		TriangleMesh childMesh = copyMesh(mesh);
 
-		for (float cutHeight = 0.999f; cutHeight < 1f; cutHeight += 0.000001f)
-		{
+		for (float cutHeight = 0.999f; cutHeight < 1f; cutHeight += 0.000001f) {
 			int faceIndex = 2;
 			Set<Integer> facesToRemove = new HashSet<>();
 			splitFaceAndAddLowerFacesToMesh(childMesh, facesToRemove,
@@ -172,8 +162,7 @@ public class TriangleCutterTest
 	}
 
 	@Test
-	public void testTriangulateRegularTriangleForFaceNotCutByPlane()
-	{
+	public void testTriangulateRegularTriangleForFaceNotCutByPlane() {
 		TriangleMesh mesh = createSimpleCube();
 
 		TriangleMesh childMesh = copyMesh(mesh);
@@ -190,8 +179,7 @@ public class TriangleCutterTest
 	}
 
 	@Test
-	public void testReverseLastFaceNormal()
-	{
+	public void testReverseLastFaceNormal() {
 		TriangleMesh mesh = createSimpleCube();
 		Point3D normal = getFaceNormal(mesh, mesh.getFaces().size() / 6 - 1);
 		reverseLastFaceNormal(mesh);
@@ -201,8 +189,7 @@ public class TriangleCutterTest
 	}
 
 	@Test
-	public void testTriangulateRegularTriangleForFaceWithTwoEdgesCutByPlaneBottom()
-	{
+	public void testTriangulateRegularTriangleForFaceWithTwoEdgesCutByPlaneBottom() {
 		TriangleMesh mesh = createSimpleCube();
 
 		TriangleMesh childMesh = copyMesh(mesh);
@@ -228,8 +215,7 @@ public class TriangleCutterTest
 	}
 
 	@Test
-	public void testTriangulateRegularTriangleForFaceWithTwoEdgesCutByPlaneTop()
-	{
+	public void testTriangulateRegularTriangleForFaceWithTwoEdgesCutByPlaneTop() {
 		TriangleMesh mesh = createSimpleCube();
 
 		TriangleMesh childMesh = copyMesh(mesh);
@@ -264,8 +250,7 @@ public class TriangleCutterTest
 	}
 
 	@Test
-	public void testTriangulateForFaceWithOneVertexOnPlaneBottom()
-	{
+	public void testTriangulateForFaceWithOneVertexOnPlaneBottom() {
 		TriangleMesh mesh = createMeshWithOneVertexOnPlane();
 
 		TriangleMesh childMesh = copyMesh(mesh);
@@ -292,8 +277,7 @@ public class TriangleCutterTest
 	}
 
 	@Test
-	public void testTriangulateForFaceWithOneVertexOnPlaneTop()
-	{
+	public void testTriangulateForFaceWithOneVertexOnPlaneTop() {
 		TriangleMesh mesh = createMeshWithOneVertexOnPlane();
 
 		TriangleMesh childMesh = copyMesh(mesh);
@@ -320,8 +304,7 @@ public class TriangleCutterTest
 	}
 
 	@Test
-	public void testTriangulateRegularTriangleForFaceWithTwoEdgesCutByPlaneBottomBedConverterLateral()
-	{
+	public void testTriangulateRegularTriangleForFaceWithTwoEdgesCutByPlaneBottomBedConverterLateral() {
 		BedToLocalConverter bedToLocalConverter = makeLateralConverter();
 
 		TriangleMesh mesh = createSimpleCube();
@@ -360,8 +343,7 @@ public class TriangleCutterTest
 	}
 
 	@Test
-	public void testTriangulateRegularTriangleForFaceWithTwoEdgesCutByPlaneTopBedConverterLateral()
-	{
+	public void testTriangulateRegularTriangleForFaceWithTwoEdgesCutByPlaneTopBedConverterLateral() {
 
 		BedToLocalConverter bedToLocalConverter = makeLateralConverter();
 
@@ -399,8 +381,7 @@ public class TriangleCutterTest
 	}
 
 	@Test
-	public void testEnricoSTLAt1Face1612DuplicateVerticesCreated() throws STLFileParsingException
-	{
+	public void testEnricoSTLAt1Face1612DuplicateVerticesCreated() throws STLFileParsingException {
 
 		URL stlURL = this.getClass().getResource("/enrico.stl");
 		File singleObjectSTLFile = new File(stlURL.getFile());
@@ -420,20 +401,16 @@ public class TriangleCutterTest
 				MeshCutter2.TopBottom.TOP);
 	}
 
-	private BedToLocalConverter makeLateralConverter()
-	{
-		MeshCutter2.BedToLocalConverter bedToLocalConverter = new MeshCutter2.BedToLocalConverter()
-		{
+	private BedToLocalConverter makeLateralConverter() {
+		MeshCutter2.BedToLocalConverter bedToLocalConverter = new MeshCutter2.BedToLocalConverter() {
 
 			@Override
-			public Point3D localToBed(Point3D point)
-			{
+			public Point3D localToBed(Point3D point) {
 				return new Point3D(point.getX() + 1, point.getY(), point.getZ() + 2);
 			}
 
 			@Override
-			public Point3D bedToLocal(Point3D point)
-			{
+			public Point3D bedToLocal(Point3D point) {
 				return new Point3D(point.getX() - 1, point.getY(), point.getZ() - 2);
 			}
 		};

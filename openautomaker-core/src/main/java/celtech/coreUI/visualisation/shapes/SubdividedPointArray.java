@@ -26,7 +26,7 @@ public class SubdividedPointArray extends SymbolicPointArray {
 	 * @param boundaryMode
 	 */
 	public SubdividedPointArray(SymbolicPointArray controlPointArray, int numPoints, SubdivisionMesh.BoundaryMode boundaryMode) {
-		super(new float[ReplacementConstants.NUM_COMPONENTS_PER_POINT*numPoints]);
+		super(new float[ReplacementConstants.NUM_COMPONENTS_PER_POINT * numPoints]);
 
 		this.controlPoints = controlPointArray.data;
 		this.controlInds = new int[numPoints][];
@@ -45,7 +45,7 @@ public class SubdividedPointArray extends SymbolicPointArray {
 	public int addFacePoint(int[] vertices) {
 		controlInds[currPoint] = vertices;
 		controlFactors[currPoint] = new float[vertices.length];
-		Arrays.fill(controlFactors[currPoint], 1.0f/vertices.length);
+		Arrays.fill(controlFactors[currPoint], 1.0f / vertices.length);
 
 		inds[currPoint] = new int[0];
 		factors[currPoint] = new float[0];
@@ -63,19 +63,20 @@ public class SubdividedPointArray extends SymbolicPointArray {
 	 */
 	public int addEdgePoint(int[] facePoints, int fromPoint, int toPoint, boolean isBoundary) {
 		if (isBoundary) {
-			controlInds[currPoint] = new int[] {fromPoint, toPoint};
-			controlFactors[currPoint] = new float[] {0.5f, 0.5f};
+			controlInds[currPoint] = new int[] { fromPoint, toPoint };
+			controlFactors[currPoint] = new float[] { 0.5f, 0.5f };
 
 			inds[currPoint] = new int[0];
 			factors[currPoint] = new float[0];
-		} else {
+		}
+		else {
 			int n = facePoints.length + 2;
-			controlInds[currPoint] = new int[] {fromPoint, toPoint};
-			controlFactors[currPoint] = new float[] {1.0f/n, 1.0f/n};
+			controlInds[currPoint] = new int[] { fromPoint, toPoint };
+			controlFactors[currPoint] = new float[] { 1.0f / n, 1.0f / n };
 
 			inds[currPoint] = facePoints;
 			factors[currPoint] = new float[facePoints.length];
-			Arrays.fill(factors[currPoint], 1.0f/n);
+			Arrays.fill(factors[currPoint], 1.0f / n);
 		}
 		return currPoint++;
 	}
@@ -95,8 +96,8 @@ public class SubdividedPointArray extends SymbolicPointArray {
 	public int addControlPoint(int[] facePoints, int[] edgePoints, int[] fromEdgePoints, int[] toEdgePoints, boolean[] isEdgeBoundary, int origPoint, boolean isBoundary, boolean hasInternalEdge) {
 		if (isBoundary) {
 			if ((boundaryMode == SubdivisionMesh.BoundaryMode.CREASE_EDGES) || hasInternalEdge) {
-				controlInds[currPoint] = new int[] {origPoint};
-				controlFactors[currPoint] = new float[] {0.5f};
+				controlInds[currPoint] = new int[] { origPoint };
+				controlFactors[currPoint] = new float[] { 0.5f };
 
 				int numBoundaryEdges = 0;
 				for (int i = 0; i < edgePoints.length; i++) {
@@ -114,30 +115,32 @@ public class SubdividedPointArray extends SymbolicPointArray {
 						boundaryEdgeInd++;
 					}
 				}
-			} else {
-				controlInds[currPoint] = new int[] {origPoint};
-				controlFactors[currPoint] = new float[] {1.0f};
+			}
+			else {
+				controlInds[currPoint] = new int[] { origPoint };
+				controlFactors[currPoint] = new float[] { 1.0f };
 
 				inds[currPoint] = new int[0];
 				factors[currPoint] = new float[0];
 			}
-		} else {
+		}
+		else {
 			int n = facePoints.length;
 
-			controlInds[currPoint] = new int[1 + edgePoints.length*2];
-			controlFactors[currPoint] = new float[1 + edgePoints.length*2];
+			controlInds[currPoint] = new int[1 + edgePoints.length * 2];
+			controlFactors[currPoint] = new float[1 + edgePoints.length * 2];
 			controlInds[currPoint][0] = origPoint;
 			controlFactors[currPoint][0] = (n - 3.0f) / n;
 			for (int i = 0; i < edgePoints.length; i++) {
-				controlInds[currPoint][1+2*i] = fromEdgePoints[i];
-				controlFactors[currPoint][1+2*i] = 1.0f/(n * n);
-				controlInds[currPoint][1+2*i+1] = toEdgePoints[i];
-				controlFactors[currPoint][1+2*i+1] = 1.0f/(n * n);
+				controlInds[currPoint][1 + 2 * i] = fromEdgePoints[i];
+				controlFactors[currPoint][1 + 2 * i] = 1.0f / (n * n);
+				controlInds[currPoint][1 + 2 * i + 1] = toEdgePoints[i];
+				controlFactors[currPoint][1 + 2 * i + 1] = 1.0f / (n * n);
 			}
 
 			inds[currPoint] = facePoints;
 			factors[currPoint] = new float[facePoints.length];
-			Arrays.fill(factors[currPoint], 1.0f/(n * n));
+			Arrays.fill(factors[currPoint], 1.0f / (n * n));
 		}
 		return currPoint++;
 	}
@@ -163,9 +166,9 @@ public class SubdividedPointArray extends SymbolicPointArray {
 				y += data[ci + 1] * f;
 				z += data[ci + 2] * f;
 			}
-			data[3*i] = x;
-			data[3*i+1] = y;
-			data[3*i+2] = z;
+			data[3 * i] = x;
+			data[3 * i + 1] = y;
+			data[3 * i + 2] = z;
 		}
 	}
 }

@@ -10,8 +10,7 @@ package celtech.coreUI.controllers.popups;
  *
  * @author Ian
  */
-public interface PopupCommandTransmitter
-{
+public interface PopupCommandTransmitter {
 
 	/**
 	 *

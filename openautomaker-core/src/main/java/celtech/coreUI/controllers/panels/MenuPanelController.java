@@ -22,17 +22,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
-public abstract class MenuPanelController implements Initializable
-{
+public abstract class MenuPanelController implements Initializable {
 
-	protected class InnerPanelDetails
-	{
+	protected class InnerPanelDetails {
 
 		Node node;
 		MenuInnerPanel innerPanel;
 
-		InnerPanelDetails(Node node, MenuInnerPanel innerPanel)
-		{
+		InnerPanelDetails(Node node, MenuInnerPanel innerPanel) {
 			this.node = node;
 			this.innerPanel = innerPanel;
 		}
@@ -61,8 +58,7 @@ public abstract class MenuPanelController implements Initializable
 	private final ObjectProperty<MenuInnerPanel> innerPanelProperty = new SimpleObjectProperty<>(null);
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
+	public void initialize(URL location, ResourceBundle resources) {
 
 		this.resources = resources;
 
@@ -96,9 +92,7 @@ public abstract class MenuPanelController implements Initializable
 	}
 
 	/**
-	 * Define the inner panels to be offered in the main menu. For the future
-	 * this is configuration information that could be e.g. stored in XML or in
-	 * a plugin.
+	 * Define the inner panels to be offered in the main menu. For the future this is configuration information that could be e.g. stored in XML or in a plugin.
 	 */
 	protected abstract void setupInnerPanels();
 
@@ -109,19 +103,17 @@ public abstract class MenuPanelController implements Initializable
 	 * @param extrasMenuInnerPanel
 	 * @return
 	 */
-	protected InnerPanelDetails loadInnerPanel(String fxmlLocation, MenuInnerPanel extrasMenuInnerPanel)
-	{
+	protected InnerPanelDetails loadInnerPanel(String fxmlLocation, MenuInnerPanel extrasMenuInnerPanel) {
 		URL fxmlURL = getClass().getResource(fxmlLocation);
 		FXMLLoader loader = new FXMLLoader(fxmlURL, resources);
 		loader.setController(extrasMenuInnerPanel);
-		try
-		{
+		try {
 			Node node = loader.load();
 			InnerPanelDetails innerPanelDetails = new InnerPanelDetails(node, extrasMenuInnerPanel);
 			this.innerPanelDetails.add(innerPanelDetails);
 			return innerPanelDetails;
-		} catch (IOException ex)
-		{
+		}
+		catch (IOException ex) {
 			LOGGER.error("Unable to load panel: " + fxmlLocation, ex);
 		}
 		return null;
@@ -130,14 +122,11 @@ public abstract class MenuPanelController implements Initializable
 	/**
 	 * For each InnerPanel, create a menu item that will open it.
 	 */
-	private void buildExtras()
-	{
+	private void buildExtras() {
 		panelMenu.setTitle(OpenAutoMakerEnv.getI18N().t(paneli18Name));
 
-		for (InnerPanelDetails innerPanelDetails : innerPanelDetails)
-		{
-			panelMenu.addItem(OpenAutoMakerEnv.getI18N().t(innerPanelDetails.innerPanel.getMenuTitle()), () ->
-			{
+		for (InnerPanelDetails innerPanelDetails : innerPanelDetails) {
+			panelMenu.addItem(OpenAutoMakerEnv.getI18N().t(innerPanelDetails.innerPanel.getMenuTitle()), () -> {
 				openInnerPanel(innerPanelDetails);
 			}, null);
 		}
@@ -146,8 +135,7 @@ public abstract class MenuPanelController implements Initializable
 	/**
 	 * Open the given inner panel.
 	 */
-	private void openInnerPanel(InnerPanelDetails innerPanelDetails)
-	{
+	private void openInnerPanel(InnerPanelDetails innerPanelDetails) {
 		insetNodeContainer.getChildren().clear();
 		insetNodeContainer.getChildren().add(innerPanelDetails.node);
 		innerPanelProperty.set(innerPanelDetails.innerPanel);
@@ -155,8 +143,7 @@ public abstract class MenuPanelController implements Initializable
 	}
 
 	@FXML
-	private void okPressed(ActionEvent event)
-	{
+	private void okPressed(ActionEvent event) {
 		ApplicationStatus.getInstance().returnToLastMode();
 	}
 }

@@ -4,12 +4,11 @@
 package celtech.appManager.undo;
 
 /**
- * A Command represents an atomic change that can be undone and redone. It can also be merged
- * with a previous Command of the same type, if desired.
+ * A Command represents an atomic change that can be undone and redone. It can also be merged with a previous Command of the same type, if desired.
+ * 
  * @author tony
  */
-public abstract class Command
-{
+public abstract class Command {
 
 	/**
 	 * Perform the command.
@@ -32,8 +31,7 @@ public abstract class Command
 	public abstract boolean canMergeWith(Command command);
 
 	/**
-	 * Merge the given command with this command. This command will remain in the stack,
-	 * the other command will be deleted.
+	 * Merge the given command with this command. This command will remain in the stack, the other command will be deleted.
 	 */
 	public abstract void merge(Command command);
 

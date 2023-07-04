@@ -11,8 +11,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian
  */
-public class FloatingPointPreference implements PreferencesInnerPanelController.Preference
-{
+public class FloatingPointPreference implements PreferencesInnerPanelController.Preference {
 
 	private final RestrictedNumberField control;
 	private final FloatProperty floatProperty;
@@ -22,8 +21,7 @@ public class FloatingPointPreference implements PreferencesInnerPanelController.
 			int decimalPlaces,
 			int digits,
 			boolean negativeAllowed,
-			String caption)
-	{
+			String caption) {
 		this.floatProperty = floatProperty;
 		this.caption = caption;
 
@@ -34,15 +32,13 @@ public class FloatingPointPreference implements PreferencesInnerPanelController.
 		control.setAllowedDecimalPlaces(decimalPlaces);
 		control.setAllowNegative(negativeAllowed);
 		control.setMaxLength(digits);
-		control.valueChangedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) ->
-		{
+		control.valueChangedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
 			updateValueFromControl();
 		});
 	}
 
 	@Override
-	public void updateValueFromControl()
-	{
+	public void updateValueFromControl() {
 		floatProperty.set(control.getAsFloat());
 
 		// User Preferences controls whether the property can be set - read back just in case our selection was overridden
@@ -50,26 +46,22 @@ public class FloatingPointPreference implements PreferencesInnerPanelController.
 	}
 
 	@Override
-	public void populateControlWithCurrentValue()
-	{
+	public void populateControlWithCurrentValue() {
 		control.setValue(floatProperty.get());
 	}
 
 	@Override
-	public Control getControl()
-	{
+	public Control getControl() {
 		return control;
 	}
 
 	@Override
-	public String getDescription()
-	{
+	public String getDescription() {
 		return OpenAutoMakerEnv.getI18N().t(caption);
 	}
 
 	@Override
-	public void disableProperty(ObservableValue<Boolean> disableProperty)
-	{
+	public void disableProperty(ObservableValue<Boolean> disableProperty) {
 		control.disableProperty().unbind();
 		control.disableProperty().bind(disableProperty);
 	}

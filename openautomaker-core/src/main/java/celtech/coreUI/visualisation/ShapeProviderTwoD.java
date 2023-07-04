@@ -1,6 +1,3 @@
-/*
- * Copyright 2014 CEL UK
- */
 
 package celtech.coreUI.visualisation;
 
@@ -8,8 +5,7 @@ package celtech.coreUI.visualisation;
  *
  * @author tony
  */
-public interface ShapeProviderTwoD extends ShapeProvider
-{
+public interface ShapeProviderTwoD extends ShapeProvider {
 
 	public double getScaledWidth();
 

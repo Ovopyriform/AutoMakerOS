@@ -21,8 +21,7 @@ import xyz.openautomaker.base.printerControl.model.Printer;
  *
  * @author Ian
  */
-public class ProgressDisplay extends VBox
-{
+public class ProgressDisplay extends VBox {
 	private static final Logger LOGGER = LogManager.getLogger(ProgressDisplay.class.getName());
 
 	private Printer printerInUse = null;
@@ -33,24 +32,19 @@ public class ProgressDisplay extends VBox
 	private PrintPreparationStatusBar printPreparationDisplayBar = new PrintPreparationStatusBar();
 	private final List<Node> printerRelatedNodes = new ArrayList<>();
 
-	private final ChangeListener<Boolean> headDataChangedListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-	{
+	private final ChangeListener<Boolean> headDataChangedListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 		if (printerInUse != null
-				&& printerInUse.headProperty().get() != null)
-		{
+				&& printerInUse.headProperty().get() != null) {
 			createMaterialHeatBars(printerInUse.headProperty().get());
 		}
 	};
 
-	private final ChangeListener<Head> headListener = (ObservableValue<? extends Head> ov, Head oldHead, Head newHead) ->
-	{
-		if (oldHead != null)
-		{
+	private final ChangeListener<Head> headListener = (ObservableValue<? extends Head> ov, Head oldHead, Head newHead) -> {
+		if (oldHead != null) {
 			oldHead.dataChangedProperty().removeListener(headDataChangedListener);
 		}
 
-		if (newHead != null)
-		{
+		if (newHead != null) {
 			newHead.dataChangedProperty().removeListener(headDataChangedListener);
 			newHead.dataChangedProperty().addListener(headDataChangedListener);
 		}
@@ -58,8 +52,7 @@ public class ProgressDisplay extends VBox
 		createMaterialHeatBars(newHead);
 	};
 
-	public ProgressDisplay()
-	{
+	public ProgressDisplay() {
 		setFillWidth(true);
 		setPickOnBounds(false);
 
@@ -79,10 +72,8 @@ public class ProgressDisplay extends VBox
 		addPrinterElementToDisplay(bedTemperatureDisplayBar, printPreparationDisplayBar, stateDisplayBar);
 	}
 
-	private void bindToPrinter(Printer printer)
-	{
-		if (this.printerInUse != null)
-		{
+	private void bindToPrinter(Printer printer) {
+		if (this.printerInUse != null) {
 			unbindFromPrinter();
 		}
 		this.printerInUse = printer;
@@ -91,8 +82,7 @@ public class ProgressDisplay extends VBox
 		bedTemperatureDisplayBar.bindToPrinterSystems(printer.getPrinterAncillarySystems());
 
 		printer.headProperty().addListener(headListener);
-		if (printer.headProperty().get() != null)
-		{
+		if (printer.headProperty().get() != null) {
 			printerInUse.headProperty().get().dataChangedProperty().addListener(headDataChangedListener);
 			createMaterialHeatBars(printer.headProperty().get());
 		}
@@ -103,32 +93,26 @@ public class ProgressDisplay extends VBox
 		printPreparationDisplayBar.bindToProject(project);
 	}
 
-	private void destroyMaterialHeatBars()
-	{
-		if (material1TemperatureDisplayBar != null)
-		{
+	private void destroyMaterialHeatBars() {
+		if (material1TemperatureDisplayBar != null) {
 			material1TemperatureDisplayBar.unbindAll();
 			removePrinterElementFromDisplay(material1TemperatureDisplayBar);
 			material1TemperatureDisplayBar = null;
 		}
 
-		if (material2TemperatureDisplayBar != null)
-		{
+		if (material2TemperatureDisplayBar != null) {
 			material2TemperatureDisplayBar.unbindAll();
 			removePrinterElementFromDisplay(material2TemperatureDisplayBar);
 			material2TemperatureDisplayBar = null;
 		}
 	}
 
-	private void createMaterialHeatBars(Head head)
-	{
+	private void createMaterialHeatBars(Head head) {
 		destroyMaterialHeatBars();
 		if (head != null
-				&& head.getNozzleHeaters().size() > 0)
-		{
+				&& head.getNozzleHeaters().size() > 0) {
 			int materialNumber = 1;
-			if (head.headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD)
-			{
+			if (head.headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD) {
 				materialNumber = 2;
 			}
 
@@ -137,20 +121,16 @@ public class ProgressDisplay extends VBox
 		}
 
 		if (head != null
-				&& head.getNozzleHeaters().size() == 2)
-		{
+				&& head.getNozzleHeaters().size() == 2) {
 			//Must be DM - material 1
 			material2TemperatureDisplayBar = new MaterialHeatingStatusBar(head.getNozzleHeaters().get(1), 1, false);
 			addPrinterElementToStartOfDisplay(material2TemperatureDisplayBar);
 		}
 	}
 
-	private void unbindFromPrinter()
-	{
-		if (printerInUse != null)
-		{
-			if (printerInUse.headProperty().get() != null)
-			{
+	private void unbindFromPrinter() {
+		if (printerInUse != null) {
+			if (printerInUse.headProperty().get() != null) {
 				printerInUse.headProperty().get().dataChangedProperty().removeListener(headDataChangedListener);
 				printerInUse.headProperty().removeListener(headListener);
 			}
@@ -163,55 +143,44 @@ public class ProgressDisplay extends VBox
 		printerInUse = null;
 	}
 
-	public GenericProgressBar addGenericProgressBarToDisplay(String title, ReadOnlyBooleanProperty displayProgressBar, ReadOnlyDoubleProperty progressProperty)
-	{
+	public GenericProgressBar addGenericProgressBarToDisplay(String title, ReadOnlyBooleanProperty displayProgressBar, ReadOnlyDoubleProperty progressProperty) {
 		GenericProgressBar progressBar = new GenericProgressBar(title, displayProgressBar, progressProperty);
 		getChildren().add(progressBar);
 		return progressBar;
 	}
 
-	public void removeGenericProgressBarFromDisplay(GenericProgressBar progressBar)
-	{
-		if (progressBar != null)
-		{
+	public void removeGenericProgressBarFromDisplay(GenericProgressBar progressBar) {
+		if (progressBar != null) {
 			progressBar.destroyBar();
 			getChildren().remove(progressBar);
 		}
 	}
 
-	private void addPrinterElementToStartOfDisplay(Node node)
-	{
+	private void addPrinterElementToStartOfDisplay(Node node) {
 		printerRelatedNodes.add(node);
 		getChildren().add(node);
 	}
 
-	private void addPrinterElementToDisplay(Node... nodes)
-	{
-		for (Node node : nodes)
-		{
-			if(!printerRelatedNodes.contains(node))
-			{
+	private void addPrinterElementToDisplay(Node... nodes) {
+		for (Node node : nodes) {
+			if (!printerRelatedNodes.contains(node)) {
 				printerRelatedNodes.add(node);
 				getChildren().add(node);
 			}
-			else
-			{
+			else {
 				LOGGER.trace("Printer element " + node.toString() + " has already been added to display.");
 			}
 		}
 	}
 
-	private void removePrinterElementFromDisplay(Node... nodes)
-	{
-		for (Node node : nodes)
-		{
+	private void removePrinterElementFromDisplay(Node... nodes) {
+		for (Node node : nodes) {
 			printerRelatedNodes.remove(node);
 			getChildren().remove(node);
 		}
 	}
 
-	private void removeAllPrinterElementsFromDisplay()
-	{
+	private void removeAllPrinterElementsFromDisplay() {
 		getChildren().removeAll(printerRelatedNodes);
 		printerRelatedNodes.clear();
 	}

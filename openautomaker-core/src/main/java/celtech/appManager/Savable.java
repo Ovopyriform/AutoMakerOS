@@ -10,7 +10,6 @@ package celtech.appManager;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-interface Savable
-{
+interface Savable {
 	public boolean saveState();
 }

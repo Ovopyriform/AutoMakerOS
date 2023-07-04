@@ -9,8 +9,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  *
  * @author Ian
  */
-public class Constellation
-{
+public class Constellation {
 
 	@JacksonXmlProperty(isAttribute = true)
 	private int id;
@@ -18,23 +17,19 @@ public class Constellation
 	@JacksonXmlElementWrapper(useWrapping = false)
 	private List<ConstellationObjectInstance> instance;
 
-	public int getId()
-	{
+	public int getId() {
 		return id;
 	}
 
-	public void setId(int id)
-	{
+	public void setId(int id) {
 		this.id = id;
 	}
 
-	public List<ConstellationObjectInstance> getInstance()
-	{
+	public List<ConstellationObjectInstance> getInstance() {
 		return instance;
 	}
 
-	public void setInstance(List<ConstellationObjectInstance> instance)
-	{
+	public void setInstance(List<ConstellationObjectInstance> instance) {
 		this.instance = instance;
 	}
 

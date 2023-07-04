@@ -5,8 +5,7 @@ package celtech.configuration.units;
  * @author Ian
  */
 //TODO: Remove all conversion stuff and use units of measurement
-public enum UnitType
-{
+public enum UnitType {
 
 	NONE(null, null, null),
 	DISTANCE("mm", "in", new MMToInchesConverter()),
@@ -18,25 +17,21 @@ public enum UnitType
 
 	private UnitType(String metricSymbol,
 			String imperialSymbol,
-			UnitConverter unitConverter)
-	{
+			UnitConverter unitConverter) {
 		this.metricSymbol = metricSymbol;
 		this.imperialSymbol = imperialSymbol;
 		this.unitConverter = unitConverter;
 	}
 
-	public String getMetricSymbol()
-	{
+	public String getMetricSymbol() {
 		return metricSymbol;
 	}
 
-	public String getImperialSymbol()
-	{
+	public String getImperialSymbol() {
 		return imperialSymbol;
 	}
 
-	public UnitConverter getUnitConverter()
-	{
+	public UnitConverter getUnitConverter() {
 		return unitConverter;
 	}
 }

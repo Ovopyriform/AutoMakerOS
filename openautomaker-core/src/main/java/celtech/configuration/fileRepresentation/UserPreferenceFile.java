@@ -14,8 +14,7 @@ import xyz.openautomaker.environment.LogLevel;
  * @author Ian
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserPreferenceFile
-{
+public class UserPreferenceFile {
 
 	private SlicerType slicerType = null;
 	private boolean safetyFeaturesOn = true;
@@ -39,203 +38,163 @@ public class UserPreferenceFile
 	private PrinterType customPrinterType = PrinterType.ROBOX;
 	private String customPrinterHead = HeadContainer.defaultHeadID;
 
-	public String getLanguageTag()
-	{
+	public String getLanguageTag() {
 		return languageTag;
 	}
 
-	public void setLanguageTag(String languageTag)
-	{
+	public void setLanguageTag(String languageTag) {
 		this.languageTag = languageTag;
 	}
 
-	public SlicerType getSlicerType()
-	{
+	public SlicerType getSlicerType() {
 		return slicerType;
 	}
 
-	public void setSlicerType(SlicerType slicerType)
-	{
+	public void setSlicerType(SlicerType slicerType) {
 		this.slicerType = slicerType;
 	}
 
-	public boolean isSafetyFeaturesOn()
-	{
+	public boolean isSafetyFeaturesOn() {
 		return safetyFeaturesOn;
 	}
 
-	public void setSafetyFeaturesOn(boolean value)
-	{
+	public void setSafetyFeaturesOn(boolean value) {
 		this.safetyFeaturesOn = value;
 	}
 
-	public boolean isShowTooltips()
-	{
+	public boolean isShowTooltips() {
 		return showTooltips;
 	}
 
-	public void setShowTooltips(boolean showTooltips)
-	{
+	public void setShowTooltips(boolean showTooltips) {
 		this.showTooltips = showTooltips;
 	}
 
-	public LogLevel getLoggingLevel()
-	{
+	public LogLevel getLoggingLevel() {
 		return loggingLevel;
 	}
 
-	public void setLoggingLevel(LogLevel loggingLevel)
-	{
+	public void setLoggingLevel(LogLevel loggingLevel) {
 		this.loggingLevel = loggingLevel;
 	}
 
-	public boolean isAdvancedMode()
-	{
+	public boolean isAdvancedMode() {
 		return advancedMode;
 	}
 
-	public void setAdvancedMode(boolean advancedMode)
-	{
+	public void setAdvancedMode(boolean advancedMode) {
 		this.advancedMode = advancedMode;
 	}
 
-	public boolean isFirstUse()
-	{
+	public boolean isFirstUse() {
 		return firstUse;
 	}
 
-	public boolean isDetectLoadedFilament()
-	{
+	public boolean isDetectLoadedFilament() {
 		return detectLoadedFilament;
 	}
 
-	public void setFirstUse(boolean value)
-	{
+	public void setFirstUse(boolean value) {
 		this.firstUse = value;
 	}
 
-	public void setDetectLoadedFilament(boolean value)
-	{
+	public void setDetectLoadedFilament(boolean value) {
 		this.detectLoadedFilament = value;
 	}
 
-	public CurrencySymbol getCurrencySymbol()
-	{
+	public CurrencySymbol getCurrencySymbol() {
 		return currencySymbol;
 	}
 
-	public void setCurrencySymbol(CurrencySymbol currencySymbol)
-	{
+	public void setCurrencySymbol(CurrencySymbol currencySymbol) {
 		this.currencySymbol = currencySymbol;
 	}
 
-	public float getCurrencyGBPToLocalMultiplier()
-	{
+	public float getCurrencyGBPToLocalMultiplier() {
 		return currencyGBPToLocalMultiplier;
 	}
 
-	public void setCurrencyGBPToLocalMultiplier(float currencyGBPToLocalMultiplier)
-	{
+	public void setCurrencyGBPToLocalMultiplier(float currencyGBPToLocalMultiplier) {
 		this.currencyGBPToLocalMultiplier = currencyGBPToLocalMultiplier;
 	}
 
-	public boolean isShowDiagnostics()
-	{
+	public boolean isShowDiagnostics() {
 		return showDiagnostics;
 	}
 
-	public boolean isShowGCode()
-	{
+	public boolean isShowGCode() {
 		return showGCode;
 	}
 
-	public boolean isShowAdjustments()
-	{
+	public boolean isShowAdjustments() {
 		return showAdjustments;
 	}
 
-	public boolean isShowSnapshot()
-	{
+	public boolean isShowSnapshot() {
 		return showSnapshot;
 	}
 
-	public boolean isAutoGCodePreview()
-	{
+	public boolean isAutoGCodePreview() {
 		return autoGCodePreview;
 	}
 
-	public void setShowDiagnostics(boolean showDiagnostics)
-	{
+	public void setShowDiagnostics(boolean showDiagnostics) {
 		this.showDiagnostics = showDiagnostics;
 	}
 
-	public void setShowGCode(boolean showGCode)
-	{
+	public void setShowGCode(boolean showGCode) {
 		this.showGCode = showGCode;
 	}
 
-	public void setShowAdjustments(boolean showAdjustments)
-	{
+	public void setShowAdjustments(boolean showAdjustments) {
 		this.showAdjustments = showAdjustments;
 	}
 
-	public void setShowSnapshot(boolean showSnapshot)
-	{
+	public void setShowSnapshot(boolean showSnapshot) {
 		this.showSnapshot = showSnapshot;
 	}
 
-	public void setAutoGCodePreview(boolean autoGCodePreview)
-	{
+	public void setAutoGCodePreview(boolean autoGCodePreview) {
 		this.autoGCodePreview = autoGCodePreview;
 	}
 
-	public boolean isShowMetricUnits()
-	{
+	public boolean isShowMetricUnits() {
 		return showMetricUnits;
 	}
 
-	public void setShowMetricUnits(boolean showMetricUnits)
-	{
+	public void setShowMetricUnits(boolean showMetricUnits) {
 		this.showMetricUnits = showMetricUnits;
 	}
 
-	public boolean isSearchForRemoteCameras()
-	{
+	public boolean isSearchForRemoteCameras() {
 		return searchForRemoteCameras;
 	}
 
-	public void setSearchForRemoteCameras(boolean searchForRemoteCameras)
-	{
+	public void setSearchForRemoteCameras(boolean searchForRemoteCameras) {
 		this.searchForRemoteCameras = searchForRemoteCameras;
 	}
 
-	public boolean isLoosePartSplitOnLoad()
-	{
+	public boolean isLoosePartSplitOnLoad() {
 		return loosePartSplitOnLoad;
 	}
 
-	public void setLoosePartSplitOnLoad(boolean loosePartSplitOnLoad)
-	{
+	public void setLoosePartSplitOnLoad(boolean loosePartSplitOnLoad) {
 		this.loosePartSplitOnLoad = loosePartSplitOnLoad;
 	}
 
-	public boolean isCustomPrinterEnabled()
-	{
+	public boolean isCustomPrinterEnabled() {
 		return customPrinterEnabled;
 	}
 
-	public void setCustomPrinterEnabled(boolean customPrinterEnabled)
-	{
+	public void setCustomPrinterEnabled(boolean customPrinterEnabled) {
 		this.customPrinterEnabled = customPrinterEnabled;
 	}
 
-	public PrinterType getCustomPrinterType()
-	{
+	public PrinterType getCustomPrinterType() {
 		return customPrinterType;
 	}
 
-	public void setCustomPrinterType(PrinterType customPrinterType)
-	{
+	public void setCustomPrinterType(PrinterType customPrinterType) {
 		this.customPrinterType = customPrinterType;
 	}
 
@@ -243,13 +202,11 @@ public class UserPreferenceFile
 		return customPrinterHead;
 	}
 
-	public void setCustomPrinterHead(String customPrinterHead)
-	{
+	public void setCustomPrinterHead(String customPrinterHead) {
 		this.customPrinterHead = customPrinterHead;
 	}
 
-	public void populateFromSettings(UserPreferences userPreferences)
-	{
+	public void populateFromSettings(UserPreferences userPreferences) {
 		setSlicerType(userPreferences.getSlicerType());
 		setSafetyFeaturesOn(userPreferences.isSafetyFeaturesOn());
 		setLanguageTag(userPreferences.getLanguageTag());

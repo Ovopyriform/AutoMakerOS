@@ -1,6 +1,3 @@
-/*
- * Copyright 2014 CEL UK
- */
 package celtech.coreUI.components.Notifications;
 
 import java.io.IOException;
@@ -27,8 +24,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author tony
  */
-public abstract class AppearingProgressBar extends StackPane implements Initializable
-{
+public abstract class AppearingProgressBar extends StackPane implements Initializable {
 
 	@FXML
 	private StackPane statusBar;
@@ -71,28 +67,24 @@ public abstract class AppearingProgressBar extends StackPane implements Initiali
 
 	private static final Duration transitionLengthMillis = Duration.millis(200);
 
-	private Animation hideSidebar = new Transition()
-	{
+	private Animation hideSidebar = new Transition() {
 		{
 			setCycleDuration(transitionLengthMillis);
 		}
 
 		@Override
-		public void interpolate(double frac)
-		{
+		public void interpolate(double frac) {
 			slideMenuPanel(1.0 - frac);
 		}
 	};
-	private Animation showSidebar = new Transition()
-	{
+	private Animation showSidebar = new Transition() {
 
 		{
 			setCycleDuration(transitionLengthMillis);
 		}
 
 		@Override
-		public void interpolate(double frac)
-		{
+		public void interpolate(double frac) {
 			slideMenuPanel(frac);
 		}
 	};
@@ -106,34 +98,29 @@ public abstract class AppearingProgressBar extends StackPane implements Initiali
 	private double panelHeight = 0;
 	private final Rectangle clippingRectangle = new Rectangle();
 
-	public AppearingProgressBar()
-	{
+	public AppearingProgressBar() {
 		super();
 
-		URL fxml = getClass().getResource(
-				"/celtech/resources/fxml/components/notifications/appearingProgressBar.fxml");
+		URL fxml = getClass().getResource("/celtech/resources/fxml/components/notifications/appearingProgressBar.fxml");
 		FXMLLoader fxmlLoader = new FXMLLoader(fxml);
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
 		fxmlLoader.setClassLoader(getClass().getClassLoader());
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			exception.printStackTrace();
 			throw new RuntimeException(exception);
 		}
 
-		showSidebar.setOnFinished((ActionEvent t) ->
-		{
+		showSidebar.setOnFinished((ActionEvent t) -> {
 			slidingIntoView = false;
 			slidIntoView = true;
 		});
 
-		hideSidebar.setOnFinished((ActionEvent t) ->
-		{
+		hideSidebar.setOnFinished((ActionEvent t) -> {
 			slidingOutOfView = false;
 			slidOutOfView = true;
 			setVisible(false);
@@ -145,13 +132,11 @@ public abstract class AppearingProgressBar extends StackPane implements Initiali
 	 *
 	 * @param amountToShow
 	 */
-	private void slideMenuPanel(double amountToShow)
-	{
-		if (amountToShow < minimumToShow)
-		{
+	private void slideMenuPanel(double amountToShow) {
+		if (amountToShow < minimumToShow) {
 			amountToShow = minimumToShow;
-		} else if (amountToShow > maximumToShow)
-		{
+		}
+		else if (amountToShow > maximumToShow) {
 			amountToShow = maximumToShow;
 		}
 
@@ -165,10 +150,8 @@ public abstract class AppearingProgressBar extends StackPane implements Initiali
 	/**
 	 *
 	 */
-	public void startSlidingOutOfView()
-	{
-		if (!isSlidOutOrSlidingOut())
-		{
+	public void startSlidingOutOfView() {
+		if (!isSlidOutOrSlidingOut()) {
 			slidingIntoView = false;
 			slidingOutOfView = true;
 			slidIntoView = false;
@@ -176,19 +159,17 @@ public abstract class AppearingProgressBar extends StackPane implements Initiali
 			showSidebar.stop();
 			Duration time = showSidebar.getCurrentTime();
 			Duration startFromTime;
-			if (time.lessThanOrEqualTo(Duration.ZERO))
-			{
+			if (time.lessThanOrEqualTo(Duration.ZERO)) {
 				startFromTime = Duration.ZERO;
-			} else
-			{
+			}
+			else {
 				startFromTime = transitionLengthMillis.subtract(time);
 			}
 			hideSidebar.jumpTo(startFromTime);
 			hideSidebar.play();
-		} else if (slidOutOfView)
-		{
-			if (MathUtils.compareDouble(statusBar.getPrefHeight(), 0.0, 0.01) == MathUtils.MORE_THAN)
-			{
+		}
+		else if (slidOutOfView) {
+			if (MathUtils.compareDouble(statusBar.getPrefHeight(), 0.0, 0.01) == MathUtils.MORE_THAN) {
 				slideMenuPanel(0);
 			}
 		}
@@ -198,10 +179,8 @@ public abstract class AppearingProgressBar extends StackPane implements Initiali
 	/**
 	 *
 	 */
-	public void startSlidingInToView()
-	{
-		if (!isSlidInOrSlidingIn())
-		{
+	public void startSlidingInToView() {
+		if (!isSlidInOrSlidingIn()) {
 			setVisible(true);
 			slidingIntoView = true;
 			slidingOutOfView = false;
@@ -210,27 +189,24 @@ public abstract class AppearingProgressBar extends StackPane implements Initiali
 			hideSidebar.stop();
 			Duration time = hideSidebar.getCurrentTime();
 			Duration startFromTime;
-			if (time.lessThanOrEqualTo(Duration.ZERO))
-			{
+			if (time.lessThanOrEqualTo(Duration.ZERO)) {
 				startFromTime = Duration.ZERO;
-			} else
-			{
+			}
+			else {
 				startFromTime = transitionLengthMillis.subtract(time);
 				showSidebar.jumpTo(startFromTime);
 			}
 			showSidebar.play();
-		} else if (slidIntoView)
-		{
-			if (MathUtils.compareDouble(statusBar.getPrefHeight(), 1.0, 0.01) == MathUtils.LESS_THAN)
-			{
+		}
+		else if (slidIntoView) {
+			if (MathUtils.compareDouble(statusBar.getPrefHeight(), 1.0, 0.01) == MathUtils.LESS_THAN) {
 				slideMenuPanel(1.0);
 			}
 		}
 	}
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
+	public void initialize(URL location, ResourceBundle resources) {
 		panelHeight = statusBar.getPrefHeight();
 
 		statusBar.setMinHeight(0);
@@ -255,44 +231,36 @@ public abstract class AppearingProgressBar extends StackPane implements Initiali
 		statusBar.setPrefHeight(0);
 	}
 
-	public boolean isSlidInOrSlidingIn()
-	{
+	public boolean isSlidInOrSlidingIn() {
 		return slidIntoView || slidingIntoView;
 	}
 
-	public boolean isSlidOutOrSlidingOut()
-	{
+	public boolean isSlidOutOrSlidingOut() {
 		return slidOutOfView || slidingOutOfView;
 	}
 
-	public final void targetLegendRequired(boolean required)
-	{
+	public final void targetLegendRequired(boolean required) {
 		largeTargetLegend.setVisible(required);
 	}
 
-	public final void targetValueRequired(boolean required)
-	{
+	public final void targetValueRequired(boolean required) {
 		largeTargetValue.setVisible(required);
 	}
 
-	public final void currentValueRequired(boolean required)
-	{
+	public final void currentValueRequired(boolean required) {
 		currentValue.setVisible(required);
 	}
 
-	public final void progressRequired(boolean required)
-	{
+	public final void progressRequired(boolean required) {
 		progressBar.setVisible(required);
 		progressBar.progressProperty().unbind();
 	}
 
-	public final void layerDataRequired(boolean required)
-	{
+	public final void layerDataRequired(boolean required) {
 		layerData.setVisible(required);
 	}
 
-	public final void destroyBar()
-	{
+	public final void destroyBar() {
 		progressBar.progressProperty().unbind();
 	}
 }

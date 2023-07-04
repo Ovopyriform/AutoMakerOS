@@ -47,7 +47,8 @@ public class ProjectManager implements Savable, Serializable {
 			ProjectManager pm = loadState();
 			if (pm != null) {
 				instance = pm;
-			} else {
+			}
+			else {
 				instance = new ProjectManager();
 			}
 		}

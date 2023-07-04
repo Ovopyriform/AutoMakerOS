@@ -22,13 +22,11 @@ import javafx.scene.transform.Rotate;
 import xyz.openautomaker.base.utils.RectangularBounds;
 
 /**
- * ModelGroup is a ModelContainer that is a group of child ModelContainers or
- * other ModelGroups.
+ * ModelGroup is a ModelContainer that is a group of child ModelContainers or other ModelGroups.
  *
  * @author tony
  */
-public class ModelGroup extends ModelContainer implements ScreenExtentsProvider.ScreenExtentsListener
-{
+public class ModelGroup extends ModelContainer implements ScreenExtentsProvider.ScreenExtentsListener {
 
 	private static final Logger LOGGER = LogManager.getLogger(ModelGroup.class.getName());
 	private final Group modelContainersGroup = new Group();
@@ -37,16 +35,14 @@ public class ModelGroup extends ModelContainer implements ScreenExtentsProvider.
 	private double turnRotationAngle = 0;
 	private Rotate turnRotate = new Rotate(0, ThreeDUtils.Y_AXIS_JFX);
 
-	public ModelGroup(Set<ModelContainer> modelContainers)
-	{
+	public ModelGroup(Set<ModelContainer> modelContainers) {
 		initialise(null);
 		childModelContainers = new HashSet<>();
 		getChildren().add(modelContainersGroup);
 		childModelContainers.addAll(modelContainers);
 		modelContainersGroup.getChildren().addAll(modelContainers);
 		initialiseTransforms();
-		for (ModelContainer modelContainer : modelContainers)
-		{
+		for (ModelContainer modelContainer : modelContainers) {
 			modelContainer.clearBedTransform();
 			modelContainer.addScreenExtentsChangeListener(this);
 		}
@@ -57,12 +53,10 @@ public class ModelGroup extends ModelContainer implements ScreenExtentsProvider.
 		updateOriginalModelBounds();
 	}
 
-	public ModelGroup(Set<ModelContainer> modelContainers, int groupModelId)
-	{
+	public ModelGroup(Set<ModelContainer> modelContainers, int groupModelId) {
 		this(modelContainers);
 		modelId = groupModelId;
-		if (modelId >= nextModelId)
-		{
+		if (modelId >= nextModelId) {
 			// avoid any duplicate ids
 			nextModelId = modelId + 1;
 		}
@@ -72,51 +66,43 @@ public class ModelGroup extends ModelContainer implements ScreenExtentsProvider.
 	 * Return the immediate children of this group.
 	 */
 	@Override
-	public Set<ModelContainer> getChildModelContainers()
-	{
+	public Set<ModelContainer> getChildModelContainers() {
 		return Collections.unmodifiableSet(childModelContainers);
 	}
 
 	/**
-	 * Return all descendent ModelContainers of this ModelGroup.
-	 * NOTE - this includes every node - e.g. if a group node is present then so are all of its children
+	 * Return all descendent ModelContainers of this ModelGroup. NOTE - this includes every node - e.g. if a group node is present then so are all of its children
+	 * 
 	 * @return
 	 */
 	@Override
-	public Set<ModelContainer> getDescendentModelContainers()
-	{
+	public Set<ModelContainer> getDescendentModelContainers() {
 		Set<ModelContainer> modelContainers = new HashSet<>(childModelContainers);
-		for (ModelContainer modelContainer : childModelContainers)
-		{
+		for (ModelContainer modelContainer : childModelContainers) {
 			modelContainers.addAll(modelContainer.getDescendentModelContainers());
 		}
 
 		return modelContainers;
 	}
 
-	public void removeModel(ModelContainer modelContainer)
-	{
+	public void removeModel(ModelContainer modelContainer) {
 		modelContainer.removeScreenExtentsChangeListener(this);
 		childModelContainers.remove(modelContainer);
 	}
 
 	@Override
-	protected void initialiseTransforms()
-	{
+	protected void initialiseTransforms() {
 		super.initialiseTransforms();
 		modelContainersGroup.getTransforms().addAll(transformScalePreferred);
 	}
 
 	/**
-	 * Return a set of all descendent ModelContainers that have MeshView
-	 * children.
+	 * Return a set of all descendent ModelContainers that have MeshView children.
 	 */
 	@Override
-	public Set<ModelContainer> getModelsHoldingMeshViews()
-	{
+	public Set<ModelContainer> getModelsHoldingMeshViews() {
 		Set<ModelContainer> modelsHoldingMeshViews = new HashSet<>();
-		for (Node modelNode : modelContainersGroup.getChildren())
-		{
+		for (Node modelNode : modelContainersGroup.getChildren()) {
 			ModelContainer modelContainer = (ModelContainer) modelNode;
 			modelsHoldingMeshViews.addAll(modelContainer.getModelsHoldingMeshViews());
 		}
@@ -124,19 +110,15 @@ public class ModelGroup extends ModelContainer implements ScreenExtentsProvider.
 	}
 
 	/**
-	 * Return a set of all descendent ModelContainers (and include this one)
-	 * that have ModelContainer children.
+	 * Return a set of all descendent ModelContainers (and include this one) that have ModelContainer children.
 	 */
 	@Override
-	public Collection<? extends ModelContainer> getModelsHoldingModels()
-	{
+	public Collection<? extends ModelContainer> getModelsHoldingModels() {
 		Set<ModelContainer> modelsHoldingModels = new HashSet<>();
-		if (modelContainersGroup.getChildren().size() > 0)
-		{
+		if (modelContainersGroup.getChildren().size() > 0) {
 			modelsHoldingModels.add(this);
 		}
-		for (Node modelNode : modelContainersGroup.getChildren())
-		{
+		for (Node modelNode : modelContainersGroup.getChildren()) {
 			ModelContainer modelContainer = (ModelContainer) modelNode;
 			modelsHoldingModels.addAll(modelContainer.getModelsHoldingModels());
 		}
@@ -147,13 +129,10 @@ public class ModelGroup extends ModelContainer implements ScreenExtentsProvider.
 	 * Update the given group structure with the details of this group.
 	 */
 	@Override
-	public void addGroupStructure(Map<Integer, Set<Integer>> groupStructure)
-	{
-		for (Node modelNode : modelContainersGroup.getChildren())
-		{
+	public void addGroupStructure(Map<Integer, Set<Integer>> groupStructure) {
+		for (Node modelNode : modelContainersGroup.getChildren()) {
 			ModelContainer modelContainer = (ModelContainer) modelNode;
-			if (groupStructure.get(modelId) == null)
-			{
+			if (groupStructure.get(modelId) == null) {
 				groupStructure.put(modelId, new HashSet<>());
 			}
 			groupStructure.get(modelId).add(modelContainer.modelId);
@@ -161,13 +140,12 @@ public class ModelGroup extends ModelContainer implements ScreenExtentsProvider.
 	}
 
 	/**
-	 * Calculate max/min X,Y,Z before the transforms have been applied (ie the
-	 * original model dimensions before any transforms).
+	 * Calculate max/min X,Y,Z before the transforms have been applied (ie the original model dimensions before any transforms).
+	 * 
 	 * @return
 	 */
 	@Override
-	protected RectangularBounds calculateBoundsInLocal()
-	{
+	protected RectangularBounds calculateBoundsInLocal() {
 		double minX = Double.MAX_VALUE;
 		double minY = Double.MAX_VALUE;
 		double minZ = Double.MAX_VALUE;
@@ -175,8 +153,7 @@ public class ModelGroup extends ModelContainer implements ScreenExtentsProvider.
 		double maxY = -Double.MAX_VALUE;
 		double maxZ = -Double.MAX_VALUE;
 
-		for (ModelContainer modelContainer : childModelContainers)
-		{
+		for (ModelContainer modelContainer : childModelContainers) {
 			RectangularBounds bounds = modelContainer.lastTransformedBoundsInParent; // parent of child is this model
 			minX = Math.min(bounds.getMinX(), minX);
 			minY = Math.min(bounds.getMinY(), minY);
@@ -201,12 +178,10 @@ public class ModelGroup extends ModelContainer implements ScreenExtentsProvider.
 	}
 
 	@Override
-	public Set<MeshView> descendentMeshViews()
-	{
+	public Set<MeshView> descendentMeshViews() {
 		Set<MeshView> descendentMeshViews = new HashSet<>();
 
-		for (ModelContainer modelContainer : childModelContainers)
-		{
+		for (ModelContainer modelContainer : childModelContainers) {
 			descendentMeshViews.addAll(modelContainer.descendentMeshViews());
 		}
 
@@ -214,28 +189,22 @@ public class ModelGroup extends ModelContainer implements ScreenExtentsProvider.
 	}
 
 	/**
-	 * If this model is associated with the given extruder number then recolour
-	 * it to the given colour, also taking into account if it is misplaced (off
-	 * the bed). Also call the same method on any child ModelContainers.
+	 * If this model is associated with the given extruder number then recolour it to the given colour, also taking into account if it is misplaced (off the bed). Also call the same method on any child ModelContainers.
 	 */
 	@Override
 	public void updateColour(final PhongMaterial extruder1Colour, final PhongMaterial extruder2Colour,
-			boolean showMisplacedColour)
-	{
-		for (ModelContainer modelContainer : childModelContainers)
-		{
+			boolean showMisplacedColour) {
+		for (ModelContainer modelContainer : childModelContainers) {
 			modelContainer.updateColour(extruder1Colour, extruder2Colour,
 					showMisplacedColour);
 		}
 	}
 
 	@Override
-	public ModelContainer makeCopy()
-	{
+	public ModelContainer makeCopy() {
 		Set<ModelContainer> childModels = new HashSet<>();
-		for (ModelContainer childModel : childModelContainers)
-		{
-			ModelContainer modelContainerCopy = (ModelContainer)childModel.makeCopy();
+		for (ModelContainer childModel : childModelContainers) {
+			ModelContainer modelContainerCopy = (ModelContainer) childModel.makeCopy();
 			modelContainerCopy.setState(childModel.getState());
 			childModels.add(modelContainerCopy);
 		}
@@ -278,8 +247,7 @@ public class ModelGroup extends ModelContainer implements ScreenExtentsProvider.
 	//    }
 
 	@Override
-	public void screenExtentsChanged(ScreenExtentsProvider screenExtentsProvider)
-	{
+	public void screenExtentsChanged(ScreenExtentsProvider screenExtentsProvider) {
 		notifyScreenExtentsChange();
 		notifyShapeChange();
 	}

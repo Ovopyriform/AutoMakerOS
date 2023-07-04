@@ -21,13 +21,11 @@ import org.apache.logging.log4j.Logger;
 
 import javafx.scene.shape.TriangleMesh;
 
-
 /**
  *
  * @author alynch
  */
-public class MeshUtils
-{
+public class MeshUtils {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			MeshUtils.class.getName());
@@ -35,30 +33,25 @@ public class MeshUtils
 	/**
 	 * Remove vertices that are not used by any faces.
 	 */
-	public static void removeUnusedAndDuplicateVertices(TriangleMesh childMesh)
-	{
+	public static void removeUnusedAndDuplicateVertices(TriangleMesh childMesh) {
 
 		removeUnusedVertices(childMesh);
 
 		removeDuplicateVertices(childMesh);
 	}
 
-	private static void removeUnusedVertices(TriangleMesh childMesh)
-	{
+	private static void removeUnusedVertices(TriangleMesh childMesh) {
 		// array of new vertex index for previous index
 		int[] newVertexIndices = new int[childMesh.getPoints().size()];
-		for (int i = 0; i < newVertexIndices.length; i++)
-		{
+		for (int i = 0; i < newVertexIndices.length; i++) {
 			newVertexIndices[i] = -1;
 		}
 		float[] newPoints = new float[childMesh.getPoints().size()];
 		int nextNewPointIndex = 0;
 
-		for (int i = 0; i < childMesh.getFaces().size(); i += 2)
-		{
+		for (int i = 0; i < childMesh.getFaces().size(); i += 2) {
 			int vertexIndex = childMesh.getFaces().get(i);
-			if (newVertexIndices[vertexIndex] == -1)
-			{
+			if (newVertexIndices[vertexIndex] == -1) {
 				newVertexIndices[vertexIndex] = nextNewPointIndex;
 				newPoints[nextNewPointIndex * 3] = childMesh.getPoints().get(vertexIndex * 3);
 				newPoints[nextNewPointIndex * 3 + 1] = childMesh.getPoints().get(vertexIndex * 3 + 1);
@@ -72,27 +65,23 @@ public class MeshUtils
 		childMesh.getPoints().addAll(newPoints, 0, nextNewPointIndex * 3);
 	}
 
-	static void removeDuplicateVertices(TriangleMesh mesh)
-	{
+	static void removeDuplicateVertices(TriangleMesh mesh) {
 		Map<Integer, Integer> vertexReplacements = new HashMap<>();
 		Map<Vertex, Integer> vertexToVertex = new HashMap<>();
-		for (int vertexIndex = 0; vertexIndex < mesh.getPoints().size() / 3; vertexIndex++)
-		{
+		for (int vertexIndex = 0; vertexIndex < mesh.getPoints().size() / 3; vertexIndex++) {
 			Vertex vertex = TriangleCutter.getVertex(mesh, vertexIndex);
 
-			if (vertexToVertex.containsKey(vertex))
-			{
+			if (vertexToVertex.containsKey(vertex)) {
 				vertexReplacements.put(vertexIndex, vertexToVertex.get(vertex));
-			} else
-			{
+			}
+			else {
 				vertexToVertex.put(vertex, vertexIndex);
 			}
 		}
 		replaceVertices(mesh, vertexReplacements);
 	}
 
-	static TriangleMesh copyMesh(TriangleMesh mesh)
-	{
+	static TriangleMesh copyMesh(TriangleMesh mesh) {
 		TriangleMesh childMesh = new TriangleMesh();
 		childMesh.getPoints().addAll(mesh.getPoints());
 		childMesh.getFaces().addAll(mesh.getFaces());
@@ -103,27 +92,23 @@ public class MeshUtils
 	/**
 	 * Replace uses of vertex fromVertex (key) with toVertex (value).
 	 */
-	private static void replaceVertices(TriangleMesh mesh, Map<Integer, Integer> vertexReplacements)
-	{
-		for (int faceIndex = 0; faceIndex < mesh.getFaces().size(); faceIndex += 2)
-		{
-			if (vertexReplacements.containsKey(mesh.getFaces().get(faceIndex)))
-			{
+	private static void replaceVertices(TriangleMesh mesh, Map<Integer, Integer> vertexReplacements) {
+		for (int faceIndex = 0; faceIndex < mesh.getFaces().size(); faceIndex += 2) {
+			if (vertexReplacements.containsKey(mesh.getFaces().get(faceIndex))) {
 				mesh.getFaces().set(faceIndex,
 						vertexReplacements.get(mesh.getFaces().get(faceIndex)));
 			}
 		}
 	}
 
+	public enum MeshError {
 
-	public enum MeshError
-	{
-
-		INVALID_VERTEX_ID, OPEN_MESH, MESH_NOT_ORIENTABLE;
+		INVALID_VERTEX_ID,
+		OPEN_MESH,
+		MESH_NOT_ORIENTABLE;
 	}
 
-	public static Optional<MeshError> validate(TriangleMesh mesh)
-	{
+	public static Optional<MeshError> validate(TriangleMesh mesh) {
 		return validate(mesh, null);
 	}
 
@@ -131,21 +116,17 @@ public class MeshUtils
 	 * Validate the mesh.
 	 */
 	public static Optional<MeshError> validate(TriangleMesh mesh,
-			MeshCutter2.BedToLocalConverter bedToLocalConverter)
-	{
-		if (testVerticesNotValid(mesh))
-		{
+			MeshCutter2.BedToLocalConverter bedToLocalConverter) {
+		if (testVerticesNotValid(mesh)) {
 			return Optional.of(MeshError.INVALID_VERTEX_ID);
 		}
 
-		if (testMeshIsOpen(mesh, bedToLocalConverter))
-		{
+		if (testMeshIsOpen(mesh, bedToLocalConverter)) {
 			return Optional.of(MeshError.OPEN_MESH);
 		}
 
 		// quickly validate mesh is orientable (winding order correct for all faces)
-		if (!testMeshIsOrientable(mesh))
-		{
+		if (!testMeshIsOrientable(mesh)) {
 			return Optional.of(MeshError.MESH_NOT_ORIENTABLE);
 		}
 
@@ -154,23 +135,19 @@ public class MeshUtils
 		return Optional.empty();
 	}
 
-	private static boolean testVerticesNotValid(TriangleMesh mesh)
-	{
+	private static boolean testVerticesNotValid(TriangleMesh mesh) {
 		// validate vertex indices
 		int numVertices = mesh.getPoints().size() / 3;
-		for (int i = 0; i < mesh.getFaces().size(); i += 2)
-		{
+		for (int i = 0; i < mesh.getFaces().size(); i += 2) {
 			int vertexIndex = mesh.getFaces().get(i);
-			if (vertexIndex < 0 || vertexIndex > numVertices)
-			{
+			if (vertexIndex < 0 || vertexIndex > numVertices) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	static Set<Edge> getFaceEdges(TriangleMesh mesh, int faceIndex)
-	{
+	static Set<Edge> getFaceEdges(TriangleMesh mesh, int faceIndex) {
 		int vertex0 = mesh.getFaces().get(faceIndex * 6);
 		int vertex1 = mesh.getFaces().get(faceIndex * 6 + 2);
 		int vertex2 = mesh.getFaces().get(faceIndex * 6 + 4);
@@ -184,10 +161,8 @@ public class MeshUtils
 		return edges;
 	}
 
-
 	/**
-	 * Test that the mesh is orientable. This means that the winding order for each face is
-	 * consistent with its neighbouring faces.
+	 * Test that the mesh is orientable. This means that the winding order for each face is consistent with its neighbouring faces.
 	 */
 	static boolean testMeshIsOrientable(TriangleMesh mesh) {
 		Map<Integer, Set<Integer>> facesWithVertices = makeFacesWithVertex(mesh);
@@ -195,11 +170,9 @@ public class MeshUtils
 	}
 
 	/**
-	 * Test that the mesh is orientable. This means that the winding order for each face is
-	 * consistent with its neighbouring faces.
+	 * Test that the mesh is orientable. This means that the winding order for each face is consistent with its neighbouring faces.
 	 */
-	static boolean testMeshIsOrientable(TriangleMesh mesh, Map<Integer, Set<Integer>> facesWithVertices)
-	{
+	static boolean testMeshIsOrientable(TriangleMesh mesh, Map<Integer, Set<Integer>> facesWithVertices) {
 		/**
 		 * Check that for every edge the opposing faces are oriented correctly.
 		 */
@@ -208,13 +181,10 @@ public class MeshUtils
 
 		boolean warningEmitted = false;
 
-		for (int faceIndex = 0; faceIndex < mesh.getFaces().size() / 6; faceIndex++)
-		{
+		for (int faceIndex = 0; faceIndex < mesh.getFaces().size() / 6; faceIndex++) {
 			Set<Edge> edges = getFaceEdges(mesh, faceIndex);
-			for (Edge edge : edges)
-			{
-				if (processedEdges.contains(edge))
-				{
+			for (Edge edge : edges) {
+				if (processedEdges.contains(edge)) {
 					continue;
 				}
 				processedEdges.add(edge);
@@ -223,10 +193,8 @@ public class MeshUtils
 				Set<Integer> facesWithv1 = facesWithVertices.get(edge.v1);
 				facesWithv0.retainAll(facesWithv1);
 				facesWithv0.remove(faceIndex);
-				if (facesWithv0.size() != 1)
-				{
-					if (!warningEmitted)
-					{
+				if (facesWithv0.size() != 1) {
+					if (!warningEmitted) {
 						LOGGER.warn("Invalid topology while checking orientability");
 						warningEmitted = true;
 					}
@@ -236,8 +204,7 @@ public class MeshUtils
 				// we should now have the face on other side of the edge
 				int opposingFaceIndex = facesWithv0.iterator().next();
 				assert facesWithv0.size() == 1;
-				if (!checkOrientationCompatible(mesh, faceIndex, opposingFaceIndex, edge))
-				{
+				if (!checkOrientationCompatible(mesh, faceIndex, opposingFaceIndex, edge)) {
 					LOGGER.debug("fails for faces " + faceIndex + " " + opposingFaceIndex
 							+ " edge " + edge.v0 + " " + edge.v1);
 					return false;
@@ -247,11 +214,10 @@ public class MeshUtils
 		return true;
 	}
 
+	enum Orientation {
 
-	enum Orientation
-	{
-
-		FORWARDS, BACKWARDS;
+		FORWARDS,
+		BACKWARDS;
 	}
 
 	/**
@@ -259,29 +225,24 @@ public class MeshUtils
 	 */
 	private static boolean checkOrientationCompatible(TriangleMesh mesh, int faceIndex1,
 			int faceIndex2,
-			Edge edge)
-	{
+			Edge edge) {
 		Orientation face1Orientation = getOrientation(mesh, faceIndex1, edge);
 		Orientation face2Orientation = getOrientation(mesh, faceIndex2, edge);
 		return face1Orientation != face2Orientation;
 	}
 
 	/**
-	 * If the vertices of the face are eg v0,v1,v2 then the edge v0,v1 is FORWARDS whereas the edge
-	 * v1,v0 is BACKWARDS. Note that v2,v0 is also FORWARDS and v0,v2 is BACKWARDS.
+	 * If the vertices of the face are eg v0,v1,v2 then the edge v0,v1 is FORWARDS whereas the edge v1,v0 is BACKWARDS. Note that v2,v0 is also FORWARDS and v0,v2 is BACKWARDS.
 	 */
-	private static Orientation getOrientation(TriangleMesh mesh, int faceIndex, Edge edge)
-	{
+	private static Orientation getOrientation(TriangleMesh mesh, int faceIndex, Edge edge) {
 		int v0 = mesh.getFaces().get(faceIndex * 6);
 		int v1 = mesh.getFaces().get(faceIndex * 6 + 2);
 		int v2 = mesh.getFaces().get(faceIndex * 6 + 4);
 
-		if ((edge.v0 == v0 && edge.v1 == v1) || (edge.v0 == v1 && edge.v1 == v2))
-		{
+		if ((edge.v0 == v0 && edge.v1 == v1) || (edge.v0 == v1 && edge.v1 == v2)) {
 			return Orientation.FORWARDS;
 		}
-		if (edge.v0 == v2 && edge.v1 == v0)
-		{
+		if (edge.v0 == v2 && edge.v1 == v0) {
 			return Orientation.FORWARDS;
 		}
 		return Orientation.BACKWARDS;
@@ -291,15 +252,12 @@ public class MeshUtils
 	 * Check if mesh is open (not all edges are incident to two faces).
 	 */
 	private static boolean testMeshIsOpen(TriangleMesh mesh,
-			MeshCutter2.BedToLocalConverter bedToLocalConverter)
-	{
+			MeshCutter2.BedToLocalConverter bedToLocalConverter) {
 
 		Map<Integer, Set<Integer>> facesWithVertices = makeFacesWithVertex(mesh);
 
-		for (int faceIndex = 0; faceIndex < mesh.getFaces().size() / 6; faceIndex++)
-		{
-			if (countFacesAdjacentToVertices(mesh, facesWithVertices, faceIndex, 0, 1) != 1)
-			{
+		for (int faceIndex = 0; faceIndex < mesh.getFaces().size() / 6; faceIndex++) {
+			if (countFacesAdjacentToVertices(mesh, facesWithVertices, faceIndex, 0, 1) != 1) {
 				LOGGER.debug("problem 01 for face " + faceIndex);
 				printFace(mesh, faceIndex, bedToLocalConverter);
 				int v0 = mesh.getFaces().get(faceIndex * 6);
@@ -312,8 +270,7 @@ public class MeshUtils
 
 				return true;
 			}
-			if (countFacesAdjacentToVertices(mesh, facesWithVertices, faceIndex, 1, 2) != 1)
-			{
+			if (countFacesAdjacentToVertices(mesh, facesWithVertices, faceIndex, 1, 2) != 1) {
 				LOGGER.debug("problem 12 for face " + faceIndex);
 				printFace(mesh, faceIndex, bedToLocalConverter);
 				int v1 = mesh.getFaces().get(faceIndex * 6 + 2);
@@ -325,8 +282,7 @@ public class MeshUtils
 				MeshDebug.showSphere(vertex1.x, vertex1.y, vertex1.z);
 				return true;
 			}
-			if (countFacesAdjacentToVertices(mesh, facesWithVertices, faceIndex, 0, 2) != 1)
-			{
+			if (countFacesAdjacentToVertices(mesh, facesWithVertices, faceIndex, 0, 2) != 1) {
 				LOGGER.debug("problem 02 for face " + faceIndex);
 				printFace(mesh, faceIndex, bedToLocalConverter);
 				return true;
@@ -336,8 +292,7 @@ public class MeshUtils
 	}
 
 	public static void printFace(TriangleMesh mesh, int faceIndex,
-			MeshCutter2.BedToLocalConverter bedToLocalConverter)
-	{
+			MeshCutter2.BedToLocalConverter bedToLocalConverter) {
 		int v0 = mesh.getFaces().get(faceIndex * 6);
 		int v1 = mesh.getFaces().get(faceIndex * 6 + 2);
 		int v2 = mesh.getFaces().get(faceIndex * 6 + 4);
@@ -345,8 +300,7 @@ public class MeshUtils
 		LOGGER.debug("v1Local " + getVertex(mesh, v1));
 		LOGGER.debug("v2Local " + getVertex(mesh, v2));
 
-		if (bedToLocalConverter != null)
-		{
+		if (bedToLocalConverter != null) {
 			LOGGER.debug("v0 " + bedToLocalConverter.localToBed(makePoint3D(mesh, v0)));
 			LOGGER.debug("v1 " + bedToLocalConverter.localToBed(makePoint3D(mesh, v1)));
 			LOGGER.debug("v2 " + bedToLocalConverter.localToBed(makePoint3D(mesh, v2)));
@@ -355,8 +309,7 @@ public class MeshUtils
 
 	public static int countFacesAdjacentToVertices(TriangleMesh mesh,
 			Map<Integer, Set<Integer>> facesWithVertices,
-			int faceIndex, int vertexIndexOffset0, int vertexIndexOffset1)
-	{
+			int faceIndex, int vertexIndexOffset0, int vertexIndexOffset1) {
 		Set<Integer> facesWithVertex0 = new HashSet(facesWithVertices.get(
 				mesh.getFaces().get(faceIndex * 6 + vertexIndexOffset0 * 2)));
 

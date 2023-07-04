@@ -16,8 +16,7 @@ import javafx.scene.layout.HBox;
  *
  * @author Ian
  */
-public class TopMenuStrip extends HBox
-{
+public class TopMenuStrip extends HBox {
 
 	private ApplicationStatus applicationStatus = null;
 
@@ -31,25 +30,21 @@ public class TopMenuStrip extends HBox
 	private GraphicButton libraryButton;
 
 	@FXML
-	void extrasMenuPressed(ActionEvent event)
-	{
+	void extrasMenuPressed(ActionEvent event) {
 		applicationStatus.setMode(ApplicationMode.EXTRAS_MENU);
 	}
 
 	@FXML
-	void aboutPressed(ActionEvent event)
-	{
+	void aboutPressed(ActionEvent event) {
 		applicationStatus.setMode(ApplicationMode.ABOUT);
 	}
 
 	@FXML
-	void libraryPressed(ActionEvent event)
-	{
+	void libraryPressed(ActionEvent event) {
 		applicationStatus.setMode(ApplicationMode.LIBRARY);
 	}
 
-	public TopMenuStrip()
-	{
+	public TopMenuStrip() {
 		super();
 		URL fxml = getClass().getResource("/celtech/resources/fxml/components/TopMenuStrip.fxml");
 		FXMLLoader fxmlLoader = new FXMLLoader(fxml);
@@ -57,23 +52,19 @@ public class TopMenuStrip extends HBox
 		fxmlLoader.setController(this);
 		fxmlLoader.setClassLoader(getClass().getClassLoader());
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 	}
 
 	@FXML
-	void initialize()
-	{
+	void initialize() {
 		applicationStatus = ApplicationStatus.getInstance();
 
-		BooleanBinding buttonDisabled
-		= applicationStatus.modeProperty().isEqualTo(ApplicationMode.PURGE).
-		or(applicationStatus.modeProperty().isEqualTo(ApplicationMode.CALIBRATION_CHOICE));
+		BooleanBinding buttonDisabled = applicationStatus.modeProperty().isEqualTo(ApplicationMode.PURGE).or(applicationStatus.modeProperty().isEqualTo(ApplicationMode.CALIBRATION_CHOICE));
 
 		aboutButton.disableProperty().bind(buttonDisabled);
 

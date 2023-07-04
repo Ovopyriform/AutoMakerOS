@@ -27,8 +27,7 @@ import xyz.openautomaker.base.services.ControllableService;
  *
  * @author ianhudson
  */
-public class ProgressDialogController implements Initializable
-{
+public class ProgressDialogController implements Initializable {
 
 	private static final Logger LOGGER = LogManager.getLogger(ProgressDialogController.class.getName());
 	@FXML
@@ -47,114 +46,104 @@ public class ProgressDialogController implements Initializable
 	/*
 	 *
 	 */
-	 private ControllableService serviceBeingMonitored = null;
-	 private ChangeListener<Boolean> registeredListener = null;
+	private ControllableService serviceBeingMonitored = null;
+	private ChangeListener<Boolean> registeredListener = null;
 
-	 private Stage stage;
+	private Stage stage;
 
-	 /**
-	  *
-	  * @param event
-	  */
-	 @FXML
-	 public void cancelOperation(MouseEvent event)
-	 {
-		 serviceBeingMonitored.cancelRun();
-	 }
+	/**
+	 *
+	 * @param event
+	 */
+	@FXML
+	public void cancelOperation(MouseEvent event) {
+		serviceBeingMonitored.cancelRun();
+	}
 
-	 /**
-	  *
-	  * @param service
-	  * @param stage
-	  */
-	 public void configure(ControllableService service, final Stage stage)
-	 {
-		 this.serviceBeingMonitored = service;
-		 this.stage = stage;
+	/**
+	 *
+	 * @param service
+	 * @param stage
+	 */
+	public void configure(ControllableService service, final Stage stage) {
+		this.serviceBeingMonitored = service;
+		this.stage = stage;
 
-		 progressTitle.textProperty().unbind();
-		 progressTitle.textProperty().bind(serviceBeingMonitored.titleProperty());
-		 progressMessage.textProperty().unbind();
-		 progressMessage.textProperty().bind(serviceBeingMonitored.messageProperty());
-		 progressBar.progressProperty().unbind();
-		 progressBar.progressProperty().bind(serviceBeingMonitored.progressProperty());
-		 progressPercent.textProperty().unbind();
-		 progressPercent.textProperty().bind(serviceBeingMonitored.progressProperty().multiply(100f).asString("%.0f%%"));
+		progressTitle.textProperty().unbind();
+		progressTitle.textProperty().bind(serviceBeingMonitored.titleProperty());
+		progressMessage.textProperty().unbind();
+		progressMessage.textProperty().bind(serviceBeingMonitored.messageProperty());
+		progressBar.progressProperty().unbind();
+		progressBar.progressProperty().bind(serviceBeingMonitored.progressProperty());
+		progressPercent.textProperty().unbind();
+		progressPercent.textProperty().bind(serviceBeingMonitored.progressProperty().multiply(100f).asString("%.0f%%"));
 
-		 if (registeredListener != null)
-		 {
-			 serviceBeingMonitored.runningProperty().removeListener(registeredListener);
-			 registeredListener = null;
-		 }
+		if (registeredListener != null) {
+			serviceBeingMonitored.runningProperty().removeListener(registeredListener);
+			registeredListener = null;
+		}
 
-		 ChangeListener<Boolean> serviceRunningListener = new ChangeListener<>()
-		 {
-			 @Override
-			 public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue)
-			 {
-				 if (newValue)
-				 {
-					 stage.show();
-					 stage.toFront();
-					 //                    rebind();
-				 } else
-				 {
-					 stage.close();
-				 }
-			 }
-		 };
+		ChangeListener<Boolean> serviceRunningListener = new ChangeListener<>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
+				if (newValue) {
+					stage.show();
+					stage.toFront();
+					//                    rebind();
+				}
+				else {
+					stage.close();
+				}
+			}
+		};
 
-		 serviceBeingMonitored.runningProperty().addListener(serviceRunningListener);
+		serviceBeingMonitored.runningProperty().addListener(serviceRunningListener);
 
-		 serviceBeingMonitored.progressProperty().addListener(new ChangeListener<Number>()
-		 {
-			 @Override
-			 public void changed(ObservableValue<? extends Number> ov, Number t, Number t1)
-			 {
-				 if (stage != null
-						 && t1.doubleValue() >= 0
-						 && t.doubleValue() < 0)
-				 {
-					 stage.toFront();
-				 }
-			 }
-		 });
+		serviceBeingMonitored.progressProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+				if (stage != null
+						&& t1.doubleValue() >= 0
+						&& t.doubleValue() < 0) {
+					stage.toFront();
+				}
+			}
+		});
 
-		 registeredListener = serviceRunningListener;
-	 }
+		registeredListener = serviceRunningListener;
+	}
 
-	 private void rebind()
-	 {
-		 /*
-		  * Unbind everything...
-		  */
-		 progressTitle.textProperty().unbind();
-		 progressMessage.textProperty().unbind();
-		 progressBar.progressProperty().unbind();
-		 progressPercent.textProperty().unbind();
-		 //
-		 /*
-		  * Bind/rebind
-		  */
-		 progressTitle.textProperty().bind(serviceBeingMonitored.titleProperty());
-		 progressMessage.textProperty().bind(serviceBeingMonitored.messageProperty());
-		 progressBar.progressProperty().bind(serviceBeingMonitored.progressProperty());
-		 progressPercent.textProperty().bind(serviceBeingMonitored.progressProperty().multiply(100f).asString("%.0f%%"));
-	 }
+	private void rebind() {
+		/*
+		 * Unbind everything...
+		 */
+		progressTitle.textProperty().unbind();
+		progressMessage.textProperty().unbind();
+		progressBar.progressProperty().unbind();
+		progressPercent.textProperty().unbind();
+		//
+		/*
+		 * Bind/rebind
+		 */
+		progressTitle.textProperty().bind(serviceBeingMonitored.titleProperty());
+		progressMessage.textProperty().bind(serviceBeingMonitored.messageProperty());
+		progressBar.progressProperty().bind(serviceBeingMonitored.progressProperty());
+		progressPercent.textProperty().bind(serviceBeingMonitored.progressProperty().multiply(100f).asString("%.0f%%"));
+	}
 
-	 /**
-	  * Initializes the controller class.
-	  * @param url
-	  * @param rb
-	  */
-	 @Override
-	 public void initialize(URL url, ResourceBundle rb)
-	 {
-		 //progressDialog.setVisible(false);
-		 progressPercent.setText("");
-		 progressTitle.setText("");
-		 progressMessage.setText("");
-		 progressBar.setProgress(0f);
+	/**
+	 * Initializes the controller class.
+	 * 
+	 * @param url
+	 * @param rb
+	 */
+	@Override
+	public void initialize(URL url, ResourceBundle rb) {
+		//progressDialog.setVisible(false);
+		progressPercent.setText("");
+		progressTitle.setText("");
+		progressMessage.setText("");
+		progressBar.setProgress(0f);
 
-	 }
+	}
 }

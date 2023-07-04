@@ -9,8 +9,7 @@ package celtech.coreUI;
  *
  * @author Ian
  */
-public enum AmbientLEDState
-{
+public enum AmbientLEDState {
 
 	/**
 	 *
@@ -31,21 +30,17 @@ public enum AmbientLEDState
 	 *
 	 * @return
 	 */
-	public AmbientLEDState getNextState()
-	{
+	public AmbientLEDState getNextState() {
 		AmbientLEDState returnState = null;
 
 		AmbientLEDState[] values = AmbientLEDState.values();
 
-		for (int i = 0; i < values.length; i++)
-		{
-			if (values[i] == this)
-			{
-				if (i < values.length - 1)
-				{
+		for (int i = 0; i < values.length; i++) {
+			if (values[i] == this) {
+				if (i < values.length - 1) {
 					returnState = values[i + 1];
-				} else
-				{
+				}
+				else {
 					returnState = values[0];
 				}
 			}

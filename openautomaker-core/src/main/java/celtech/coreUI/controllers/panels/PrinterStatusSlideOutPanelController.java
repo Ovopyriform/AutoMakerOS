@@ -15,8 +15,7 @@ import javafx.fxml.Initializable;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class PrinterStatusSlideOutPanelController implements Initializable, SlidablePanel
-{
+public class PrinterStatusSlideOutPanelController implements Initializable, SlidablePanel {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			PrinterStatusSlideOutPanelController.class.getName());
@@ -25,13 +24,11 @@ public class PrinterStatusSlideOutPanelController implements Initializable, Slid
 	private SlideOutHandleController SlideOutHandleController;
 
 	@Override
-	public void initialize(URL url, ResourceBundle rb)
-	{
+	public void initialize(URL url, ResourceBundle rb) {
 	}
 
 	@Override
-	public void slideIn()
-	{
+	public void slideIn() {
 		SlideOutHandleController.slideIn();
 	}
 

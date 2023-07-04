@@ -7,7 +7,6 @@ package celtech.coreUI.controllers;
  *
  * @author tony
  */
-public interface StatusInsetController
-{
+public interface StatusInsetController {
 
 }

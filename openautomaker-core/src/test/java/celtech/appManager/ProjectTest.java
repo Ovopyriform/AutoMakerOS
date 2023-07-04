@@ -37,8 +37,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author tony
  */
-public class ProjectTest extends ConfiguredTest
-{
+public class ProjectTest extends ConfiguredTest {
 
 	private static final String GROUP_NAME = "group";
 	private static final String MC3_ID = "mc3";
@@ -49,8 +48,7 @@ public class ProjectTest extends ConfiguredTest
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@Test
-	public void testSaveOneProject() throws IOException
-	{
+	public void testSaveOneProject() throws IOException {
 		String PROJECT_NAME = "TestA";
 		int BRIM = 2;
 		float FILL_DENSITY = 0.45f;
@@ -89,8 +87,7 @@ public class ProjectTest extends ConfiguredTest
 		assert (true);
 	}
 
-	private Pair<ModelContainerProject, ModelGroup> makeProject()
-	{
+	private Pair<ModelContainerProject, ModelGroup> makeProject() {
 		TestUtils utils = new TestUtils();
 		ModelContainer mc1 = utils.makeModelContainer(true);
 		ModelContainer mc2 = utils.makeModelContainer(true);
@@ -113,8 +110,7 @@ public class ProjectTest extends ConfiguredTest
 		return new Pair<>(project, group);
 	}
 
-	private Pair<ModelContainerProject, ModelGroup> makeProjectWithGroupOfGroups()
-	{
+	private Pair<ModelContainerProject, ModelGroup> makeProjectWithGroupOfGroups() {
 		TestUtils utils = new TestUtils();
 		ModelContainer mc1 = utils.makeModelContainer(true);
 		ModelContainer mc2 = utils.makeModelContainer(true);
@@ -143,8 +139,7 @@ public class ProjectTest extends ConfiguredTest
 	}
 
 	@Test
-	public void testSaveProjectWithGroup() throws IOException
-	{
+	public void testSaveProjectWithGroup() throws IOException {
 
 		Pair<ModelContainerProject, ModelGroup> pair = makeProject();
 		ModelContainerProject project = pair.getKey();
@@ -166,8 +161,7 @@ public class ProjectTest extends ConfiguredTest
 	}
 
 	@Test
-	public void testSaveProjectWithGroupOfGroupsThenLoadAndUngroup() throws IOException
-	{
+	public void testSaveProjectWithGroupOfGroupsThenLoadAndUngroup() throws IOException {
 
 		Pair<ModelContainerProject, ModelGroup> pair = makeProjectWithGroupOfGroups();
 		ModelContainerProject project = pair.getKey();
@@ -185,7 +179,7 @@ public class ProjectTest extends ConfiguredTest
 		Assert.assertEquals(1, newProject.getTopLevelThings().size());
 
 		Set<ProjectifiableThing> modelContainers = new HashSet<>(newProject.getTopLevelThings());
-		newProject.ungroup((Set)modelContainers);
+		newProject.ungroup((Set) modelContainers);
 
 		Assert.assertEquals(3, newProject.getTopLevelThings().size());
 
@@ -193,8 +187,7 @@ public class ProjectTest extends ConfiguredTest
 				newProject.getTopLevelThings().stream().map(x -> x.getModelId()).collect(
 						Collectors.toSet()));
 
-		Set<ModelGroup> modelGroups = newProject.getTopLevelThings().stream().
-				filter(x -> x instanceof ModelGroup).map(x -> (ModelGroup) x).collect(Collectors.toSet());
+		Set<ModelGroup> modelGroups = newProject.getTopLevelThings().stream().filter(x -> x instanceof ModelGroup).map(x -> (ModelGroup) x).collect(Collectors.toSet());
 
 		Assert.assertEquals(1, modelGroups.size());
 		ModelGroup modelGroup = modelGroups.iterator().next();
@@ -203,8 +196,7 @@ public class ProjectTest extends ConfiguredTest
 	}
 
 	@Test
-	public void testSaveProjectWithGroupWithRotation() throws IOException
-	{
+	public void testSaveProjectWithGroupWithRotation() throws IOException {
 
 		double ROTATION = 20.1f;
 
@@ -220,8 +212,7 @@ public class ProjectTest extends ConfiguredTest
 
 		ModelContainerProject newProject = (ModelContainerProject) Project.loadProject(OpenAutoMakerEnv.get().getUserPath(PROJECTS).resolve(project.getProjectName()).toString());
 
-		Set<ModelGroup> modelGroups = newProject.getTopLevelThings().stream().
-				filter(x -> x instanceof ModelGroup).map(x -> (ModelGroup) x).collect(Collectors.toSet());
+		Set<ModelGroup> modelGroups = newProject.getTopLevelThings().stream().filter(x -> x instanceof ModelGroup).map(x -> (ModelGroup) x).collect(Collectors.toSet());
 
 		Assert.assertEquals(1, modelGroups.size());
 		ModelGroup modelGroup = modelGroups.iterator().next();

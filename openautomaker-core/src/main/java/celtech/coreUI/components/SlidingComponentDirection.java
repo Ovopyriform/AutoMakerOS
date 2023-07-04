@@ -10,8 +10,7 @@ package celtech.coreUI.components;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public enum SlidingComponentDirection
-{
+public enum SlidingComponentDirection {
 
 	/**
 	 *

@@ -14,8 +14,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian
  */
-public class NozzleChartData
-{
+public class NozzleChartData {
 
 	private final XYChart.Series<Number, Number> nozzleTemperatureData;
 	private final LineChart.Series<Number, Number> nozzleTargetTemperatureSeries = new LineChart.Series<>();
@@ -28,18 +27,15 @@ public class NozzleChartData
 	private final ReadOnlyObjectProperty<HeaterMode> nozzleHeaterModeProperty;
 	private final String degreesC;
 
-	ChangeListener<HeaterMode> nozzleHeaterModeListener = (ObservableValue<? extends HeaterMode> observable, HeaterMode oldValue, HeaterMode newValue) ->
-	{
+	ChangeListener<HeaterMode> nozzleHeaterModeListener = (ObservableValue<? extends HeaterMode> observable, HeaterMode oldValue, HeaterMode newValue) -> {
 		updateNozzleTargetPoint();
 	};
 
-	ChangeListener<Number> nozzleTargetTemperatureListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-	{
+	ChangeListener<Number> nozzleTargetTemperatureListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 		updateNozzleTargetPoint();
 	};
 
-	ChangeListener<Number> nozzleFirstLayerTargetTemperatureListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-	{
+	ChangeListener<Number> nozzleFirstLayerTargetTemperatureListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 		updateNozzleTargetPoint();
 	};
 
@@ -47,8 +43,7 @@ public class NozzleChartData
 			ReadOnlyObjectProperty<HeaterMode> nozzleHeaterModeProperty,
 			ReadOnlyIntegerProperty nozzleTargetTemperatureProperty,
 			ReadOnlyIntegerProperty nozzleFirstLayerTargetTemperatureProperty,
-			ReadOnlyIntegerProperty nozzleTemperatureProperty)
-	{
+			ReadOnlyIntegerProperty nozzleTemperatureProperty) {
 		this.nozzleTemperatureData = nozzleTemperatureData;
 
 		this.nozzleHeaterModeProperty = nozzleHeaterModeProperty;
@@ -70,54 +65,45 @@ public class NozzleChartData
 		updateNozzleTargetPoint();
 	}
 
-	public void destroy()
-	{
-		if (this.nozzleHeaterModeProperty != null)
-		{
+	public void destroy() {
+		if (this.nozzleHeaterModeProperty != null) {
 			nozzleHeaterModeProperty.removeListener(nozzleHeaterModeListener);
 		}
 
-		if (this.nozzleTargetTemperatureProperty != null)
-		{
+		if (this.nozzleTargetTemperatureProperty != null) {
 			this.nozzleTargetTemperatureProperty.removeListener(nozzleTargetTemperatureListener);
 		}
 
-		if (this.nozzleFirstLayerTargetTemperatureProperty != null)
-		{
+		if (this.nozzleFirstLayerTargetTemperatureProperty != null) {
 			this.nozzleFirstLayerTargetTemperatureProperty.removeListener(
 					nozzleFirstLayerTargetTemperatureListener);
 		}
 	}
 
-	private void updateNozzleTargetPoint()
-	{
+	private void updateNozzleTargetPoint() {
 		if (nozzleHeaterModeProperty == null || nozzleTargetTemperatureProperty == null
-				|| nozzleFirstLayerTargetTemperatureProperty == null)
-		{
+				|| nozzleFirstLayerTargetTemperatureProperty == null) {
 			return;
 		}
-		if (nozzleHeaterModeProperty.get() == HeaterMode.OFF)
-		{
+		if (nozzleHeaterModeProperty.get() == HeaterMode.OFF) {
 			nozzleTargetPoint.setYValue(0);
-		} else if (nozzleHeaterModeProperty.get() == HeaterMode.FIRST_LAYER)
-		{
+		}
+		else if (nozzleHeaterModeProperty.get() == HeaterMode.FIRST_LAYER) {
 			nozzleTargetPoint.setYValue(nozzleFirstLayerTargetTemperatureProperty.get());
-		} else if (nozzleHeaterModeProperty.get() == HeaterMode.FILAMENT_EJECT)
-		{
+		}
+		else if (nozzleHeaterModeProperty.get() == HeaterMode.FILAMENT_EJECT) {
 			nozzleTargetPoint.setYValue(140.0);
-		} else
-		{
+		}
+		else {
 			nozzleTargetPoint.setYValue(nozzleTargetTemperatureProperty.get());
 		}
 	}
 
-	public LineChart.Series<Number, Number> getTargetTemperatureSeries()
-	{
+	public LineChart.Series<Number, Number> getTargetTemperatureSeries() {
 		return nozzleTargetTemperatureSeries;
 	}
 
-	public LineChart.Series<Number, Number> getNozzleTemperatureSeries()
-	{
+	public LineChart.Series<Number, Number> getNozzleTemperatureSeries() {
 		return nozzleTemperatureData;
 	}
 }

@@ -8,16 +8,13 @@ import java.util.List;
 import javafx.beans.value.ObservableBooleanValue;
 
 /**
- * MenuInnerPanel defines the properties needed to instantiate an inner panel from
- the ExtrasMenuPanel.
+ * MenuInnerPanel defines the properties needed to instantiate an inner panel from the ExtrasMenuPanel.
  *
  * @author tony
  */
-public interface MenuInnerPanel
-{
+public interface MenuInnerPanel {
 	/**
-	 * An OperationButton defines a button which is required to be shown when this
-	 * panel is displayed, and the callback to call when the button is pressed.
+	 * An OperationButton defines a button which is required to be shown when this panel is displayed, and the callback to call when the button is pressed.
 	 */
 	public interface OperationButton {
 

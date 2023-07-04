@@ -267,7 +267,8 @@ public class FloatArrayList extends AbstractList<Float> implements List<Float>, 
 			v.elementData = Arrays.copyOf(elementData, size);
 			v.modCount = 0;
 			return v;
-		} catch (CloneNotSupportedException e) {
+		}
+		catch (CloneNotSupportedException e) {
 			// this shouldn't happen, since we are Cloneable
 			throw new InternalError();
 		}
@@ -581,7 +582,8 @@ public class FloatArrayList extends AbstractList<Float> implements List<Float>, 
 			for (; r < size; r++)
 				if (c.contains(elementData[r]) == complement)
 					elementData[w++] = elementData[r];
-		} finally {
+		}
+		finally {
 			// Preserve behavioral compatibility with AbstractCollection,
 			// even if c.contains() throws.
 			if (r != size) {
@@ -714,7 +716,8 @@ public class FloatArrayList extends AbstractList<Float> implements List<Float>, 
 				cursor = lastRet;
 				lastRet = -1;
 				expectedModCount = modCount;
-			} catch (IndexOutOfBoundsException ex) {
+			}
+			catch (IndexOutOfBoundsException ex) {
 				throw new ConcurrentModificationException();
 			}
 		}
@@ -769,7 +772,8 @@ public class FloatArrayList extends AbstractList<Float> implements List<Float>, 
 
 			try {
 				FloatArrayList.this.set(lastRet, e);
-			} catch (IndexOutOfBoundsException ex) {
+			}
+			catch (IndexOutOfBoundsException ex) {
 				throw new ConcurrentModificationException();
 			}
 		}
@@ -784,7 +788,8 @@ public class FloatArrayList extends AbstractList<Float> implements List<Float>, 
 				cursor = i + 1;
 				lastRet = -1;
 				expectedModCount = modCount;
-			} catch (IndexOutOfBoundsException ex) {
+			}
+			catch (IndexOutOfBoundsException ex) {
 				throw new ConcurrentModificationException();
 			}
 		}
@@ -992,7 +997,8 @@ public class FloatArrayList extends AbstractList<Float> implements List<Float>, 
 						cursor = lastRet;
 						lastRet = -1;
 						expectedModCount = FloatArrayList.this.modCount;
-					} catch (IndexOutOfBoundsException ex) {
+					}
+					catch (IndexOutOfBoundsException ex) {
 						throw new ConcurrentModificationException();
 					}
 				}
@@ -1005,7 +1011,8 @@ public class FloatArrayList extends AbstractList<Float> implements List<Float>, 
 
 					try {
 						FloatArrayList.this.set(offset + lastRet, e);
-					} catch (IndexOutOfBoundsException ex) {
+					}
+					catch (IndexOutOfBoundsException ex) {
 						throw new ConcurrentModificationException();
 					}
 				}
@@ -1020,7 +1027,8 @@ public class FloatArrayList extends AbstractList<Float> implements List<Float>, 
 						cursor = i + 1;
 						lastRet = -1;
 						expectedModCount = FloatArrayList.this.modCount;
-					} catch (IndexOutOfBoundsException ex) {
+					}
+					catch (IndexOutOfBoundsException ex) {
 						throw new ConcurrentModificationException();
 					}
 				}

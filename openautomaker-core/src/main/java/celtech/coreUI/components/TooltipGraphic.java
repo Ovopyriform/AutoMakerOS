@@ -18,8 +18,7 @@ import javafx.scene.text.Text;
  *
  * @author Ian
  */
-public class TooltipGraphic extends HBox
-{
+public class TooltipGraphic extends HBox {
 	@FXML
 	private Text menuTitle;
 
@@ -28,8 +27,7 @@ public class TooltipGraphic extends HBox
 
 	private ToggleGroup buttonGroup = new ToggleGroup();
 
-	public TooltipGraphic()
-	{
+	public TooltipGraphic() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
 				"/celtech/resources/fxml/components/tooltipGraphic.fxml"));
 		fxmlLoader.setRoot(this);
@@ -37,22 +35,19 @@ public class TooltipGraphic extends HBox
 
 		fxmlLoader.setClassLoader(this.getClass().getClassLoader());
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 	}
 
-	public void setTitle(String title)
-	{
+	public void setTitle(String title) {
 		menuTitle.setText(title);
 	}
 
-	public void addMenuItem(InsetPanelMenuItem menuItem)
-	{
+	public void addMenuItem(InsetPanelMenuItem menuItem) {
 		menuItemContainer.getChildren().add(menuItem);
 
 		menuItem.setToggleGroup(buttonGroup);

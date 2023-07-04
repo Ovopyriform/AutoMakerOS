@@ -18,8 +18,7 @@ import javafx.scene.control.ComboBox;
  *
  * @author George Salter
  */
-public class RestrictedComboBox<T> extends ComboBox<T>
-{
+public class RestrictedComboBox<T> extends ComboBox<T> {
 	private final static Pattern BAD_RESTRICT_PATTERN = Pattern.compile("(.*)\\\\p\\{L\\}\\\\p\\{M\\}\\*\\+?(.*)");
 	private final static String STANDARD_ALLOWED_CHARACTERS = "\u0008\u007f"; // Backspace and Delete
 
@@ -27,33 +26,26 @@ public class RestrictedComboBox<T> extends ComboBox<T>
 	private final IntegerProperty maxLength = new SimpleIntegerProperty(-1);
 	private final BooleanProperty directorySafeName = new SimpleBooleanProperty(false);
 
-
-	public RestrictedComboBox()
-	{
+	public RestrictedComboBox() {
 		super();
 
-		getEditor().textProperty().addListener(new ChangeListener<String>()
-		{
+		getEditor().textProperty().addListener(new ChangeListener<String>() {
 			private boolean ignore;
 
 			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
-			{
-				if (ignore || newValue == null)
-				{
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (ignore || newValue == null) {
 					return;
 				}
 
 				String restrictedString = applyRestriction(newValue);
 
-				if (newValue.length() > maxLength.get())
-				{
+				if (newValue.length() > maxLength.get()) {
 					restrictedString = restrictedString.substring(0, maxLength.get());
 				}
 
 				try {
-					if (!restrictedString.isEmpty() && !restrictedString.matches(restrict.get()))
-					{
+					if (!restrictedString.isEmpty() && !restrictedString.matches(restrict.get())) {
 						restrictedString = oldValue;
 					}
 				}
@@ -68,13 +60,11 @@ public class RestrictedComboBox<T> extends ComboBox<T>
 	}
 
 	/**
-	 * Sets a regular expression character class which restricts the user input.
-	 * E.g. 0-9 only allows numeric values.
+	 * Sets a regular expression character class which restricts the user input. E.g. 0-9 only allows numeric values.
 	 *
 	 * @param restrict The regular expression.
 	 */
-	public void setRestrict(String restrict)
-	{
+	public void setRestrict(String restrict) {
 		// A common value of restrict is: " -_0-9a-zA-Z\p{L}\p{M}*+"
 		// but this breaks when in square brackets with the standard characters:
 		//
@@ -105,8 +95,7 @@ public class RestrictedComboBox<T> extends ComboBox<T>
 	 *
 	 * @return
 	 */
-	public String getRestrict()
-	{
+	public String getRestrict() {
 		return restrict.get();
 	}
 
@@ -114,8 +103,7 @@ public class RestrictedComboBox<T> extends ComboBox<T>
 	 *
 	 * @return
 	 */
-	public StringProperty restrictProperty()
-	{
+	public StringProperty restrictProperty() {
 		return restrict;
 	}
 
@@ -123,8 +111,7 @@ public class RestrictedComboBox<T> extends ComboBox<T>
 	 *
 	 * @return
 	 */
-	public int getMaxLength()
-	{
+	public int getMaxLength() {
 		return maxLength.get();
 	}
 
@@ -133,8 +120,7 @@ public class RestrictedComboBox<T> extends ComboBox<T>
 	 *
 	 * @param maxLength The max length.
 	 */
-	public void setMaxLength(int maxLength)
-	{
+	public void setMaxLength(int maxLength) {
 		this.maxLength.set(maxLength);
 	}
 
@@ -142,33 +128,27 @@ public class RestrictedComboBox<T> extends ComboBox<T>
 	 *
 	 * @return
 	 */
-	public IntegerProperty maxLengthProperty()
-	{
+	public IntegerProperty maxLengthProperty() {
 		return maxLength;
 	}
 
 	/**
 	 * @return the directorySafeName
 	 */
-	public boolean getDirectorySafeName()
-	{
+	public boolean getDirectorySafeName() {
 		return directorySafeName.get();
 	}
 
 	/**
 	 * @param directorySafeName the directorySafeName to set
 	 */
-	public void setDirectorySafeName(boolean directorySafeName)
-	{
+	public void setDirectorySafeName(boolean directorySafeName) {
 		this.directorySafeName.set(directorySafeName);
 	}
 
-	private String applyRestriction(String text)
-	{
-		if (directorySafeName.get())
-		{
-			for (char disallowedChar : "/<>:\"\\|?*".toCharArray())
-			{
+	private String applyRestriction(String text) {
+		if (directorySafeName.get()) {
+			for (char disallowedChar : "/<>:\"\\|?*".toCharArray()) {
 				char[] toReplace = new char[1];
 				toReplace[0] = disallowedChar;
 				text = text.replace(new String(toReplace), "");

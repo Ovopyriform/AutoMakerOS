@@ -20,8 +20,7 @@ import xyz.openautomaker.base.printerControl.PrintJob;
  *
  * @author Ian
  */
-public class LayoutSlideOutPanelController implements Initializable
-{
+public class LayoutSlideOutPanelController implements Initializable {
 
 	private ModelContainerProject currentProject = null;
 
@@ -31,25 +30,21 @@ public class LayoutSlideOutPanelController implements Initializable
 	@FXML
 	private ListView printHistory;
 
-	private final ListChangeListener<PrintJob> printJobChangeListener = new ListChangeListener<>()
-	{
+	private final ListChangeListener<PrintJob> printJobChangeListener = new ListChangeListener<>() {
 		@Override
-		public void onChanged(ListChangeListener.Change<? extends PrintJob> c)
-		{
+		public void onChanged(ListChangeListener.Change<? extends PrintJob> c) {
 		}
 	};
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
+	public void initialize(URL location, ResourceBundle resources) {
 	}
 
 	/**
 	 *
 	 * @param currentProject
 	 */
-	public void bindLoadedModels(final ModelContainerProject currentProject)
-	{
+	public void bindLoadedModels(final ModelContainerProject currentProject) {
 		this.currentProject = currentProject;
 		lastModifiedDate.textProperty().unbind();
 		lastModifiedDate.textProperty().bind(currentProject.getLastModifiedDate().asString());

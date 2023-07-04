@@ -33,42 +33,37 @@ import xyz.openautomaker.base.utils.twod.ShapeToWorldTransformer;
  * @author ianhudson
  */
 public class ShapeContainer extends ProjectifiableThing implements Serializable,
-ScaleableTwoD,
-TranslateableTwoD,
-ResizeableTwoD,
-ShapeToWorldTransformer
-{
+		ScaleableTwoD,
+		TranslateableTwoD,
+		ResizeableTwoD,
+		ShapeToWorldTransformer {
 
 	private static final Logger LOGGER = LogManager.getLogger(ShapeContainer.class.getName());
 	private static final long serialVersionUID = 1L;
 
 	private List<Shape> shapes = new ArrayList<>();
 
-	public ShapeContainer()
-	{
+	public ShapeContainer() {
 		super();
 		initialise();
 	}
 
-	public ShapeContainer(File modelFile)
-	{
+	public ShapeContainer(File modelFile) {
 		super(modelFile);
 		initialise();
 		initialiseTransforms();
 	}
 
-	public ShapeContainer(String name, List<Shape> shapes)
-	{
+	public ShapeContainer(String name, List<Shape> shapes) {
 		super();
 		setModelName(name);
 
-		if (shapes.size() > 1)
-		{
+		if (shapes.size() > 1) {
 			Group shapeGroup = new Group();
 			shapeGroup.getChildren().addAll(shapes);
 			this.getChildren().add(shapeGroup);
-		} else
-		{
+		}
+		else {
 			this.getChildren().add(shapes.get(0));
 		}
 		this.shapes.addAll(shapes);
@@ -76,8 +71,7 @@ ShapeToWorldTransformer
 		initialiseTransforms();
 	}
 
-	public ShapeContainer(String name, Shape shape)
-	{
+	public ShapeContainer(String name, Shape shape) {
 		super();
 		setModelName(name);
 
@@ -88,8 +82,7 @@ ShapeToWorldTransformer
 		initialiseTransforms();
 	}
 
-	private void initialise()
-	{
+	private void initialise() {
 		preferredXScale = new SimpleDoubleProperty(1);
 		preferredYScale = new SimpleDoubleProperty(1);
 		preferredRotationTurn = new SimpleDoubleProperty(0);
@@ -97,8 +90,7 @@ ShapeToWorldTransformer
 	}
 
 	@Override
-	public ItemState getState()
-	{
+	public ItemState getState() {
 		return new TwoDItemState(modelId,
 				transformMoveToPreferred.getX(),
 				transformMoveToPreferred.getY(),
@@ -108,10 +100,8 @@ ShapeToWorldTransformer
 	}
 
 	@Override
-	public void setState(ItemState state)
-	{
-		if (state instanceof TwoDItemState)
-		{
+	public void setState(ItemState state) {
+		if (state instanceof TwoDItemState) {
 			TwoDItemState convertedState = (TwoDItemState) state;
 			transformMoveToPreferred.setX(convertedState.x);
 			transformMoveToPreferred.setZ(convertedState.y);
@@ -130,20 +120,17 @@ ShapeToWorldTransformer
 	}
 
 	@Override
-	public ProjectifiableThing makeCopy()
-	{
+	public ProjectifiableThing makeCopy() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	public void clearElements()
-	{
+	public void clearElements() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	public void translateBy(double xMove, double yMove)
-	{
+	public void translateBy(double xMove, double yMove) {
 		transformMoveToPreferred.setX(transformMoveToPreferred.getX() + xMove);
 		transformMoveToPreferred.setY(transformMoveToPreferred.getY() + yMove);
 
@@ -154,15 +141,13 @@ ShapeToWorldTransformer
 	}
 
 	@Override
-	public void translateTo(double xPosition, double yPosition)
-	{
+	public void translateTo(double xPosition, double yPosition) {
 		translateXTo(xPosition);
 		translateDepthPositionTo(yPosition);
 	}
 
 	@Override
-	public void translateXTo(double xPosition)
-	{
+	public void translateXTo(double xPosition) {
 		RectangularBounds bounds = lastTransformedBoundsInParent;
 
 		double newMaxX = xPosition + bounds.getWidth() / 2;
@@ -170,11 +155,10 @@ ShapeToWorldTransformer
 
 		double finalXPosition = xPosition;
 
-		if (newMinX < 0)
-		{
+		if (newMinX < 0) {
 			finalXPosition += -newMinX;
-		} else if (newMaxX > printVolumeWidth)
-		{
+		}
+		else if (newMaxX > printVolumeWidth) {
 			finalXPosition -= (newMaxX - printVolumeWidth);
 		}
 
@@ -189,8 +173,7 @@ ShapeToWorldTransformer
 	}
 
 	@Override
-	public void translateDepthPositionTo(double yPosition)
-	{
+	public void translateDepthPositionTo(double yPosition) {
 		RectangularBounds bounds = lastTransformedBoundsInParent;
 
 		double newMaxY = yPosition + bounds.getDepth() / 2;
@@ -198,11 +181,10 @@ ShapeToWorldTransformer
 
 		double finalYPosition = yPosition;
 
-		if (newMinY < 0)
-		{
+		if (newMinY < 0) {
 			finalYPosition += -newMinY;
-		} else if (newMaxY > printVolumeDepth)
-		{
+		}
+		else if (newMaxY > printVolumeDepth) {
 			finalYPosition -= (newMaxY - printVolumeDepth);
 		}
 
@@ -217,8 +199,7 @@ ShapeToWorldTransformer
 	}
 
 	@Override
-	public void resizeHeight(double height)
-	{
+	public void resizeHeight(double height) {
 		Bounds bounds = getBoundsInLocal();
 
 		double currentHeight = bounds.getHeight();
@@ -231,8 +212,7 @@ ShapeToWorldTransformer
 	}
 
 	@Override
-	public void resizeWidth(double width)
-	{
+	public void resizeWidth(double width) {
 		Bounds bounds = getBoundsInLocal();
 
 		double originalWidth = bounds.getWidth();
@@ -245,22 +225,19 @@ ShapeToWorldTransformer
 	}
 
 	@Override
-	public void selectedAction()
-	{
-		if (isSelected())
-		{
+	public void selectedAction() {
+		if (isSelected()) {
 			//Set outline
 			setStyle("-fx-border-color: blue; -fx-border-size: 1px;");
-		} else
-		{
+		}
+		else {
 			//Set outline
 			setStyle("-fx-border-color: black;");
 		}
 	}
 
 	@Override
-	protected boolean recalculateScreenExtents()
-	{
+	protected boolean recalculateScreenExtents() {
 		boolean extentsChanged = false;
 
 		Bounds localBounds = getBoundsInLocal();
@@ -276,13 +253,11 @@ ShapeToWorldTransformer
 		Point2D rightTop = localToScreen(maxX, minY);
 
 		ScreenExtents lastExtents = extents;
-		if (extents == null && leftBottom != null)
-		{
+		if (extents == null && leftBottom != null) {
 			extents = new ScreenExtents();
 		}
 
-		if (extents != null && leftBottom != null)
-		{
+		if (extents != null && leftBottom != null) {
 			extents.heightEdges.clear();
 			extents.heightEdges.add(0, new Edge(leftBottom, leftTop));
 			extents.heightEdges.add(1, new Edge(rightBottom, rightTop));
@@ -295,8 +270,7 @@ ShapeToWorldTransformer
 		}
 
 		if (extents != null
-				&& !extents.equals(lastExtents))
-		{
+				&& !extents.equals(lastExtents)) {
 			extentsChanged = true;
 		}
 
@@ -304,65 +278,54 @@ ShapeToWorldTransformer
 	}
 
 	@Override
-	public double getTransformedHeight()
-	{
+	public double getTransformedHeight() {
 		return getBoundsInParent().getHeight();
 	}
 
 	@Override
-	public double getTransformedWidth()
-	{
+	public double getTransformedWidth() {
 		return lastTransformedBoundsInParent.getWidth();
 	}
 
 	@Override
-	public double getScaledWidth()
-	{
+	public double getScaledWidth() {
 		return getTransformedWidth();
 	}
 
 	@Override
-	public double getScaledHeight()
-	{
+	public double getScaledHeight() {
 		return getTransformedHeight();
 	}
 
 	@Override
-	public double getCentreX()
-	{
+	public double getCentreX() {
 		return lastTransformedBoundsInParent.getMinX() + lastTransformedBoundsInParent.getWidth() / 2.0;
 	}
 
 	@Override
-	public double getCentreY()
-	{
+	public double getCentreY() {
 		return lastTransformedBoundsInParent.getMinY() + lastTransformedBoundsInParent.getHeight() / 2.0;
 	}
 
 	@Override
-	protected void printVolumeBoundsUpdated()
-	{
+	protected void printVolumeBoundsUpdated() {
 	}
 
 	@Override
-	public void checkOffBed()
-	{
+	public void checkOffBed() {
 	}
 
 	@Override
-	public Point2D transformShapeToRealWorldCoordinates(float vertexX, float vertexY)
-	{
+	public Point2D transformShapeToRealWorldCoordinates(float vertexX, float vertexY) {
 		return bed.sceneToLocal(localToScene(vertexX, vertexY));
 	}
 
-	public List<Shape> getShapes()
-	{
+	public List<Shape> getShapes() {
 		return shapes;
 	}
 
 	@Override
-	public void shrinkToFitBed()
-	{
+	public void shrinkToFitBed() {
 		BoundingBox printableBoundingBox = (BoundingBox) getBoundsInLocal();
 
 		double scaling = 1.0;
@@ -371,23 +334,19 @@ ShapeToWorldTransformer
 		double relativeYSize = printableBoundingBox.getHeight() / printVolumeDepth;
 		LOGGER.info("Relative sizes of model: X " + relativeXSize + " Y " + relativeYSize);
 
-		if (relativeXSize > relativeYSize)
-		{
-			if (relativeXSize > 1)
-			{
+		if (relativeXSize > relativeYSize) {
+			if (relativeXSize > 1) {
 				scaling = 1 / relativeXSize;
 			}
-		} else if (relativeYSize > relativeXSize)
-		{
-			if (relativeYSize > 1)
-			{
+		}
+		else if (relativeYSize > relativeXSize) {
+			if (relativeYSize > 1) {
 				scaling = 1 / relativeYSize;
 			}
 
 		}
 
-		if (scaling != 1.0f)
-		{
+		if (scaling != 1.0f) {
 			transformScalePreferred.setX(scaling);
 			transformScalePreferred.setY(scaling);
 		}
@@ -396,8 +355,7 @@ ShapeToWorldTransformer
 	}
 
 	@Override
-	public void setBedCentreOffsetTransform()
-	{
+	public void setBedCentreOffsetTransform() {
 		BoundingBox printableBoundingBox = (BoundingBox) getBoundsInLocal();
 
 		bedCentreOffsetX = -printableBoundingBox.getMinX();
@@ -408,8 +366,7 @@ ShapeToWorldTransformer
 		updateLastTransformedBoundsInParentForTranslateByY(bedCentreOffsetY);
 	}
 
-	protected final void initialiseTransforms()
-	{
+	protected final void initialiseTransforms() {
 		transformScalePreferred = new Scale(1, 1, 1);
 		transformMoveToPreferred = new Translate(0, 0, 0);
 		transformBedCentre = new Translate(0, 0, 0);
@@ -420,14 +377,12 @@ ShapeToWorldTransformer
 		setBedCentreOffsetTransform();
 
 		/**
-		 * Rotations (which are all around the centre of the model) must be
-		 * applied before any translations.
+		 * Rotations (which are all around the centre of the model) must be applied before any translations.
 		 */
 		getTransforms().addAll(transformMoveToPreferred,
 				transformBedCentre,
 				transformRotateTurnPreferred,
-				transformScalePreferred
-				);
+				transformScalePreferred);
 
 		updateOriginalModelBounds();
 
@@ -438,8 +393,7 @@ ShapeToWorldTransformer
 	}
 
 	@Override
-	protected RectangularBounds calculateBoundsInLocal()
-	{
+	protected RectangularBounds calculateBoundsInLocal() {
 		double minX = Double.MAX_VALUE;
 		double minY = Double.MAX_VALUE;
 		double minZ = Double.MAX_VALUE;
@@ -447,8 +401,7 @@ ShapeToWorldTransformer
 		double maxY = -Double.MAX_VALUE;
 		double maxZ = -Double.MAX_VALUE;
 
-		for (Shape shape : shapes)
-		{
+		for (Shape shape : shapes) {
 			Bounds localBounds = shape.getBoundsInLocal();
 			minX = Math.min(localBounds.getMinX(), minX);
 			minY = Math.min(localBounds.getMinY(), minY);
@@ -473,17 +426,14 @@ ShapeToWorldTransformer
 	}
 
 	@Override
-	public RectangularBounds calculateBoundsInParentCoordinateSystem()
-	{
+	public RectangularBounds calculateBoundsInParentCoordinateSystem() {
 		double minX = Double.MAX_VALUE;
 		double minY = Double.MAX_VALUE;
 		double maxX = -Double.MAX_VALUE;
 		double maxY = -Double.MAX_VALUE;
 
-		if (bed != null)
-		{
-			for (Shape shape : shapes)
-			{
+		if (bed != null) {
+			for (Shape shape : shapes) {
 				Bounds boundsInLocal = shape.getBoundsInLocal();
 				Bounds worldBounds = bed.sceneToLocal(localToScene(boundsInLocal));
 
@@ -510,33 +460,27 @@ ShapeToWorldTransformer
 	}
 
 	@Override
-	public RectangularBounds calculateBoundsInBedCoordinateSystem()
-	{
+	public RectangularBounds calculateBoundsInBedCoordinateSystem() {
 		return calculateBoundsInParentCoordinateSystem();
 	}
 
 	@Override
-	protected void updateScaleTransform(boolean dropToBed)
-	{
+	protected void updateScaleTransform(boolean dropToBed) {
 		checkOffBed();
 		notifyShapeChange();
 		notifyScreenExtentsChange();
 	}
 
-	private void updateLastTransformedBoundsInParentForTranslateByX(double deltaCentreX)
-	{
-		if (lastTransformedBoundsInParent != null)
-		{
+	private void updateLastTransformedBoundsInParentForTranslateByX(double deltaCentreX) {
+		if (lastTransformedBoundsInParent != null) {
 			lastTransformedBoundsInParent.translateX(deltaCentreX);
 		}
 		notifyShapeChange();
 		notifyScreenExtentsChange();
 	}
 
-	private void updateLastTransformedBoundsInParentForTranslateByY(double deltaCentreY)
-	{
-		if (lastTransformedBoundsInParent != null)
-		{
+	private void updateLastTransformedBoundsInParentForTranslateByY(double deltaCentreY) {
+		if (lastTransformedBoundsInParent != null) {
 			lastTransformedBoundsInParent.translateY(deltaCentreY);
 		}
 		notifyShapeChange();
@@ -544,8 +488,7 @@ ShapeToWorldTransformer
 	}
 
 	@Override
-	public void moveToCentre()
-	{
+	public void moveToCentre() {
 		translateTo(bedCentreOffsetX, bedCentreOffsetY);
 
 		lastTransformedBoundsInParent = calculateBoundsInParentCoordinateSystem();

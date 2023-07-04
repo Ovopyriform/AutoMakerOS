@@ -48,8 +48,7 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  * @author Ian
  */
 public class HeadEEPROMController implements Initializable, PrinterListChangesListener,
-MenuInnerPanel
-{
+		MenuInnerPanel {
 
 	private static final Logger LOGGER = LogManager.getLogger(HeadEEPROMController.class.getName());
 
@@ -147,32 +146,25 @@ MenuInnerPanel
 	private BooleanProperty serialValidProperty = new SimpleBooleanProperty(false);
 	private BooleanProperty ignoreSerialValidationProperty = new SimpleBooleanProperty(false);
 
-	void whenResetToDefaultsPressed()
-	{
+	void whenResetToDefaultsPressed() {
 		BaseLookup.getSystemNotificationHandler().showProgramInvalidHeadDialog(null);
 	}
 
 	/**
-	 * Write the values from the text fields onto the actual head. If the unique
-	 * id is already stored on the head then do not overwrite it.
+	 * Write the values from the text fields onto the actual head. If the unique id is already stored on the head then do not overwrite it.
 	 */
-	private float getFloatValueOrZero(RestrictedTextField field)
-	{
+	private float getFloatValueOrZero(RestrictedTextField field) {
 		float returnValue = 0;
-		try
-		{
+		try {
 			returnValue = field.getFloatValue();
 		}
-		catch (ParseException ex)
-		{
+		catch (ParseException ex) {
 		}
 		return returnValue;
 	}
 
-	void whenSavePressed()
-	{
-		try
-		{
+	void whenSavePressed() {
+		try {
 			String headTypeCodeText = headTypeCode.getText();
 			float headMaxTemperatureVal = getFloatValueOrZero(headMaxTemperature);
 			float headThermistorBetaVal = getFloatValueOrZero(headThermistorBeta);
@@ -187,8 +179,7 @@ MenuInnerPanel
 			float rightNozzleZOverrunVal = rightNozzleZOverrun.getFloatValue();
 			float lastFilamentTemperatureVal0 = getFloatValueOrZero(lastFilamentTemperature0);
 			float lastFilamentTemperatureVal1 = 0;
-			if (lastFilamentTemperature1.isVisible())
-			{
+			if (lastFilamentTemperature1.isVisible()) {
 				lastFilamentTemperatureVal1 = getFloatValueOrZero(lastFilamentTemperature1);
 			}
 			float headHourCounterVal = headHourCounter.getFloatValue();
@@ -222,32 +213,29 @@ MenuInnerPanel
 			enterSerialNumberHBox.setDisable(true);
 			ignoreSerialValidationProperty.set(true);
 
-			try
-			{
+			try {
 				selectedPrinter.readHeadEEPROM(false);
-			} catch (RoboxCommsException ex)
-			{
+			}
+			catch (RoboxCommsException ex) {
 				LOGGER.error("Error reading head EEPROM");
 			}
-		} catch (RoboxCommsException ex)
-		{
+		}
+		catch (RoboxCommsException ex) {
 			LOGGER.error("Error writing head EEPROM");
 			eepromCommsError.setMessage(OpenAutoMakerEnv.getI18N().t(
 					"eeprom.headWriteError"));
 			eepromCommsError.show();
-		} catch (ParseException ex)
-		{
+		}
+		catch (ParseException ex) {
 			LOGGER.error("Parse error getting head data");
 		}
 	}
 
-	void readPrinterID(ActionEvent event)
-	{
-		try
-		{
+	void readPrinterID(ActionEvent event) {
+		try {
 			selectedPrinter.readPrinterID();
-		} catch (PrinterException ex)
-		{
+		}
+		catch (PrinterException ex) {
 			LOGGER.error("Error reading printer ID");
 		}
 	}
@@ -256,16 +244,13 @@ MenuInnerPanel
 	 * Initialises the controller class.
 	 */
 	@Override
-	public void initialize(URL url, ResourceBundle rb)
-	{
-		try
-		{
+	public void initialize(URL url, ResourceBundle rb) {
+		try {
 			eepromCommsError = new ModalDialog();
 			eepromCommsError.setTitle(OpenAutoMakerEnv.getI18N().t("eeprom.error"));
 			eepromCommsError.addButton(OpenAutoMakerEnv.getI18N().t("dialogs.OK"));
 
-			ChangeListener offsetsChangedListener = (ChangeListener<String>) (ObservableValue<? extends String> observable, String oldValue, String newValue) ->
-			{
+			ChangeListener offsetsChangedListener = (ChangeListener<String>) (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
 				offsetFieldsDirty.set(true);
 			};
 
@@ -283,18 +268,15 @@ MenuInnerPanel
 			serialValidImage.setImage(new Image(CoreTest.class.getResource(
 					ApplicationConfiguration.imageResourcePath + "TickIcon.png").toExternalForm()));
 
-			serialValidProperty.addListener(new ChangeListener<Boolean>()
-			{
+			serialValidProperty.addListener(new ChangeListener<Boolean>() {
 				@Override
-				public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1)
-				{
+				public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
 					serialValidImage.setVisible(t1);
 					serialInvalidImage.setVisible(!t1);
 				}
 			});
 
-			ChangeListener serialPartChangeListener = (ChangeListener<String>) (ObservableValue<? extends String> observable, String oldValue, String newValue) ->
-			{
+			ChangeListener serialPartChangeListener = (ChangeListener<String>) (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
 				validateHeadSerial();
 				offsetFieldsDirty.set(true);
 			};
@@ -310,10 +292,8 @@ MenuInnerPanel
 			canSave.bind(offsetFieldsDirty.and(ignoreSerialValidationProperty.or(serialValidProperty)));
 
 			Lookup.getSelectedPrinterProperty().addListener(
-					(ObservableValue<? extends Printer> observable, Printer oldValue, Printer newValue) ->
-					{
-						if (newValue != oldValue)
-						{
+					(ObservableValue<? extends Printer> observable, Printer oldValue, Printer newValue) -> {
+						if (newValue != oldValue) {
 							setSelectedPrinter(newValue);
 
 						}
@@ -321,23 +301,21 @@ MenuInnerPanel
 
 			BaseLookup.getPrinterListChangesNotifier().addListener(this);
 
-			if (Lookup.getSelectedPrinterProperty().get() != null)
-			{
+			if (Lookup.getSelectedPrinterProperty().get() != null) {
 				setSelectedPrinter(
 						Lookup.getSelectedPrinterProperty().get());
 			}
 
 			addColonsToLabels(headFullContainer);
 
-		} catch (Exception ex)
-		{
+		}
+		catch (Exception ex) {
 			ex.printStackTrace();
 		}
 
 	}
 
-	private void validateHeadSerial()
-	{
+	private void validateHeadSerial() {
 		boolean serialValid = Head.validateSerial(headTypeCodeEntry.getText(),
 				printerWeek.getText(),
 				printerYear.getText(),
@@ -347,8 +325,7 @@ MenuInnerPanel
 		serialValidProperty.set(serialValid);
 	}
 
-	private void updateFieldsFromAttachedHead(Head head)
-	{
+	private void updateFieldsFromAttachedHead(Head head) {
 		Head.ValveType valveType;
 		headTypeCode.setText(head.typeCodeProperty().get().trim());
 		headType.setText(head.nameProperty().get().trim());
@@ -362,18 +339,16 @@ MenuInnerPanel
 		printerSerialNumber.setText(head.getSerialNumber());
 		printerChecksum.setText(head.getChecksum());
 
-		if (head.uniqueIDProperty().get().length() > 8)
-		{
+		if (head.uniqueIDProperty().get().length() > 8) {
 			enterSerialNumberHBox.setDisable(true);
 			ignoreSerialValidationProperty.set(true);
-		} else
-		{
+		}
+		else {
 			enterSerialNumberHBox.setDisable(false);
 			ignoreSerialValidationProperty.set(false);
 		}
 
-		if (head.getNozzleHeaters().size() > 0)
-		{
+		if (head.getNozzleHeaters().size() > 0) {
 			lastFilamentTemperature0.setText(String.format("%.0f",
 					head.getNozzleHeaters().get(0).lastFilamentTemperatureProperty().get()));
 			headMaxTemperature.setText(String.format("%.0f",
@@ -384,30 +359,27 @@ MenuInnerPanel
 					head.getNozzleHeaters().get(0).tCalProperty().get()));
 		}
 
-		if (head.getNozzleHeaters().size() > 1)
-		{
+		if (head.getNozzleHeaters().size() > 1) {
 			lastFilamentTemperature1.setText(String.format("%.0f",
 					head.getNozzleHeaters().get(1).lastFilamentTemperatureProperty().get()));
 			lastFilamentTemperature1.setVisible(true);
-		} else
-		{
+		}
+		else {
 			lastFilamentTemperature1.setVisible(false);
 		}
 
 		headHourCounter.setText(String.format("%.2f", head.headHoursProperty().get()));
 
-		if (head.getNozzles().size() > 1)
-		{
-			if (valveType == Head.ValveType.FITTED)
-			{
+		if (head.getNozzles().size() > 1) {
+			if (valveType == Head.ValveType.FITTED) {
 				leftNozzleBOffset.setVisible(true);
 				leftNozzleBOffset.setText(String.format("%.2f",
 						head.getNozzles().get(0).bOffsetProperty().get()));
 				rightNozzleBOffset.setVisible(true);
 				rightNozzleBOffset.setText(String.format("%.2f",
 						head.getNozzles().get(1).bOffsetProperty().get()));
-			} else
-			{
+			}
+			else {
 				leftNozzleBOffset.setVisible(false);
 				leftNozzleBOffset.setText("");
 				rightNozzleBOffset.setVisible(false);
@@ -438,15 +410,13 @@ MenuInnerPanel
 			rightNozzleZOverrun.setVisible(true);
 			rightNozzleZOverrun.setText(String.format("%.2f", rightNozzleZOverrunValue));
 		}
-		else if (head.getNozzles().size() > 0)
-		{
-			if (valveType == Head.ValveType.FITTED)
-			{
+		else if (head.getNozzles().size() > 0) {
+			if (valveType == Head.ValveType.FITTED) {
 				rightNozzleBOffset.setVisible(true);
 				rightNozzleBOffset.setText(String.format("%.2f",
 						head.getNozzles().get(0).bOffsetProperty().get()));
-			} else
-			{
+			}
+			else {
 				rightNozzleBOffset.setVisible(false);
 				rightNozzleBOffset.setText("");
 			}
@@ -475,8 +445,7 @@ MenuInnerPanel
 		offsetFieldsDirty.set(false);
 	}
 
-	private void updateFieldsForNoHead()
-	{
+	private void updateFieldsForNoHead() {
 		headTypeCode.setText("");
 		headType.setText("");
 
@@ -507,55 +476,47 @@ MenuInnerPanel
 		offsetFieldsDirty.set(false);
 	}
 
-	private void setSelectedPrinter(Printer printer)
-	{
+	private void setSelectedPrinter(Printer printer) {
 		updateFieldsForNoHead();
-		if (selectedPrinter != null && selectedPrinter.headProperty().get() != null)
-		{
+		if (selectedPrinter != null && selectedPrinter.headProperty().get() != null) {
 			removeHeadChangeListeners(selectedPrinter.headProperty().get());
 			selectedPrinter.getHeadEEPROMStateProperty().removeListener(headEEPROMStateChangeListener);
 		}
 		selectedPrinter = printer;
 
-		if (printer != null)
-		{
+		if (printer != null) {
 			selectedPrinter.getHeadEEPROMStateProperty().addListener(headEEPROMStateChangeListener);
 		}
 
-		if (printer != null && printer.headProperty().get() != null)
-		{
+		if (printer != null && printer.headProperty().get() != null) {
 			Head head = printer.headProperty().get();
 			updateFieldsFromAttachedHead(head);
 			listenForHeadChanges(head);
 			canResetHeadProperty.set(true);
-		} else if (printer != null
-				&& printer.getHeadEEPROMStateProperty().get() == EEPROMState.NOT_PROGRAMMED)
-		{
+		}
+		else if (printer != null
+				&& printer.getHeadEEPROMStateProperty().get() == EEPROMState.NOT_PROGRAMMED) {
 			canResetHeadProperty.set(true);
-		} else
-		{
+		}
+		else {
 			canResetHeadProperty.set(false);
 		}
 	}
 
 	@Override
-	public void whenPrinterAdded(Printer printer)
-	{
+	public void whenPrinterAdded(Printer printer) {
 		headEEPROMOffsets.disableProperty().bind(
 				Lookup.getUserPreferences().advancedModeProperty().not());
 	}
 
 	@Override
-	public void whenPrinterRemoved(Printer printer)
-	{
+	public void whenPrinterRemoved(Printer printer) {
 		headEEPROMOffsets.disableProperty().unbind();
 	}
 
 	@Override
-	public void whenHeadAdded(Printer printer)
-	{
-		if (printer == selectedPrinter)
-		{
+	public void whenHeadAdded(Printer printer) {
+		if (printer == selectedPrinter) {
 			Head head = printer.headProperty().get();
 			updateFieldsFromAttachedHead(head);
 			listenForHeadChanges(head);
@@ -564,10 +525,8 @@ MenuInnerPanel
 	}
 
 	@Override
-	public void whenHeadRemoved(Printer printer, Head head)
-	{
-		if (printer == selectedPrinter)
-		{
+	public void whenHeadRemoved(Printer printer, Head head) {
+		if (printer == selectedPrinter) {
 			updateFieldsForNoHead();
 			removeHeadChangeListeners(head);
 			canResetHeadProperty.set(false);
@@ -576,37 +535,29 @@ MenuInnerPanel
 	}
 
 	@Override
-	public void whenReelAdded(Printer printer, int reelIndex)
-	{
+	public void whenReelAdded(Printer printer, int reelIndex) {
 	}
 
 	@Override
-	public void whenReelRemoved(Printer printer, Reel reel, int reelIndex)
-	{
+	public void whenReelRemoved(Printer printer, Reel reel, int reelIndex) {
 	}
 
 	@Override
-	public void whenReelChanged(Printer printer, Reel reel)
-	{
+	public void whenReelChanged(Printer printer, Reel reel) {
 	}
 
 	@Override
-	public void whenExtruderAdded(Printer printer, int extruderIndex)
-	{
+	public void whenExtruderAdded(Printer printer, int extruderIndex) {
 	}
 
 	@Override
-	public void whenExtruderRemoved(Printer printer, int extruderIndex)
-	{
+	public void whenExtruderRemoved(Printer printer, int extruderIndex) {
 	}
 
-	private final ChangeListener<EEPROMState> headEEPROMStateChangeListener = new ChangeListener<>()
-	{
+	private final ChangeListener<EEPROMState> headEEPROMStateChangeListener = new ChangeListener<>() {
 		@Override
-		public void changed(ObservableValue<? extends EEPROMState> ov, EEPROMState t, EEPROMState t1)
-		{
-			if (t1 == EEPROMState.NOT_PROGRAMMED)
-			{
+		public void changed(ObservableValue<? extends EEPROMState> ov, EEPROMState t, EEPROMState t1) {
+			if (t1 == EEPROMState.NOT_PROGRAMMED) {
 				canResetHeadProperty.set(true);
 			}
 		}
@@ -614,10 +565,8 @@ MenuInnerPanel
 
 	private ChangeListener<Object> headChangeListener;
 
-	private void listenForHeadChanges(Head head)
-	{
-		headChangeListener = (ObservableValue<? extends Object> observable, Object oldValue, Object newValue) ->
-		{
+	private void listenForHeadChanges(Head head) {
+		headChangeListener = (ObservableValue<? extends Object> observable, Object oldValue, Object newValue) -> {
 			updateFieldsFromAttachedHead(head);
 		};
 
@@ -626,38 +575,32 @@ MenuInnerPanel
 		head.getNozzles().get(0).zOffsetProperty().addListener(headChangeListener);
 		head.getNozzles().get(0).bOffsetProperty().addListener(headChangeListener);
 
-		if (head.getNozzleHeaters().size() > 0)
-		{
+		if (head.getNozzleHeaters().size() > 0) {
 			head.getNozzleHeaters().get(0).lastFilamentTemperatureProperty().addListener(
 					headChangeListener);
 		}
 
-		if (head.getNozzles().size() > 1)
-		{
+		if (head.getNozzles().size() > 1) {
 			head.getNozzles().get(1).xOffsetProperty().addListener(headChangeListener);
 			head.getNozzles().get(1).yOffsetProperty().addListener(headChangeListener);
 			head.getNozzles().get(1).zOffsetProperty().addListener(headChangeListener);
 			head.getNozzles().get(1).bOffsetProperty().addListener(headChangeListener);
 		}
 
-		if (head.getNozzleHeaters().size() > 1)
-		{
+		if (head.getNozzleHeaters().size() > 1) {
 			head.getNozzleHeaters().get(1).lastFilamentTemperatureProperty().addListener(
 					headChangeListener);
 		}
 	}
 
-	private void removeHeadChangeListeners(Head head)
-	{
-		if (headChangeListener != null)
-		{
+	private void removeHeadChangeListeners(Head head) {
+		if (headChangeListener != null) {
 			head.getNozzles().get(0).xOffsetProperty().removeListener(headChangeListener);
 			head.getNozzles().get(0).yOffsetProperty().removeListener(headChangeListener);
 			head.getNozzles().get(0).zOffsetProperty().removeListener(headChangeListener);
 			head.getNozzles().get(0).bOffsetProperty().removeListener(headChangeListener);
 
-			if (head.getNozzles().size() > 1)
-			{
+			if (head.getNozzles().size() > 1) {
 				head.getNozzles().get(1).xOffsetProperty().removeListener(headChangeListener);
 				head.getNozzles().get(1).yOffsetProperty().removeListener(headChangeListener);
 				head.getNozzles().get(1).zOffsetProperty().removeListener(headChangeListener);
@@ -667,79 +610,65 @@ MenuInnerPanel
 	}
 
 	@Override
-	public String getMenuTitle()
-	{
+	public String getMenuTitle() {
 		return "extrasMenu.headEEPROM";
 	}
 
 	@Override
-	public List<OperationButton> getOperationButtons()
-	{
+	public List<OperationButton> getOperationButtons() {
 		List<MenuInnerPanel.OperationButton> operationButtons = new ArrayList<>();
-		MenuInnerPanel.OperationButton saveButton = new MenuInnerPanel.OperationButton()
-		{
+		MenuInnerPanel.OperationButton saveButton = new MenuInnerPanel.OperationButton() {
 			@Override
-			public String getTextId()
-			{
+			public String getTextId() {
 				return "genericFirstLetterCapitalised.Save";
 			}
 
 			@Override
-			public String getFXMLName()
-			{
+			public String getFXMLName() {
 				return "saveButton";
 			}
 
 			@Override
-			public String getTooltipTextId()
-			{
+			public String getTooltipTextId() {
 				return "genericFirstLetterCapitalised.Save";
 			}
 
 			@Override
-			public void whenClicked()
-			{
+			public void whenClicked() {
 				whenSavePressed();
 			}
 
 			@Override
-			public BooleanProperty whenEnabled()
-			{
+			public BooleanProperty whenEnabled() {
 				return canSave;
 			}
 
 		};
 		operationButtons.add(saveButton);
 
-		MenuInnerPanel.OperationButton resetToDefaultsButton = new MenuInnerPanel.OperationButton()
-		{
+		MenuInnerPanel.OperationButton resetToDefaultsButton = new MenuInnerPanel.OperationButton() {
 			@Override
-			public String getTextId()
-			{
+			public String getTextId() {
 				return "headPanel.resetToDefaults";
 			}
 
 			@Override
-			public String getFXMLName()
-			{
+			public String getFXMLName() {
 				return "saveButton";
 			}
 
 			@Override
-			public String getTooltipTextId()
-			{
+			public String getTooltipTextId() {
 				return "headPanel.resetToDefaults";
 			}
 
 			@Override
-			public void whenClicked()
-			{
+			public void whenClicked() {
 				whenResetToDefaultsPressed();
 			}
 
 			@Override
-			public ObservableBooleanValue whenEnabled()
-			{
+			public ObservableBooleanValue whenEnabled() {
 				return canResetHeadProperty;
 			}
 
@@ -749,5 +678,6 @@ MenuInnerPanel
 	}
 
 	@Override
-	public void panelSelected() {}
+	public void panelSelected() {
+	}
 }

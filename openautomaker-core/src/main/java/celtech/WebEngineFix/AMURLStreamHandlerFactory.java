@@ -7,13 +7,10 @@ import java.net.URLStreamHandlerFactory;
  *
  * @author Ian
  */
-public class AMURLStreamHandlerFactory implements URLStreamHandlerFactory
-{
+public class AMURLStreamHandlerFactory implements URLStreamHandlerFactory {
 	@Override
-	public URLStreamHandler createURLStreamHandler(String protocol)
-	{
-		if (protocol.equals("http"))
-		{
+	public URLStreamHandler createURLStreamHandler(String protocol) {
+		if (protocol.equals("http")) {
 			return new AMURLHandler();
 		}
 		return null;

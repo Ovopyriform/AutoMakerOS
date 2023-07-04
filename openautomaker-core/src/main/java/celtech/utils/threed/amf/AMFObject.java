@@ -10,26 +10,22 @@ import celtech.modelcontrol.ModelContainer;
  * @author Ian
  */
 @JacksonXmlRootElement(localName = "object")
-public class AMFObject
-{
+public class AMFObject {
 
 	@JacksonXmlProperty(isAttribute = true)
 	private int id;
 
 	private Mesh mesh;
 
-	public AMFObject(ModelContainer modelContainer, int id)
-	{
+	public AMFObject(ModelContainer modelContainer, int id) {
 		this.id = id;
 	}
 
-	public Mesh getMesh()
-	{
+	public Mesh getMesh() {
 		return mesh;
 	}
 
-	public void setMesh(Mesh mesh)
-	{
+	public void setMesh(Mesh mesh) {
 		this.mesh = mesh;
 	}
 

@@ -16,8 +16,8 @@ import celtech.utils.settingsgeneration.ProfileDetailsGenerator;
  */
 @RunWith(Categories.class)
 @IncludeCategory(FXTest.class)
-@SuiteClasses({HyperlinkedLabelTest.class, FilamentMenuButtonTest.class,
-	GCodePanelControllerTest.class, ProfileDetailsGenerator.class})
+@SuiteClasses({ HyperlinkedLabelTest.class, FilamentMenuButtonTest.class,
+		GCodePanelControllerTest.class, ProfileDetailsGenerator.class })
 public class JavaFXTestSuite {
 
 }

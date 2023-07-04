@@ -34,8 +34,7 @@ import xyz.openautomaker.base.utils.TimeUtils;
  *
  * @author Ian
  */
-public class ZCutEntryBox extends HBox implements ScreenExtentsListener
-{
+public class ZCutEntryBox extends HBox implements ScreenExtentsListener {
 
 	private final Pane paneInWhichControlResides;
 	private final ObjectProperty<LayoutSubmode> layoutSubmodeProperty;
@@ -50,18 +49,14 @@ public class ZCutEntryBox extends HBox implements ScreenExtentsListener
 	private RestrictedNumberField cutHeight;
 
 	@FXML
-	private void accept(ActionEvent event)
-	{
+	private void accept(ActionEvent event) {
 		layoutSubmodeProperty.set(LayoutSubmode.SELECT);
 		ZCutEntryBox instance = this;
 
-		if (cutThread == null)
-		{
-			Task cutTask = new Task<Void>()
-			{
+		if (cutThread == null) {
+			Task cutTask = new Task<Void>() {
 				@Override
-				protected Void call() throws Exception
-				{
+				protected Void call() throws Exception {
 					Lookup.getSpinnerControl().startSpinning(paneInWhichControlResides);
 					timeUtils.timerStart(this, "Cut");
 					List<ModelContainer> resultingModels = viewManager.cutModelAt(currentModel, cutHeight.getAsDouble());
@@ -72,17 +67,14 @@ public class ZCutEntryBox extends HBox implements ScreenExtentsListener
 					currentModel.removeScreenExtentsChangeListener(instance);
 					viewManager.clearZCutModelPlane();
 
-					Platform.runLater(new Runnable()
-					{
+					Platform.runLater(new Runnable() {
 
 						@Override
-						public void run()
-						{
+						public void run() {
 							project.removeModels(modelToRemove);
 							//                            project.addModel(currentModel);
 							//                            undoableProject.deleteModels(modelToRemove);
-							for (ModelContainer childModel : resultingModels)
-							{
+							for (ModelContainer childModel : resultingModels) {
 								project.addModel(childModel);
 							}
 							//                                undoableProject.addModel(model);
@@ -99,11 +91,9 @@ public class ZCutEntryBox extends HBox implements ScreenExtentsListener
 
 			};
 
-			cutTask.setOnSucceeded(new EventHandler()
-			{
+			cutTask.setOnSucceeded(new EventHandler() {
 				@Override
-				public void handle(Event event)
-				{
+				public void handle(Event event) {
 					cutThread = null;
 				}
 			});
@@ -111,8 +101,8 @@ public class ZCutEntryBox extends HBox implements ScreenExtentsListener
 			cutThread = new Thread(cutTask);
 			cutThread.setName("CutThread");
 			cutThread.start();
-		} else
-		{
+		}
+		else {
 			System.out.println("Cut threader is still working");
 		}
 
@@ -124,10 +114,8 @@ public class ZCutEntryBox extends HBox implements ScreenExtentsListener
 	}
 
 	@FXML
-	private void cancel(ActionEvent event)
-	{
-		if (layoutSubmodeProperty != null)
-		{
+	private void cancel(ActionEvent event) {
+		if (layoutSubmodeProperty != null) {
 			layoutSubmodeProperty.set(LayoutSubmode.SELECT);
 		}
 
@@ -135,8 +123,7 @@ public class ZCutEntryBox extends HBox implements ScreenExtentsListener
 		currentModel.removeScreenExtentsChangeListener(this);
 	}
 
-	public ZCutEntryBox()
-	{
+	public ZCutEntryBox() {
 		paneInWhichControlResides = null;
 		layoutSubmodeProperty = null;
 		viewManager = null;
@@ -148,8 +135,7 @@ public class ZCutEntryBox extends HBox implements ScreenExtentsListener
 	public ZCutEntryBox(Pane paneInWhichControlResides,
 			ObjectProperty<LayoutSubmode> layoutSubmodeProperty,
 			ThreeDViewManager viewManager,
-			ModelContainerProject project)
-	{
+			ModelContainerProject project) {
 		this.paneInWhichControlResides = paneInWhichControlResides;
 		this.layoutSubmodeProperty = layoutSubmodeProperty;
 		this.viewManager = viewManager;
@@ -158,24 +144,21 @@ public class ZCutEntryBox extends HBox implements ScreenExtentsListener
 		loadContent();
 	}
 
-	private void loadContent()
-	{
+	private void loadContent() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/celtech/resources/fxml/components/ZCutEntryBox.fxml"), BaseLookup.getLanguageBundle());
 		fxmlLoader.setController(this);
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setClassLoader(this.getClass().getClassLoader());
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 	}
 
-	public void prime(ModelContainer modelContainer)
-	{
+	public void prime(ModelContainer modelContainer) {
 		currentModel = modelContainer;
 		cutHeight.setValue(modelContainer.getTransformedHeight() / 2);
 
@@ -187,16 +170,14 @@ public class ZCutEntryBox extends HBox implements ScreenExtentsListener
 	}
 
 	@Override
-	public void screenExtentsChanged(ScreenExtentsProvider screenExtentsProvider)
-	{
+	public void screenExtentsChanged(ScreenExtentsProvider screenExtentsProvider) {
 		System.out.println("New extents " + screenExtentsProvider.getScreenExtents());
 
 		ScreenExtents extents = screenExtentsProvider.getScreenExtents();
 		positionCutBox(extents);
 	}
 
-	private void positionCutBox(ScreenExtents extents)
-	{
+	private void positionCutBox(ScreenExtents extents) {
 		//Half way up
 		int yPosition = extents.maxY - ((extents.maxY - extents.minY) / 2);
 
@@ -205,8 +186,7 @@ public class ZCutEntryBox extends HBox implements ScreenExtentsListener
 		int xPosition = extents.minX;
 		xPosition -= getMinWidth();
 
-		if (xPosition < 0)
-		{
+		if (xPosition < 0) {
 			xPosition = 0;
 		}
 

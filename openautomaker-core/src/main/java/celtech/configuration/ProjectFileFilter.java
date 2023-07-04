@@ -12,8 +12,7 @@ import java.io.FileFilter;
  *
  * @author ianhudson
  */
-public class ProjectFileFilter implements FileFilter
-{
+public class ProjectFileFilter implements FileFilter {
 
 	/**
 	 *
@@ -21,13 +20,11 @@ public class ProjectFileFilter implements FileFilter
 	 * @return
 	 */
 	@Override
-	public boolean accept(File pathname)
-	{
-		if (pathname.getName().endsWith(ApplicationConfiguration.projectFileExtension))
-		{
+	public boolean accept(File pathname) {
+		if (pathname.getName().endsWith(ApplicationConfiguration.projectFileExtension)) {
 			return true;
-		} else
-		{
+		}
+		else {
 			return false;
 		}
 	}

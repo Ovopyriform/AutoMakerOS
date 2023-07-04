@@ -6,43 +6,35 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  *
  * @author Ian
  */
-public class Material
-{
+public class Material {
 	@JacksonXmlProperty(isAttribute = true)
 	private int id;
 
 	private MaterialMetadata metadata;
 	private MaterialColour color;
 
-	public int getId()
-	{
+	public int getId() {
 		return id;
 	}
 
-	public void setId(int id)
-	{
+	public void setId(int id) {
 		this.id = id;
 	}
 
-	public MaterialMetadata getMetadata()
-	{
+	public MaterialMetadata getMetadata() {
 		return metadata;
 	}
 
-	public void setMetadata(MaterialMetadata metadata)
-	{
+	public void setMetadata(MaterialMetadata metadata) {
 		this.metadata = metadata;
 	}
 
-	public MaterialColour getColor()
-	{
+	public MaterialColour getColor() {
 		return color;
 	}
 
-	public void setColor(MaterialColour color)
-	{
+	public void setColor(MaterialColour color) {
 		this.color = color;
 	}
-
 
 }

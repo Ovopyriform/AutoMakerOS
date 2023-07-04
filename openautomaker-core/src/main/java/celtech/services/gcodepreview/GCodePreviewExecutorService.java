@@ -13,15 +13,12 @@ import java.util.concurrent.ThreadFactory;
  *
  * @author tony
  */
-public class GCodePreviewExecutorService
-{
+public class GCodePreviewExecutorService {
 	private final ExecutorService executorService;
 	private Future taskFuture;
 
-	public GCodePreviewExecutorService()
-	{
-		ThreadFactory threadFactory = (Runnable runnable) ->
-		{
+	public GCodePreviewExecutorService() {
+		ThreadFactory threadFactory = (Runnable runnable) -> {
 			Thread thread = Executors.defaultThreadFactory().newThread(runnable);
 			thread.setDaemon(true);
 			return thread;
@@ -29,16 +26,14 @@ public class GCodePreviewExecutorService
 		executorService = Executors.newFixedThreadPool(1, threadFactory);
 	}
 
-	public void cancelTask()
-	{
+	public void cancelTask() {
 		//        executorService.shutdownNow();
 		if (taskFuture != null)
 			taskFuture.cancel(true);
 		taskFuture = null;
 	}
 
-	public void runTask(Runnable runnable)
-	{
+	public void runTask(Runnable runnable) {
 		taskFuture = executorService.submit(runnable);
 	}
 }

@@ -14,29 +14,23 @@ import xyz.openautomaker.base.importers.twod.svg.metadata.SVGStartPath;
  *
  * @author ianhudson
  */
-public class SVGMetaToRenderableEngine
-{
+public class SVGMetaToRenderableEngine {
 
-	public static Group renderSVG(List<SVGMetaPart> metaparts)
-	{
+	public static Group renderSVG(List<SVGMetaPart> metaparts) {
 		Group createdGroup = new Group();
 
-		for (SVGMetaPart part : metaparts)
-		{
-			if (part instanceof SVGMetaPolygon)
-			{
+		for (SVGMetaPart part : metaparts) {
+			if (part instanceof SVGMetaPolygon) {
 				Polygon polygon = new Polygon();
 				List<Vector2D> points = ((SVGMetaPolygon) part).getPoints();
-				for (Vector2D point : points)
-				{
+				for (Vector2D point : points) {
 					polygon.getPoints().add(point.getX());
 					polygon.getPoints().add(point.getY());
 				}
 
 				createdGroup.getChildren().add(polygon);
 			}
-			else if (part instanceof SVGStartPath)
-			{
+			else if (part instanceof SVGStartPath) {
 			}
 		}
 

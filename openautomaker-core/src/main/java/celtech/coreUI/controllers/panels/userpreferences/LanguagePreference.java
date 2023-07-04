@@ -20,15 +20,13 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian
  */
-public class LanguagePreference implements PreferencesInnerPanelController.Preference
-{
+public class LanguagePreference implements PreferencesInnerPanelController.Preference {
 
 	private final ComboBox<Object> control;
 	private final UserPreferences userPreferences;
 	private static final String SYSTEM_DEFAULT = "System Default";
 
-	public LanguagePreference(UserPreferences userPreferences)
-	{
+	public LanguagePreference(UserPreferences userPreferences) {
 		this.userPreferences = userPreferences;
 		control = new ComboBox<>();
 		control.getStyleClass().add("cmbCleanCombo");
@@ -38,14 +36,12 @@ public class LanguagePreference implements PreferencesInnerPanelController.Prefe
 		List<Object> localesList = new ArrayList<>();
 		localesList.add(SYSTEM_DEFAULT);
 		localesList.addAll(BaseLookup.getAvailableLocales());
-		localesList.sort((Object o1, Object o2) ->
-		{
+		localesList.sort((Object o1, Object o2) -> {
 			// Make "System Default" come at the top of the combo
-			if (o1 instanceof String)
-			{
+			if (o1 instanceof String) {
 				return -1;
-			} else if (o2 instanceof String)
-			{
+			}
+			else if (o2 instanceof String) {
 				return 1;
 			}
 			// o1 and o2 are both Locales
@@ -55,84 +51,69 @@ public class LanguagePreference implements PreferencesInnerPanelController.Prefe
 		control.setPrefWidth(200);
 		control.setMinWidth(control.getPrefWidth());
 		control.valueProperty().addListener(
-				(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) ->
-				{
+				(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) -> {
 					updateValueFromControl();
 				});
 	}
 
 	@Override
-	public void updateValueFromControl()
-	{
-		if (control.getValue() instanceof Locale)
-		{
+	public void updateValueFromControl() {
+		if (control.getValue() instanceof Locale) {
 			Locale localeToUse = ((Locale) control.getValue());
-			if (localeToUse.getVariant().length() > 0)
-			{
+			if (localeToUse.getVariant().length() > 0) {
 				userPreferences.setLanguageTag(localeToUse.getLanguage() + "-"
 						+ localeToUse.getCountry() + "-" + localeToUse.getVariant());
-			} else if (localeToUse.getCountry().length() > 0)
-			{
+			}
+			else if (localeToUse.getCountry().length() > 0) {
 				userPreferences.setLanguageTag(localeToUse.getLanguage() + "-"
 						+ localeToUse.getCountry());
-			} else
-			{
+			}
+			else {
 				userPreferences.setLanguageTag(localeToUse.getLanguage());
 			}
-		} else
-		{
+		}
+		else {
 			userPreferences.setLanguageTag("");
 		}
 	}
 
 	@Override
-	public void populateControlWithCurrentValue()
-	{
+	public void populateControlWithCurrentValue() {
 		Object preferredLocale;
 		String userPrefLanguageTag = userPreferences.getLanguageTag();
 
-		if (userPrefLanguageTag == null || userPrefLanguageTag.equals(""))
-		{
+		if (userPrefLanguageTag == null || userPrefLanguageTag.equals("")) {
 			preferredLocale = SYSTEM_DEFAULT;
-		} else
-		{
+		}
+		else {
 			preferredLocale = Locale.forLanguageTag(userPrefLanguageTag);
 		}
 		control.setValue(preferredLocale);
 	}
 
 	@Override
-	public Control getControl()
-	{
+	public Control getControl() {
 		return control;
 	}
 
 	@Override
-	public String getDescription()
-	{
+	public String getDescription() {
 		return OpenAutoMakerEnv.getI18N().t("preferences.language");
 	}
 
-	private void setupCellFactory(ComboBox<Object> control)
-	{
-		Callback<ListView<Object>, ListCell<Object>> cellFactory = new Callback<>()
-		{
+	private void setupCellFactory(ComboBox<Object> control) {
+		Callback<ListView<Object>, ListCell<Object>> cellFactory = new Callback<>() {
 			@Override
-			public ListCell<Object> call(ListView<Object> p)
-			{
-				return new ListCell<>()
-				{
+			public ListCell<Object> call(ListView<Object> p) {
+				return new ListCell<>() {
 					@Override
-					protected void updateItem(Object item, boolean empty)
-					{
+					protected void updateItem(Object item, boolean empty) {
 						super.updateItem(item, empty);
-						if (item != null && !empty)
-						{
-							if (item instanceof Locale)
-							{
+						if (item != null && !empty) {
+							if (item instanceof Locale) {
 								setText(((Locale) item).getDisplayName(BaseLookup.getApplicationLocale()));
-							} else
-							{
+							}
+							else {
 								setText((String) item);
 							}
 						}
@@ -146,8 +127,7 @@ public class LanguagePreference implements PreferencesInnerPanelController.Prefe
 	}
 
 	@Override
-	public void disableProperty(ObservableValue<Boolean> disableProperty)
-	{
+	public void disableProperty(ObservableValue<Boolean> disableProperty) {
 		control.disableProperty().unbind();
 		control.disableProperty().bind(disableProperty);
 	}

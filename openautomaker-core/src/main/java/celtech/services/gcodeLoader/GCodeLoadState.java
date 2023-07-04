@@ -8,8 +8,7 @@ package celtech.services.gcodeLoader;
  *
  * @author ianhudson
  */
-public enum GCodeLoadState
-{
+public enum GCodeLoadState {
 
 	/**
 	 *

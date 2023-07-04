@@ -11,17 +11,14 @@ import org.junit.Test;
 
 import javafx.scene.shape.TriangleMesh;
 
-
 /**
  *
  * @author tony
  */
-public class MeshUtilsTest
-{
+public class MeshUtilsTest {
 
 	@Test
-	public void testRemoveDuplicateVertices()
-	{
+	public void testRemoveDuplicateVertices() {
 		TriangleMesh mesh = new TriangleMesh();
 		mesh.getPoints().addAll(0, 1, 0);
 		mesh.getPoints().addAll(0, 1, 3);
@@ -47,8 +44,7 @@ public class MeshUtilsTest
 	}
 
 	@Test
-	public void testOrientableMesh()
-	{
+	public void testOrientableMesh() {
 		TriangleMesh mesh = new TriangleMesh();
 		mesh.getPoints().addAll(0, 0, 0);
 		mesh.getPoints().addAll(0, 1, 0);
@@ -71,8 +67,7 @@ public class MeshUtilsTest
 	}
 
 	@Test
-	public void testNonOrientableMesh()
-	{
+	public void testNonOrientableMesh() {
 		TriangleMesh mesh = new TriangleMesh();
 		mesh.getPoints().addAll(0, 0, 0);
 		mesh.getPoints().addAll(0, 1, 0);

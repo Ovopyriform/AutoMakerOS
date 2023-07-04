@@ -25,8 +25,7 @@ import javafx.util.Duration;
  *
  * @author Ian
  */
-public class SlideoutAndProjectHolder extends HBox
-{
+public class SlideoutAndProjectHolder extends HBox {
 
 	private final VBox slideOutHolder = new VBox();
 	private Button slideButton = null;
@@ -44,27 +43,23 @@ public class SlideoutAndProjectHolder extends HBox
 	private double panelHeight = 0;
 	private Rectangle clippingRectangle = new Rectangle();
 
-	private final Animation hideSidebar = new Transition()
-	{
+	private final Animation hideSidebar = new Transition() {
 		{
 			setCycleDuration(Duration.millis(slideMs));
 		}
 
 		@Override
-		public void interpolate(double frac)
-		{
+		public void interpolate(double frac) {
 			slideMenuPanel(1.0 - frac);
 		}
 	};
-	private final Animation showSidebar = new Transition()
-	{
+	private final Animation showSidebar = new Transition() {
 		{
 			setCycleDuration(Duration.millis(slideMs));
 		}
 
 		@Override
-		public void interpolate(double frac)
-		{
+		public void interpolate(double frac) {
 			slideMenuPanel(frac);
 		}
 	};
@@ -72,45 +67,37 @@ public class SlideoutAndProjectHolder extends HBox
 	/**
 	 *
 	 */
-	public SlideoutAndProjectHolder()
-	{
-		hideSidebar.onFinishedProperty().set(new EventHandler<ActionEvent>()
-		{
+	public SlideoutAndProjectHolder() {
+		hideSidebar.onFinishedProperty().set(new EventHandler<ActionEvent>() {
 			@Override
-			public void handle(ActionEvent event)
-			{
+			public void handle(ActionEvent event) {
 				slidIn.set(true);
 			}
 		});
 
 		// create an animation to show a sidebar.
-		showSidebar.onFinishedProperty().set(new EventHandler<ActionEvent>()
-		{
+		showSidebar.onFinishedProperty().set(new EventHandler<ActionEvent>() {
 			@Override
-			public void handle(ActionEvent event)
-			{
+			public void handle(ActionEvent event) {
 				slidIn.set(false);
 			}
 		});
 
-		try
-		{
+		try {
 			URL fxmlFileName = getClass().getResource(ApplicationConfiguration.fxmlResourcePath + "slideHandleButton.fxml");
 			FXMLLoader buttonLoader = new FXMLLoader(fxmlFileName);
 			slideButton = (Button) buttonLoader.load();
-		} catch (Exception ex)
-		{
+		}
+		catch (Exception ex) {
 			System.out.println("Exception: " + ex.getMessage());
 		}
 
 		getStyleClass().add("slideout-and-project-holder");
 
 		slideButton.getStyleClass().add("slideout-control-button");
-		slideButton.setOnAction(new EventHandler<ActionEvent>()
-		{
+		slideButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
-			public void handle(ActionEvent event)
-			{
+			public void handle(ActionEvent event) {
 				toggleSlide();
 			}
 		});
@@ -121,8 +108,7 @@ public class SlideoutAndProjectHolder extends HBox
 		HBox.setHgrow(projectTabPaneHolder, Priority.ALWAYS);
 
 		panelWidth = 380;
-		heightProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number newHeight) ->
-		{
+		heightProperty().addListener((ObservableValue<? extends Number> ov, Number t, Number newHeight) -> {
 			panelHeight = newHeight.doubleValue();
 			slideMenuPanel(lastAmountShown);
 		});
@@ -131,13 +117,11 @@ public class SlideoutAndProjectHolder extends HBox
 	/**
 	 *
 	 */
-	public void toggleSlide()
-	{
-		if (slidIn.get())
-		{
+	public void toggleSlide() {
+		if (slidIn.get()) {
 			startSlidingOut();
-		} else
-		{
+		}
+		else {
 			startSlidingIn();
 		}
 	}
@@ -145,8 +129,7 @@ public class SlideoutAndProjectHolder extends HBox
 	/**
 	 *
 	 */
-	public void slideIn()
-	{
+	public void slideIn() {
 		slideMenuPanel(0.0);
 		slidIn.set(true);
 	}
@@ -155,15 +138,13 @@ public class SlideoutAndProjectHolder extends HBox
 	 *
 	 * @param amountToShow
 	 */
-	public void slideMenuPanel(double amountToShow)
-	{
+	public void slideMenuPanel(double amountToShow) {
 		lastAmountShown = amountToShow;
 
-		if (amountToShow < minimumToShow)
-		{
+		if (amountToShow < minimumToShow) {
 			amountToShow = minimumToShow;
-		} else if (amountToShow > maximumToShow)
-		{
+		}
+		else if (amountToShow > maximumToShow) {
 			amountToShow = maximumToShow;
 		}
 
@@ -187,14 +168,12 @@ public class SlideoutAndProjectHolder extends HBox
 	 *
 	 * @return
 	 */
-	public boolean startSlidingOut()
-	{
-		if (hideSidebar.statusProperty().get() == Animation.Status.STOPPED)
-		{
+	public boolean startSlidingOut() {
+		if (hideSidebar.statusProperty().get() == Animation.Status.STOPPED) {
 			showSidebar.play();
 			return true;
-		} else
-		{
+		}
+		else {
 			return false;
 		}
 	}
@@ -203,14 +182,12 @@ public class SlideoutAndProjectHolder extends HBox
 	 *
 	 * @return
 	 */
-	public boolean startSlidingIn()
-	{
-		if (showSidebar.statusProperty().get() == Animation.Status.STOPPED)
-		{
+	public boolean startSlidingIn() {
+		if (showSidebar.statusProperty().get() == Animation.Status.STOPPED) {
 			hideSidebar.play();
 			return true;
-		} else
-		{
+		}
+		else {
 			return false;
 		}
 	}
@@ -219,8 +196,7 @@ public class SlideoutAndProjectHolder extends HBox
 	 *
 	 * @return
 	 */
-	public boolean isSlidIn()
-	{
+	public boolean isSlidIn() {
 		return slidIn.get();
 	}
 
@@ -228,8 +204,7 @@ public class SlideoutAndProjectHolder extends HBox
 	 *
 	 * @return
 	 */
-	public boolean isSliding()
-	{
+	public boolean isSliding() {
 		return showSidebar.statusProperty().get() != Animation.Status.STOPPED || hideSidebar.statusProperty().get() != Animation.Status.STOPPED;
 	}
 
@@ -237,10 +212,8 @@ public class SlideoutAndProjectHolder extends HBox
 	 *
 	 * @param slideout
 	 */
-	public void switchInSlideout(HBox slideout)
-	{
-		if (!slideOutHolder.getChildren().isEmpty())
-		{
+	public void switchInSlideout(HBox slideout) {
+		if (!slideOutHolder.getChildren().isEmpty()) {
 			slideOutHolder.getChildren().remove(0);
 		}
 
@@ -248,8 +221,7 @@ public class SlideoutAndProjectHolder extends HBox
 
 		clippingRectangle = new Rectangle();
 
-		if (slideout != null)
-		{
+		if (slideout != null) {
 			slideOutHolder.getChildren().add(slideout);
 			slideIn();
 		}
@@ -259,8 +231,7 @@ public class SlideoutAndProjectHolder extends HBox
 	 *
 	 * @return
 	 */
-	public VBox getProjectTabPaneHolder()
-	{
+	public VBox getProjectTabPaneHolder() {
 		return projectTabPaneHolder;
 	}
 
@@ -268,8 +239,7 @@ public class SlideoutAndProjectHolder extends HBox
 	 *
 	 * @param node
 	 */
-	public void populateProjectDisplay(Node node)
-	{
+	public void populateProjectDisplay(Node node) {
 		projectTabPaneHolder.getChildren().add(node);
 	}
 }

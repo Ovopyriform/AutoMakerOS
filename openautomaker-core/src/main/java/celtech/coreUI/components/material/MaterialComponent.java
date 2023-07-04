@@ -1,6 +1,4 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI.components.material;
 
 import static xyz.openautomaker.base.utils.ColourStringConverter.colourToString;
@@ -34,23 +32,25 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author tony
  */
-public class MaterialComponent extends VBox implements PrinterListChangesListener, FilamentSelectionListener
-{
+public class MaterialComponent extends VBox implements PrinterListChangesListener, FilamentSelectionListener {
 
 	private Printer printer;
 	private int extruderNumber;
 	private final FilamentContainer filamentContainer = FilamentContainer.getInstance();
 
-	public enum ReelType
-	{
+	public enum ReelType {
 
-		ROBOX, GEARS, SOLID_QUESTION, SOLID_CROSS;
+		ROBOX,
+		GEARS,
+		SOLID_QUESTION,
+		SOLID_CROSS;
 	}
 
-	public enum Mode
-	{
+	public enum Mode {
 
-		STATUS, LAYOUT, SETTINGS;
+		STATUS,
+		LAYOUT,
+		SETTINGS;
 	}
 
 	@FXML
@@ -91,13 +91,11 @@ public class MaterialComponent extends VBox implements PrinterListChangesListene
 
 	private Filament filamentInUse = FilamentContainer.UNKNOWN_FILAMENT;
 
-	public MaterialComponent()
-	{
+	public MaterialComponent() {
 		// Should only be called from scene builder
 	}
 
-	public MaterialComponent(Printer printer, int extruderNumber)
-	{
+	public MaterialComponent(Printer printer, int extruderNumber) {
 		super();
 		URL fxml = getClass().getResource(
 				"/celtech/resources/fxml/components/material/material.fxml");
@@ -105,11 +103,10 @@ public class MaterialComponent extends VBox implements PrinterListChangesListene
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 
@@ -123,52 +120,44 @@ public class MaterialComponent extends VBox implements PrinterListChangesListene
 		configureDisplay();
 	}
 
-	private boolean filamentLoaded()
-	{
+	private boolean filamentLoaded() {
 		return printer.extrudersProperty().get(extruderNumber).filamentLoadedProperty().get();
 	}
 
-	private void whenMaterialSelected(Filament filament)
-	{
-		if (Lookup.getSelectedPrinterProperty().get() != null)
-		{
+	private void whenMaterialSelected(Filament filament) {
+		if (Lookup.getSelectedPrinterProperty().get() != null) {
 			Lookup.getSelectedPrinterProperty().get().overrideFilament(extruderNumber, filament);
 		}
 		configureDisplay();
 	}
 
-	private void setUpFilamentLoadedListener()
-	{
-		if (printer != null && printer.extrudersProperty().get(extruderNumber) != null)
-		{
+	private void setUpFilamentLoadedListener() {
+		if (printer != null && printer.extrudersProperty().get(extruderNumber) != null) {
 			printer.extrudersProperty().get(extruderNumber).filamentLoadedProperty().addListener(
-					(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-					{
+					(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 						configureDisplay();
 					});
 		}
 	}
 
-	private void configureDisplay()
-	{
+	private void configureDisplay() {
 		materialColourContainer.setVisible(true);
-		if (printer.reelsProperty().containsKey(extruderNumber))
-		{
+		if (printer.reelsProperty().containsKey(extruderNumber)) {
 			//Reel is attached
 			filamentMenuButton.setVisible(false);
 			setReelType(ReelType.ROBOX);
 			Reel reel = printer.reelsProperty().get(extruderNumber);
 			filamentInUse = filamentContainer.getFilamentByID(reel.filamentIDProperty().get());
 			materialRemaining.setVisible(true);
-		} else if (printer.extrudersProperty().get(extruderNumber).filamentLoadedProperty().get())
-		{
+		}
+		else if (printer.extrudersProperty().get(extruderNumber).filamentLoadedProperty().get()) {
 			//Loaded but no reel attached
 			filamentMenuButton.setVisible(true);
 			materialRemaining.setVisible(false);
 			filamentInUse = printer.effectiveFilamentsProperty().get(extruderNumber);
 			filamentMenuButton.displayFilamentOnButton(filamentInUse);
-		} else
-		{
+		}
+		else {
 			//No reel and not loaded
 			filamentMenuButton.setVisible(false);
 			materialRemaining.setVisible(false);
@@ -176,39 +165,35 @@ public class MaterialComponent extends VBox implements PrinterListChangesListene
 		}
 
 		if (filamentInUse == FilamentContainer.UNKNOWN_FILAMENT
-				&& !printer.extrudersProperty().get(extruderNumber).filamentLoadedProperty().get())
-		{
+				&& !printer.extrudersProperty().get(extruderNumber).filamentLoadedProperty().get()) {
 			svgLoaded.setVisible(false);
 			setReelType(ReelType.SOLID_CROSS);
 			String filamentNotLoaded = OpenAutoMakerEnv.getI18N().t("materialComponent.filamentNotLoaded");
 			showDetails((1 + extruderNumber) + ":", "", filamentNotLoaded, Color.BLACK, false, false);
-		} else
-		{
+		}
+		else {
 			Float remainingFilament = 0f;
 			Float diameter = 0f;
-			if (filamentInUse == FilamentContainer.UNKNOWN_FILAMENT)
-			{
+			if (filamentInUse == FilamentContainer.UNKNOWN_FILAMENT) {
 				svgLoaded.setVisible(true);
 				setReelType(ReelType.SOLID_QUESTION);
 				String materialUnknown = OpenAutoMakerEnv.getI18N().t("materialComponent.materialUnknown");
 				showDetails((1 + extruderNumber) + ":", "", materialUnknown,
 						Color.BLACK, true, true);
-			} else
-			{
-				if (printer.reelsProperty().containsKey(extruderNumber))
-				{
+			}
+			else {
+				if (printer.reelsProperty().containsKey(extruderNumber)) {
 					Reel reel = printer.reelsProperty().get(extruderNumber);
 					remainingFilament = reel.remainingFilamentProperty().get();
 					diameter = reel.diameterProperty().get();
-					if (filamentInUse.isMutable())
-					{
+					if (filamentInUse.isMutable()) {
 						setReelType(ReelType.GEARS);
-					} else
-					{
+					}
+					else {
 						setReelType(ReelType.ROBOX);
 					}
-				} else
-				{
+				}
+				else {
 					setReelType(ReelType.GEARS);
 				}
 				setMaterial(extruderNumber, filamentInUse.getMaterial(),
@@ -220,49 +205,44 @@ public class MaterialComponent extends VBox implements PrinterListChangesListene
 		}
 	}
 
-	public void setReelType(ReelType reelType)
-	{
+	public void setReelType(ReelType reelType) {
 		reelSVGRobox.setVisible(false);
 		reelSVGGears.setVisible(false);
 		reelSVGQuestion.setVisible(false);
 		reelSVGCross.setVisible(false);
-		switch (reelType)
-		{
-		case ROBOX:
-			reelSVGRobox.setVisible(true);
-			break;
-		case GEARS:
-			reelSVGGears.setVisible(true);
-			break;
-		case SOLID_QUESTION:
-			reelSVGQuestion.setVisible(true);
-			break;
-		case SOLID_CROSS:
-			reelSVGCross.setVisible(true);
-			break;
+		switch (reelType) {
+			case ROBOX:
+				reelSVGRobox.setVisible(true);
+				break;
+			case GEARS:
+				reelSVGGears.setVisible(true);
+				break;
+			case SOLID_QUESTION:
+				reelSVGQuestion.setVisible(true);
+				break;
+			case SOLID_CROSS:
+				reelSVGCross.setVisible(true);
+				break;
 		}
 	}
 
 	private void setMaterial(int reelNumber, MaterialType materialType, String materialColourString,
-			Color colour, double remainingFilament, double filamentDiameter, boolean filamentLoaded)
-	{
+			Color colour, double remainingFilament, double filamentDiameter, boolean filamentLoaded) {
 
 		String numberMaterial = "";
 		double densityKGM3 = 1;
 
-		if (materialType != null)
-		{
+		if (materialType != null) {
 			numberMaterial = String.valueOf(reelNumber + 1) + ":"
 					+ materialType.getFriendlyName();
 			densityKGM3 = materialType.getDensity() * 1000d;
-		} else
-		{
+		}
+		else {
 			numberMaterial = String.valueOf(reelNumber + 1) + ":";
 		}
 
 		double remainingLengthMeters = remainingFilament / 1000d;
-		if (remainingLengthMeters < 0)
-		{
+		if (remainingLengthMeters < 0) {
 			remainingLengthMeters = 0;
 		}
 		double crossSectionM2 = Math.PI * filamentDiameter * filamentDiameter / 4d * 1e-6;
@@ -275,8 +255,7 @@ public class MaterialComponent extends VBox implements PrinterListChangesListene
 
 	private void showDetails(String numberMaterial, String materialRemainingString,
 			String materialColourString, Color colour, boolean filamentLoaded,
-			boolean dualWeightTitle)
-	{
+			boolean dualWeightTitle) {
 
 		svgLoaded.setVisible(filamentLoaded);
 
@@ -285,116 +264,97 @@ public class MaterialComponent extends VBox implements PrinterListChangesListene
 		String colourString = colourToString(colour);
 		materialColourContainer.setStyle("-fx-background-color: #" + colourString + ";");
 
-		if (extruderNumber == 0)
-		{
+		if (extruderNumber == 0) {
 			reelNumberMaterial.setStyle("-fx-fill: robox_blue;");
 			svgLoaded.setFill(StandardColours.ROBOX_BLUE);
-		} else
-		{
+		}
+		else {
 			reelNumberMaterial.setStyle("-fx-fill: highlight_colour_orange;");
 			svgLoaded.setFill(StandardColours.HIGHLIGHT_ORANGE);
 		}
 		setReelColourString(colourString);
 
 		int endOfManufacturerSection = materialColourString.indexOf(' ');
-		if (dualWeightTitle && endOfManufacturerSection > 0 && endOfManufacturerSection < materialColourString.length() - 1)
-		{
+		if (dualWeightTitle && endOfManufacturerSection > 0 && endOfManufacturerSection < materialColourString.length() - 1) {
 			materialColour1.setText(materialColourString.substring(0, endOfManufacturerSection));
 			materialColour2.setText(materialColourString.substring(endOfManufacturerSection));
-		} else
-		{
+		}
+		else {
 			materialColour1.setText("");
 			materialColour2.setText(materialColourString);
 		}
 
-		if (colour.getBrightness() < 0.5)
-		{
+		if (colour.getBrightness() < 0.5) {
 			materialColour1.setStyle("-fx-fill:white;");
 			materialColour2.setStyle("-fx-fill:white;");
-		} else
-		{
+		}
+		else {
 			materialColour1.setStyle("-fx-fill:black;");
 			materialColour2.setStyle("-fx-fill:black;");
 		}
 	}
 
-	private void setReelColourString(String colourString)
-	{
+	private void setReelColourString(String colourString) {
 		reelSVGRobox.setStyle("-fx-fill: #" + colourString + ";");
 		reelSVGGears.setStyle("-fx-fill: #" + colourString + ";");
 	}
 
 	// PrinterListChangesNotifier
 	@Override
-	public void whenPrinterAdded(Printer printer)
-	{
+	public void whenPrinterAdded(Printer printer) {
 	}
 
 	@Override
-	public void whenPrinterRemoved(Printer printer)
-	{
+	public void whenPrinterRemoved(Printer printer) {
 	}
 
 	@Override
-	public void whenHeadAdded(Printer printer)
-	{
+	public void whenHeadAdded(Printer printer) {
 	}
 
 	@Override
-	public void whenHeadRemoved(Printer printer, Head head)
-	{
+	public void whenHeadRemoved(Printer printer, Head head) {
 	}
 
 	@Override
-	public void whenReelAdded(Printer printer, int reelIndex)
-	{
-		if (this.printer == printer)
-		{
+	public void whenReelAdded(Printer printer, int reelIndex) {
+		if (this.printer == printer) {
 			configureDisplay();
 		}
 	}
 
-	private void resetFilament()
-	{
+	private void resetFilament() {
 		filamentInUse = FilamentContainer.UNKNOWN_FILAMENT;
 	}
 
 	@Override
-	public void whenReelRemoved(Printer printer, Reel reel, int reelIndex)
-	{
-		if (this.printer == printer)
-		{
+	public void whenReelRemoved(Printer printer, Reel reel, int reelIndex) {
+		if (this.printer == printer) {
 			resetFilament();
 			configureDisplay();
 		}
 	}
 
 	@Override
-	public void whenReelChanged(Printer printer, Reel reel)
-	{
-		if (this.printer == printer)
-		{
+	public void whenReelChanged(Printer printer, Reel reel) {
+		if (this.printer == printer) {
 			configureDisplay();
 		}
 	}
 
 	@Override
-	public void whenExtruderAdded(Printer printer, int extruderIndex)
-	{
-		if (this.printer == printer)
-		{
+	public void whenExtruderAdded(Printer printer, int extruderIndex) {
+		if (this.printer == printer) {
 			setUpFilamentLoadedListener();
 		}
 	}
 
 	@Override
-	public void whenExtruderRemoved(Printer printer, int extruderIndex)
-	{
+	public void whenExtruderRemoved(Printer printer, int extruderIndex) {
 	}
 
 	@Override
-	public void filamentSelected(Filament filament)
-	{
+	public void filamentSelected(Filament filament) {
 		whenMaterialSelected(filament);
 		filamentMenuButton.hide();
 	}

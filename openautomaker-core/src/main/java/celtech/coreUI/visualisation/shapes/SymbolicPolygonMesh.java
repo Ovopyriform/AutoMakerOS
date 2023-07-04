@@ -1,8 +1,7 @@
 package celtech.coreUI.visualisation.shapes;
 
 /**
- * Polygon mesh where the points are symbolic. That is, the values of the
- * points depend on other variables and they can be updated appropriately.
+ * Polygon mesh where the points are symbolic. That is, the values of the points depend on other variables and they can be updated appropriately.
  */
 public class SymbolicPolygonMesh {
 
@@ -59,7 +58,7 @@ public class SymbolicPolygonMesh {
 	public int getNumEdgesInFaces() {
 		if (numEdgesInFaces == -1) {
 			numEdgesInFaces = 0;
-			for(int[] face : faces) {
+			for (int[] face : faces) {
 				numEdgesInFaces += face.length;
 			}
 			numEdgesInFaces /= 2;

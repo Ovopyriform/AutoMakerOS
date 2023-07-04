@@ -12,30 +12,28 @@ import javafx.scene.text.TextBoundsType;
  */
 public class Utils {
 
-	/* Using TextLayout directly for simple text measurement.
-	 * Instead of restoring the TextLayout attributes to default values
-	 * (each renders the TextLayout unable to efficiently cache layout data).
-	 * It always sets all the attributes pertinent to calculation being performed.
-	 * Note that lineSpacing and boundsType are important when computing the height
-	 * but irrelevant when computing the width.
+	/*
+	 * Using TextLayout directly for simple text measurement. Instead of restoring the TextLayout attributes to default values (each renders the TextLayout unable to efficiently cache layout data). It always sets all the attributes pertinent to
+	 * calculation being performed. Note that lineSpacing and boundsType are important when computing the height but irrelevant when computing the width.
 	 *
 	 * Note: This code assumes that TextBoundsType#VISUAL is never used by controls.
-	 * */
+	 */
 	private static final TextLayout layout = Toolkit.getToolkit().getTextLayoutFactory().createLayout();
 
 	public static double computeTextWidth(Font font, String text, double wrappingWidth) {
 		layout.setContent(text != null ? text : "", FontHelper.getNativeFont(font));
-		layout.setWrapWidth((float)wrappingWidth);
+		layout.setWrapWidth((float) wrappingWidth);
 		return layout.getBounds().getWidth();
 	}
 
 	public static double computeTextHeight(Font font, String text, double wrappingWidth, double lineSpacing, TextBoundsType boundsType) {
 		layout.setContent(text != null ? text : "", FontHelper.getNativeFont(font));
-		layout.setWrapWidth((float)wrappingWidth);
-		layout.setLineSpacing((float)lineSpacing);
+		layout.setWrapWidth((float) wrappingWidth);
+		layout.setLineSpacing((float) lineSpacing);
 		if (boundsType == TextBoundsType.LOGICAL_VERTICAL_CENTER) {
 			layout.setBoundsType(TextLayout.BOUNDS_CENTER);
-		} else {
+		}
+		else {
 			layout.setBoundsType(0);
 		}
 		return layout.getBounds().getHeight();

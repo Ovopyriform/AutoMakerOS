@@ -24,8 +24,7 @@ import javafx.scene.shape.SVGPath;
  *
  * @author Ian
  */
-public class TextPath extends SVGPath implements PrintableShape
-{
+public class TextPath extends SVGPath implements PrintableShape {
 
 	private String textToDisplay = "Text";
 	private GraphicsEnvironment ge;
@@ -37,8 +36,7 @@ public class TextPath extends SVGPath implements PrintableShape
 	private final ComboBox<Integer> fontSizeChooser = new ComboBox();
 	private final ComboBox<String> fontStyleChooser = new ComboBox();
 
-	public TextPath()
-	{
+	public TextPath() {
 		thisTextPath = this;
 		ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
@@ -46,11 +44,9 @@ public class TextPath extends SVGPath implements PrintableShape
 		editBox.setSpacing(5);
 
 		textEditor.setText(textToDisplay);
-		textEditor.textProperty().addListener(new ChangeListener<String>()
-		{
+		textEditor.textProperty().addListener(new ChangeListener<String>() {
 			@Override
-			public void changed(ObservableValue<? extends String> ov, String t, String t1)
-			{
+			public void changed(ObservableValue<? extends String> ov, String t, String t1) {
 				textToDisplay = t1;
 				updateTextPath();
 			}
@@ -59,26 +55,21 @@ public class TextPath extends SVGPath implements PrintableShape
 		String[] fonts = ge.getAvailableFontFamilyNames();
 		fontChooser.setItems(FXCollections.observableArrayList(fonts));
 		fontChooser.getSelectionModel().selectFirst();
-		fontChooser.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>()
-		{
+		fontChooser.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
-			public void changed(ObservableValue<? extends String> ov, String t, String t1)
-			{
+			public void changed(ObservableValue<? extends String> ov, String t, String t1) {
 				updateFont();
 			}
 		});
 
-		String[] fontStyles =
-			{
-					"Plain", "Bold", "Italic"
-			};
+		String[] fontStyles = {
+				"Plain", "Bold", "Italic"
+		};
 		fontStyleChooser.setItems(FXCollections.observableArrayList(fontStyles));
 		fontStyleChooser.getSelectionModel().selectFirst();
-		fontStyleChooser.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>()
-		{
+		fontStyleChooser.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 			@Override
-			public void changed(ObservableValue<? extends Number> ov, Number t, Number t1)
-			{
+			public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
 				updateFont();
 			}
 		});
@@ -87,11 +78,9 @@ public class TextPath extends SVGPath implements PrintableShape
 		fontSizes.addAll(18, 20, 24, 28, 33, 36, 40, 44, 48, 52, 56);
 		fontSizeChooser.setItems(fontSizes);
 		fontSizeChooser.getSelectionModel().selectFirst();
-		fontSizeChooser.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>()
-		{
+		fontSizeChooser.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 			@Override
-			public void changed(ObservableValue<? extends Number> ov, Number t, Number t1)
-			{
+			public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
 				updateFont();
 			}
 		});
@@ -103,21 +92,17 @@ public class TextPath extends SVGPath implements PrintableShape
 
 		updateFont();
 
-		setOnMouseClicked(new EventHandler<MouseEvent>()
-		{
+		setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
-			public void handle(MouseEvent t)
-			{
-				if (t.getClickCount() > 1)
-				{
+			public void handle(MouseEvent t) {
+				if (t.getClickCount() > 1) {
 					popOver.show(thisTextPath);
 				}
 			}
 		});
 	}
 
-	private void updateFont()
-	{
+	private void updateFont() {
 		Font fontWeWishToUse = new Font(fontChooser.getSelectionModel().getSelectedItem(),
 				fontStyleChooser.getSelectionModel().getSelectedIndex(),
 				fontSizeChooser.getSelectionModel().getSelectedItem());
@@ -126,8 +111,7 @@ public class TextPath extends SVGPath implements PrintableShape
 		updateTextPath();
 	}
 
-	private void updateTextPath()
-	{
+	private void updateTextPath() {
 		GlyphVector v = fontInUse.createGlyphVector(frc, textToDisplay);
 		Shape s = v.getOutline();
 		PathIterator pathIterator = s.getPathIterator(null);
@@ -136,73 +120,71 @@ public class TextPath extends SVGPath implements PrintableShape
 
 		float[] coords = new float[6];
 
-		while (!pathIterator.isDone())
-		{
+		while (!pathIterator.isDone()) {
 			int pathType = pathIterator.currentSegment(coords);
-			switch (pathType)
-			{
-			case PathIterator.SEG_CLOSE:
-				//                    LOGGER.info("Got a close");
-				svgContent.append("z ");
-				break;
-			case PathIterator.SEG_CUBICTO:
-				//                    LOGGER.info("Got a cubic to "
-				//                            + "x1:" + coords[0]
-				//                            + "y1:" + coords[1]
-				//                            + "x2:" + coords[2]
-				//                            + "y2:" + coords[3]
-				//                            + "x3:" + coords[4]
-				//                            + "y3:" + coords[5]);
-				svgContent.append("C");
-				svgContent.append(coords[0]);
-				svgContent.append(" ");
-				svgContent.append(coords[1]);
-				svgContent.append(" ");
-				svgContent.append(coords[2]);
-				svgContent.append(" ");
-				svgContent.append(coords[3]);
-				svgContent.append(" ");
-				svgContent.append(coords[4]);
-				svgContent.append(" ");
-				svgContent.append(coords[5]);
-				svgContent.append(" ");
-				break;
-			case PathIterator.SEG_LINETO:
-				//                    LOGGER.info("Got a line to "
-				//                            + "x1:" + coords[0]
-				//                            + "y1:" + coords[1]);
-				svgContent.append("L");
-				svgContent.append(coords[0]);
-				svgContent.append(" ");
-				svgContent.append(coords[1]);
-				svgContent.append(" ");
-				break;
-			case PathIterator.SEG_MOVETO:
-				//                    LOGGER.info("Got a move to "
-				//                            + "x1:" + coords[0]
-				//                            + "y1:" + coords[1]);
-				svgContent.append("M");
-				svgContent.append(coords[0]);
-				svgContent.append(" ");
-				svgContent.append(coords[1]);
-				svgContent.append(" ");
-				break;
-			case PathIterator.SEG_QUADTO:
-				//                    LOGGER.info("Got a quad to "
-				//                            + "x1:" + coords[0]
-				//                            + "y1:" + coords[1]
-				//                            + "x2:" + coords[2]
-				//                            + "y2:" + coords[3]);
-				svgContent.append("Q");
-				svgContent.append(coords[0]);
-				svgContent.append(" ");
-				svgContent.append(coords[1]);
-				svgContent.append(" ");
-				svgContent.append(coords[2]);
-				svgContent.append(" ");
-				svgContent.append(coords[3]);
-				svgContent.append(" ");
-				break;
+			switch (pathType) {
+				case PathIterator.SEG_CLOSE:
+					//                    LOGGER.info("Got a close");
+					svgContent.append("z ");
+					break;
+				case PathIterator.SEG_CUBICTO:
+					//                    LOGGER.info("Got a cubic to "
+					//                            + "x1:" + coords[0]
+					//                            + "y1:" + coords[1]
+					//                            + "x2:" + coords[2]
+					//                            + "y2:" + coords[3]
+					//                            + "x3:" + coords[4]
+					//                            + "y3:" + coords[5]);
+					svgContent.append("C");
+					svgContent.append(coords[0]);
+					svgContent.append(" ");
+					svgContent.append(coords[1]);
+					svgContent.append(" ");
+					svgContent.append(coords[2]);
+					svgContent.append(" ");
+					svgContent.append(coords[3]);
+					svgContent.append(" ");
+					svgContent.append(coords[4]);
+					svgContent.append(" ");
+					svgContent.append(coords[5]);
+					svgContent.append(" ");
+					break;
+				case PathIterator.SEG_LINETO:
+					//                    LOGGER.info("Got a line to "
+					//                            + "x1:" + coords[0]
+					//                            + "y1:" + coords[1]);
+					svgContent.append("L");
+					svgContent.append(coords[0]);
+					svgContent.append(" ");
+					svgContent.append(coords[1]);
+					svgContent.append(" ");
+					break;
+				case PathIterator.SEG_MOVETO:
+					//                    LOGGER.info("Got a move to "
+					//                            + "x1:" + coords[0]
+					//                            + "y1:" + coords[1]);
+					svgContent.append("M");
+					svgContent.append(coords[0]);
+					svgContent.append(" ");
+					svgContent.append(coords[1]);
+					svgContent.append(" ");
+					break;
+				case PathIterator.SEG_QUADTO:
+					//                    LOGGER.info("Got a quad to "
+					//                            + "x1:" + coords[0]
+					//                            + "y1:" + coords[1]
+					//                            + "x2:" + coords[2]
+					//                            + "y2:" + coords[3]);
+					svgContent.append("Q");
+					svgContent.append(coords[0]);
+					svgContent.append(" ");
+					svgContent.append(coords[1]);
+					svgContent.append(" ");
+					svgContent.append(coords[2]);
+					svgContent.append(" ");
+					svgContent.append(coords[3]);
+					svgContent.append(" ");
+					break;
 			}
 			pathIterator.next();
 		}
@@ -210,22 +192,19 @@ public class TextPath extends SVGPath implements PrintableShape
 		this.setContent(svgContent.toString());
 	}
 
-	public void setText(String newText)
-	{
+	public void setText(String newText) {
 		textToDisplay = newText;
 		updateTextPath();
 	}
 
 	@Override
-	public void relativeTranslate(double x, double y)
-	{
+	public void relativeTranslate(double x, double y) {
 		setTranslateX(getTranslateX() + x);
 		setTranslateY(getTranslateY() + y);
 	}
 
 	@Override
-	public String getSVGPathContent()
-	{
+	public String getSVGPathContent() {
 		return getContent();
 	}
 }

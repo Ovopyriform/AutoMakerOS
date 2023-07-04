@@ -20,19 +20,16 @@ import xyz.openautomaker.base.printerControl.model.PrinterException;
  *
  * @author Ian
  */
-public class AutoMakerController implements HttpHandler
-{
+public class AutoMakerController implements HttpHandler {
 
 	private static String abortPrintPage = "/abortPrint";
 	private static String printSample1Page = "/printSample1";
 
 	private static final Logger LOGGER = LogManager.getLogger(
-			AutoMakerController.class.
-			getName());
+			AutoMakerController.class.getName());
 
 	@Override
-	public void handle(HttpExchange t) throws IOException
-	{
+	public void handle(HttpExchange t) throws IOException {
 		// Object exists and is a file: accept with response code 200.
 		String mime = "text/html";
 
@@ -44,26 +41,22 @@ public class AutoMakerController implements HttpHandler
 		List<Printer> connectedPrinters = BaseLookup.getConnectedPrinters();
 
 		LOGGER.info(t.getRequestURI().getPath());
-		if (t.getRequestURI().getPath().matches(abortPrintPage))
-		{
+		if (t.getRequestURI().getPath().matches(abortPrintPage)) {
 			statusResponse = "<h3>OK</h3>";
-			if (connectedPrinters.size() > 0)
-			{
-				try
-				{
+			if (connectedPrinters.size() > 0) {
+				try {
 					connectedPrinters.get(0).cancel(null, Lookup.getUserPreferences().isSafetyFeaturesOn());
-				} catch (PrinterException ex)
-				{
+				}
+				catch (PrinterException ex) {
 					LOGGER.error("Error attempting to abort");
 				}
 			}
 			t.getResponseHeaders().add("Location", "/");
 			t.sendResponseHeaders(302, statusResponse.length());
-		} else if (t.getRequestURI().getPath().matches(printSample1Page))
-		{
+		}
+		else if (t.getRequestURI().getPath().matches(printSample1Page)) {
 			statusResponse = "<h3>OK</h3>";
-			if (connectedPrinters.size() > 0)
-			{
+			if (connectedPrinters.size() > 0) {
 				//                try
 				//                {
 				////                    connectedPrinters.get(0).executeGCodeFileWithoutPurgeCheck(ApplicationConfiguration.getApplicationModelDirectory() + "commissioningTestPrint.gcode", true);
@@ -74,23 +67,20 @@ public class AutoMakerController implements HttpHandler
 			}
 			t.getResponseHeaders().add("Location", "/");
 			t.sendResponseHeaders(302, statusResponse.length());
-		} else
-		{
+		}
+		else {
 			statusResponse = "<h3>AutoMaker Remote</h3>"
 					+ "<p>Attached Printers:";
 
-			for (Printer printer : BaseLookup.getConnectedPrinters())
-			{
+			for (Printer printer : BaseLookup.getConnectedPrinters()) {
 				statusResponse += printer.getPrinterIdentity().printerUniqueIDProperty().get()
 						+ "\r";
 			}
 
 			statusResponse += "</p>";
-			statusResponse
-			+= "<form method=\"get\" action=\"" + abortPrintPage + "\">"
+			statusResponse += "<form method=\"get\" action=\"" + abortPrintPage + "\">"
 					+ "<button type=\"submit\">Abort Print</button></form>";
-			statusResponse
-			+= "<form method=\"get\" action=\"" + printSample1Page + "\">"
+			statusResponse += "<form method=\"get\" action=\"" + printSample1Page + "\">"
 					+ "<button type=\"submit\">Print Sample 1</button></form>";
 
 			t.sendResponseHeaders(200, statusResponse.length());

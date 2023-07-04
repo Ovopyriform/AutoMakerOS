@@ -12,7 +12,6 @@ import javafx.scene.control.TextField;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class DoubleTextField extends TextField
-{
+public class DoubleTextField extends TextField {
 
 }

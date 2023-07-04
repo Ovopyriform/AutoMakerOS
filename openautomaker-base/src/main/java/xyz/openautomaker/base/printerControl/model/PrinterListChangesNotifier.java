@@ -1,8 +1,6 @@
 package xyz.openautomaker.base.printerControl.model;
 
-/*
- * Copyright 2014 CEL UK
- */
+
 
 
 import java.util.ArrayList;

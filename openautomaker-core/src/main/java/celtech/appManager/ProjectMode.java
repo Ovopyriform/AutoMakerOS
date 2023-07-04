@@ -4,14 +4,14 @@ package celtech.appManager;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public enum ProjectMode
-{
+public enum ProjectMode {
 
 	/**
 	 *
-	 *//**
-	 *
 	 */
+	/**
+	*
+	*/
 	NONE,
 
 	/**

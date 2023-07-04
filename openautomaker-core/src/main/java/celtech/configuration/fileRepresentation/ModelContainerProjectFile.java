@@ -11,8 +11,7 @@ import xyz.openautomaker.base.configuration.BaseConfiguration;
 import xyz.openautomaker.base.configuration.fileRepresentation.SupportType;
 import xyz.openautomaker.base.services.slicer.PrintQualityEnumeration;
 
-public class ModelContainerProjectFile extends ProjectFile
-{
+public class ModelContainerProjectFile extends ProjectFile {
 
 	private int subVersion = 1;
 	private int brimOverride = 0;
@@ -30,159 +29,128 @@ public class ModelContainerProjectFile extends ProjectFile
 	private Map<Integer, Set<Integer>> groupStructure = new HashMap<>();
 	private Map<Integer, ItemState> groupState = new HashMap<>();
 
-	public ModelContainerProjectFile()
-	{
+	public ModelContainerProjectFile() {
 		setProjectType(ProjectFileTypeEnum.MODEL);
 	}
 
-	public String getSettingsName()
-	{
+	public String getSettingsName() {
 		return settingsName;
 	}
 
-	public void setSettingsName(String settingsName)
-	{
+	public void setSettingsName(String settingsName) {
 		this.settingsName = settingsName;
 	}
 
-	public PrintQualityEnumeration getPrintQuality()
-	{
+	public PrintQualityEnumeration getPrintQuality() {
 		return printQuality;
 	}
 
-	public void setPrintQuality(PrintQualityEnumeration printQuality)
-	{
+	public void setPrintQuality(PrintQualityEnumeration printQuality) {
 		this.printQuality = printQuality;
 	}
 
-	public int getBrimOverride()
-	{
+	public int getBrimOverride() {
 		return brimOverride;
 	}
 
-	public void setBrimOverride(int brimOverride)
-	{
+	public void setBrimOverride(int brimOverride) {
 		this.brimOverride = brimOverride;
 	}
 
-	public float getFillDensityOverride()
-	{
+	public float getFillDensityOverride() {
 		return fillDensityOverride;
 	}
 
-	public void setFillDensityOverride(float fillDensityOverride)
-	{
+	public void setFillDensityOverride(float fillDensityOverride) {
 		this.fillDensityOverride = fillDensityOverride;
 	}
 
-	public boolean isFillDensityOverridenByUser()
-	{
+	public boolean isFillDensityOverridenByUser() {
 		return fillDensityOverridenByUser;
 	}
 
-	public void setFillDensityOverridenByUser(boolean fillDensityOverridenByUser)
-	{
+	public void setFillDensityOverridenByUser(boolean fillDensityOverridenByUser) {
 		this.fillDensityOverridenByUser = fillDensityOverridenByUser;
 	}
-	public boolean getPrintSupportOverride()
-	{
+
+	public boolean getPrintSupportOverride() {
 		return printSupportOverride;
 	}
 
-	public void setPrintSupportOverride(boolean printSupportOverride)
-	{
+	public void setPrintSupportOverride(boolean printSupportOverride) {
 		this.printSupportOverride = printSupportOverride;
 	}
 
-	public SupportType getPrintSupportTypeOverride()
-	{
+	public SupportType getPrintSupportTypeOverride() {
 		return printSupportTypeOverride;
 	}
 
-	public void setPrintSupportTypeOverride(SupportType printSupportTypeOverride)
-	{
+	public void setPrintSupportTypeOverride(SupportType printSupportTypeOverride) {
 		this.printSupportTypeOverride = printSupportTypeOverride;
 	}
 
-	public boolean getPrintRaft()
-	{
+	public boolean getPrintRaft() {
 		return printRaft;
 	}
 
-	public void setPrintRaft(boolean printRaft)
-	{
+	public void setPrintRaft(boolean printRaft) {
 		this.printRaft = printRaft;
 	}
 
-	public String getExtruder0FilamentID()
-	{
+	public String getExtruder0FilamentID() {
 		return extruder0FilamentID;
 	}
 
-	public void setExtruder0FilamentID(String extruder0FilamentID)
-	{
+	public void setExtruder0FilamentID(String extruder0FilamentID) {
 		this.extruder0FilamentID = extruder0FilamentID;
 	}
 
-	public String getExtruder1FilamentID()
-	{
+	public String getExtruder1FilamentID() {
 		return extruder1FilamentID;
 	}
 
-	public void setExtruder1FilamentID(String extruder1FilamentID)
-	{
+	public void setExtruder1FilamentID(String extruder1FilamentID) {
 		this.extruder1FilamentID = extruder1FilamentID;
 	}
 
-	public int getSubVersion()
-	{
+	public int getSubVersion() {
 		return subVersion;
 	}
 
-	public void setSubVersion(int version)
-	{
+	public void setSubVersion(int version) {
 		this.subVersion = version;
 	}
 
-	public Map<Integer, Set<Integer>> getGroupStructure()
-	{
+	public Map<Integer, Set<Integer>> getGroupStructure() {
 		return groupStructure;
 	}
 
-	public void setGroupStructure(Map<Integer, Set<Integer>> groupStructure)
-	{
+	public void setGroupStructure(Map<Integer, Set<Integer>> groupStructure) {
 		this.groupStructure = groupStructure;
 	}
 
-	public Map<Integer, ItemState> getGroupState()
-	{
+	public Map<Integer, ItemState> getGroupState() {
 		return groupState;
 	}
 
-	public void setGroupState(Map<Integer, ItemState> groupState)
-	{
+	public void setGroupState(Map<Integer, ItemState> groupState) {
 		this.groupState = groupState;
 	}
 
-	public boolean getSpiralPrint()
-	{
+	public boolean getSpiralPrint() {
 		return spiralPrint;
 	}
 
-	public void setSpiralPrint(boolean spiralPrint)
-	{
+	public void setSpiralPrint(boolean spiralPrint) {
 		this.spiralPrint = spiralPrint;
 	}
 
-	public void populateFromProject(ModelContainerProject project)
-	{
+	public void populateFromProject(ModelContainerProject project) {
 	}
 
 	@Override
-	public void implementationSpecificPopulate(Project project)
-	{
-		if (project instanceof ModelContainerProject)
-		{
+	public void implementationSpecificPopulate(Project project) {
+		if (project instanceof ModelContainerProject) {
 			ModelContainerProject mcp = (ModelContainerProject) project;
 			extruder0FilamentID = mcp.getExtruder0FilamentProperty().get().getFilamentID();
 			extruder1FilamentID = mcp.getExtruder1FilamentProperty().get().getFilamentID();

@@ -100,4 +100,3 @@ public class Frame extends Duration {
 		return (tion.toSeconds() * FPS);
 	}
 }
-

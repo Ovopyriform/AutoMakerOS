@@ -15,8 +15,7 @@ import xyz.openautomaker.base.printerControl.model.HardwarePrinter;
  *
  * @author Ian
  */
-public class PrinterTest extends JavaFXConfiguredTest implements PrinterStatusConsumer
-{
+public class PrinterTest extends JavaFXConfiguredTest implements PrinterStatusConsumer {
 	private DetectedDevice printerHandle = new DetectedDevice(DeviceDetector.DeviceConnectionType.SERIAL, "Test Printer");
 
 	@ClassRule
@@ -28,8 +27,7 @@ public class PrinterTest extends JavaFXConfiguredTest implements PrinterStatusCo
 	//    private StatusConsumer statusConsumer = null;
 	private boolean printerIsConnected = false;
 
-	public PrinterTest()
-	{
+	public PrinterTest() {
 	}
 
 	//    @Before
@@ -65,13 +63,11 @@ public class PrinterTest extends JavaFXConfiguredTest implements PrinterStatusCo
 	//    }
 
 	@AfterClass
-	public static void tearDownClass()
-	{
+	public static void tearDownClass() {
 	}
 
 	@After
-	public void tearDown()
-	{
+	public void tearDown() {
 		//        testCommandInterface.shutdown();
 	}
 
@@ -155,14 +151,12 @@ public class PrinterTest extends JavaFXConfiguredTest implements PrinterStatusCo
 	//    }
 	//
 	@Override
-	public void printerConnected(DetectedDevice printerHandle)
-	{
+	public void printerConnected(DetectedDevice printerHandle) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	public void disconnected(DetectedDevice printerHandle)
-	{
+	public void disconnected(DetectedDevice printerHandle) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 	//

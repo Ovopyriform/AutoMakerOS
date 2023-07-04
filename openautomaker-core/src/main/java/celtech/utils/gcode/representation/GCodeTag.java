@@ -10,16 +10,14 @@ package celtech.utils.gcode.representation;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class GCodeTag
-{
+public class GCodeTag {
 	int lineNumber;
 
 	/**
 	 *
 	 * @return
 	 */
-	public int getLineNumber()
-	{
+	public int getLineNumber() {
 		return lineNumber;
 	}
 
@@ -27,10 +25,8 @@ public class GCodeTag
 	 *
 	 * @param lineNumber
 	 */
-	public void setLineNumber(int lineNumber)
-	{
+	public void setLineNumber(int lineNumber) {
 		this.lineNumber = lineNumber;
 	}
-
 
 }

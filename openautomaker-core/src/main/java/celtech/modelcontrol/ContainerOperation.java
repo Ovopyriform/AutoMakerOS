@@ -4,7 +4,6 @@ package celtech.modelcontrol;
  *
  * @author ianhudson
  */
-public interface ContainerOperation
-{
+public interface ContainerOperation {
 
 }

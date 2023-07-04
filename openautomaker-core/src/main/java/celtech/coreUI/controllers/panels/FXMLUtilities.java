@@ -15,51 +15,41 @@ import javafx.scene.text.Text;
  *
  * @author tony
  */
-public class FXMLUtilities
-{
+public class FXMLUtilities {
 
 	/**
 	 * Recursively add colons to all descendent labels that have the styleclass "colon".
 	 *
 	 * @param parentNode the node from which to start the recursion.
 	 */
-	public static void addColonsToLabels(Node parentNode)
-	{
-		if (parentNode instanceof Label)
-		{
+	public static void addColonsToLabels(Node parentNode) {
+		if (parentNode instanceof Label) {
 			Label label = (Label) parentNode;
 			addColonToLabel(label);
-		} else if (parentNode instanceof Text)
-		{
+		}
+		else if (parentNode instanceof Text) {
 			addColonToText((Text) parentNode);
-		} else if (parentNode instanceof Parent)
-		{
-			for (Node node : ((Parent) parentNode).getChildrenUnmodifiable())
-			{
-				if (node instanceof Parent || node instanceof Text)
-				{
+		}
+		else if (parentNode instanceof Parent) {
+			for (Node node : ((Parent) parentNode).getChildrenUnmodifiable()) {
+				if (node instanceof Parent || node instanceof Text) {
 					addColonsToLabels(node);
 				}
 
-				if (node instanceof TabPane)
-				{
+				if (node instanceof TabPane) {
 					TabPane tabPane = (TabPane) node;
-					for (Tab tab : tabPane.getTabs())
-					{
+					for (Tab tab : tabPane.getTabs()) {
 						Node content = tab.getContent();
-						if (content instanceof Parent)
-						{
+						if (content instanceof Parent) {
 							addColonsToLabels(content);
 						}
 					}
 				}
 
-				if (node instanceof ScrollPane)
-				{
+				if (node instanceof ScrollPane) {
 					ScrollPane scrollPane = (ScrollPane) node;
 					Node content = scrollPane.getContent();
-					if (content instanceof Parent)
-					{
+					if (content instanceof Parent) {
 						addColonsToLabels(content);
 					}
 				}
@@ -67,18 +57,14 @@ public class FXMLUtilities
 		}
 	}
 
-	private static void addColonToLabel(Label label)
-	{
-		if (label.getStyleClass().contains("colon") && !label.getText().endsWith(":"))
-		{
+	private static void addColonToLabel(Label label) {
+		if (label.getStyleClass().contains("colon") && !label.getText().endsWith(":")) {
 			label.setText(label.getText() + ":");
 		}
 	}
 
-	private static void addColonToText(Text text)
-	{
-		if (text.getStyleClass().contains("colon"))
-		{
+	private static void addColonToText(Text text) {
+		if (text.getStyleClass().contains("colon")) {
 			text.setText(text.getText() + ":");
 		}
 	}

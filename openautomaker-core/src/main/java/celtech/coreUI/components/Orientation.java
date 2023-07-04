@@ -4,8 +4,7 @@ package celtech.coreUI.components;
  *
  * @author Ian
  */
-public enum Orientation
-{
+public enum Orientation {
 
 	NORTH(0),
 	NORTH_EAST(45),
@@ -22,13 +21,11 @@ public enum Orientation
 
 	private final double angle;
 
-	private Orientation(double angle)
-	{
+	private Orientation(double angle) {
 		this.angle = angle;
 	}
 
-	public double getAngle()
-	{
+	public double getAngle() {
 		return angle;
 	}
 }

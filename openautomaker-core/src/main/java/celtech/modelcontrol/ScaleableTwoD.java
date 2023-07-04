@@ -4,8 +4,7 @@ package celtech.modelcontrol;
  *
  * @author ianhudson
  */
-public interface ScaleableTwoD extends ContainerOperation
-{
+public interface ScaleableTwoD extends ContainerOperation {
 
 	public double getXScale();
 

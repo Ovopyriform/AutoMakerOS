@@ -14,10 +14,8 @@ import javafx.scene.control.ToggleButton;
  *
  * @author Ian
  */
-public class InsetPanelMenuItem extends ToggleButton
-{
-	public InsetPanelMenuItem()
-	{
+public class InsetPanelMenuItem extends ToggleButton {
+	public InsetPanelMenuItem() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
 				"/celtech/resources/fxml/components/insetPanelMenuItem.fxml"));
 		fxmlLoader.setRoot(this);
@@ -25,19 +23,17 @@ public class InsetPanelMenuItem extends ToggleButton
 
 		fxmlLoader.setClassLoader(this.getClass().getClassLoader());
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 
 		getStyleClass().add("inset-panel-menu-item");
 	}
 
-	public void setTitle(String title)
-	{
+	public void setTitle(String title) {
 		setText(title);
 	}
 }

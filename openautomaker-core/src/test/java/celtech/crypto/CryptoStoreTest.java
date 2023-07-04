@@ -15,39 +15,32 @@ import xyz.openautomaker.base.crypto.CryptoFileStore;
  *
  * @author Ian
  */
-public class CryptoStoreTest
-{
+public class CryptoStoreTest {
 
-	public CryptoStoreTest()
-	{
+	public CryptoStoreTest() {
 	}
 
 	@BeforeClass
-	public static void setUpClass()
-	{
+	public static void setUpClass() {
 	}
 
 	@AfterClass
-	public static void tearDownClass()
-	{
+	public static void tearDownClass() {
 	}
 
 	@Before
-	public void setUp()
-	{
+	public void setUp() {
 	}
 
 	@After
-	public void tearDown()
-	{
+	public void tearDown() {
 	}
 
 	/**
 	 * Test of decrypt method, of class CryptoFileStore.
 	 */
 	@Test
-	public void testEncryptDecryptIntegrity() throws Exception
-	{
+	public void testEncryptDecryptIntegrity() throws Exception {
 		System.out.println("Encrypt<->Decrypt integrity");
 
 		CryptoFileStore instance = new CryptoFileStore("fred.dat", "abbabbdif");
@@ -68,8 +61,7 @@ public class CryptoStoreTest
 	 * Test that two different filenames cause two different encryptions to take place
 	 */
 	@Test
-	public void testEncryptDecryptUniqueness() throws Exception
-	{
+	public void testEncryptDecryptUniqueness() throws Exception {
 		System.out.println("Encrypt uniqueness");
 
 		CryptoFileStore firstCryptoStore = new CryptoFileStore("fred.dat", "jjhjhfif");

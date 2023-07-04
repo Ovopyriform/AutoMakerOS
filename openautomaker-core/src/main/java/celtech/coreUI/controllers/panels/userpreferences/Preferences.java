@@ -18,21 +18,17 @@ import javafx.beans.value.ObservableValue;
  *
  * @author tony
  */
-public class Preferences
-{
+public class Preferences {
 
 	public static List<PreferencesInnerPanelController.Preference> createPrintingPreferences(
-			UserPreferences userPreferences)
-	{
+			UserPreferences userPreferences) {
 		List<PreferencesInnerPanelController.Preference> preferences = new ArrayList<>();
 
 		Preference slicerTypePref = new SlicerTypePreference(userPreferences);
 
-		Preference safetyFeaturesOnPref = new TickBoxPreference(userPreferences.
-				safetyFeaturesOnProperty(), "preferences.safetyFeaturesOn");
+		Preference safetyFeaturesOnPref = new TickBoxPreference(userPreferences.safetyFeaturesOnProperty(), "preferences.safetyFeaturesOn");
 
-		Preference detectFilamentLoadedPref = new TickBoxPreference(userPreferences.
-				detectLoadedFilamentProperty(), "preferences.detectLoadedFilament");
+		Preference detectFilamentLoadedPref = new TickBoxPreference(userPreferences.detectLoadedFilamentProperty(), "preferences.detectLoadedFilament");
 
 		preferences.add(slicerTypePref);
 		preferences.add(safetyFeaturesOnPref);
@@ -42,8 +38,7 @@ public class Preferences
 	}
 
 	public static List<PreferencesInnerPanelController.Preference> createEnvironmentPreferences(
-			UserPreferences userPreferences)
-	{
+			UserPreferences userPreferences) {
 		List<PreferencesInnerPanelController.Preference> preferences = new ArrayList<>();
 
 		Preference languagePref = new LanguagePreference(userPreferences);
@@ -79,8 +74,7 @@ public class Preferences
 	}
 
 	public static List<PreferencesInnerPanelController.Preference> createAdvancedPreferences(
-			UserPreferences userPreferences)
-	{
+			UserPreferences userPreferences) {
 		List<PreferencesInnerPanelController.Preference> preferences = new ArrayList<>();
 
 		TickBoxPreference advancedModePref = new TickBoxPreference(userPreferences.advancedModeProperty(),
@@ -102,11 +96,9 @@ public class Preferences
 				"preferences.showSnapshot");
 		showSnapshotPref.disableProperty(advancedModePref.getSelectedProperty().not());
 
-		advancedModePref.getSelectedProperty().addListener(new ChangeListener<Boolean>()
-		{
+		advancedModePref.getSelectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
-			public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1)
-			{
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
 				showDiagnosticsPref.getSelectedProperty().set(t1);
 				showGCodePref.getSelectedProperty().set(t1);
 				showAdjustmentsPref.getSelectedProperty().set(t1);
@@ -143,8 +135,7 @@ public class Preferences
 	}
 
 	public static List<PreferencesInnerPanelController.Preference> createRootPreferences(
-			UserPreferences userPreferences)
-	{
+			UserPreferences userPreferences) {
 		List<PreferencesInnerPanelController.Preference> preferences = new ArrayList<>();
 
 		//        Preference

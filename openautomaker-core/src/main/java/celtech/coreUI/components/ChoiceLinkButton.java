@@ -12,8 +12,7 @@ import javafx.scene.layout.VBox;
  *
  * @author Ian
  */
-public class ChoiceLinkButton extends Button
-{
+public class ChoiceLinkButton extends Button {
 
 	@FXML
 	VBox labelGroup;
@@ -24,8 +23,7 @@ public class ChoiceLinkButton extends Button
 	@FXML
 	HyperlinkedLabel message;
 
-	public ChoiceLinkButton()
-	{
+	public ChoiceLinkButton() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
 				"/celtech/resources/fxml/components/ChoiceLinkButton.fxml"));
 		fxmlLoader.setRoot(this);
@@ -33,44 +31,37 @@ public class ChoiceLinkButton extends Button
 
 		fxmlLoader.setClassLoader(this.getClass().getClassLoader());
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 
 		this.getStyleClass().add("error-dialog-choice-button");
 	}
 
-	public void setTitle(String i18nTitle)
-	{
+	public void setTitle(String i18nTitle) {
 		title.replaceText(i18nTitle);
 	}
 
-	public String getTitle()
-	{
+	public String getTitle() {
 		return title.getText();
 	}
 
-	public StringProperty titleProperty()
-	{
+	public StringProperty titleProperty() {
 		return title.textProperty();
 	}
 
-	public void setMessage(String i18nMessage)
-	{
+	public void setMessage(String i18nMessage) {
 		message.replaceText(i18nMessage);
 	}
 
-	public String getMessage()
-	{
+	public String getMessage() {
 		return message.getText();
 	}
 
-	public StringProperty messageProperty()
-	{
+	public StringProperty messageProperty() {
 		return message.textProperty();
 	}
 }

@@ -9,8 +9,7 @@ package celtech.coreUI.visualisation;
  *
  * @author Ian
  */
-public enum DragMode
-{
+public enum DragMode {
 
 	/**
 	 *

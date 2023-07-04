@@ -10,8 +10,7 @@ package celtech.utils.threed.importers.stl;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public enum STLLoadState
-{
+public enum STLLoadState {
 
 	/**
 	 *

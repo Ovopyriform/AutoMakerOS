@@ -15,8 +15,7 @@ import javafx.scene.layout.VBox;
  *
  * @author Ian
  */
-public class NudgeControlVertical extends VBox
-{
+public class NudgeControlVertical extends VBox {
 
 	private final DoubleProperty deltaValue = new SimpleDoubleProperty(0);
 	private final DoubleProperty maxValue = new SimpleDoubleProperty(0);
@@ -32,70 +31,60 @@ public class NudgeControlVertical extends VBox
 	private Button downButton;
 
 	@FXML
-	private void upPressed(ActionEvent event)
-	{
+	private void upPressed(ActionEvent event) {
 		double limitedValue = getLimitedValue(numberDisplay.getAsDouble() + deltaValue.get());
 		numberDisplay.setValue(limitedValue);
 	}
 
 	@FXML
-	private void downPressed(ActionEvent event)
-	{
+	private void downPressed(ActionEvent event) {
 		double limitedValue = getLimitedValue(numberDisplay.getAsDouble() - deltaValue.get());
 		numberDisplay.setValue(limitedValue);
 	}
 
-	private double getLimitedValue(double newValue)
-	{
+	private double getLimitedValue(double newValue) {
 		double limitedValue = newValue;
 
-		if (limitedValue > maxValue.get())
-		{
+		if (limitedValue > maxValue.get()) {
 			limitedValue = maxValue.get();
-		} else if (limitedValue < minValue.get())
-		{
+		}
+		else if (limitedValue < minValue.get()) {
 			limitedValue = minValue.get();
 		}
 
 		return limitedValue;
 	}
 
-	public NudgeControlVertical()
-	{
+	public NudgeControlVertical() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/celtech/resources/fxml/nudgeControlVertical.fxml"));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
 
 		fxmlLoader.setClassLoader(this.getClass().getClassLoader());
 
-		try
-		{
+		try {
 			fxmlLoader.load();
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 
 		numberDisplay.setValue(0);
 	}
 
-	public void setDecimalPlaces(int numberOfDecimalPlaces)
-	{
+	public void setDecimalPlaces(int numberOfDecimalPlaces) {
 		numberDisplay.setAllowedDecimalPlaces(numberOfDecimalPlaces);
 	}
 
-	public int getDecimalPlaces()
-	{
+	public int getDecimalPlaces() {
 		return numberDisplay.getAllowedDecimalPlaces();
 	}
 
-	public IntegerProperty getDecimalPlacesProperty()
-	{
+	public IntegerProperty getDecimalPlacesProperty() {
 		return numberDisplay.allowedDecimalPlacesProperty();
 	}
 
-	public double getValue()
-	{
+	public double getValue() {
 		double value = 0;
 
 		numberDisplay.getAsDouble();
@@ -103,53 +92,43 @@ public class NudgeControlVertical extends VBox
 		return value;
 	}
 
-	public void setValue(double value)
-	{
+	public void setValue(double value) {
 		numberDisplay.setValue(value);
 	}
 
-	public double getDeltaValue()
-	{
+	public double getDeltaValue() {
 		return deltaValue.get();
 	}
 
-	public void setDeltaValue(double value)
-	{
+	public void setDeltaValue(double value) {
 		deltaValue.set(value);
 	}
 
-	public DoubleProperty getDeltaValueProperty()
-	{
+	public DoubleProperty getDeltaValueProperty() {
 		return deltaValue;
 	}
 
-	public double getMaxValue()
-	{
+	public double getMaxValue() {
 		return maxValue.get();
 	}
 
-	public void setMaxValue(double value)
-	{
+	public void setMaxValue(double value) {
 		maxValue.set(value);
 	}
 
-	public DoubleProperty getMaxValueProperty()
-	{
+	public DoubleProperty getMaxValueProperty() {
 		return maxValue;
 	}
 
-	public DoubleProperty getMinValueProperty()
-	{
+	public DoubleProperty getMinValueProperty() {
 		return minValue;
 	}
 
-	public double getMinValue()
-	{
+	public double getMinValue() {
 		return minValue.get();
 	}
 
-	public void setMinValue(double value)
-	{
+	public void setMinValue(double value) {
 		minValue.set(value);
 	}
 }

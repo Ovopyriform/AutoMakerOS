@@ -14,12 +14,10 @@ import xyz.openautomaker.base.configuration.BaseConfiguration;
  *
  * @author Ian
  */
-public class AMURLHandler extends URLStreamHandler
-{
+public class AMURLHandler extends URLStreamHandler {
 
 	@Override
-	protected URLConnection openConnection(URL url) throws IOException
-	{
+	protected URLConnection openConnection(URL url) throws IOException {
 		HttpURLConnection con = new HttpURLConnection(url, null);
 
 		con.setRequestProperty("User-Agent", BaseConfiguration.getApplicationName());

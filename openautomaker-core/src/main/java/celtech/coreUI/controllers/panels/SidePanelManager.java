@@ -12,8 +12,7 @@ import javafx.fxml.Initializable;
  *
  * @author Ian
  */
-public interface SidePanelManager
-{
+public interface SidePanelManager {
 
 	/**
 	 *

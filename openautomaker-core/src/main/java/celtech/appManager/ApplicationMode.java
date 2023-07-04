@@ -16,8 +16,7 @@ import celtech.coreUI.controllers.panels.WelcomeInsetPanelController;
  *
  * @author ianhudson
  */
-public enum ApplicationMode
-{
+public enum ApplicationMode {
 
 	WELCOME("Welcome", WelcomeInsetPanelController.class),
 	CALIBRATION_CHOICE("Calibration", CalibrationInsetPanelController.class),
@@ -46,8 +45,7 @@ public enum ApplicationMode
 	private final String insetPanelFXMLPrefix;
 	private final Class controllerClass;
 
-	private ApplicationMode(String insetPanelFXMLPrefix, Class<?> controllerClass)
-	{
+	private ApplicationMode(String insetPanelFXMLPrefix, Class<?> controllerClass) {
 		this.insetPanelFXMLPrefix = insetPanelFXMLPrefix;
 		this.controllerClass = controllerClass;
 	}
@@ -56,13 +54,11 @@ public enum ApplicationMode
 	 *
 	 * @return
 	 */
-	public String getInsetPanelFXMLName()
-	{
+	public String getInsetPanelFXMLName() {
 		return ApplicationConfiguration.fxmlPanelResourcePath + insetPanelFXMLPrefix + "InsetPanel" + ".fxml";
 	}
 
-	public Class getControllerClass()
-	{
+	public Class getControllerClass() {
 		return controllerClass;
 	}
 }

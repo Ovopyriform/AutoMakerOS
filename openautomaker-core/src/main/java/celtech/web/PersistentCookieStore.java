@@ -21,8 +21,7 @@ import xyz.openautomaker.base.crypto.CryptoFileStore;
  *
  * @author Ian
  */
-public class PersistentCookieStore implements CookieStore, Runnable
-{
+public class PersistentCookieStore implements CookieStore, Runnable {
 
 	private static final Logger LOGGER = LogManager.getLogger(PersistentCookieStore.class.getName());
 	private final String filename = ".nothing.dat";
@@ -30,8 +29,7 @@ public class PersistentCookieStore implements CookieStore, Runnable
 	private ObjectMapper jsonMapper = new ObjectMapper();
 	private CookieStore store;
 
-	public PersistentCookieStore()
-	{
+	public PersistentCookieStore() {
 		// get the default in memory cookie store
 		store = new CookieManager().getCookieStore();
 
@@ -39,25 +37,21 @@ public class PersistentCookieStore implements CookieStore, Runnable
 		//        LOGGER.info("Reading cookie store");
 		String encryptedCookieData = cryptoFileStore.readFile();
 
-		if (encryptedCookieData != null)
-		{
-			try
-			{
+		if (encryptedCookieData != null) {
+			try {
 				List<CookieContainer> cookieContainers = jsonMapper.readValue(encryptedCookieData, jsonMapper.getTypeFactory().constructCollectionType(List.class, CookieContainer.class));
 
-				cookieContainers.stream().forEach(cookieContainer ->
-				{
-					try
-					{
+				cookieContainers.stream().forEach(cookieContainer -> {
+					try {
 						URI uri = new URI(cookieContainer.getUri());
 						cookieContainer.revealTheCookies().stream().forEach(cookie -> store.add(uri, cookie));
-					} catch (URISyntaxException ex)
-					{
+					}
+					catch (URISyntaxException ex) {
 						LOGGER.error("Error reading cache");
 					}
 				});
-			} catch (IOException ex)
-			{
+			}
+			catch (IOException ex) {
 				LOGGER.error("Error reading cached data");
 			}
 		}
@@ -67,61 +61,52 @@ public class PersistentCookieStore implements CookieStore, Runnable
 	}
 
 	@Override
-	public void run()
-	{
+	public void run() {
 		List<CookieContainer> cookieContainers = new ArrayList<>();
 
 		store.getURIs()
-		.stream()
-		.forEach((uri) ->
-		{
-			cookieContainers.add(new CookieContainer(uri.toString(), store.getCookies()));
-		});
+				.stream()
+				.forEach((uri) -> {
+					cookieContainers.add(new CookieContainer(uri.toString(), store.getCookies()));
+				});
 
-		try
-		{
+		try {
 			String dataToEncrypt = jsonMapper.writeValueAsString(cookieContainers);
 			//            LOGGER.info("Writing cookie store");
 			cryptoFileStore.writeFile(dataToEncrypt);
-		} catch (IOException ex)
-		{
+		}
+		catch (IOException ex) {
 			LOGGER.error("Error caching data");
 		}
 	}
 
 	@Override
-	public void add(URI uri, HttpCookie cookie)
-	{
+	public void add(URI uri, HttpCookie cookie) {
 		store.add(uri, cookie);
 	}
 
 	@Override
-	public List<HttpCookie> get(URI uri)
-	{
+	public List<HttpCookie> get(URI uri) {
 		return store.get(uri);
 	}
 
 	@Override
-	public List<HttpCookie> getCookies()
-	{
+	public List<HttpCookie> getCookies() {
 		return store.getCookies();
 	}
 
 	@Override
-	public List<URI> getURIs()
-	{
+	public List<URI> getURIs() {
 		return store.getURIs();
 	}
 
 	@Override
-	public boolean remove(URI uri, HttpCookie cookie)
-	{
+	public boolean remove(URI uri, HttpCookie cookie) {
 		return store.remove(uri, cookie);
 	}
 
 	@Override
-	public boolean removeAll()
-	{
+	public boolean removeAll() {
 		return store.removeAll();
 	}
 }

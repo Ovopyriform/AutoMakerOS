@@ -19,8 +19,7 @@ import javafx.util.Duration;
  *
  * @author ianhudson
  */
-public class StandardEffects
-{
+public class StandardEffects {
 
 	private static Glow glowEffect = new Glow();
 	private static DropShadow dropShadowEffect = new DropShadow();
@@ -29,8 +28,7 @@ public class StandardEffects
 	 *
 	 * @return
 	 */
-	public static Effect getMouseEnteredEffect()
-	{
+	public static Effect getMouseEnteredEffect() {
 		dropShadowEffect.setWidth(30);
 		dropShadowEffect.setHeight(30);
 		dropShadowEffect.setRadius(13);
@@ -42,8 +40,7 @@ public class StandardEffects
 	 *
 	 * @return
 	 */
-	public static Effect getDropShadowEffect()
-	{
+	public static Effect getDropShadowEffect() {
 		return dropShadowEffect;
 	}
 
@@ -51,8 +48,7 @@ public class StandardEffects
 	 *
 	 * @return
 	 */
-	public static Effect getButtonPressEffect()
-	{
+	public static Effect getButtonPressEffect() {
 		return glowEffect;
 	}
 
@@ -60,8 +56,7 @@ public class StandardEffects
 	 *
 	 * @param node
 	 */
-	public static void disableEffect(Node node)
-	{
+	public static void disableEffect(Node node) {
 		node.setOpacity(0.5);
 	}
 
@@ -69,8 +64,7 @@ public class StandardEffects
 	 *
 	 * @param node
 	 */
-	public static void enableEffect(Node node)
-	{
+	public static void enableEffect(Node node) {
 		node.setOpacity(1);
 	}
 
@@ -78,8 +72,7 @@ public class StandardEffects
 	 *
 	 * @return
 	 */
-	public static Effect defaultGlow()
-	{
+	public static Effect defaultGlow() {
 		return glowEffect;
 	}
 
@@ -90,8 +83,7 @@ public class StandardEffects
 	 * @param throbDuration
 	 * @return
 	 */
-	public static FillTransition getThrobFillEffect(Color throbColour, final Shape objectToThrob, double throbDuration)
-	{
+	public static FillTransition getThrobFillEffect(Color throbColour, final Shape objectToThrob, double throbDuration) {
 		final Color originalColour = (Color) objectToThrob.getFill();
 
 		FillTransition transition = new FillTransition(Duration.seconds(throbDuration), objectToThrob, originalColour, throbColour);
@@ -108,8 +100,7 @@ public class StandardEffects
 	 * @param throbDuration
 	 * @return
 	 */
-	public static StrokeTransition getThrobStrokeEffect(Color throbColour, final Shape objectToThrob, double throbDuration)
-	{
+	public static StrokeTransition getThrobStrokeEffect(Color throbColour, final Shape objectToThrob, double throbDuration) {
 		final Color originalColour = (Color) objectToThrob.getStroke();
 
 		StrokeTransition transition = new StrokeTransition(Duration.seconds(throbDuration), objectToThrob, originalColour, throbColour);
@@ -123,8 +114,7 @@ public class StandardEffects
 	 *
 	 * @param object
 	 */
-	public static void setDefaultStroke(final Shape object)
-	{
+	public static void setDefaultStroke(final Shape object) {
 		object.setStroke(Color.WHITE);
 	}
 }

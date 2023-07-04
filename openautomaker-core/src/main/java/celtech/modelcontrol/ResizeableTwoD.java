@@ -4,8 +4,7 @@ package celtech.modelcontrol;
  *
  * @author ianhudson
  */
-public interface ResizeableTwoD extends ContainerOperation
-{
+public interface ResizeableTwoD extends ContainerOperation {
 
 	public void resizeHeight(double height);
 

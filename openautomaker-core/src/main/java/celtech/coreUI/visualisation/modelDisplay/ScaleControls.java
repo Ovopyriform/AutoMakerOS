@@ -16,8 +16,7 @@ import javafx.util.Duration;
  *
  * @author Ian
  */
-public class ScaleControls
-{
+public class ScaleControls {
 
 	private final Group parentGroup;
 
@@ -36,54 +35,46 @@ public class ScaleControls
 	private final Box scaleXZBoxLeftBack = new Box(scaleBoxSize, scaleBoxSize, scaleBoxSize);
 	private final Box scaleXZBoxRightBack = new Box(scaleBoxSize, scaleBoxSize, scaleBoxSize);
 	private final Duration scaleGrowShrinkDuration = Duration.millis(500);
-	private Animation pulsateScaleBox = new Transition()
-	{
+	private Animation pulsateScaleBox = new Transition() {
 		{
 			setCycleDuration(scaleGrowShrinkDuration);
 			setAutoReverse(true);
 		}
 
 		@Override
-		public void interpolate(double frac)
-		{
+		public void interpolate(double frac) {
 			changeScale(selectedScaleBox, frac * scaleBoxGrowth + 1);
 		}
 	};
 
-	private Animation growScaleBox = new Transition()
-	{
+	private Animation growScaleBox = new Transition() {
 		{
 			setCycleDuration(scaleGrowShrinkDuration);
 			setAutoReverse(false);
 		}
 
 		@Override
-		public void interpolate(double frac)
-		{
+		public void interpolate(double frac) {
 			changeScale(selectedScaleBox, frac * scaleBoxGrowth + 1);
 		}
 	};
 
-	private Animation shrinkScaleBox = new Transition()
-	{
+	private Animation shrinkScaleBox = new Transition() {
 		{
 			setCycleDuration(scaleGrowShrinkDuration);
 			setAutoReverse(false);
 		}
 
 		@Override
-		public void interpolate(double frac)
-		{
+		public void interpolate(double frac) {
 			changeScale(selectedScaleBox, (1.0 - frac) * scaleBoxGrowth + 1);
 		}
 	};
 
-	private final EventHandler<MouseEvent> scaleEventHandler = (MouseEvent event) ->
-	{
+	private final EventHandler<MouseEvent> scaleEventHandler = (MouseEvent event) -> {
 		Node selectedNode = (Node) event.getSource();
 
-		if (event.getEventType() == MouseEvent.MOUSE_PRESSED)
-		{
+		if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
 			//            if (growScaleBox.getStatus() == Animation.Status.RUNNING)
 			//            {
 			//                growScaleBox.pause();
@@ -94,8 +85,8 @@ public class ScaleControls
 			//            {
 			//                pulsateScaleBox.playFromStart();
 			//            }
-		} else if (event.getEventType() == MouseEvent.MOUSE_RELEASED)
-		{
+		}
+		else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {
 			//            if (selectedScaleBox != null)
 			//            {
 			//                if (pulsateScaleBox.getStatus() == Animation.Status.RUNNING)
@@ -109,64 +100,56 @@ public class ScaleControls
 			//                    shrinkScaleBox.playFromStart();
 			//                }
 			//            }
-		} else if (event.getEventType() == MouseEvent.MOUSE_ENTERED)
-		{
-			if (selectedScaleBox == null)
-			{
+		}
+		else if (event.getEventType() == MouseEvent.MOUSE_ENTERED) {
+			if (selectedScaleBox == null) {
 				selectedScaleBox = selectedNode;
 
 				pulsateScaleBox.stop();
-				if (shrinkScaleBox.getStatus() == Animation.Status.RUNNING)
-				{
+				if (shrinkScaleBox.getStatus() == Animation.Status.RUNNING) {
 					shrinkScaleBox.pause();
 					Duration elapsedTime = shrinkScaleBox.getCurrentTime();
 					shrinkScaleBox.stop();
 					growScaleBox.playFrom(scaleGrowShrinkDuration.subtract(elapsedTime));
-				} else
-				{
+				}
+				else {
 					growScaleBox.playFromStart();
 				}
 			}
-		} else if (event.getEventType() == MouseEvent.MOUSE_EXITED)
-		{
-			if (selectedScaleBox != null)
-			{
+		}
+		else if (event.getEventType() == MouseEvent.MOUSE_EXITED) {
+			if (selectedScaleBox != null) {
 				pulsateScaleBox.stop();
-				if (growScaleBox.getStatus() == Animation.Status.RUNNING)
-				{
+				if (growScaleBox.getStatus() == Animation.Status.RUNNING) {
 					growScaleBox.pause();
 					Duration elapsedTime = growScaleBox.getCurrentTime();
 					growScaleBox.stop();
 					shrinkScaleBox.playFrom(scaleGrowShrinkDuration.subtract(elapsedTime));
-				} else
-				{
+				}
+				else {
 					shrinkScaleBox.playFromStart();
 				}
 			}
 		}
 	};
 
-	public ScaleControls(Group parentGroup)
-	{
+	public ScaleControls(Group parentGroup) {
 		this.parentGroup = parentGroup;
 
 		attachScalingHandles();
 
-		shrinkScaleBox.setOnFinished((ActionEvent event) ->
-		{
+		shrinkScaleBox.setOnFinished((ActionEvent event) -> {
 			selectedScaleBox = null;
 		});
 	}
 
-	private void changeScale(Node nodeToScale, double amount)
-	{
+	private void changeScale(Node nodeToScale, double amount) {
 		nodeToScale.setScaleX(amount);
 		nodeToScale.setScaleY(amount);
 		nodeToScale.setScaleZ(amount);
 	}
 
-	private void attachScalingHandles()
-	{
+	private void attachScalingHandles() {
 		scaleBoxTop.setMaterial(scaleBoxMaterial);
 		scaleBoxTop.addEventHandler(MouseEvent.ANY, scaleEventHandler);
 
@@ -205,8 +188,7 @@ public class ScaleControls
 				scaleXZBoxRightFront);
 	}
 
-	void place(double minX, double maxX, double minY, double maxY, double minZ, double maxZ)
-	{
+	void place(double minX, double maxX, double minY, double maxY, double minZ, double maxZ) {
 		double halfWidth = (maxX - minX) / 2;
 		double halfHeight = (minY - maxY) / 2;
 		double halfDepth = (maxZ - minZ) / 2;

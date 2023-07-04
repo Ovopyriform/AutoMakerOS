@@ -11,16 +11,14 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  *
  * @author Ian
  */
-public class IntegerPreference implements PreferencesInnerPanelController.Preference
-{
+public class IntegerPreference implements PreferencesInnerPanelController.Preference {
 
 	private final RestrictedNumberField control;
 	private final IntegerProperty integerProperty;
 	private final String caption;
 
 	public IntegerPreference(IntegerProperty integerProperty,
-			String caption)
-	{
+			String caption) {
 		this.integerProperty = integerProperty;
 		this.caption = caption;
 
@@ -31,15 +29,13 @@ public class IntegerPreference implements PreferencesInnerPanelController.Prefer
 		control.setAllowedDecimalPlaces(0);
 		control.setAllowNegative(false);
 		control.setMaxLength(4);
-		control.valueChangedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) ->
-		{
+		control.valueChangedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
 			updateValueFromControl();
 		});
 	}
 
 	@Override
-	public void updateValueFromControl()
-	{
+	public void updateValueFromControl() {
 		integerProperty.set(control.getAsInt());
 
 		// User Preferences controls whether the property can be set - read back just in case our selection was overridden
@@ -47,26 +43,22 @@ public class IntegerPreference implements PreferencesInnerPanelController.Prefer
 	}
 
 	@Override
-	public void populateControlWithCurrentValue()
-	{
+	public void populateControlWithCurrentValue() {
 		control.setValue(integerProperty.get());
 	}
 
 	@Override
-	public Control getControl()
-	{
+	public Control getControl() {
 		return control;
 	}
 
 	@Override
-	public String getDescription()
-	{
+	public String getDescription() {
 		return OpenAutoMakerEnv.getI18N().t(caption);
 	}
 
 	@Override
-	public void disableProperty(ObservableValue<Boolean> disableProperty)
-	{
+	public void disableProperty(ObservableValue<Boolean> disableProperty) {
 		control.disableProperty().unbind();
 		control.disableProperty().bind(disableProperty);
 	}

@@ -4,8 +4,7 @@ package celtech.modelcontrol;
  *
  * @author ianhudson
  */
-public interface RotatableThreeD extends RotatableTwoD
-{
+public interface RotatableThreeD extends RotatableTwoD {
 
 	public void setRotationTwist(double value);
 

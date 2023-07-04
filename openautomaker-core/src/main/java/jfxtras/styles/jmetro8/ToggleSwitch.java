@@ -15,9 +15,7 @@ import javafx.scene.control.Skin;
 public class ToggleSwitch extends Labeled {
 
 	/***************************************************************************
-	 *                                                                         *
-	 * Constructors                                                            *
-	 *                                                                         *
+	 * * Constructors * *
 	 **************************************************************************/
 
 	/**
@@ -43,15 +41,14 @@ public class ToggleSwitch extends Labeled {
 	}
 
 	/***************************************************************************
-	 *                                                                         *
-	 * Properties                                                              *
-	 *                                                                         *
+	 * * Properties * *
 	 **************************************************************************/
 
 	/**
 	 * Indicates whether this ToggleSwitch is selected.
 	 */
 	private BooleanProperty selected;
+
 	public final void setSelected(boolean value) {
 		selectedProperty().set(value);
 	}
@@ -63,7 +60,8 @@ public class ToggleSwitch extends Labeled {
 	public final BooleanProperty selectedProperty() {
 		if (selected == null) {
 			selected = new BooleanPropertyBase() {
-				@Override protected void invalidated() {
+				@Override
+				protected void invalidated() {
 					final Boolean v = get();
 					pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, v);
 					//                    accSendNotification(Attribute.SELECTED);
@@ -92,9 +90,16 @@ public class ToggleSwitch extends Labeled {
 		}
 		return turnOnText;
 	}
+
 	private StringProperty turnOnText;
-	public final void setTurnOnText(String value) { turnOnTextProperty().setValue(value); }
-	public final String getTurnOnText() { return turnOnText == null ? "" : turnOnText.getValue(); }
+
+	public final void setTurnOnText(String value) {
+		turnOnTextProperty().setValue(value);
+	}
+
+	public final String getTurnOnText() {
+		return turnOnText == null ? "" : turnOnText.getValue();
+	}
 
 	/**
 	 * The text to show when this switch is off. The text may be null.
@@ -105,23 +110,24 @@ public class ToggleSwitch extends Labeled {
 		}
 		return turnOffText;
 	}
+
 	private StringProperty turnOffText;
-	public final void setTurnOffText(String value) { turnOffTextProperty().setValue(value); }
-	public final String getTurnOffText() { return turnOffText == null ? "" : turnOffText.getValue(); }
+
+	public final void setTurnOffText(String value) {
+		turnOffTextProperty().setValue(value);
+	}
+
+	public final String getTurnOffText() {
+		return turnOffText == null ? "" : turnOffText.getValue();
+	}
 
 	/***************************************************************************
-	 *                                                                         *
-	 * Methods                                                                 *
-	 *                                                                         *
+	 * * Methods * *
 	 **************************************************************************/
 
 	/**
-	 * Toggles the state of the {@code ToggleSwitch}. If allowIndeterminate is
-	 * true, then each invocation of this function will advance the CheckBox
-	 * through the states checked, unchecked, and undefined. If
-	 * allowIndeterminate is false, then the CheckBox will only cycle through
-	 * the checked and unchecked states, and forcing indeterminate to equal to
-	 * false.
+	 * Toggles the state of the {@code ToggleSwitch}. If allowIndeterminate is true, then each invocation of this function will advance the CheckBox through the states checked, unchecked, and undefined. If allowIndeterminate is false, then the CheckBox
+	 * will only cycle through the checked and unchecked states, and forcing indeterminate to equal to false.
 	 */
 	public void fire() {
 		if (!isDisabled()) {
@@ -131,20 +137,17 @@ public class ToggleSwitch extends Labeled {
 	}
 
 	/** {@inheritDoc} */
-	@Override protected Skin<?> createDefaultSkin() {
+	@Override
+	protected Skin<?> createDefaultSkin() {
 		return new ToggleSwitchSkin(this);
 	}
 
-
 	/***************************************************************************
-	 *                                                                         *
-	 * Stylesheet Handling                                                     *
-	 *                                                                         *
+	 * * Stylesheet Handling * *
 	 **************************************************************************/
 
 	private static final String DEFAULT_STYLE_CLASS = "toggle-switch";
 
-	private static final PseudoClass PSEUDO_CLASS_SELECTED =
-			PseudoClass.getPseudoClass("selected");
+	private static final PseudoClass PSEUDO_CLASS_SELECTED = PseudoClass.getPseudoClass("selected");
 
 }

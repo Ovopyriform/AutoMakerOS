@@ -19,8 +19,7 @@ import javafx.scene.shape.SVGPath;
  *
  * @author Ian
  */
-public class Spinner extends StackPane implements Initializable
-{
+public class Spinner extends StackPane implements Initializable {
 
 	@FXML
 	private SVGPath outerArcs;
@@ -30,8 +29,7 @@ public class Spinner extends StackPane implements Initializable
 
 	private AnimationTimer timer = null;
 
-	public Spinner()
-	{
+	public Spinner() {
 
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
 				"/celtech/resources/fxml/components/spinner.fxml"));
@@ -40,40 +38,33 @@ public class Spinner extends StackPane implements Initializable
 
 		fxmlLoader.setClassLoader(this.getClass().getClassLoader());
 
-		try
-		{
+		try {
 			fxmlLoader.load();
 			scaleXProperty().set(0.5);
 			scaleYProperty().set(0.5);
 
-		} catch (IOException exception)
-		{
+		}
+		catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
 
 		this.getStyleClass().add("spinner");
 	}
 
-	public void startSpinning()
-	{
+	public void startSpinning() {
 		timer.start();
 	}
 
-	public void stopSpinning()
-	{
+	public void stopSpinning() {
 		timer.stop();
 	}
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)
-	{
-		timer = new AnimationTimer()
-		{
+	public void initialize(URL location, ResourceBundle resources) {
+		timer = new AnimationTimer() {
 			@Override
-			public void handle(long now)
-			{
-				if (outerArcs.isVisible())
-				{
+			public void handle(long now) {
+				if (outerArcs.isVisible()) {
 					long milliseconds = (int) (now / 1e6);
 					double outerAngle = milliseconds * 120d / 1000d;
 					double index = (outerAngle % 360);
@@ -89,24 +80,21 @@ public class Spinner extends StackPane implements Initializable
 	private void recentreSpinner(Region region) {
 		Bounds nodeBounds = region.getBoundsInLocal();
 		double centreX = nodeBounds.getMinX() + nodeBounds.getWidth() / 2.0;
-		double centreY = nodeBounds.getMinY() + nodeBounds.getHeight()/ 2.0;
+		double centreY = nodeBounds.getMinY() + nodeBounds.getHeight() / 2.0;
 		Point2D nodeCentreInScene = region.localToScene(centreX, centreY);
 		Point2D spinnerCentreInScene = localToScene(getWidth() / 2.0, getHeight() / 2.0);
 		setTranslateX(getTranslateX() + nodeCentreInScene.getX() - spinnerCentreInScene.getX());
 		setTranslateY(getTranslateY() + nodeCentreInScene.getY() - spinnerCentreInScene.getY());
 	}
 
-	public void setCentreNode(Region centreNode)
-	{
+	public void setCentreNode(Region centreNode) {
 		centreNode.widthProperty().addListener(
-				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-				{
+				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 					recentreSpinner(centreNode);
 				});
 
 		centreNode.heightProperty().addListener(
-				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) ->
-				{
+				(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 					recentreSpinner(centreNode);
 				});
 

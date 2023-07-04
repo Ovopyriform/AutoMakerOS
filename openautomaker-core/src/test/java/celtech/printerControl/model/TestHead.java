@@ -13,25 +13,21 @@ import xyz.openautomaker.base.printerControl.model.NozzleHeater;
  *
  * @author tony
  */
-public class TestHead extends Head
-{
+public class TestHead extends Head {
 
-	public TestHead(HeadFile headFile)
-	{
+	public TestHead(HeadFile headFile) {
 		super(headFile);
 	}
 
 	@Override
-	protected NozzleHeater makeNozzleHeater(NozzleHeaterData nozzleHeaterData)
-	{
+	protected NozzleHeater makeNozzleHeater(NozzleHeaterData nozzleHeaterData) {
 		return new TestNozzleHeater(nozzleHeaterData.getMaximum_temperature_C(),
 				nozzleHeaterData.getBeta(),
 				nozzleHeaterData.getTcal(),
 				0, 0, 0, 0, "");
 	}
 
-	public class TestNozzleHeater extends NozzleHeater
-	{
+	public class TestNozzleHeater extends NozzleHeater {
 
 		public TestNozzleHeater(float maximumTemperature,
 				float beta,
@@ -40,15 +36,13 @@ public class TestHead extends Head
 				int nozzleTemperature,
 				int nozzleFirstLayerTargetTemperature,
 				int nozzleTargetTemperature,
-				String filamentID)
-		{
+				String filamentID) {
 			super(maximumTemperature, beta, tcal, lastFilamentTemperature, nozzleTemperature,
 					nozzleFirstLayerTargetTemperature, nozzleTargetTemperature, filamentID);
 		}
 
 		@Override
-		public FloatProperty lastFilamentTemperatureProperty()
-		{
+		public FloatProperty lastFilamentTemperatureProperty() {
 			return lastFilamentTemperature;
 		}
 

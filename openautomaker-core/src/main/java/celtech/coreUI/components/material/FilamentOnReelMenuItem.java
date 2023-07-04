@@ -9,10 +9,8 @@ import xyz.openautomaker.base.configuration.Filament;
  *
  * @author Ian
  */
-public class FilamentOnReelMenuItem extends CustomMenuItem
-{
-	public FilamentOnReelMenuItem(String title, Filament filament, double prefWidth)
-	{
+public class FilamentOnReelMenuItem extends CustomMenuItem {
+	public FilamentOnReelMenuItem(String title, Filament filament, double prefWidth) {
 		super();
 		FilamentOnReelDisplay filamentOnReelDisplay = new FilamentOnReelDisplay(title, filament);
 		filamentOnReelDisplay.setPrefWidth(prefWidth);

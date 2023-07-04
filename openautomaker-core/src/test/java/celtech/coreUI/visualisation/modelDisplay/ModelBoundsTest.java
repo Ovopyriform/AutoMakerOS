@@ -1,14 +1,11 @@
-/*
- * Copyright 2014 CEL UK
- */
+
 package celtech.coreUI.visualisation.modelDisplay;
 
 /**
  *
  * @author tony
  */
-public class ModelBoundsTest
-{
+public class ModelBoundsTest {
 
 	//    @Test
 	//    public void testGetCorners()

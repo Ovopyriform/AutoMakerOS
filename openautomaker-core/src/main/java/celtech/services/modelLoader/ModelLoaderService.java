@@ -12,25 +12,21 @@ import xyz.openautomaker.base.services.ControllableService;
  * @author ianhudson
  */
 public class ModelLoaderService extends Service<ModelLoadResults> implements
-ControllableService
-{
+		ControllableService {
 
 	private List<File> modelFilesToLoad;
 
-	public final void setModelFilesToLoad(List<File> modelFiles)
-	{
+	public final void setModelFilesToLoad(List<File> modelFiles) {
 		modelFilesToLoad = modelFiles;
 	}
 
 	@Override
-	protected Task<ModelLoadResults> createTask()
-	{
+	protected Task<ModelLoadResults> createTask() {
 		return new ModelLoaderTask(modelFilesToLoad);
 	}
 
 	@Override
-	public boolean cancelRun()
-	{
+	public boolean cancelRun() {
 		return cancel();
 	}
 

@@ -16,34 +16,29 @@ import celtech.modelcontrol.ProjectifiableThing;
  *
  * @author tony
  */
-public class GroupCommand extends Command
-{
+public class GroupCommand extends Command {
 
 	Project project;
 	Set<Groupable> modelContainers;
 	private Set<ItemState> states;
 	ModelContainer group;
 
-	public GroupCommand(Project project, Set<Groupable> modelContainers)
-	{
+	public GroupCommand(Project project, Set<Groupable> modelContainers) {
 		states = new HashSet<>();
 		this.project = project;
 		this.modelContainers = modelContainers;
 	}
 
 	@Override
-	public void do_()
-	{
-		for (Groupable modelContainer : modelContainers)
-		{
-			states.add(((ProjectifiableThing)modelContainer).getState());
+	public void do_() {
+		for (Groupable modelContainer : modelContainers) {
+			states.add(((ProjectifiableThing) modelContainer).getState());
 		}
 		doGroup();
 	}
 
 	@Override
-	public void undo()
-	{
+	public void undo() {
 		Set<ModelContainer> modelContainers = new HashSet<>();
 		modelContainers.add(group);
 		project.ungroup(modelContainers);
@@ -52,28 +47,24 @@ public class GroupCommand extends Command
 	}
 
 	@Override
-	public void redo()
-	{
+	public void redo() {
 		doGroup();
 	}
 
 	private void doGroup() {
-		if (modelContainers.size() == 1)
-		{
+		if (modelContainers.size() == 1) {
 			return;
 		}
 		group = project.group(modelContainers);
 	}
 
 	@Override
-	public boolean canMergeWith(Command command)
-	{
+	public boolean canMergeWith(Command command) {
 		return false;
 	}
 
 	@Override
-	public void merge(Command command)
-	{
+	public void merge(Command command) {
 		throw new UnsupportedOperationException("Should never be called");
 	}
 

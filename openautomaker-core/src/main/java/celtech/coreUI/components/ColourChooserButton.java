@@ -16,8 +16,7 @@ import xyz.openautomaker.base.utils.AxisSpecifier;
  *
  * @author Ian
  */
-public class ColourChooserButton extends ToggleButton
-{
+public class ColourChooserButton extends ToggleButton {
 	private final ObjectProperty<AxisSpecifier> axis = new SimpleObjectProperty<>();
 	private final ObjectProperty<Color> displayColour = new SimpleObjectProperty<>(Color.WHITE);
 	private final Rectangle colourSwatch = new Rectangle(30, 30);
@@ -26,8 +25,7 @@ public class ColourChooserButton extends ToggleButton
 	 *
 	 * @param value
 	 */
-	public void setDisplayColour(Color value)
-	{
+	public void setDisplayColour(Color value) {
 		displayColour.set(value);
 	}
 
@@ -35,8 +33,7 @@ public class ColourChooserButton extends ToggleButton
 	 *
 	 * @return
 	 */
-	public Color getDisplayColour()
-	{
+	public Color getDisplayColour() {
 		return displayColour.get();
 	}
 
@@ -44,16 +41,14 @@ public class ColourChooserButton extends ToggleButton
 	 *
 	 * @return
 	 */
-	public ObjectProperty<Color> getDisplayColourProperty()
-	{
+	public ObjectProperty<Color> getDisplayColourProperty() {
 		return displayColour;
 	}
 
 	/**
 	 *
 	 */
-	public ColourChooserButton()
-	{
+	public ColourChooserButton() {
 		getStyleClass().add("printer-colour-button");
 		setPickOnBounds(false);
 		this.setGraphic(colourSwatch);

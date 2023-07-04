@@ -8,16 +8,14 @@ import javafx.scene.control.Button;
  *
  * @author Ian
  */
-public class GCodeMacroButton extends Button
-{
+public class GCodeMacroButton extends Button {
 	private StringProperty macroName = new SimpleStringProperty("");
 
 	/**
 	 *
 	 * @param value
 	 */
-	public void setMacroName(String value)
-	{
+	public void setMacroName(String value) {
 		macroName.set(value);
 	}
 
@@ -25,8 +23,7 @@ public class GCodeMacroButton extends Button
 	 *
 	 * @return
 	 */
-	public String getMacroName()
-	{
+	public String getMacroName() {
 		return macroName.get();
 	}
 
@@ -34,8 +31,7 @@ public class GCodeMacroButton extends Button
 	 *
 	 * @return
 	 */
-	public StringProperty macroNameProperty()
-	{
+	public StringProperty macroNameProperty() {
 		return macroName;
 	}
 }

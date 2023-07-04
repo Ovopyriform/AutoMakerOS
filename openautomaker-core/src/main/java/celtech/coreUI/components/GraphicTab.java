@@ -17,70 +17,59 @@ import javafx.scene.control.Tab;
  *
  * @author George Salter
  */
-public class GraphicTab extends Tab
-{
+public class GraphicTab extends Tab {
 	private static final Logger LOGGER = LogManager.getLogger(GraphicTab.class.getName());
 
 	private final StringProperty fxmlIconName = new SimpleStringProperty("");
 	private final StringProperty fxmlSelectedIconName = new SimpleStringProperty("");
 
 	private final ChangeListener<Boolean> selectedTabChangeListener = (observable, oldValue, selected) -> {
-		if (selected)
-		{
+		if (selected) {
 			loadFXMLIcon(fxmlSelectedIconName.get());
-		} else
-		{
+		}
+		else {
 			loadFXMLIcon(fxmlIconName.get());
 		}
 	};
 
-	public GraphicTab()
-	{
+	public GraphicTab() {
 		selectedProperty().addListener(selectedTabChangeListener);
 	}
 
-	public GraphicTab(String fxmlIconName)
-	{
+	public GraphicTab(String fxmlIconName) {
 		setFxmlIconName(fxmlIconName);
 		selectedProperty().addListener(selectedTabChangeListener);
 	}
 
-	public String getFxmlIconName()
-	{
+	public String getFxmlIconName() {
 		return this.fxmlIconName.get();
 	}
 
-	public void setFxmlIconName(String fxmlFileName)
-	{
+	public void setFxmlIconName(String fxmlFileName) {
 		this.fxmlIconName.set(fxmlFileName);
 		loadFXMLIcon(this.fxmlIconName.get());
 	}
 
-	public String getFxmlSelectedIconName()
-	{
+	public String getFxmlSelectedIconName() {
 		return this.fxmlSelectedIconName.get();
 	}
 
-	public void setFxmlSelectedIconName(String fxmlSelectedFileName)
-	{
+	public void setFxmlSelectedIconName(String fxmlSelectedFileName) {
 		this.fxmlSelectedIconName.set(fxmlSelectedFileName);
 	}
 
-	private void loadFXMLIcon(String fxmlIconName)
-	{
-		if (!fxmlIconName.equalsIgnoreCase(""))
-		{
+	private void loadFXMLIcon(String fxmlIconName) {
+		if (!fxmlIconName.equalsIgnoreCase("")) {
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
 					ApplicationConfiguration.fxmlTabsResourcePath + fxmlIconName + ".fxml"));
 
 			fxmlLoader.setClassLoader(this.getClass().getClassLoader());
 
-			try
-			{
+			try {
 				Group graphicGroup = fxmlLoader.load();
 				setGraphic(graphicGroup);
-			} catch (IOException ex)
-			{
+			}
+			catch (IOException ex) {
 				LOGGER.error("Could not load FXML from file: " + fxmlIconName + ".fxml", ex);
 			}
 		}

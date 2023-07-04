@@ -17,8 +17,7 @@ import celtech.modelcontrol.TranslateableTwoD;
  *
  * @author tony
  */
-public class CopyModelsCommand extends Command
-{
+public class CopyModelsCommand extends Command {
 
 	private static final Logger LOGGER = LogManager.getLogger(
 			CopyModelsCommand.class.getName());
@@ -27,21 +26,17 @@ public class CopyModelsCommand extends Command
 	Set<ProjectifiableThing> modelContainers;
 	Set<ProjectifiableThing> newProjectifiableThings;
 
-	public CopyModelsCommand(Project project, Set<ProjectifiableThing> modelContainers)
-	{
+	public CopyModelsCommand(Project project, Set<ProjectifiableThing> modelContainers) {
 		this.project = project;
 		this.modelContainers = modelContainers;
 	}
 
 	@Override
-	public void do_()
-	{
+	public void do_() {
 		newProjectifiableThings = new HashSet<>();
-		for (ProjectifiableThing modelContainer : modelContainers)
-		{
+		for (ProjectifiableThing modelContainer : modelContainers) {
 			ProjectifiableThing newModel = modelContainer.makeCopy();
-			if (TranslateableTwoD.class.isInstance(newModel))
-			{
+			if (TranslateableTwoD.class.isInstance(newModel)) {
 				((TranslateableTwoD) newModel).translateBy(20, 20);
 			}
 			newProjectifiableThings.add(newModel);
@@ -50,29 +45,24 @@ public class CopyModelsCommand extends Command
 	}
 
 	@Override
-	public void undo()
-	{
+	public void undo() {
 		project.removeModels(newProjectifiableThings);
 	}
 
 	@Override
-	public void redo()
-	{
-		for (ProjectifiableThing modelContainer : newProjectifiableThings)
-		{
+	public void redo() {
+		for (ProjectifiableThing modelContainer : newProjectifiableThings) {
 			project.addModel(modelContainer);
 		}
 	}
 
 	@Override
-	public boolean canMergeWith(Command command)
-	{
+	public boolean canMergeWith(Command command) {
 		return false;
 	}
 
 	@Override
-	public void merge(Command command)
-	{
+	public void merge(Command command) {
 		throw new UnsupportedOperationException("Should never be called.");
 	}
 

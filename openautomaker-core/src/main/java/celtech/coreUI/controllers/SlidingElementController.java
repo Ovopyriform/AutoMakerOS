@@ -16,8 +16,7 @@ import javafx.util.Duration;
  *
  * @author Ian Hudson @ Liberty Systems Limited
  */
-public class SlidingElementController
-{
+public class SlidingElementController {
 
 	private Animation hideSidebar = null;
 	private Animation showSidebar = null;
@@ -36,225 +35,199 @@ public class SlidingElementController
 	/**
 	 *
 	 */
-	 public SlidingElementController()
-	 {
-		 hideSidebar = new Transition()
-		 {
+	public SlidingElementController() {
+		hideSidebar = new Transition() {
 
+			{
+				setCycleDuration(Duration.millis(250));
+			}
 
-			 {
-				 setCycleDuration(Duration.millis(250));
-			 }
+			@Override
+			public void interpolate(double frac) {
+				slideMenuPanel(1.0 - frac);
+			}
+		};
 
-			 @Override
-			 public void interpolate(double frac)
-			 {
-				 slideMenuPanel(1.0 - frac);
-			 }
-		 };
+		// create an animation to show a sidebar.
+		showSidebar = new Transition() {
 
-		 // create an animation to show a sidebar.
-		 showSidebar = new Transition()
-		 {
+			{
+				setCycleDuration(Duration.millis(250));
+			}
 
+			@Override
+			public void interpolate(double frac) {
+				slideMenuPanel(frac);
+			}
+		};
+	}
 
-			 {
-				 setCycleDuration(Duration.millis(250));
-			 }
+	/**
+	 *
+	 * @param paneToSlide
+	 * @param directionToSlide
+	 */
+	public void configurePanel(Pane paneToSlide, SlidingComponentDirection directionToSlide) {
+		this.paneToSlide = paneToSlide;
+		this.directionToSlide = directionToSlide;
+	}
 
-			 @Override
-			 public void interpolate(double frac)
-			 {
-				 slideMenuPanel(frac);
-			 }
-		 };
-	 }
+	/**
+	 *
+	 */
+	public void toggleSlide() {
+		if (slidIn) {
+			startSlidingOut();
+		}
+		else {
+			startSlidingIn();
+		}
+	}
 
-	 /**
-	  *
-	  * @param paneToSlide
-	  * @param directionToSlide
-	  */
-	 public void configurePanel(Pane paneToSlide, SlidingComponentDirection directionToSlide)
-	 {
-		 this.paneToSlide = paneToSlide;
-		 this.directionToSlide = directionToSlide;
-	 }
+	/**
+	 *
+	 */
+	public void slideIn() {
+		slideMenuPanel(0.0);
+		hidden = true;
+	}
 
-	 /**
-	  *
-	  */
-	 public void toggleSlide()
-	 {
-		 if (slidIn)
-		 {
-			 startSlidingOut();
-		 } else
-		 {
-			 startSlidingIn();
-		 }
-	 }
+	/**
+	 *
+	 */
+	public void slideOut() {
+		slideMenuPanel(1.0);
+		hidden = false;
+	}
 
-	 /**
-	  *
-	  */
-	 public void slideIn()
-	 {
-		 slideMenuPanel(0.0);
-		 hidden = true;
-	 }
+	/**
+	 *
+	 * @param amountToShow
+	 */
+	public void slideMenuPanel(double amountToShow) {
+		if (amountToShow < minimumToShow) {
+			amountToShow = minimumToShow;
+		}
+		else if (amountToShow > maximumToShow) {
+			amountToShow = maximumToShow;
+		}
 
-	 /**
-	  *
-	  */
-	 public void slideOut()
-	 {
-		 slideMenuPanel(1.0);
-		 hidden = false;
-	 }
+		if (amountToShow == minimumToShow) {
+			slidIn = true;
+		}
+		else {
+			slidIn = false;
+		}
 
-	 /**
-	  *
-	  * @param amountToShow
-	  */
-	 public void slideMenuPanel(double amountToShow)
-	 {
-		 if (amountToShow < minimumToShow)
-		 {
-			 amountToShow = minimumToShow;
-		 } else if (amountToShow > maximumToShow)
-		 {
-			 amountToShow = maximumToShow;
-		 }
+		if (directionToSlide == SlidingComponentDirection.IN_FROM_LEFT
+				|| directionToSlide == SlidingComponentDirection.IN_FROM_RIGHT) {
+			double targetPanelWidth = panelWidth * amountToShow;
+			double widthToHide = panelWidth - targetPanelWidth;
+			double translateByX = 0;
 
-		 if (amountToShow == minimumToShow)
-		 {
-			 slidIn = true;
-		 } else
-		 {
-			 slidIn = false;
-		 }
+			if (directionToSlide == SlidingComponentDirection.IN_FROM_LEFT) {
+				translateByX = -panelWidth + targetPanelWidth;
+				clippingRectangle.setX(-translateByX);
+			}
+			else {
+				translateByX = panelWidth - targetPanelWidth;
+			}
 
-		 if (directionToSlide == SlidingComponentDirection.IN_FROM_LEFT
-				 || directionToSlide == SlidingComponentDirection.IN_FROM_RIGHT)
-		 {
-			 double targetPanelWidth = panelWidth * amountToShow;
-			 double widthToHide = panelWidth - targetPanelWidth;
-			 double translateByX = 0;
+			clippingRectangle.setHeight(panelHeight);
+			clippingRectangle.setWidth(targetPanelWidth);
 
-			 if (directionToSlide == SlidingComponentDirection.IN_FROM_LEFT)
-			 {
-				 translateByX = -panelWidth + targetPanelWidth;
-				 clippingRectangle.setX(-translateByX);
-			 } else
-			 {
-				 translateByX = panelWidth - targetPanelWidth;
-			 }
+			paneToSlide.setClip(clippingRectangle);
+			paneToSlide.setTranslateX(translateByX);
+		}
+		else if (directionToSlide == SlidingComponentDirection.DOWN_FROM_TOP
+				|| directionToSlide == SlidingComponentDirection.UP_FROM_BOTTOM) {
+			double targetPanelHeight = panelHeight * amountToShow;
+			double heightToHide = panelHeight - targetPanelHeight;
+			double translateByY = 0;
 
-			 clippingRectangle.setHeight(panelHeight);
-			 clippingRectangle.setWidth(targetPanelWidth);
+			if (directionToSlide == SlidingComponentDirection.DOWN_FROM_TOP) {
+				translateByY = -panelHeight + targetPanelHeight;
+				clippingRectangle.setY(panelLayoutMinY + heightToHide);
 
-			 paneToSlide.setClip(clippingRectangle);
-			 paneToSlide.setTranslateX(translateByX);
-		 } else if (directionToSlide == SlidingComponentDirection.DOWN_FROM_TOP
-				 || directionToSlide == SlidingComponentDirection.UP_FROM_BOTTOM)
-		 {
-			 double targetPanelHeight = panelHeight * amountToShow;
-			 double heightToHide = panelHeight - targetPanelHeight;
-			 double translateByY = 0;
+			}
+			else {
+				translateByY = panelHeight - targetPanelHeight;
+			}
 
-			 if (directionToSlide == SlidingComponentDirection.DOWN_FROM_TOP)
-			 {
-				 translateByY = -panelHeight + targetPanelHeight;
-				 clippingRectangle.setY(panelLayoutMinY + heightToHide);
+			clippingRectangle.setHeight(targetPanelHeight);
+			clippingRectangle.setWidth(panelWidth);
 
-			 } else
-			 {
-				 translateByY = panelHeight - targetPanelHeight;
-			 }
+			paneToSlide.setClip(clippingRectangle);
+			paneToSlide.setTranslateY(translateByY);
+		}
+	}
 
-			 clippingRectangle.setHeight(targetPanelHeight);
-			 clippingRectangle.setWidth(panelWidth);
+	/**
+	 *
+	 * @return
+	 */
+	public boolean isHidden() {
+		return hidden;
+	}
 
-			 paneToSlide.setClip(clippingRectangle);
-			 paneToSlide.setTranslateY(translateByY);
-		 }
-	 }
+	/**
+	 *
+	 * @return
+	 */
+	public boolean isSliding() {
+		return showSidebar.statusProperty().get() != Animation.Status.STOPPED
+				|| hideSidebar.statusProperty().get() != Animation.Status.STOPPED;
+	}
 
-	 /**
-	  *
-	  * @return
-	  */
-	 public boolean isHidden()
-	 {
-		 return hidden;
-	 }
+	/**
+	 *
+	 * @return
+	 */
+	public boolean startSlidingOut() {
+		if (hideSidebar.statusProperty().get() == Animation.Status.STOPPED) {
+			//            LOGGER.info("Pulling out");
+			showSidebar.play();
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 
-	 /**
-	  *
-	  * @return
-	  */
-	 public boolean isSliding()
-	 {
-		 return showSidebar.statusProperty().get() != Animation.Status.STOPPED
-				 || hideSidebar.statusProperty().get() != Animation.Status.STOPPED;
-	 }
+	/**
+	 *
+	 * @return
+	 */
+	public boolean startSlidingIn() {
+		if (showSidebar.statusProperty().get() == Animation.Status.STOPPED) {
+			//            LOGGER.info("Hiding");
+			hideSidebar.play();
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 
-	 /**
-	  *
-	  * @return
-	  */
-	 public boolean startSlidingOut()
-	 {
-		 if (hideSidebar.statusProperty().get() == Animation.Status.STOPPED)
-		 {
-			 //            LOGGER.info("Pulling out");
-			 showSidebar.play();
-			 return true;
-		 } else
-		 {
-			 return false;
-		 }
-	 }
+	/**
+	 *
+	 * @return
+	 */
+	public boolean isSlidIn() {
+		return slidIn;
+	}
 
-	 /**
-	  *
-	  * @return
-	  */
-	 public boolean startSlidingIn()
-	 {
-		 if (showSidebar.statusProperty().get() == Animation.Status.STOPPED)
-		 {
-			 //            LOGGER.info("Hiding");
-			 hideSidebar.play();
-			 return true;
-		 } else
-		 {
-			 return false;
-		 }
-	 }
-
-	 /**
-	  *
-	  * @return
-	  */
-	 public boolean isSlidIn()
-	 {
-		 return slidIn;
-	 }
-
-	 /**
-	  *
-	  * @param panelWidth
-	  * @param panelHeight
-	  * @param panelLayoutMinX
-	  * @param panelLayoutMinY
-	  */
-	 public void setDimensions(double panelWidth, double panelHeight, double panelLayoutMinX, double panelLayoutMinY)
-	 {
-		 this.panelWidth = panelWidth;
-		 this.panelHeight = panelHeight;
-		 this.panelLayoutMinX = panelLayoutMinX;
-		 this.panelLayoutMinY = panelLayoutMinY;
-	 }
+	/**
+	 *
+	 * @param panelWidth
+	 * @param panelHeight
+	 * @param panelLayoutMinX
+	 * @param panelLayoutMinY
+	 */
+	public void setDimensions(double panelWidth, double panelHeight, double panelLayoutMinX, double panelLayoutMinY) {
+		this.panelWidth = panelWidth;
+		this.panelHeight = panelHeight;
+		this.panelLayoutMinX = panelLayoutMinX;
+		this.panelLayoutMinY = panelLayoutMinY;
+	}
 }

@@ -27,8 +27,7 @@ import javafx.stage.StageStyle;
  *
  * @author ianhudson
  */
-public class ModalDialog
-{
+public class ModalDialog {
 
 	private static final Logger LOGGER = LogManager.getLogger(ModalDialog.class.getName());
 	private Stage dialogStage = null;
@@ -38,27 +37,23 @@ public class ModalDialog
 	 *
 	 * @param windowTitle
 	 */
-	public ModalDialog(String windowTitle)
-	{
+	public ModalDialog(String windowTitle) {
 		initialise(windowTitle);
 	}
 
 	/**
 	 *
 	 */
-	public ModalDialog()
-	{
+	public ModalDialog() {
 		initialise(null);
 	}
 
-	private void initialise(String windowTitle)
-	{
-		if (windowTitle != null)
-		{
+	private void initialise(String windowTitle) {
+		if (windowTitle != null) {
 			dialogStage = new Stage(StageStyle.UTILITY);
 			dialogStage.setTitle(windowTitle);
-		} else
-		{
+		}
+		else {
 			dialogStage = new Stage(StageStyle.TRANSPARENT);
 		}
 
@@ -66,8 +61,7 @@ public class ModalDialog
 
 		URL dialogFXMLURL = ModalDialog.class.getResource(ApplicationConfiguration.fxmlResourcePath + "ModalDialog.fxml");
 		FXMLLoader dialogLoader = new FXMLLoader(dialogFXMLURL);
-		try
-		{
+		try {
 			Parent dialogBoxScreen = (Parent) dialogLoader.load();
 			dialogController = (ModalDialogController) dialogLoader.getController();
 
@@ -77,8 +71,8 @@ public class ModalDialog
 			dialogStage.initOwner(DisplayManager.getMainStage());
 			dialogStage.initModality(Modality.APPLICATION_MODAL);
 			dialogController.configure(dialogStage);
-		} catch (IOException ex)
-		{
+		}
+		catch (IOException ex) {
 			LOGGER.error("Couldn't load dialog box FXML");
 		}
 	}
@@ -87,8 +81,7 @@ public class ModalDialog
 	 *
 	 * @param title
 	 */
-	public void setTitle(String title)
-	{
+	public void setTitle(String title) {
 		dialogController.setDialogTitle(title);
 	}
 
@@ -96,8 +89,7 @@ public class ModalDialog
 	 *
 	 * @param message
 	 */
-	public void setMessage(String message)
-	{
+	public void setMessage(String message) {
 		dialogController.setDialogMessage(message);
 	}
 
@@ -106,8 +98,7 @@ public class ModalDialog
 	 * @param text
 	 * @return
 	 */
-	public int addButton(String text)
-	{
+	public int addButton(String text) {
 		return dialogController.addButton(text);
 	}
 
@@ -117,8 +108,7 @@ public class ModalDialog
 	 * @param disabler
 	 * @return
 	 */
-	public int addButton(String text, ReadOnlyBooleanProperty disabler)
-	{
+	public int addButton(String text, ReadOnlyBooleanProperty disabler) {
 		return dialogController.addButton(text, disabler);
 	}
 
@@ -126,8 +116,7 @@ public class ModalDialog
 	 *
 	 * @return
 	 */
-	public int show()
-	{
+	public int show() {
 		dialogStage.showAndWait();
 
 		return dialogController.getButtonValue();
@@ -136,8 +125,7 @@ public class ModalDialog
 	/**
 	 *
 	 */
-	public void close()
-	{
+	public void close() {
 		dialogStage.hide();
 	}
 
@@ -145,8 +133,7 @@ public class ModalDialog
 	 *
 	 * @return
 	 */
-	public boolean isShowing()
-	{
+	public boolean isShowing() {
 		return dialogStage.isShowing();
 	}
 
@@ -154,8 +141,7 @@ public class ModalDialog
 	 *
 	 * @param content
 	 */
-	public void setContent(Node content)
-	{
+	public void setContent(Node content) {
 		dialogController.setContent(content);
 	}
 }
