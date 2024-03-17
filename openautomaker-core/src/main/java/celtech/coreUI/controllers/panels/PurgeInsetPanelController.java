@@ -9,8 +9,25 @@ import javax.print.PrintException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.appManager.NotificationType;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
+import org.openautomaker.base.printerControl.PrinterStatus;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.base.printerControl.model.PrinterListChangesAdapter;
+import org.openautomaker.base.printerControl.model.Reel;
+import org.openautomaker.base.printerControl.model.statetransitions.StateTransition;
+import org.openautomaker.base.printerControl.model.statetransitions.StateTransitionManager;
+import org.openautomaker.base.printerControl.model.statetransitions.StateTransitionManager.GUIName;
+import org.openautomaker.base.printerControl.model.statetransitions.purge.PurgeState;
+import org.openautomaker.base.printerControl.model.statetransitions.purge.PurgeStateTransitionManager;
+import org.openautomaker.base.utils.PrinterUtils;
+import org.openautomaker.environment.preference.SafetyFeaturesPreference;
+import org.openautomaker.ui.utils.FXProperty;
 
-import celtech.Lookup;
 import celtech.appManager.ApplicationMode;
 import celtech.appManager.ApplicationStatus;
 import celtech.appManager.ModelContainerProject;
@@ -33,22 +50,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.appManager.NotificationType;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
-import xyz.openautomaker.base.printerControl.PrinterStatus;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
-import xyz.openautomaker.base.printerControl.model.PrinterListChangesAdapter;
-import xyz.openautomaker.base.printerControl.model.Reel;
-import xyz.openautomaker.base.printerControl.model.statetransitions.StateTransition;
-import xyz.openautomaker.base.printerControl.model.statetransitions.StateTransitionManager;
-import xyz.openautomaker.base.printerControl.model.statetransitions.StateTransitionManager.GUIName;
-import xyz.openautomaker.base.printerControl.model.statetransitions.purge.PurgeState;
-import xyz.openautomaker.base.printerControl.model.statetransitions.purge.PurgeStateTransitionManager;
-import xyz.openautomaker.base.utils.PrinterUtils;
 
 /**
  *
@@ -56,8 +57,9 @@ import xyz.openautomaker.base.utils.PrinterUtils;
  */
 public class PurgeInsetPanelController implements Initializable {
 
-	private static final Logger LOGGER = LogManager.getLogger(
-			PurgeInsetPanelController.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger();
+
+	private final SafetyFeaturesPreference fSafetyFeaturesPreference = new SafetyFeaturesPreference();
 
 	private ModelContainerProject project = null;
 	private Printer printer = null;
@@ -508,8 +510,7 @@ public class PurgeInsetPanelController implements Initializable {
 
 	private void installTagAndDisabledStatusForButton(PurgeStateTransitionManager transitionManager,
 			Printer printer, GraphicButtonWithLabel button) {
-		BooleanBinding doorIsOpen = printer.getPrinterAncillarySystems().doorOpenProperty().and(
-				Lookup.getUserPreferences().safetyFeaturesOnProperty());
+		BooleanBinding doorIsOpen = printer.getPrinterAncillarySystems().doorOpenProperty().and(FXProperty.bind(fSafetyFeaturesPreference));
 
 		BooleanBinding extruder0NotLoaded = printer.extrudersProperty().get(0).filamentLoadedProperty().not();
 
@@ -641,7 +642,7 @@ public class PurgeInsetPanelController implements Initializable {
 		ApplicationStatus.getInstance().setMode(ApplicationMode.PURGE);
 
 		try {
-			transitionManager = printer.startPurge(Lookup.getUserPreferences().isSafetyFeaturesOn());
+			transitionManager = printer.startPurge(fSafetyFeaturesPreference.get());
 
 			currentMaterialTemperature0.textProperty().unbind();
 			lastMaterialTemperature0.textProperty().unbind();

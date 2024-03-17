@@ -1,14 +1,15 @@
 package celtech.coreUI.controllers.panels;
 
+import org.openautomaker.base.configuration.BaseConfiguration;
+import org.openautomaker.base.printerControl.model.HeaterMode;
+import org.openautomaker.environment.OpenAutomakerEnv;
+
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.printerControl.model.HeaterMode;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -60,7 +61,7 @@ public class NozzleChartData {
 
 		nozzleTargetTemperatureSeries.getData().add(nozzleTargetPoint);
 
-		degreesC = OpenAutoMakerEnv.getI18N().t("misc.degreesC");
+		degreesC = OpenAutomakerEnv.getI18N().t("misc.degreesC");
 
 		updateNozzleTargetPoint();
 	}

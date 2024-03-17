@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-
-import xyz.openautomaker.base.configuration.fileRepresentation.CameraProfile;
+import org.openautomaker.base.configuration.fileRepresentation.CameraProfile;
 
 /**
  *

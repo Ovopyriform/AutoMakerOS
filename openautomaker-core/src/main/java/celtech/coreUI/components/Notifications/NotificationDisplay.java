@@ -1,8 +1,9 @@
 package celtech.coreUI.components.Notifications;
 
+import org.openautomaker.base.appManager.NotificationType;
+
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
-import xyz.openautomaker.base.appManager.NotificationType;
 
 /**
  *

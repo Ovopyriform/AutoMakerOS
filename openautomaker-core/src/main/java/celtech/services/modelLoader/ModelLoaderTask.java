@@ -1,5 +1,7 @@
 package celtech.services.modelLoader;
 
+import static org.openautomaker.environment.OpenAutomakerEnv.TEMP;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,6 +12,8 @@ import java.util.zip.ZipFile;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.utils.FileUtilities;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.coreUI.visualisation.metaparts.ModelLoadResult;
 import celtech.coreUI.visualisation.metaparts.ModelLoadResultType;
@@ -21,9 +25,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.utils.FileUtilities;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -51,13 +52,13 @@ public class ModelLoaderTask extends Task<ModelLoadResults> {
 	protected ModelLoadResults call() throws Exception {
 		List<ModelLoadResult> modelLoadResultList = new ArrayList<>();
 
-		updateTitle(OpenAutoMakerEnv.getI18N().t("dialogs.loadModelTitle"));
+		updateTitle(OpenAutomakerEnv.getI18N().t("dialogs.loadModelTitle"));
 
 		for (File modelFileToLoad : modelFilesToLoad) {
 			LOGGER.info("Model file load started:" + modelFileToLoad.getName());
 
 			String modelFilePath = modelFileToLoad.getAbsolutePath();
-			updateMessage(OpenAutoMakerEnv.getI18N().t("dialogs.gcodeLoadMessagePrefix")
+			updateMessage(OpenAutomakerEnv.getI18N().t("dialogs.gcodeLoadMessagePrefix")
 					+ modelFileToLoad.getName());
 			updateProgress(0, 100);
 
@@ -71,7 +72,7 @@ public class ModelLoaderTask extends Task<ModelLoadResults> {
 					final Enumeration<? extends ZipEntry> entries = zipFile.entries();
 					while (entries.hasMoreElements()) {
 						final ZipEntry entry = entries.nextElement();
-						final String tempTargetname = BaseConfiguration.getUserTempDirectory() + entry.getName();
+						final String tempTargetname = OpenAutomakerEnv.get().getUserPath(TEMP) + entry.getName();
 						FileUtilities.writeStreamToFile(zipFile.getInputStream(entry), tempTargetname);
 						fileNamesToLoad.add(tempTargetname);
 					}

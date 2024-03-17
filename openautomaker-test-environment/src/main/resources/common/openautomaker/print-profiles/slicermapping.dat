@@ -1,6 +1,6 @@
 {
 	"mappings": {
-		"Cura": {
+		"CURA": {
 			/*
 			 * Defaults for all profiles
 			 */
@@ -91,7 +91,7 @@
 				"raftInterfaceThickness": "280:?printRaft=false->|"
 			}
 		},
-		"Cura4": {
+		"CURA_4": {
 			/*
 			 * Defaults for all profiles
 			 */
@@ -238,7 +238,7 @@
 				"cool_min_speed": "minPrintSpeed_mm_per_s"
 			}
 		},
-		"Cura5": {
+		"CURA_5": {
 			/*
 			 * Defaults for all profiles
 			 */

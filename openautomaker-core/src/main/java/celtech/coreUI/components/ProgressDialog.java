@@ -9,6 +9,7 @@ import java.net.URL;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.services.ControllableService;
 
 import celtech.configuration.ApplicationConfiguration;
 import celtech.coreUI.DisplayManager;
@@ -23,7 +24,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import xyz.openautomaker.base.services.ControllableService;
 
 /**
  *

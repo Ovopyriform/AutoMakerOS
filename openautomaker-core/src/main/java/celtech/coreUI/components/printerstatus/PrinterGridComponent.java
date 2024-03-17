@@ -9,6 +9,15 @@ import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.PrinterColourMap;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterConnection;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.base.printerControl.model.PrinterIdentity;
+import org.openautomaker.base.printerControl.model.PrinterListChangesListener;
+import org.openautomaker.base.printerControl.model.Reel;
 
 import celtech.Lookup;
 import celtech.coreUI.components.PrinterIDDialog;
@@ -16,15 +25,6 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.PrinterColourMap;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterConnection;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
-import xyz.openautomaker.base.printerControl.model.PrinterIdentity;
-import xyz.openautomaker.base.printerControl.model.PrinterListChangesListener;
-import xyz.openautomaker.base.printerControl.model.Reel;
 
 /**
  * This component houses a square grid of PrinterComponents and is used a printer selector.

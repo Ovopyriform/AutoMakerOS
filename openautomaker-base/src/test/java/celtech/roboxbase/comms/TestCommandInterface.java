@@ -1,5 +1,12 @@
 package celtech.roboxbase.comms;
 
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
+import org.openautomaker.base.configuration.datafileaccessors.HeadContainer;
+import org.openautomaker.base.configuration.fileRepresentation.HeadFile;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.Reel;
+
 import celtech.roboxbase.comms.CommandInterface;
 import celtech.roboxbase.comms.DetectedDevice;
 import celtech.roboxbase.comms.PrinterStatusConsumer;
@@ -25,12 +32,6 @@ import celtech.roboxbase.comms.tx.StatusRequest;
 import celtech.roboxbase.comms.tx.WriteHeadEEPROM;
 import celtech.roboxbase.comms.tx.WritePrinterID;
 import javafx.scene.paint.Color;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
-import xyz.openautomaker.base.configuration.datafileaccessors.HeadContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.HeadFile;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.Reel;
 
 /**
  *

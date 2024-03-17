@@ -1,9 +1,10 @@
 package celtech.coreUI.controllers.panels;
 
+import org.openautomaker.base.configuration.RoboxProfile;
+import org.openautomaker.base.configuration.fileRepresentation.CameraProfile;
+import org.openautomaker.environment.OpenAutomakerEnv;
+
 import celtech.configuration.ApplicationConfiguration;
-import xyz.openautomaker.base.configuration.RoboxProfile;
-import xyz.openautomaker.base.configuration.fileRepresentation.CameraProfile;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -36,13 +37,13 @@ public class LibraryMenuPanelController extends MenuPanelController {
 	}
 
 	public void showAndSelectPrintProfile(RoboxProfile roboxProfile) {
-		String profileMenuItemName = OpenAutoMakerEnv.getI18N().t(profileDetails.innerPanel.getMenuTitle());
+		String profileMenuItemName = OpenAutomakerEnv.getI18N().t(profileDetails.innerPanel.getMenuTitle());
 		panelMenu.selectItemOfName(profileMenuItemName);
 		profileDetailsController.setAndSelectPrintProfile(roboxProfile);
 	}
 
 	public void showAndSelectCameraProfile(CameraProfile profile) {
-		String cameraProfileMenuItemName = OpenAutoMakerEnv.getI18N().t(cameraProfileDetails.innerPanel.getMenuTitle());
+		String cameraProfileMenuItemName = OpenAutomakerEnv.getI18N().t(cameraProfileDetails.innerPanel.getMenuTitle());
 		panelMenu.selectItemOfName(cameraProfileMenuItemName);
 		cameraProfileDetailsController.setAndSelectCameraProfile(profile);
 	}

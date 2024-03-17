@@ -5,6 +5,16 @@ import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.configuration.BaseConfiguration;
+import org.openautomaker.base.printerControl.model.Extruder;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.NozzleHeater;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterConnection;
+import org.openautomaker.base.printerControl.model.PrinterListChangesListener;
+import org.openautomaker.base.printerControl.model.Reel;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.Lookup;
 import celtech.appManager.ApplicationStatus;
@@ -25,16 +35,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.printerControl.model.Extruder;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.NozzleHeater;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterConnection;
-import xyz.openautomaker.base.printerControl.model.PrinterListChangesListener;
-import xyz.openautomaker.base.printerControl.model.Reel;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  * FXML Controller class
@@ -370,12 +370,12 @@ public class PrinterStatusSidePanelController implements Initializable, SidePane
 						.when(head.getNozzleHeaters().get(0).nozzleTemperatureProperty()
 								.greaterThanOrEqualTo(BaseConfiguration.minTempToDisplayOnGraph))
 						.then(head.getNozzleHeaters().get(0).nozzleTemperatureProperty().asString("%d°C"))
-						.otherwise(OpenAutoMakerEnv.getI18N().t("printerStatus.tempOutOfRangeLow")));
+						.otherwise(OpenAutomakerEnv.getI18N().t("printerStatus.tempOutOfRangeLow")));
 				legendMaterial1.textProperty().bind(Bindings
 						.when(head.getNozzleHeaters().get(0).nozzleTemperatureProperty()
 								.greaterThanOrEqualTo(BaseConfiguration.minTempToDisplayOnGraph))
 						.then(head.getNozzleHeaters().get(0).nozzleTemperatureProperty().asString("1: %d°C"))
-						.otherwise("1: " + OpenAutoMakerEnv.getI18N().t("printerStatus.tempOutOfRangeLow")));
+						.otherwise("1: " + OpenAutomakerEnv.getI18N().t("printerStatus.tempOutOfRangeLow")));
 			}
 			else {
 				graphAlternativeMaterial1Temp.setVisible(false);
@@ -387,12 +387,12 @@ public class PrinterStatusSidePanelController implements Initializable, SidePane
 						.when(head.getNozzleHeaters().get(0).nozzleTemperatureProperty()
 								.greaterThanOrEqualTo(BaseConfiguration.minTempToDisplayOnGraph))
 						.then(head.getNozzleHeaters().get(0).nozzleTemperatureProperty().asString("%d°C"))
-						.otherwise(OpenAutoMakerEnv.getI18N().t("printerStatus.tempOutOfRangeLow")));
+						.otherwise(OpenAutomakerEnv.getI18N().t("printerStatus.tempOutOfRangeLow")));
 				legendMaterial2.textProperty().bind(Bindings
 						.when(head.getNozzleHeaters().get(0).nozzleTemperatureProperty()
 								.greaterThanOrEqualTo(BaseConfiguration.minTempToDisplayOnGraph))
 						.then(head.getNozzleHeaters().get(0).nozzleTemperatureProperty().asString("2: %d°C"))
-						.otherwise("2: " + OpenAutoMakerEnv.getI18N().t("printerStatus.tempOutOfRangeLow")));
+						.otherwise("2: " + OpenAutomakerEnv.getI18N().t("printerStatus.tempOutOfRangeLow")));
 			}
 
 			NozzleHeater nozzleHeater = head.getNozzleHeaters().get(0);
@@ -412,12 +412,12 @@ public class PrinterStatusSidePanelController implements Initializable, SidePane
 					.when(head.getNozzleHeaters().get(1).nozzleTemperatureProperty()
 							.greaterThanOrEqualTo(BaseConfiguration.minTempToDisplayOnGraph))
 					.then(head.getNozzleHeaters().get(1).nozzleTemperatureProperty().asString("%d°C"))
-					.otherwise(OpenAutoMakerEnv.getI18N().t("printerStatus.tempOutOfRangeLow")));
+					.otherwise(OpenAutomakerEnv.getI18N().t("printerStatus.tempOutOfRangeLow")));
 			legendMaterial1.textProperty().bind(Bindings
 					.when(head.getNozzleHeaters().get(1).nozzleTemperatureProperty()
 							.greaterThanOrEqualTo(BaseConfiguration.minTempToDisplayOnGraph))
 					.then(head.getNozzleHeaters().get(1).nozzleTemperatureProperty().asString("1: %d°C"))
-					.otherwise("1: " + OpenAutoMakerEnv.getI18N().t("printerStatus.tempOutOfRangeLow")));
+					.otherwise("1: " + OpenAutomakerEnv.getI18N().t("printerStatus.tempOutOfRangeLow")));
 			NozzleHeater nozzleHeater = head.getNozzleHeaters().get(1);
 			chartManager.addNozzle(1,
 					nozzleHeater.getNozzleTemperatureHistory(),
@@ -427,11 +427,11 @@ public class PrinterStatusSidePanelController implements Initializable, SidePane
 					nozzleHeater.nozzleTemperatureProperty());
 		}
 
-		headTitleBold.setText(OpenAutoMakerEnv.getI18N().t("headPanel." + head.typeCodeProperty().get() + ".titleBold"));
-		headTitleLight.setText(OpenAutoMakerEnv.getI18N().t("headPanel." + head.typeCodeProperty().get() + ".titleLight"));
-		headDescription.setText(OpenAutoMakerEnv.getI18N().t("headPanel." + head.typeCodeProperty().get() + ".description"));
-		headNozzles.setText(OpenAutoMakerEnv.getI18N().t("headPanel." + head.typeCodeProperty().get() + ".nozzles"));
-		headFeeds.setText(OpenAutoMakerEnv.getI18N().t("headPanel." + head.typeCodeProperty().get() + ".feeds"));
+		headTitleBold.setText(OpenAutomakerEnv.getI18N().t("headPanel." + head.typeCodeProperty().get() + ".titleBold"));
+		headTitleLight.setText(OpenAutomakerEnv.getI18N().t("headPanel." + head.typeCodeProperty().get() + ".titleLight"));
+		headDescription.setText(OpenAutomakerEnv.getI18N().t("headPanel." + head.typeCodeProperty().get() + ".description"));
+		headNozzles.setText(OpenAutomakerEnv.getI18N().t("headPanel." + head.typeCodeProperty().get() + ".nozzles"));
+		headFeeds.setText(OpenAutomakerEnv.getI18N().t("headPanel." + head.typeCodeProperty().get() + ".feeds"));
 
 		if (head.headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD) {
 			headPanel.setVisible(true);

@@ -1,15 +1,16 @@
 
 package celtech.coreUI.controllers.panels;
 
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.environment.OpenAutomakerEnv;
+
 import celtech.Lookup;
 import celtech.coreUI.components.VerticalMenu;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -58,14 +59,14 @@ public class CalibrationMenuConfiguration {
 					currentlySelectedPrinter.canCalibrateXYAlignmentProperty());
 		}
 
-		calibrationMenu.setTitle(OpenAutoMakerEnv.getI18N().t("calibrationPanel.title"));
+		calibrationMenu.setTitle(OpenAutomakerEnv.getI18N().t("calibrationPanel.title"));
 
 		if (displayOpening) {
 			VerticalMenu.NoArgsVoidFunc doOpeningCalibration = () -> {
 				calibrationInsetPanelController.setCalibrationMode(
 						CalibrationMode.NOZZLE_OPENING);
 			};
-			calibrationMenu.addItem(OpenAutoMakerEnv.getI18N().t("calibrationMenu.nozzleOpening"),
+			calibrationMenu.addItem(OpenAutomakerEnv.getI18N().t("calibrationMenu.nozzleOpening"),
 					doOpeningCalibration, nozzleOpeningCalibrationEnabled);
 		}
 
@@ -74,7 +75,7 @@ public class CalibrationMenuConfiguration {
 				calibrationInsetPanelController.setCalibrationMode(
 						CalibrationMode.NOZZLE_HEIGHT);
 			};
-			calibrationMenu.addItem(OpenAutoMakerEnv.getI18N().t("calibrationMenu.nozzleHeight"),
+			calibrationMenu.addItem(OpenAutomakerEnv.getI18N().t("calibrationMenu.nozzleHeight"),
 					doHeightCalibration, nozzleHeightCalibrationEnabled);
 		}
 
@@ -83,7 +84,7 @@ public class CalibrationMenuConfiguration {
 				calibrationInsetPanelController.setCalibrationMode(
 						CalibrationMode.X_AND_Y_OFFSET);
 			};
-			calibrationMenu.addItem(OpenAutoMakerEnv.getI18N().t("calibrationMenu.nozzleAlignment"),
+			calibrationMenu.addItem(OpenAutomakerEnv.getI18N().t("calibrationMenu.nozzleAlignment"),
 					doXYAlignmentCalibration, xyAlignmentCalibrationEnabled);
 		}
 

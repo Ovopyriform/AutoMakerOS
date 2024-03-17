@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.environment.MachineType;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -19,8 +21,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
-import xyz.openautomaker.environment.MachineType;
 
 /**
  *
@@ -56,7 +56,7 @@ public class HyperlinkedLabel extends TextFlow {
 				String linkURLString = matcher.group(1);
 				String linkText = matcher.group(2);
 				try {
-					OpenAutoMakerEnv env = OpenAutoMakerEnv.get();
+					OpenAutomakerEnv env = OpenAutomakerEnv.get();
 					MachineType machineType = env.getMachineType();
 
 					URI linkURI = new URI(linkURLString);

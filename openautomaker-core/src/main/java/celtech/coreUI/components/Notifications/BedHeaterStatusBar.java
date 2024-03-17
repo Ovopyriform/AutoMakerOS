@@ -4,14 +4,15 @@ package celtech.coreUI.components.Notifications;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.openautomaker.base.printerControl.model.HeaterMode;
+import org.openautomaker.base.printerControl.model.PrinterAncillarySystems;
+import org.openautomaker.environment.OpenAutomakerEnv;
+
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.Initializable;
-import xyz.openautomaker.base.printerControl.model.HeaterMode;
-import xyz.openautomaker.base.printerControl.model.PrinterAncillarySystems;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -61,13 +62,13 @@ public class BedHeaterStatusBar extends AppearingProgressBar implements Initiali
 				break;
 			case FIRST_LAYER:
 				if (Math.abs(bedTemperature.get() - bedFirstLayerTargetTemperature.get()) > showBarIfMoreThanXDegreesOut) {
-					largeProgressDescription.setText(OpenAutoMakerEnv.getI18N().t("printerStatus.heatingBed"));
+					largeProgressDescription.setText(OpenAutomakerEnv.getI18N().t("printerStatus.heatingBed"));
 
-					largeTargetLegend.textProperty().set(OpenAutoMakerEnv.getI18N().t("progressBar.targetTemperature"));
+					largeTargetLegend.textProperty().set(OpenAutomakerEnv.getI18N().t("progressBar.targetTemperature"));
 					largeTargetValue.textProperty().set(bedFirstLayerTargetTemperature.asString("%d").get()
-							.concat(OpenAutoMakerEnv.getI18N().t("misc.degreesC")));
+							.concat(OpenAutomakerEnv.getI18N().t("misc.degreesC")));
 					currentValue.textProperty().set(bedTemperature.asString("%d").get()
-							.concat(OpenAutoMakerEnv.getI18N().t("misc.degreesC")));
+							.concat(OpenAutomakerEnv.getI18N().t("misc.degreesC")));
 
 					if (bedFirstLayerTargetTemperature.doubleValue() > 0) {
 						double normalisedProgress = 0;
@@ -85,13 +86,13 @@ public class BedHeaterStatusBar extends AppearingProgressBar implements Initiali
 				break;
 			case NORMAL:
 				if (Math.abs(bedTemperature.get() - bedTargetTemperature.get()) > showBarIfMoreThanXDegreesOut) {
-					largeProgressDescription.setText(OpenAutoMakerEnv.getI18N().t("printerStatus.heatingBed"));
+					largeProgressDescription.setText(OpenAutomakerEnv.getI18N().t("printerStatus.heatingBed"));
 
-					largeTargetLegend.textProperty().set(OpenAutoMakerEnv.getI18N().t("progressBar.targetTemperature"));
+					largeTargetLegend.textProperty().set(OpenAutomakerEnv.getI18N().t("progressBar.targetTemperature"));
 					largeTargetValue.textProperty().set(bedTargetTemperature.asString("%d").get()
-							.concat(OpenAutoMakerEnv.getI18N().t("misc.degreesC")));
+							.concat(OpenAutomakerEnv.getI18N().t("misc.degreesC")));
 					currentValue.textProperty().set(bedTemperature.asString("%d").get()
-							.concat(OpenAutoMakerEnv.getI18N().t("misc.degreesC")));
+							.concat(OpenAutomakerEnv.getI18N().t("misc.degreesC")));
 
 					if (bedTargetTemperature.doubleValue() > 0) {
 						double normalisedProgress = 0;

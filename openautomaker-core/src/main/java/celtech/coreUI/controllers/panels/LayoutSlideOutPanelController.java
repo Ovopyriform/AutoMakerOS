@@ -4,13 +4,14 @@ package celtech.coreUI.controllers.panels;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.openautomaker.base.printerControl.PrintJob;
+
 import celtech.appManager.ModelContainerProject;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import xyz.openautomaker.base.printerControl.PrintJob;
 
 /**
  *

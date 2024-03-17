@@ -2,6 +2,7 @@ package celtech.coreUI.visualisation.modelDisplay;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.utils.Math.MathUtils;
 
 import celtech.coreUI.visualisation.ApplicationMaterials;
 import celtech.coreUI.visualisation.ShapeProvider;
@@ -14,7 +15,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Group;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import xyz.openautomaker.base.utils.Math.MathUtils;
 
 /**
  *

@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.environment.OpenAutomakerEnv;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.Event;
@@ -28,7 +29,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.web.WebView;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
 
 /**
  *
@@ -47,9 +47,10 @@ public class ReadmeInsetPanelController implements Initializable {
 	}
 
 	@Override
+	//TODO: README panel? Just link instead.
 	public void initialize(URL location, ResourceBundle resources) {
 		String protocol = "file:///";
-		String basePath = BaseConfiguration.getApplicationInstallDirectory(ReadmeInsetPanelController.class) + "README/README_AutoMaker.html";
+		String basePath = OpenAutomakerEnv.get().getApplicationPath().resolve("README").resolve("README_AutoMaker.html").toString();
 		basePath = basePath.replace("\\", "/");
 		String urlEncodedPath = "";
 

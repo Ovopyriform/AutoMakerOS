@@ -3,7 +3,7 @@ package celtech.postprocessor;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import xyz.openautomaker.base.postprocessor.GCodeOutputWriter;
+import org.openautomaker.base.postprocessor.GCodeOutputWriter;
 
 /**
  *

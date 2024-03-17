@@ -2,10 +2,10 @@
 package celtech.roboxbase.comms.remote.tx;
 
 import javafx.scene.paint.Color;
-import xyz.openautomaker.base.MaterialType;
-import xyz.openautomaker.base.utils.ColourStringConverter;
 
 import org.junit.Test;
+import org.openautomaker.base.MaterialType;
+import org.openautomaker.base.utils.ColourStringConverter;
 
 import celtech.roboxbase.comms.tx.WriteReel0EEPROM;
 

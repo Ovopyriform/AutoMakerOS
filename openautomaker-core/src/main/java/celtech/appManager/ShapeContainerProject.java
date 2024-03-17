@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
 
 import celtech.configuration.ApplicationConfiguration;
 import celtech.configuration.fileRepresentation.ProjectFile;
@@ -19,7 +20,6 @@ import celtech.modelcontrol.Groupable;
 import celtech.modelcontrol.ModelGroup;
 import celtech.modelcontrol.ProjectifiableThing;
 import celtech.utils.threed.importers.svg.ShapeContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
 
 /**
  *

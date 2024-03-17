@@ -2,10 +2,11 @@ package celtech.roboxbase.comms.tx;
 
 import java.io.UnsupportedEncodingException;
 
+import org.openautomaker.base.printerControl.model.PrinterIdentity;
+import org.openautomaker.base.utils.ColourStringConverter;
+
 import celtech.roboxbase.comms.remote.PrinterIDDataStructure;
 import celtech.roboxbase.comms.remote.StringToBase64Encoder;
-import xyz.openautomaker.base.printerControl.model.PrinterIdentity;
-import xyz.openautomaker.base.utils.ColourStringConverter;
 
 /**
  *

@@ -6,13 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.openautomaker.base.MaterialType;
+import org.openautomaker.base.configuration.Filament;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import xyz.openautomaker.base.MaterialType;
-import xyz.openautomaker.base.configuration.Filament;
 
 /**
  *

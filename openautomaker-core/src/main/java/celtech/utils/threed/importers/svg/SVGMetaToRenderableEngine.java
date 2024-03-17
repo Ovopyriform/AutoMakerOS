@@ -3,12 +3,12 @@ package celtech.utils.threed.importers.svg;
 import java.util.List;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.openautomaker.base.importers.twod.svg.metadata.SVGMetaPart;
+import org.openautomaker.base.importers.twod.svg.metadata.SVGMetaPolygon;
+import org.openautomaker.base.importers.twod.svg.metadata.SVGStartPath;
 
 import javafx.scene.Group;
 import javafx.scene.shape.Polygon;
-import xyz.openautomaker.base.importers.twod.svg.metadata.SVGMetaPart;
-import xyz.openautomaker.base.importers.twod.svg.metadata.SVGMetaPolygon;
-import xyz.openautomaker.base.importers.twod.svg.metadata.SVGStartPath;
 
 /**
  *

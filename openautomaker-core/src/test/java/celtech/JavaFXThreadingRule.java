@@ -12,14 +12,14 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.appManager.TestSystemNotificationManager;
 import celtech.postprocessor.TestGCodeOutputWriter;
 import celtech.utils.tasks.TestTaskExecutor;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
 
 /**
  * A JUnit {@link Rule} for running tests on the JavaFX thread and performing JavaFX initialisation. To include in your test case, add the following code:
@@ -126,8 +126,7 @@ public class JavaFXThreadingRule implements TestRule {
 
 			System.setProperty(
 					"libertySystems.configFile", configURL.getFile());
-			String installDir = BaseConfiguration.getApplicationInstallDirectory(
-					Lookup.class).toString();
+			String installDir = OpenAutomakerEnv.get().getApplicationPath().toString();
 
 			BaseLookup.setTaskExecutor(
 					new TestTaskExecutor());

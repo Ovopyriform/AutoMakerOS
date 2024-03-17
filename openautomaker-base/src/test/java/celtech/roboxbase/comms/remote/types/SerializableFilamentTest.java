@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import celtech.roboxbase.comms.remote.types.SerializableFilament;
 import javafx.scene.paint.Color;
-import xyz.openautomaker.base.MaterialType;
-import xyz.openautomaker.base.configuration.Filament;
 
 import org.junit.Test;
+import org.openautomaker.base.MaterialType;
+import org.openautomaker.base.configuration.Filament;
+
 import static org.junit.Assert.*;
 
 /**

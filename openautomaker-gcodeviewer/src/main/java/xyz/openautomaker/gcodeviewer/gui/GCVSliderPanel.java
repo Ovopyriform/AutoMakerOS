@@ -26,11 +26,11 @@ import java.util.function.Consumer;
 import org.lwjgl.nuklear.NkContext;
 import org.lwjgl.nuklear.NkRect;
 import org.lwjgl.system.MemoryStack;
+import org.openautomaker.environment.OpenAutoMakerEnv;
+import org.openautomaker.i18n.OpenAutoMakerI18N;
 
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 import xyz.openautomaker.gcodeviewer.engine.LayerDetails;
 import xyz.openautomaker.gcodeviewer.engine.RenderParameters;
-import xyz.openautomaker.i18n.OpenAutoMakerI18N;
 
 public class GCVSliderPanel extends GCVPanel {
 

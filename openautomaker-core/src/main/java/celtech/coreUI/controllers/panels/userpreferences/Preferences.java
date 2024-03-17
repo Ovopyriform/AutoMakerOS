@@ -6,12 +6,24 @@ package celtech.coreUI.controllers.panels.userpreferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import celtech.configuration.UserPreferences;
+import org.openautomaker.environment.preference.DetectLoadedFilamentPreference;
+import org.openautomaker.environment.preference.FirstUsePreference;
+import org.openautomaker.environment.preference.GBPToLocalMultiplierPreference;
+import org.openautomaker.environment.preference.SafetyFeaturesPreference;
+import org.openautomaker.environment.preference.SearchForRemoteCamerasPreference;
+import org.openautomaker.environment.preference.ShowGCodePreviewPreference;
+import org.openautomaker.environment.preference.ShowTooltipsPreference;
+import org.openautomaker.environment.preference.SplitLoosePartsOnLoadPreference;
+import org.openautomaker.environment.preference.advanced.ShowAdjustmentsPreference;
+import org.openautomaker.environment.preference.advanced.ShowDiagnosticsPreference;
+import org.openautomaker.environment.preference.advanced.ShowGCodeConsolePreference;
+import org.openautomaker.environment.preference.advanced.ShowSnapshotPreference;
+import org.openautomaker.environment.preference.virtual_printer.VirtualPrinterEnabledPreference;
+import org.openautomaker.ui.utils.FXProperty;
+
 import celtech.coreUI.controllers.panels.PreferencesInnerPanelController;
 import celtech.coreUI.controllers.panels.PreferencesInnerPanelController.Preference;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
 /**
  * Preferences creates collections of the Preference class.
@@ -20,15 +32,14 @@ import javafx.beans.value.ObservableValue;
  */
 public class Preferences {
 
-	public static List<PreferencesInnerPanelController.Preference> createPrintingPreferences(
-			UserPreferences userPreferences) {
+	public static List<PreferencesInnerPanelController.Preference> createPrintingPreferences() {
 		List<PreferencesInnerPanelController.Preference> preferences = new ArrayList<>();
 
-		Preference slicerTypePref = new SlicerTypePreference(userPreferences);
+		Preference slicerTypePref = new SlicerTypePreferenceController();
 
-		Preference safetyFeaturesOnPref = new TickBoxPreference(userPreferences.safetyFeaturesOnProperty(), "preferences.safetyFeaturesOn");
+		Preference safetyFeaturesOnPref = new TickBoxPreference(FXProperty.bind(new SafetyFeaturesPreference()), "preferences.safetyFeaturesOn");
 
-		Preference detectFilamentLoadedPref = new TickBoxPreference(userPreferences.detectLoadedFilamentProperty(), "preferences.detectLoadedFilament");
+		Preference detectFilamentLoadedPref = new TickBoxPreference(FXProperty.bind(new DetectLoadedFilamentPreference()), "preferences.detectLoadedFilament");
 
 		preferences.add(slicerTypePref);
 		preferences.add(safetyFeaturesOnPref);
@@ -37,29 +48,23 @@ public class Preferences {
 		return preferences;
 	}
 
-	public static List<PreferencesInnerPanelController.Preference> createEnvironmentPreferences(
-			UserPreferences userPreferences) {
+	public static List<PreferencesInnerPanelController.Preference> createEnvironmentPreferences() {
 		List<PreferencesInnerPanelController.Preference> preferences = new ArrayList<>();
 
-		Preference languagePref = new LanguagePreference(userPreferences);
-		Preference showTooltipsPref = new TickBoxPreference(userPreferences.showTooltipsProperty(),
-				"preferences.showTooltips");
-		Preference logLevelPref = new LogLevelPreference(userPreferences);
-		Preference firstUsePref = new TickBoxPreference(userPreferences.firstUseProperty(),
-				"preferences.firstUse");
+		Preference languagePref = new LanguagePreferenceController();
+		Preference showTooltipsPref = new TickBoxPreference(FXProperty.bind(new ShowTooltipsPreference()), "preferences.showTooltips");
+		Preference logLevelPref = new LogLevelPreferenceController();
+		Preference firstUsePref = new TickBoxPreference(FXProperty.bind(new FirstUsePreference()), "preferences.firstUse");
 
-		Preference currencySymbolPref = new CurrencySymbolPreference(userPreferences);
-		Preference currencyGBPToLocalMultiplierPref = new FloatingPointPreference(userPreferences.currencyGBPToLocalMultiplierProperty(),
+		Preference currencySymbolPref = new CurrencySymbolPreferenceController();
+		Preference currencyGBPToLocalMultiplierPref = new FloatingPointPreference(FXProperty.bind(new GBPToLocalMultiplierPreference()),
 				2, 7, false, "preferences.currencyGBPToLocalMultiplier");
 
-		Preference loosePartSplitPref = new TickBoxPreference(userPreferences.loosePartSplitOnLoadProperty(),
-				"preferences.loosePartSplit");
+		Preference loosePartSplitPref = new TickBoxPreference(FXProperty.bind(new SplitLoosePartsOnLoadPreference()), "preferences.loosePartSplit");
 
-		Preference autoGCodePreviewPref = new TickBoxPreference(userPreferences.autoGCodePreviewProperty(),
-				"preferences.autoGCodePreview");
+		Preference autoGCodePreviewPref = new TickBoxPreference(FXProperty.bind(new ShowGCodePreviewPreference()), "preferences.autoGCodePreview");
 
-		Preference searchForRemoteCamerasPref = new TickBoxPreference(userPreferences.searchForRemoteCamerasProperty(),
-				"preferences.searchForRemoteCameras");
+		Preference searchForRemoteCamerasPref = new TickBoxPreference(FXProperty.bind(new SearchForRemoteCamerasPreference()), "preferences.searchForRemoteCameras");
 
 		preferences.add(firstUsePref);
 		preferences.add(languagePref);
@@ -73,38 +78,22 @@ public class Preferences {
 		return preferences;
 	}
 
-	public static List<PreferencesInnerPanelController.Preference> createAdvancedPreferences(
-			UserPreferences userPreferences) {
+	public static List<PreferencesInnerPanelController.Preference> createAdvancedPreferences() {
 		List<PreferencesInnerPanelController.Preference> preferences = new ArrayList<>();
 
-		TickBoxPreference advancedModePref = new TickBoxPreference(userPreferences.advancedModeProperty(),
-				"preferences.advancedMode");
+		AdvancedModePreferenceController advancedModePref = new AdvancedModePreferenceController();
 
-		TickBoxPreference showDiagnosticsPref = new TickBoxPreference(userPreferences.showDiagnosticsProperty(),
-				"preferences.showDiagnostics");
+		TickBoxPreference showDiagnosticsPref = new TickBoxPreference(FXProperty.bind(new ShowDiagnosticsPreference()), "preferences.showDiagnostics");
 		showDiagnosticsPref.disableProperty(advancedModePref.getSelectedProperty().not());
 
-		TickBoxPreference showGCodePref = new TickBoxPreference(userPreferences.showGCodeProperty(),
-				"preferences.showGCode");
+		TickBoxPreference showGCodePref = new TickBoxPreference(FXProperty.bind(new ShowGCodeConsolePreference()), "preferences.showGCode");
 		showGCodePref.disableProperty(advancedModePref.getSelectedProperty().not());
 
-		TickBoxPreference showAdjustmentsPref = new TickBoxPreference(userPreferences.showAdjustmentsProperty(),
-				"preferences.showAdjustments");
+		TickBoxPreference showAdjustmentsPref = new TickBoxPreference(FXProperty.bind(new ShowAdjustmentsPreference()), "preferences.showAdjustments");
 		showAdjustmentsPref.disableProperty(advancedModePref.getSelectedProperty().not());
 
-		TickBoxPreference showSnapshotPref = new TickBoxPreference(userPreferences.showSnapshotProperty(),
-				"preferences.showSnapshot");
+		TickBoxPreference showSnapshotPref = new TickBoxPreference(FXProperty.bind(new ShowSnapshotPreference()), "preferences.showSnapshot");
 		showSnapshotPref.disableProperty(advancedModePref.getSelectedProperty().not());
-
-		advancedModePref.getSelectedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
-				showDiagnosticsPref.getSelectedProperty().set(t1);
-				showGCodePref.getSelectedProperty().set(t1);
-				showAdjustmentsPref.getSelectedProperty().set(t1);
-				showSnapshotPref.getSelectedProperty().set(t1);
-			}
-		});
 
 		preferences.add(advancedModePref);
 		preferences.add(showDiagnosticsPref);
@@ -115,14 +104,13 @@ public class Preferences {
 		return preferences;
 	}
 
-	public static List<PreferencesInnerPanelController.Preference> createCustomPrinterPreferences(
-			UserPreferences userPreferences) {
+	public static List<PreferencesInnerPanelController.Preference> createCustomPrinterPreferences() {
 		List<PreferencesInnerPanelController.Preference> preferences = new ArrayList<>();
 
-		BooleanProperty customPrinterEnabled = userPreferences.customPrinterEnabledProperty();
+		BooleanProperty customPrinterEnabled = FXProperty.bind(new VirtualPrinterEnabledPreference());
 		Preference enableCustomPrinterPref = new TickBoxPreference(customPrinterEnabled, "preferences.customPrinterEnabled");
-		Preference customPrinterTypePref = new CustomPrinterTypePreference(userPreferences);
-		Preference customPrinterHeadPref = new CustomPrinterHeadPreference(userPreferences);
+		Preference customPrinterTypePref = new CustomPrinterTypePreferenceController();
+		Preference customPrinterHeadPref = new CustomPrinterHeadPreferenceController();
 
 		//BooleanProperty windows32Bit = new SimpleBooleanProperty(BaseConfiguration.isWindows32Bit());
 		//enableCustomPrinterPref.disableProperty(windows32Bit);
@@ -134,8 +122,8 @@ public class Preferences {
 		return preferences;
 	}
 
-	public static List<PreferencesInnerPanelController.Preference> createRootPreferences(
-			UserPreferences userPreferences) {
+	//TODO: Root Only
+	public static List<PreferencesInnerPanelController.Preference> createRootPreferences() {
 		List<PreferencesInnerPanelController.Preference> preferences = new ArrayList<>();
 
 		//        Preference

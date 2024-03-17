@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
-import xyz.openautomaker.base.utils.tasks.Cancellable;
+import org.openautomaker.base.utils.tasks.Cancellable;
 
 /**
  * TimeCostThreadManager makes sure that all tasks are properly cancelled.

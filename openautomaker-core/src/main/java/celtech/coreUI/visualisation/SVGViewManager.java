@@ -1,6 +1,6 @@
 package celtech.coreUI.visualisation;
 
-import static xyz.openautomaker.environment.OpenAutoMakerEnv.PRINT_JOBS;
+import static org.openautomaker.environment.OpenAutomakerEnv.PRINT_JOBS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,18 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
+import org.openautomaker.base.importers.twod.svg.DragKnifeCompensator;
+import org.openautomaker.base.postprocessor.nouveau.nodes.GCodeEventNode;
+import org.openautomaker.base.postprocessor.nouveau.nodes.StylusLiftNode;
+import org.openautomaker.base.postprocessor.nouveau.nodes.StylusPlungeNode;
+import org.openautomaker.base.postprocessor.nouveau.nodes.StylusScribeNode;
+import org.openautomaker.base.postprocessor.nouveau.nodes.StylusSwivelNode;
+import org.openautomaker.base.postprocessor.nouveau.nodes.TravelNode;
+import org.openautomaker.base.postprocessor.stylus.PrintableShapesToGCode;
+import org.openautomaker.base.utils.models.PrintableShapes;
+import org.openautomaker.base.utils.models.ShapeForProcessing;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.Lookup;
 import celtech.appManager.ApplicationMode;
@@ -47,18 +59,6 @@ import javafx.scene.shape.Shape;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
-import xyz.openautomaker.base.importers.twod.svg.DragKnifeCompensator;
-import xyz.openautomaker.base.postprocessor.nouveau.nodes.GCodeEventNode;
-import xyz.openautomaker.base.postprocessor.nouveau.nodes.StylusLiftNode;
-import xyz.openautomaker.base.postprocessor.nouveau.nodes.StylusPlungeNode;
-import xyz.openautomaker.base.postprocessor.nouveau.nodes.StylusScribeNode;
-import xyz.openautomaker.base.postprocessor.nouveau.nodes.StylusSwivelNode;
-import xyz.openautomaker.base.postprocessor.nouveau.nodes.TravelNode;
-import xyz.openautomaker.base.postprocessor.stylus.PrintableShapesToGCode;
-import xyz.openautomaker.base.utils.models.PrintableShapes;
-import xyz.openautomaker.base.utils.models.ShapeForProcessing;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -224,8 +224,8 @@ public class SVGViewManager extends Pane implements Project.ProjectChangesListen
 			List<GCodeEventNode> gcodeData = PrintableShapesToGCode.parsePrintableShapes(ps);
 			DragKnifeCompensator dnc = new DragKnifeCompensator();
 			List<GCodeEventNode> dragKnifeCompensatedGCodeNodes = dnc.doCompensation(gcodeData, 0.2);
-			PrintableShapesToGCode.writeGCodeToFile(OpenAutoMakerEnv.get().getUserPath(PRINT_JOBS).resolve("stylusTestRaw.gcode"), gcodeData);
-			PrintableShapesToGCode.writeGCodeToFile(OpenAutoMakerEnv.get().getUserPath(PRINT_JOBS).resolve("stylusTestCompensated.gcode"), dragKnifeCompensatedGCodeNodes);
+			PrintableShapesToGCode.writeGCodeToFile(OpenAutomakerEnv.get().getUserPath(PRINT_JOBS).resolve("stylusTestRaw.gcode"), gcodeData);
+			PrintableShapesToGCode.writeGCodeToFile(OpenAutomakerEnv.get().getUserPath(PRINT_JOBS).resolve("stylusTestCompensated.gcode"), dragKnifeCompensatedGCodeNodes);
 			renderGCode(dragKnifeCompensatedGCodeNodes);
 		});
 

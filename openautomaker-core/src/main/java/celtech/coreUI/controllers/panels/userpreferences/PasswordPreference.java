@@ -1,12 +1,13 @@
 package celtech.coreUI.controllers.panels.userpreferences;
 
+import org.openautomaker.environment.OpenAutomakerEnv;
+
 import celtech.coreUI.controllers.panels.PreferencesInnerPanelController;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Control;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -56,7 +57,7 @@ public class PasswordPreference implements PreferencesInnerPanelController.Prefe
 
 	@Override
 	public String getDescription() {
-		return OpenAutoMakerEnv.getI18N().t(caption);
+		return OpenAutomakerEnv.getI18N().t(caption);
 	}
 
 	@Override

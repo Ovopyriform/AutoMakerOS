@@ -1,9 +1,10 @@
 package celtech.utils.tasks;
 
+import org.openautomaker.base.utils.tasks.TaskExecutor;
+import org.openautomaker.base.utils.tasks.TaskResponder;
+import org.openautomaker.base.utils.tasks.TaskResponse;
+
 import javafx.concurrent.Task;
-import xyz.openautomaker.base.utils.tasks.TaskExecutor;
-import xyz.openautomaker.base.utils.tasks.TaskResponder;
-import xyz.openautomaker.base.utils.tasks.TaskResponse;
 
 /**
  *

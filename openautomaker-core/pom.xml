@@ -5,14 +5,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>openautomaker-core</artifactId>
-	<version>1.4</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>OpenAutoMaker Core</name>
+	<name>OpenAutomaker Core</name>
 
 	<parent>
 		<artifactId>openautomaker-parent</artifactId>
-		<groupId>xyz.openautomaker</groupId>
+		<groupId>org.openautomaker</groupId>
 		<version>1.0</version>
 		<relativePath>../openautomaker-parent</relativePath>
 	</parent>
@@ -169,7 +169,7 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>xyz.openautomaker</groupId>
+			<groupId>org.openautomaker</groupId>
 			<artifactId>openautomaker-base</artifactId>
 		</dependency>
 		<dependency>
@@ -195,6 +195,10 @@
 			<groupId>com.github.junrar</groupId>
 			<artifactId>junrar</artifactId>
 			<version>7.5.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openautomaker</groupId>
+			<artifactId>openautomaker-environment</artifactId>
 		</dependency>
 	</dependencies>
 

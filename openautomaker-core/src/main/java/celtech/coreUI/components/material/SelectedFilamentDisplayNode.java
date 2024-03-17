@@ -1,12 +1,13 @@
 package celtech.coreUI.components.material;
 
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
+import org.openautomaker.environment.OpenAutomakerEnv;
+
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Rectangle;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -44,7 +45,7 @@ public class SelectedFilamentDisplayNode extends HBox {
 		}
 		else {
 			rectangle.setVisible(false);
-			label.setText(OpenAutoMakerEnv.getI18N().t("materialComponent.unknown"));
+			label.setText(OpenAutomakerEnv.getI18N().t("materialComponent.unknown"));
 		}
 
 		filamentOnDisplay = filament;

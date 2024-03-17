@@ -10,6 +10,12 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.camera.CameraInfo;
+import org.openautomaker.base.configuration.BaseConfiguration;
+import org.openautomaker.base.configuration.datafileaccessors.CameraProfileContainer;
+import org.openautomaker.base.configuration.fileRepresentation.CameraProfile;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.coreUI.DisplayManager;
 import celtech.coreUI.components.RestrictedComboBox;
@@ -26,12 +32,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.GridPane;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.camera.CameraInfo;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.configuration.datafileaccessors.CameraProfileContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.CameraProfile;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -41,7 +41,7 @@ public class CameraProfilesPanelController implements Initializable, MenuInnerPa
 	private static final Logger LOGGER = LogManager.getLogger(CameraProfilesPanelController.class.getName());
 
 	private static final CameraProfileContainer CAMERA_PROFILE_CONTAINER = CameraProfileContainer.getInstance();
-	private static final String ANY_CAMERA_NAME = OpenAutoMakerEnv.getI18N().t("cameraProfiles.anyCamera");
+	private static final String ANY_CAMERA_NAME = OpenAutomakerEnv.getI18N().t("cameraProfiles.anyCamera");
 
 	private final BooleanProperty canSave = new SimpleBooleanProperty(false);
 	private final BooleanProperty canCreateNew = new SimpleBooleanProperty(false);

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openautomaker.environment.OpenAutomakerEnv;
+
 import celtech.coreUI.DisplayManager;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -18,7 +20,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -134,7 +135,7 @@ public class ArrowTag extends HBox {
 		StringBuilder labelText = new StringBuilder();
 
 		if (i18nTitle != null) {
-			title.setText(OpenAutoMakerEnv.getI18N().t(i18nTitle));
+			title.setText(OpenAutomakerEnv.getI18N().t(i18nTitle));
 		}
 
 		boolean addedFirst = false;
@@ -145,7 +146,7 @@ public class ArrowTag extends HBox {
 					labelText.append("\n");
 				}
 
-				labelText.append(OpenAutoMakerEnv.getI18N().t(conditionalText.getI18nText()));
+				labelText.append(OpenAutomakerEnv.getI18N().t(conditionalText.getI18nText()));
 
 				addedFirst = true;
 			}

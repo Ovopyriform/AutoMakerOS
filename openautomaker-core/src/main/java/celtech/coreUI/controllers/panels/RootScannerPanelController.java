@@ -9,6 +9,8 @@ import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.configuration.CoreMemory;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.WebEngineFix.AMURLStreamHandlerFactory;
 import celtech.coreUI.components.RootCameraTableCell;
@@ -40,8 +42,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import xyz.openautomaker.base.configuration.CoreMemory;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  * FXML Controller class
@@ -173,21 +173,21 @@ public class RootScannerPanelController implements Initializable, MenuInnerPanel
 
 		nameColumn = new TableColumn<>();
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-		nameColumn.setText(OpenAutoMakerEnv.getI18N().t("rootScanner.name"));
+		nameColumn.setText(OpenAutomakerEnv.getI18N().t("rootScanner.name"));
 		nameColumn.setPrefWidth(160);
 		nameColumn.setResizable(false);
 		nameColumn.setStyle("-fx-alignment: CENTER_LEFT;");
 
 		ipAddressColumn = new TableColumn<>();
 		ipAddressColumn.setCellValueFactory(new PropertyValueFactory<>("serverIP"));
-		ipAddressColumn.setText(OpenAutoMakerEnv.getI18N().t("rootScanner.ipAddress"));
+		ipAddressColumn.setText(OpenAutomakerEnv.getI18N().t("rootScanner.ipAddress"));
 		ipAddressColumn.setPrefWidth(100);
 		ipAddressColumn.setResizable(false);
 		ipAddressColumn.setStyle("-fx-alignment: CENTER;");
 
 		versionColumn = new TableColumn<>();
 		versionColumn.setCellValueFactory(new PropertyValueFactory<>("version"));
-		versionColumn.setText(OpenAutoMakerEnv.getI18N().t("rootScanner.version"));
+		versionColumn.setText(OpenAutomakerEnv.getI18N().t("rootScanner.version"));
 		versionColumn.setPrefWidth(100);
 		versionColumn.setResizable(false);
 		versionColumn.setStyle("-fx-alignment: CENTER;");
@@ -208,7 +208,7 @@ public class RootScannerPanelController implements Initializable, MenuInnerPanel
 		cameraColumn = new TableColumn<>();
 		cameraColumn.setCellFactory(cameraCell -> new RootCameraTableCell());
 		cameraColumn.setCellValueFactory(new PropertyValueFactory<>("cameraDetected"));
-		cameraColumn.setText(OpenAutoMakerEnv.getI18N().t("rootScanner.camera"));
+		cameraColumn.setText(OpenAutomakerEnv.getI18N().t("rootScanner.camera"));
 		cameraColumn.setPrefWidth(60);
 		cameraColumn.setResizable(false);
 
@@ -238,7 +238,7 @@ public class RootScannerPanelController implements Initializable, MenuInnerPanel
 
 		scannedRoots.setItems(currentServers);
 
-		scannedRoots.setPlaceholder(new Text(OpenAutoMakerEnv.getI18N().t("rootScanner.noRemoteServersFound")));
+		scannedRoots.setPlaceholder(new Text(OpenAutomakerEnv.getI18N().t("rootScanner.noRemoteServersFound")));
 
 		ipTextField.textProperty().addListener(new ChangeListener<String>() {
 			@Override

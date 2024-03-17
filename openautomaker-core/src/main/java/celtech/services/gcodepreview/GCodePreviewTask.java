@@ -9,15 +9,16 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.configuration.BaseConfiguration;
+import org.openautomaker.environment.MachineType;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.preference.LocalePreference;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Color;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.environment.MachineType;
 
 /**
  *
@@ -160,14 +161,14 @@ public class GCodePreviewTask extends Task<Boolean> {
 
 		String jvmLocation = System.getProperties().getProperty("java.home") + File.separator + "bin" + File.separator + "java";
 		commands.add(jvmLocation);
-		if (OpenAutoMakerEnv.get().getMachineType() == MachineType.MAC)
+		if (OpenAutomakerEnv.get().getMachineType() == MachineType.MAC)
 			commands.add("-XstartOnFirstThread");
 		commands.add("-DlibertySystems.configFile=" + BaseConfiguration.getGCodeViewerDirectory() + "GCodeViewer.configFile.xml");
 		commands.add("-jar");
 		commands.add(BaseConfiguration.getGCodeViewerDirectory() + "GCodeViewer.jar");
 		//commands.add("-wt");
 
-		String languageTag = BaseConfiguration.getApplicationLocale();
+		String languageTag = new LocalePreference().get().toLanguageTag();
 		if (languageTag != null) {
 			commands.add("-l");
 			commands.add(languageTag);

@@ -2,12 +2,12 @@ package celtech.roboxbase.comms.remote.types;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.openautomaker.base.MaterialType;
+import org.openautomaker.base.configuration.Filament;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javafx.scene.paint.Color;
-import xyz.openautomaker.base.MaterialType;
-import xyz.openautomaker.base.configuration.Filament;
 
 /**
  *

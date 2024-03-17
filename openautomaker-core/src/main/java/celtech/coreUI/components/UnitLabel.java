@@ -1,6 +1,7 @@
 package celtech.coreUI.components;
 
-import celtech.Lookup;
+import org.openautomaker.environment.preference.ShowMetricUnitsPreference;
+
 import celtech.configuration.units.UnitType;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -41,11 +42,11 @@ public class UnitLabel extends Label {
 	}
 
 	private void updateDisplay() {
-		if (Lookup.getUserPreferences().isShowMetricUnits()) {
-			this.setText(units.getMetricSymbol());
-		}
-		else {
+		if (!new ShowMetricUnitsPreference().get()) {
 			this.setText(units.getImperialSymbol());
+			return;
 		}
+
+		this.setText(units.getMetricSymbol());
 	}
 }

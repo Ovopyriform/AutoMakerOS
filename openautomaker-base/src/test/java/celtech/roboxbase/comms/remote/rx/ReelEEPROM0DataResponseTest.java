@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import celtech.roboxbase.comms.rx.ReelEEPROM0DataResponse;
 import celtech.roboxbase.comms.rx.RoboxRxPacket;
-import xyz.openautomaker.base.MaterialType;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -13,6 +12,7 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openautomaker.base.MaterialType;
 
 /**
  *

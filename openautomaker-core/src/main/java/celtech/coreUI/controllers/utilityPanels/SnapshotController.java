@@ -8,6 +8,11 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.camera.CameraInfo;
+import org.openautomaker.base.configuration.datafileaccessors.CameraProfileContainer;
+import org.openautomaker.base.configuration.fileRepresentation.CameraProfile;
+import org.openautomaker.base.configuration.fileRepresentation.CameraSettings;
 
 import celtech.roboxbase.comms.DetectedServer;
 import celtech.utils.CameraInfoStringConverter;
@@ -21,11 +26,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.camera.CameraInfo;
-import xyz.openautomaker.base.configuration.datafileaccessors.CameraProfileContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.CameraProfile;
-import xyz.openautomaker.base.configuration.fileRepresentation.CameraSettings;
 
 /**
  * FXML Controller class

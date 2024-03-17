@@ -2,6 +2,11 @@ package celtech.roboxbase.comms.remote;
 
 import java.nio.file.Path;
 
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.fileRepresentation.CameraSettings;
+import org.openautomaker.base.postprocessor.PrintJobStatistics;
+import org.openautomaker.base.printerControl.model.Printer;
+
 import celtech.roboxbase.comms.CommandInterface;
 import celtech.roboxbase.comms.PrinterStatusConsumer;
 import celtech.roboxbase.comms.RemoteDetectedPrinter;
@@ -11,10 +16,6 @@ import celtech.roboxbase.comms.rx.FirmwareError;
 import celtech.roboxbase.comms.rx.PrinterNotFound;
 import celtech.roboxbase.comms.rx.RoboxRxPacket;
 import celtech.roboxbase.comms.tx.RoboxTxPacket;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.fileRepresentation.CameraSettings;
-import xyz.openautomaker.base.postprocessor.PrintJobStatistics;
-import xyz.openautomaker.base.printerControl.model.Printer;
 
 /**
  *

@@ -8,6 +8,22 @@ import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.appManager.NotificationType;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.Head.HeadType;
+import org.openautomaker.base.printerControl.model.Head.ValveType;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.base.printerControl.model.PrinterListChangesListener;
+import org.openautomaker.base.printerControl.model.Reel;
+import org.openautomaker.base.printerControl.model.statetransitions.StateTransitionManager;
+import org.openautomaker.base.printerControl.model.statetransitions.calibration.CalibrationXAndYState;
+import org.openautomaker.base.printerControl.model.statetransitions.calibration.NozzleHeightCalibrationState;
+import org.openautomaker.base.printerControl.model.statetransitions.calibration.NozzleOpeningCalibrationState;
+import org.openautomaker.base.printerControl.model.statetransitions.calibration.SingleNozzleHeightCalibrationState;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.preference.SafetyFeaturesPreference;
 
 import celtech.Lookup;
 import celtech.appManager.ApplicationMode;
@@ -43,21 +59,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.appManager.NotificationType;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
-import xyz.openautomaker.base.printerControl.model.PrinterListChangesListener;
-import xyz.openautomaker.base.printerControl.model.Reel;
-import xyz.openautomaker.base.printerControl.model.Head.HeadType;
-import xyz.openautomaker.base.printerControl.model.Head.ValveType;
-import xyz.openautomaker.base.printerControl.model.statetransitions.StateTransitionManager;
-import xyz.openautomaker.base.printerControl.model.statetransitions.calibration.CalibrationXAndYState;
-import xyz.openautomaker.base.printerControl.model.statetransitions.calibration.NozzleHeightCalibrationState;
-import xyz.openautomaker.base.printerControl.model.statetransitions.calibration.NozzleOpeningCalibrationState;
-import xyz.openautomaker.base.printerControl.model.statetransitions.calibration.SingleNozzleHeightCalibrationState;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -498,10 +499,10 @@ public class CalibrationInsetPanelController implements Initializable,
 						printer.headProperty().get() != null &&
 						printer.headProperty().get().valveTypeProperty().get() == ValveType.NOT_FITTED) {
 					notRequiredMessagesShown = true;
-					BaseLookup.getSystemNotificationHandler().showInformationNotification(OpenAutoMakerEnv.getI18N().t("openNozzleCalibrationNotRequired.title"),
-							OpenAutoMakerEnv.getI18N().t("openNozzleCalibrationNotRequired.message"));
-					BaseLookup.getSystemNotificationHandler().showInformationNotification(OpenAutoMakerEnv.getI18N().t("xyAlignmentNotRequired.title"),
-							OpenAutoMakerEnv.getI18N().t("xyAlignmentNotRequired.message"));
+					BaseLookup.getSystemNotificationHandler().showInformationNotification(OpenAutomakerEnv.getI18N().t("openNozzleCalibrationNotRequired.title"),
+							OpenAutomakerEnv.getI18N().t("openNozzleCalibrationNotRequired.message"));
+					BaseLookup.getSystemNotificationHandler().showInformationNotification(OpenAutomakerEnv.getI18N().t("xyAlignmentNotRequired.title"),
+							OpenAutomakerEnv.getI18N().t("xyAlignmentNotRequired.message"));
 				}
 				break;
 		}
@@ -511,10 +512,13 @@ public class CalibrationInsetPanelController implements Initializable,
 		this.calibrationMode.set(calibrationMode);
 		switchToPrinter(Lookup.getSelectedPrinterProperty().get());
 		configureStartButtonForMode(currentPrinter);
+
+		SafetyFeaturesPreference safetyFeaturesPreference = new SafetyFeaturesPreference();
+
 		switch (calibrationMode) {
 			case NOZZLE_OPENING: {
 				try {
-					stateManager = currentPrinter.startCalibrateNozzleOpening(Lookup.getUserPreferences().isSafetyFeaturesOn());
+					stateManager = currentPrinter.startCalibrateNozzleOpening(safetyFeaturesPreference.get());
 				}
 				catch (PrinterException ex) {
 					LOGGER.warn("Can't switch to calibration: " + ex);
@@ -529,7 +533,7 @@ public class CalibrationInsetPanelController implements Initializable,
 				if (currentPrinter.headProperty().get() != null &&
 						currentPrinter.headProperty().get().getNozzles().size() == 1) {
 					try {
-						stateManager = currentPrinter.startCalibrateSingleNozzleHeight(Lookup.getUserPreferences().isSafetyFeaturesOn());
+						stateManager = currentPrinter.startCalibrateSingleNozzleHeight(safetyFeaturesPreference.get());
 					}
 					catch (PrinterException ex) {
 						LOGGER.warn("Can't switch to calibration: " + ex);
@@ -541,7 +545,7 @@ public class CalibrationInsetPanelController implements Initializable,
 				}
 				else {
 					try {
-						stateManager = currentPrinter.startCalibrateNozzleHeight(Lookup.getUserPreferences().isSafetyFeaturesOn());
+						stateManager = currentPrinter.startCalibrateNozzleHeight(safetyFeaturesPreference.get());
 					}
 					catch (PrinterException ex) {
 						LOGGER.warn("Can't switch to calibration: " + ex);
@@ -556,7 +560,7 @@ public class CalibrationInsetPanelController implements Initializable,
 
 			case X_AND_Y_OFFSET: {
 				try {
-					stateManager = currentPrinter.startCalibrateXAndY(Lookup.getUserPreferences().isSafetyFeaturesOn());
+					stateManager = currentPrinter.startCalibrateXAndY(safetyFeaturesPreference.get());
 				}
 				catch (PrinterException ex) {
 					LOGGER.warn("Can't switch to calibration: " + ex);
@@ -573,7 +577,7 @@ public class CalibrationInsetPanelController implements Initializable,
 	}
 
 	private void setupChoice() {
-		calibrationStatus.replaceText(OpenAutoMakerEnv.getI18N().t("calibrationPanel.chooseCalibration"));
+		calibrationStatus.replaceText(OpenAutomakerEnv.getI18N().t("calibrationPanel.chooseCalibration"));
 		calibrationMenu.reset();
 		hideAllInputControlsExceptStepNumber();
 		stepNumber.setVisible(false);

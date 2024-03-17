@@ -2,11 +2,17 @@
 package celtech.coreUI.components.printerstatus;
 
 import static celtech.utils.StringMetrics.getWidthOfString;
-import static xyz.openautomaker.base.utils.ColourStringConverter.colourToString;
+import static org.openautomaker.base.utils.ColourStringConverter.colourToString;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.stream.Collectors;
+
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.PrinterColourMap;
+import org.openautomaker.base.printerControl.PrinterStatus;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import com.sun.javafx.tk.FontMetrics;
 import com.sun.javafx.tk.Toolkit;
@@ -33,11 +39,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.PrinterColourMap;
-import xyz.openautomaker.base.printerControl.PrinterStatus;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -99,7 +100,7 @@ public class PrinterComponent extends Pane {
 			String stringToOutput = "";
 
 			if (!i18nString.equals("")) {
-				stringToOutput = OpenAutoMakerEnv.getI18N().t(i18nString);
+				stringToOutput = OpenAutomakerEnv.getI18N().t(i18nString);
 			}
 			return stringToOutput;
 		}
@@ -252,7 +253,7 @@ public class PrinterComponent extends Pane {
 			}
 		}
 		else {
-			nameText = OpenAutoMakerEnv.getI18N().t("sidePanel_printerStatus.notConnected");
+			nameText = OpenAutomakerEnv.getI18N().t("sidePanel_printerStatus.notConnected");
 			String style = "-fx-background-color: #" + colourToString(StandardColours.LIGHT_GREY) + ";";
 			innerPane.setStyle(style);
 			setStatus(Status.NO_INDICATOR);
@@ -282,7 +283,7 @@ public class PrinterComponent extends Pane {
 		}
 		else {
 			String errorTooltipString = printer.getCurrentErrors().stream()
-					.map(error -> OpenAutoMakerEnv.getI18N().t("misc.error") + ": " + OpenAutoMakerEnv.getI18N().t(error.getErrorTitleKey()) + "\n")
+					.map(error -> OpenAutomakerEnv.getI18N().t("misc.error") + ": " + OpenAutomakerEnv.getI18N().t(error.getErrorTitleKey()) + "\n")
 					.collect(Collectors.joining());
 			errorTooltip.setText(errorTooltipString);
 			Tooltip.install(this, errorTooltip);

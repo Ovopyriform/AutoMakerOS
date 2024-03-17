@@ -11,6 +11,10 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.utils.RectangularBounds;
+import org.openautomaker.environment.preference.SplitLoosePartsOnLoadPreference;
 
 import celtech.Lookup;
 import celtech.appManager.ModelContainerProject;
@@ -31,15 +35,13 @@ import celtech.utils.threed.MeshUtils;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.scene.shape.TriangleMesh;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.utils.RectangularBounds;
 
 /**
  * ModelLoader contains methods for loading models from a file.
  *
  * @author tony
  */
+//TODO: Look into model loading.
 public class ModelLoader {
 
 	private static final Logger LOGGER = LogManager.getLogger(
@@ -105,19 +107,20 @@ public class ModelLoader {
 			boolean shouldCentre = loadResults.isShouldCentre();
 
 			for (ModelLoadResult loadResult : loadResults.getResults()) {
-				if (loadResult != null) {
-					Set<ModelContainer> modelContainersToOperateOn = (Set) loadResult.getProjectifiableThings();
-					if (Lookup.getUserPreferences().isLoosePartSplitOnLoad()) {
-						allModelContainers.add(makeGroup(modelContainersToOperateOn));
-					}
-					else {
-						allModelContainers.addAll(modelContainersToOperateOn);
-					}
-				}
-				else {
+				if (loadResult == null) {
 					LOGGER.error("Error whilst attempting to load model");
+					continue;
 				}
+
+				Set<ModelContainer> modelContainersToOperateOn = (Set) loadResult.getProjectifiableThings();
+				if (new SplitLoosePartsOnLoadPreference().get()) {
+						allModelContainers.add(makeGroup(modelContainersToOperateOn));
+					continue;
+				}
+
+				allModelContainers.addAll(modelContainersToOperateOn);
 			}
+
 			Set<ProjectifiableThing> allProjectifiableThings = (Set) allModelContainers;
 
 			addToProject(project, allProjectifiableThings, shouldCentre, dontGroupModelsOverride, printer);

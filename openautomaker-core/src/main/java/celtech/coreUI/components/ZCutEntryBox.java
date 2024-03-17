@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.openautomaker.base.utils.TimeUtils;
+import org.openautomaker.environment.I18N;
+
 import celtech.Lookup;
 import celtech.appManager.ModelContainerProject;
 import celtech.appManager.undo.UndoableProject;
@@ -27,8 +30,6 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.utils.TimeUtils;
 
 /**
  *
@@ -145,7 +146,7 @@ public class ZCutEntryBox extends HBox implements ScreenExtentsListener {
 	}
 
 	private void loadContent() {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/celtech/resources/fxml/components/ZCutEntryBox.fxml"), BaseLookup.getLanguageBundle());
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/celtech/resources/fxml/components/ZCutEntryBox.fxml"), new I18N().getResourceBundle());
 		fxmlLoader.setController(this);
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setClassLoader(this.getClass().getClassLoader());

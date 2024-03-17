@@ -3,8 +3,9 @@ package celtech.coreUI.components.Notifications;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.openautomaker.base.BaseLookup;
+
 import celtech.Lookup;
-import xyz.openautomaker.base.BaseLookup;
 
 /**
  *

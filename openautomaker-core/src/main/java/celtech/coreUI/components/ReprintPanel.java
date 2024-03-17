@@ -3,6 +3,8 @@ package celtech.coreUI.components;
 import java.util.List;
 
 import org.controlsfx.control.MasterDetailPane;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.configuration.ApplicationConfiguration;
 import celtech.coreUI.DisplayManager;
@@ -28,8 +30,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -63,15 +63,15 @@ public class ReprintPanel extends VBox {
 		masterDetailsPane.setDetailNode(detailsPanel);
 		masterDetailsPane.setDividerPosition(0.4);
 
-		Text reprintTitle = new Text(OpenAutoMakerEnv.getI18N().t("reprintPanel.title"));
+		Text reprintTitle = new Text(OpenAutomakerEnv.getI18N().t("reprintPanel.title"));
 		reprintTitle.getStyleClass().add("reprint-title");
 
-		Text reprintSubtitle = new Text(OpenAutoMakerEnv.getI18N().t("reprintPanel.subtitle"));
+		Text reprintSubtitle = new Text(OpenAutomakerEnv.getI18N().t("reprintPanel.subtitle"));
 		reprintSubtitle.getStyleClass().add("reprint-subtitle");
 
 		TableColumn nameColumn = new TableColumn<>();
 		nameColumn.setCellValueFactory(new PropertyValueFactory<SuitablePrintJob, String>("printJobName"));
-		nameColumn.setText(OpenAutoMakerEnv.getI18N().t("rootScanner.name"));
+		nameColumn.setText(OpenAutomakerEnv.getI18N().t("rootScanner.name"));
 		nameColumn.setPrefWidth(200);
 		nameColumn.setResizable(false);
 		nameColumn.setStyle("-fx-alignment: CENTER_LEFT;");
@@ -84,15 +84,15 @@ public class ReprintPanel extends VBox {
 				displayDetails(newValue);
 			}
 		});
-		tableView.setPlaceholder(new Text(OpenAutoMakerEnv.getI18N().t("reprintPanel.noFilesToReprint")));
+		tableView.setPlaceholder(new Text(OpenAutomakerEnv.getI18N().t("reprintPanel.noFilesToReprint")));
 
 		detailsPanel.setHgap(10);
 
-		jobDurationLabel.setText(OpenAutoMakerEnv.getI18N().t("reprintPanel.duration"));
-		printProfileLabel.setText(OpenAutoMakerEnv.getI18N().t("reprintPanel.profile"));
-		eLengthMLabel.setText(OpenAutoMakerEnv.getI18N().t("reprintPanel.requiredFilament1"));
-		dLengthMLabel.setText(OpenAutoMakerEnv.getI18N().t("reprintPanel.requiredFilament2"));
-		creationDateLabel.setText(OpenAutoMakerEnv.getI18N().t("reprintPanel.creationDate"));
+		jobDurationLabel.setText(OpenAutomakerEnv.getI18N().t("reprintPanel.duration"));
+		printProfileLabel.setText(OpenAutomakerEnv.getI18N().t("reprintPanel.profile"));
+		eLengthMLabel.setText(OpenAutomakerEnv.getI18N().t("reprintPanel.requiredFilament1"));
+		dLengthMLabel.setText(OpenAutomakerEnv.getI18N().t("reprintPanel.requiredFilament2"));
+		creationDateLabel.setText(OpenAutomakerEnv.getI18N().t("reprintPanel.creationDate"));
 
 		detailsPanel.add(creationDateLabel, 0, 0);
 		detailsPanel.add(creationDate, 1, 0);
@@ -106,12 +106,12 @@ public class ReprintPanel extends VBox {
 		detailsPanel.add(dLengthM, 1, 4);
 		detailsPanel.setPadding(new Insets(10, 10, 10, 10));
 
-		closeButton.setText(OpenAutoMakerEnv.getI18N().t("buttonText.close"));
+		closeButton.setText(OpenAutomakerEnv.getI18N().t("buttonText.close"));
 		closeButton.setOnAction(event -> {
 			close();
 		});
 
-		printButton.setText(OpenAutoMakerEnv.getI18N().t("buttonText.make"));
+		printButton.setText(OpenAutomakerEnv.getI18N().t("buttonText.make"));
 		printButton.disableProperty().bind(tableView.getSelectionModel().selectedItemProperty().isNull());
 		printButton.setOnAction(event -> {
 			printerToUse.printJob(tableView.getSelectionModel().getSelectedItem().getPrintJobID());

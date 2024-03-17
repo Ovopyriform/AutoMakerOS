@@ -1,6 +1,6 @@
 package celtech.coreUI.components;
 
-import static xyz.openautomaker.base.utils.DeDuplicator.suggestNonDuplicateName;
+import static org.openautomaker.base.utils.DeDuplicator.suggestNonDuplicateName;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +10,8 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.environment.I18N;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.Lookup;
 import celtech.appManager.ApplicationMode;
@@ -54,8 +56,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -205,7 +205,7 @@ public class ProjectTab extends Tab implements ProjectCallback {
 		nonSpecificModelIndicator.setAlignment(Pos.CENTER);
 		nonSpecificModelIndicator.setMouseTransparent(true);
 		nonSpecificModelIndicator.setPickOnBounds(false);
-		Label loadAModel = new Label(OpenAutoMakerEnv.getI18N().t("projectTab.loadAModel"));
+		Label loadAModel = new Label(OpenAutomakerEnv.getI18N().t("projectTab.loadAModel"));
 		loadAModel.getStyleClass().add("load-a-model-text");
 		nonSpecificModelIndicator.getChildren().add(loadAModel);
 
@@ -331,7 +331,7 @@ public class ProjectTab extends Tab implements ProjectCallback {
 	private LoadedPanelData loadInsetPanel(String innerPanelFXMLName, Project project) {
 		URL settingsInsetPanelURL = getClass().getResource(
 				ApplicationConfiguration.fxmlPanelResourcePath + innerPanelFXMLName);
-		FXMLLoader loader = new FXMLLoader(settingsInsetPanelURL, BaseLookup.getLanguageBundle());
+		FXMLLoader loader = new FXMLLoader(settingsInsetPanelURL, new I18N().getResourceBundle());
 		Node insetPanel = null;
 		try {
 			insetPanel = loader.load();

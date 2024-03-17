@@ -8,6 +8,15 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
+import org.openautomaker.base.configuration.datafileaccessors.PrinterContainer;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterDefinitionFile;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterConnection;
+import org.openautomaker.base.utils.TimeUtils;
 
 import celtech.CoreTest;
 import celtech.Lookup;
@@ -67,15 +76,6 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.MeshView;
 import javafx.util.Duration;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
-import xyz.openautomaker.base.configuration.datafileaccessors.PrinterContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterDefinitionFile;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterConnection;
-import xyz.openautomaker.base.utils.TimeUtils;
 
 /**
  *

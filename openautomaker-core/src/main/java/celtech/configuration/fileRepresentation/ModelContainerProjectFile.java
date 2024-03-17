@@ -4,12 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.openautomaker.base.configuration.BaseConfiguration;
+import org.openautomaker.base.configuration.fileRepresentation.SupportType;
+import org.openautomaker.base.services.slicer.PrintQualityEnumeration;
+
 import celtech.appManager.ModelContainerProject;
 import celtech.appManager.Project;
 import celtech.modelcontrol.ItemState;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.configuration.fileRepresentation.SupportType;
-import xyz.openautomaker.base.services.slicer.PrintQualityEnumeration;
 
 public class ModelContainerProjectFile extends ProjectFile {
 

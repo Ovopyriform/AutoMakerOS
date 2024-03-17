@@ -1,6 +1,7 @@
 package celtech.coreUI;
 
-import static xyz.openautomaker.environment.OpenAutoMakerEnv.PROJECTS;
+import static org.openautomaker.environment.OpenAutomakerEnv.MODELS;
+import static org.openautomaker.environment.OpenAutomakerEnv.PROJECTS;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,11 +9,22 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.configuration.RoboxProfile;
+import org.openautomaker.base.configuration.fileRepresentation.CameraProfile;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterIdentity;
+import org.openautomaker.environment.I18N;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.preference.FirstUsePreference;
+import org.openautomaker.environment.preference.advanced.AdvancedModePreference;
+import org.openautomaker.environment.preference.advanced.ShowGCodeConsolePreference;
 
 import celtech.Lookup;
 import celtech.appManager.ApplicationMode;
@@ -78,13 +90,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.configuration.RoboxProfile;
-import xyz.openautomaker.base.configuration.fileRepresentation.CameraProfile;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterIdentity;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -93,8 +98,10 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
 public class DisplayManager implements EventHandler<KeyEvent>, KeyCommandListener, UnhandledKeyListener, SpinnerControl,
 		ProjectCallback {
 
-	private static final Logger LOGGER = LogManager.getLogger(
-			DisplayManager.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger();
+
+	private final AdvancedModePreference fAdvancedModePreference;
+	private final ShowGCodeConsolePreference fShowGCodeConsolePreference;
 
 	private static final int START_SCALING_WINDOW_HEIGHT = 700;
 	private static final double MINIMUM_SCALE_FACTOR = 0.7;
@@ -159,6 +166,9 @@ public class DisplayManager implements EventHandler<KeyEvent>, KeyCommandListene
 	private PreviewManager previewManager = null;
 
 	private DisplayManager() {
+		fAdvancedModePreference = new AdvancedModePreference();
+		fShowGCodeConsolePreference = new ShowGCodeConsolePreference();
+
 		this.rootStackPane = new StackPane();
 		this.nodesMayHaveMoved = new SimpleBooleanProperty(false);
 		this.insetPanelControllers = new HashMap<>();
@@ -307,10 +317,12 @@ public class DisplayManager implements EventHandler<KeyEvent>, KeyCommandListene
 		LOGGER.debug("start configure display manager");
 		DisplayManager.mainStage = mainStage;
 		mainStage.setTitle(applicationName + " - "
-				+ BaseConfiguration.getApplicationVersion());
-		BaseConfiguration.setTitleAndVersion(OpenAutoMakerEnv.getI18N().t(
-				"application.title")
-				+ " - " + BaseConfiguration.getApplicationVersion());
+				+ OpenAutomakerEnv.get().getVersion());
+		//		BaseConfiguration.setTitleAndVersion(OpenAutomakerEnv.getI18N().t(
+		//				"application.title")
+		//				+ " - " + BaseConfiguration.getApplicationVersion());
+
+		ResourceBundle resourceBundle = new I18N().getResourceBundle();
 
 		rootAnchorPane = new AnchorPane();
 
@@ -353,7 +365,7 @@ public class DisplayManager implements EventHandler<KeyEvent>, KeyCommandListene
 		try {
 			URL fxmlFileName = getClass().getResource(ApplicationConfiguration.fxmlPanelResourcePath + "printerStatusSidePanel.fxml");
 			LOGGER.debug("About to load side panel fxml: " + fxmlFileName);
-			FXMLLoader sidePanelLoader = new FXMLLoader(fxmlFileName, BaseLookup.getLanguageBundle());
+			FXMLLoader sidePanelLoader = new FXMLLoader(fxmlFileName, resourceBundle);
 			sidePanel = (VBox) sidePanelLoader.load();
 		}
 		catch (Exception ex) {
@@ -399,12 +411,14 @@ public class DisplayManager implements EventHandler<KeyEvent>, KeyCommandListene
 		AnchorPane.setLeftAnchor(tabDisplay, 0.0);
 		AnchorPane.setRightAnchor(tabDisplay, 0.0);
 
+
 		// The printer status tab will always be visible - the page is static
 		try {
+
 			FXMLLoader printerStatusPageLoader = new FXMLLoader(getClass().getResource(
 					ApplicationConfiguration.fxmlResourcePath
 							+ "PrinterStatusPage.fxml"),
-					BaseLookup.getLanguageBundle());
+					resourceBundle);
 			AnchorPane printerStatusPage = printerStatusPageLoader.load();
 			PrinterStatusPageController printerStatusPageController = printerStatusPageLoader.getController();
 			printerStatusPageController.configure(projectTabPaneHolder);
@@ -413,7 +427,7 @@ public class DisplayManager implements EventHandler<KeyEvent>, KeyCommandListene
 			FXMLLoader printerStatusPageLabelLoader = new FXMLLoader(getClass().getResource(
 					ApplicationConfiguration.fxmlResourcePath
 							+ "infoScreenIndicator.fxml"),
-					BaseLookup.getLanguageBundle());
+					resourceBundle);
 			VBox printerStatusLabelGroup = printerStatusPageLabelLoader.load();
 			infoScreenIndicatorController = printerStatusPageLabelLoader.getController();
 			printerStatusTab.setGraphic(printerStatusLabelGroup);
@@ -477,7 +491,7 @@ public class DisplayManager implements EventHandler<KeyEvent>, KeyCommandListene
 		try {
 			URL menuStripURL = getClass().getResource(ApplicationConfiguration.fxmlPanelResourcePath
 					+ "LayoutStatusMenuStrip.fxml");
-			FXMLLoader menuStripLoader = new FXMLLoader(menuStripURL, BaseLookup.getLanguageBundle());
+			FXMLLoader menuStripLoader = new FXMLLoader(menuStripURL, resourceBundle);
 			VBox menuStripControls = (VBox) menuStripLoader.load();
 			menuStripControls.prefWidthProperty().bind(projectTabPaneHolder.widthProperty());
 			projectTabPaneHolder.getChildren().add(menuStripControls);
@@ -578,7 +592,7 @@ public class DisplayManager implements EventHandler<KeyEvent>, KeyCommandListene
 		FileChooser projectChooser = new FileChooser();
 		projectChooser.getExtensionFilters().addAll(
 				new FileChooser.ExtensionFilter("Robox Project", "*.robox"));
-		projectChooser.setInitialDirectory(OpenAutoMakerEnv.get().getUserPath(PROJECTS).toFile());
+		projectChooser.setInitialDirectory(OpenAutomakerEnv.get().getUserPath(PROJECTS).toFile());
 		List<File> files = projectChooser.showOpenMultipleDialog(getMainStage());
 		if (files != null && !files.isEmpty()) {
 			files.forEach(projectFile -> {
@@ -592,8 +606,7 @@ public class DisplayManager implements EventHandler<KeyEvent>, KeyCommandListene
 			URL fxmlFileName = getClass().getResource(mode.getInsetPanelFXMLName());
 			if (fxmlFileName != null) {
 				LOGGER.debug("About to load inset panel fxml: " + fxmlFileName);
-				FXMLLoader insetPanelLoader = new FXMLLoader(fxmlFileName,
-						BaseLookup.getLanguageBundle());
+				FXMLLoader insetPanelLoader = new FXMLLoader(fxmlFileName, new I18N().getResourceBundle());
 				insetPanelLoader.setController(mode.getControllerClass().newInstance());
 				Pane insetPanel = (Pane) insetPanelLoader.load();
 				Initializable insetPanelController = insetPanelLoader.getController();
@@ -715,11 +728,12 @@ public class DisplayManager implements EventHandler<KeyEvent>, KeyCommandListene
 				}
 			}
 		}
-		else if (applicationStatus.getMode() == ApplicationMode.STATUS
-				&& Lookup.getUserPreferences().isAdvancedMode()) {
+		else if (applicationStatus.getMode() == ApplicationMode.STATUS && fAdvancedModePreference.get()) {
 			switch (event.getCode()) {
 				case G:
-					Lookup.getUserPreferences().setShowGCode(true);
+					fShowGCodeConsolePreference.set(true);
+					break;
+				default:
 					break;
 			}
 		}
@@ -816,7 +830,8 @@ public class DisplayManager implements EventHandler<KeyEvent>, KeyCommandListene
 
 		switch (commandSequence) {
 			case addDummyPrinterCommand:
-				RoboxCommsManager.getInstance().addDummyPrinter(false);
+				//TODO: When is this called?  Seems dummy printers are added all over the shop
+				RoboxCommsManager.getInstance().addVirtualPrinter(false);
 				handled = true;
 				break;
 			case dummyCommandPrefix:
@@ -994,11 +1009,11 @@ public class DisplayManager implements EventHandler<KeyEvent>, KeyCommandListene
 			tabDisplay.getSelectionModel().select(projectTab);
 		};
 
-		if (Lookup.getUserPreferences().isFirstUse()) {
-			File firstUsePrintFile = BaseConfiguration.getApplicationModelDirectory().resolve("RBX_ROBOT_MM.stl").toFile();
+		if (new FirstUsePreference().get()) {
+			File firstUsePrintFile = OpenAutomakerEnv.get().getApplicationPath(MODELS).resolve("RBX_ROBOT_MM.stl").toFile();
 
 			Project newProject = new ModelContainerProject();
-			newProject.setProjectName(OpenAutoMakerEnv.getI18N().t("myFirstPrintTitle"));
+			newProject.setProjectName(new I18N().t("myFirstPrintTitle"));
 
 			List<File> fileToLoad = new ArrayList<>();
 			fileToLoad.add(firstUsePrintFile);
@@ -1023,7 +1038,7 @@ public class DisplayManager implements EventHandler<KeyEvent>, KeyCommandListene
 					tabDisplay.heightProperty(), false);
 			tabDisplay.getTabs().add(1, projectTab);
 
-			Lookup.getUserPreferences().setFirstUse(false);
+			new FirstUsePreference().set(false);
 		}
 		else if (listOfFiles.size() > 0) {
 			BaseLookup.getTaskExecutor().runOnGUIThread(loaderRunnable);

@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.openautomaker.base.utils.Math.MathUtils;
+import org.openautomaker.environment.OpenAutomakerEnv;
+
 import celtech.coreUI.components.buttons.GraphicButton;
 import javafx.animation.Animation;
 import javafx.animation.Transition;
@@ -17,8 +20,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-import xyz.openautomaker.base.utils.Math.MathUtils;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -125,7 +126,7 @@ public abstract class AppearingProgressBar extends StackPane implements Initiali
 			slidOutOfView = true;
 			setVisible(false);
 		});
-		layerTitle.setText(OpenAutoMakerEnv.getI18N().t("dialogs.progressLayerLabel"));
+		layerTitle.setText(OpenAutomakerEnv.getI18N().t("dialogs.progressLayerLabel"));
 	}
 
 	/**

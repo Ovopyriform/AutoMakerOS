@@ -4,6 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openautomaker.base.configuration.datafileaccessors.PrinterContainer;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterDefinitionFile;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.utils.RectangularBounds;
+
 import celtech.Lookup;
 import celtech.coreUI.visualisation.ScreenExtents;
 import celtech.coreUI.visualisation.ScreenExtentsProvider;
@@ -22,10 +27,6 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
-import xyz.openautomaker.base.configuration.datafileaccessors.PrinterContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterDefinitionFile;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.utils.RectangularBounds;
 
 /**
  *

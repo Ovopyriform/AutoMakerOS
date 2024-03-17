@@ -3,6 +3,8 @@
  */
 package celtech.coreUI.controllers.panels;
 
+import org.openautomaker.environment.OpenAutomakerEnv;
+
 import celtech.coreUI.components.buttons.GraphicButtonWithLabel;
 import celtech.coreUI.controllers.panels.MenuInnerPanel.OperationButton;
 import javafx.beans.binding.Bindings;
@@ -11,7 +13,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  * The ButtonBox class is a JavaFX HBox that displays a set of operation buttons as defined by a {@code List<OperationButton>}. This list can change according to the active panel that it is tied to.
@@ -40,7 +41,7 @@ public class ButtonBox extends HBox {
 		if (innerPanel.getOperationButtons() != null) {
 			for (OperationButton operationButton : innerPanel.getOperationButtons()) {
 				GraphicButtonWithLabel button = new GraphicButtonWithLabel();
-				button.setLabelText(OpenAutoMakerEnv.getI18N().t(operationButton.getTextId()));
+				button.setLabelText(OpenAutomakerEnv.getI18N().t(operationButton.getTextId()));
 				button.setFxmlFileName(operationButton.getFXMLName());
 				button.setOnAction((ActionEvent event) -> {
 					operationButton.whenClicked();

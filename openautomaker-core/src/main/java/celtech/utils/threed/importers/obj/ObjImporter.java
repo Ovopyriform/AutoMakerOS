@@ -45,6 +45,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.utils.SystemUtils;
 
 import celtech.coreUI.visualisation.ApplicationMaterials;
 import celtech.coreUI.visualisation.metaparts.FloatArrayList;
@@ -57,7 +58,6 @@ import javafx.beans.property.DoubleProperty;
 import javafx.scene.shape.CullFace;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
-import xyz.openautomaker.base.utils.SystemUtils;
 
 /**
  * Obj file reader

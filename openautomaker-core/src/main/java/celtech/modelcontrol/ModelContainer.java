@@ -26,6 +26,9 @@ import org.apache.commons.math3.optim.univariate.UnivariateObjectiveFunction;
 import org.apache.commons.math3.optim.univariate.UnivariatePointValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.utils.RectangularBounds;
+import org.openautomaker.base.utils.Math.MathUtils;
+import org.openautomaker.base.utils.threed.MeshToWorldTransformer;
 
 import celtech.coreUI.visualisation.ApplicationMaterials;
 import celtech.coreUI.visualisation.CameraViewChangeListener;
@@ -61,9 +64,6 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
-import xyz.openautomaker.base.utils.RectangularBounds;
-import xyz.openautomaker.base.utils.Math.MathUtils;
-import xyz.openautomaker.base.utils.threed.MeshToWorldTransformer;
 
 /**
  *

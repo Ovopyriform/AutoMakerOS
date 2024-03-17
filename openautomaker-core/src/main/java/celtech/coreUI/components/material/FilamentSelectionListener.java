@@ -1,6 +1,6 @@
 package celtech.coreUI.components.material;
 
-import xyz.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.Filament;
 
 /**
  *

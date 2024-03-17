@@ -1,6 +1,6 @@
 package celtech.appManager;
 
-import static xyz.openautomaker.environment.OpenAutoMakerEnv.PROJECTS;
+import static org.openautomaker.environment.OpenAutomakerEnv.PROJECTS;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,10 +21,10 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.Lookup;
 import celtech.configuration.ApplicationConfiguration;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -59,7 +59,7 @@ public class ProjectManager implements Savable, Serializable {
 	private static ProjectManager loadState() {
 		ProjectManager pm = null;
 
-		Path projectPath = OpenAutoMakerEnv.get().getUserPath(PROJECTS);
+		Path projectPath = OpenAutomakerEnv.get().getUserPath(PROJECTS);
 		Path openProjectsDataPath = projectPath.resolve(openProjectFileName);
 
 		if (!Files.exists(openProjectsDataPath))
@@ -106,7 +106,7 @@ public class ProjectManager implements Savable, Serializable {
 	public boolean saveState() {
 		boolean savedSuccessfully = false;
 
-		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(OpenAutoMakerEnv.get().getUserPath(PROJECTS).resolve(openProjectFileName).toFile()))) {
+		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(OpenAutomakerEnv.get().getUserPath(PROJECTS).resolve(openProjectFileName).toFile()))) {
 			int numberOfProjectsWithModels = 0;
 
 			for (Project candidateProject : openProjects)
@@ -150,7 +150,7 @@ public class ProjectManager implements Savable, Serializable {
 	private Set<String> getAvailableProjectNames() {
 		Set<String> availableProjectNames = new HashSet<>();
 
-		File projectDir = OpenAutoMakerEnv.get().getUserPath(PROJECTS).toFile();
+		File projectDir = OpenAutomakerEnv.get().getUserPath(PROJECTS).toFile();
 		File[] projectFiles = projectDir.listFiles(fileFilter);
 		for (File file : projectFiles) {
 			String fileName = file.getName();

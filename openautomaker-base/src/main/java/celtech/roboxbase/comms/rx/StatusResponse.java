@@ -5,6 +5,7 @@ import java.text.ParseException;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.openautomaker.base.printerControl.model.HeaterMode;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -13,7 +14,6 @@ import celtech.roboxbase.comms.remote.EEPROMState;
 import celtech.roboxbase.comms.remote.FixedDecimalFloatFormat;
 import celtech.roboxbase.comms.remote.PauseStatus;
 import celtech.roboxbase.comms.remote.WhyAreWeWaitingState;
-import xyz.openautomaker.base.printerControl.model.HeaterMode;
 
 /**
  *

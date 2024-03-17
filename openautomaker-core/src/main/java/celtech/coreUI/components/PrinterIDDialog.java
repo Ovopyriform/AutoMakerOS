@@ -5,6 +5,8 @@ import java.net.URL;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.environment.I18N;
 
 import celtech.configuration.ApplicationConfiguration;
 import celtech.coreUI.DisplayManager;
@@ -16,8 +18,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.printerControl.model.Printer;
 
 /**
  *
@@ -35,7 +35,7 @@ public class PrinterIDDialog {
 	public PrinterIDDialog() {
 		dialogStage = new Stage(StageStyle.TRANSPARENT);
 		URL dialogFXMLURL = PrinterIDDialog.class.getResource(ApplicationConfiguration.fxmlResourcePath + "PrinterIDDialog.fxml");
-		FXMLLoader dialogLoader = new FXMLLoader(dialogFXMLURL, BaseLookup.getLanguageBundle());
+		FXMLLoader dialogLoader = new FXMLLoader(dialogFXMLURL, new I18N().getResourceBundle());
 		try {
 			Parent dialogBoxScreen = (Parent) dialogLoader.load();
 			dialogController = (PrinterIDDialogController) dialogLoader.getController();

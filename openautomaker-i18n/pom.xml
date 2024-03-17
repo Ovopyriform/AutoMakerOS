@@ -7,11 +7,11 @@
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
 
-	<name>OpenAutoMaker I18n</name>
+	<name>OpenAutomaker I18n</name>
 
 	<parent>
 		<artifactId>openautomaker-parent</artifactId>
-		<groupId>xyz.openautomaker</groupId>
+		<groupId>org.openautomaker</groupId>
 		<version>1.0</version>
 		<relativePath>../openautomaker-parent</relativePath>
 	</parent>
@@ -34,6 +34,10 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
 		</dependency>
 	</dependencies>
 </project>

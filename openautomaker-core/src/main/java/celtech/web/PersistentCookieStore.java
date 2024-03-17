@@ -11,11 +11,10 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.crypto.CryptoFileStore;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.crypto.CryptoFileStore;
 
 /**
  *
@@ -33,7 +32,7 @@ public class PersistentCookieStore implements CookieStore, Runnable {
 		// get the default in memory cookie store
 		store = new CookieManager().getCookieStore();
 
-		cryptoFileStore = new CryptoFileStore(BaseConfiguration.getApplicationStorageDirectory() + filename, "ab54vi'vSDDAS5r433jjk's#a");
+		cryptoFileStore = new CryptoFileStore(OpenAutomakerEnv.get().getApplicationPath().resolve(filename).toString(), "ab54vi'vSDDAS5r433jjk's#a");
 		//        LOGGER.info("Reading cookie store");
 		String encryptedCookieData = cryptoFileStore.readFile();
 

@@ -38,8 +38,8 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.nfd.NativeFileDialog;
+import org.openautomaker.environment.OpenAutoMakerEnv;
 
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 import xyz.openautomaker.gcodeviewer.comms.CommandHandler;
 import xyz.openautomaker.gcodeviewer.engine.renderers.MasterRenderer;
 import xyz.openautomaker.gcodeviewer.entities.Camera;

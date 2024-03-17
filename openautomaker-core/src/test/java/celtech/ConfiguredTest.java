@@ -7,14 +7,14 @@ import java.util.Properties;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.configuration.datafileaccessors.PrintProfileSettingsContainer;
+import org.openautomaker.base.configuration.datafileaccessors.RoboxProfileSettingsContainer;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.appManager.TestSystemNotificationManager;
 import celtech.postprocessor.TestGCodeOutputWriter;
 import celtech.utils.tasks.TestTaskExecutor;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.configuration.datafileaccessors.PrintProfileSettingsContainer;
-import xyz.openautomaker.base.configuration.datafileaccessors.RoboxProfileSettingsContainer;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -66,7 +66,7 @@ public class ConfiguredTest {
 		Lookup.setupDefaultValues();
 
 		// force initialisation
-		String installDir = OpenAutoMakerEnv.get().getApplicationPath().toString();
+		String installDir = OpenAutomakerEnv.get().getApplicationPath().toString();
 
 		BaseLookup.setTaskExecutor(new TestTaskExecutor());
 		BaseLookup.setSystemNotificationHandler(new TestSystemNotificationManager());

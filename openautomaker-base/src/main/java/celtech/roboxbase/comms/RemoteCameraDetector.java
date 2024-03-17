@@ -3,8 +3,8 @@ package celtech.roboxbase.comms;
 import java.util.ArrayList;
 import java.util.List;
 
-import xyz.openautomaker.base.camera.CameraInfo;
-import xyz.openautomaker.base.configuration.CoreMemory;
+import org.openautomaker.base.camera.CameraInfo;
+import org.openautomaker.base.configuration.CoreMemory;
 
 /**
  * This class currently does not extend DeviceDetector as the search for devices method wants to return

@@ -1,6 +1,6 @@
 package celtech.appManager;
 
-import static xyz.openautomaker.environment.OpenAutoMakerEnv.PROJECTS;
+import static org.openautomaker.environment.OpenAutomakerEnv.PROJECTS;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -11,16 +11,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.camera.CameraInfo;
+import org.openautomaker.base.configuration.datafileaccessors.CameraProfileContainer;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.services.slicer.PrintQualityEnumeration;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.preference.SlicerPreference;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import celtech.Lookup;
 import celtech.configuration.ApplicationConfiguration;
 import celtech.configuration.fileRepresentation.ModelContainerProjectFile;
 import celtech.configuration.fileRepresentation.ProjectFile;
@@ -47,14 +56,6 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.camera.CameraInfo;
-import xyz.openautomaker.base.configuration.SlicerType;
-import xyz.openautomaker.base.configuration.datafileaccessors.CameraProfileContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.services.slicer.PrintQualityEnumeration;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -111,7 +112,7 @@ public abstract class Project {
 		printerSettings = new PrinterSettingsOverrides();
 		Date now = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat("-hhmmss-ddMMYY");
-		projectNameProperty = new SimpleStringProperty(OpenAutoMakerEnv.getI18N().t("projectLoader.untitled") + formatter.format(now));
+		projectNameProperty = new SimpleStringProperty(OpenAutomakerEnv.getI18N().t("projectLoader.untitled") + formatter.format(now));
 		lastModifiedDate.set(now);
 
 		gCodeGenManager = new GCodeGeneratorManager(this);
@@ -131,8 +132,11 @@ public abstract class Project {
 			fireWhenTimelapseSettingsChanged(timelapseSettings);
 		});
 
-		Lookup.getUserPreferences().getSlicerTypeProperty().addListener((ObservableValue<? extends SlicerType> observable, SlicerType oldValue, SlicerType newValue) -> {
-			projectModified();
+		new SlicerPreference().addChangeListener(new PreferenceChangeListener() {
+			@Override
+			public void preferenceChange(PreferenceChangeEvent evt) {
+				projectModified();
+			}
 		});
 	}
 
@@ -153,7 +157,7 @@ public abstract class Project {
 	public final Path getAbsolutePath() {
 		//TODO: It looks like this should just enumerate all the .robox files in the project directory and load those.  Not sure of the point of the open projects data.
 		//return AutoMakerEnvironment.get().getUserPath(PROJECTS).resolve(getProjectName()).resolve(projectNameProperty.get() + ApplicationConfiguration.projectFileExtension);
-		return OpenAutoMakerEnv.get().getUserPath(PROJECTS).resolve(getProjectName() + ApplicationConfiguration.projectFileExtension);
+		return OpenAutomakerEnv.get().getUserPath(PROJECTS).resolve(getProjectName() + ApplicationConfiguration.projectFileExtension);
 	}
 
 	protected abstract void load(ProjectFile projectFile, String basePath) throws ProjectLoadException;
@@ -192,7 +196,7 @@ public abstract class Project {
 		if (project == null)
 			return;
 
-		Path basePath = OpenAutoMakerEnv.get().getUserPath(PROJECTS).resolve(project.getProjectName());
+		Path basePath = OpenAutomakerEnv.get().getUserPath(PROJECTS).resolve(project.getProjectName());
 
 		File dirHandle = basePath.toFile();
 		if (!dirHandle.exists()) {

@@ -2,7 +2,7 @@ package celtech.coreUI.controllers.panels;
 
 import static celtech.utils.StringMetrics.getWidthOfString;
 import static java.lang.Double.max;
-import static xyz.openautomaker.environment.OpenAutoMakerEnv.PROJECTS;
+import static org.openautomaker.environment.OpenAutomakerEnv.PROJECTS;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +16,36 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.PrinterColourMap;
+import org.openautomaker.base.appManager.NotificationType;
+import org.openautomaker.base.appManager.PurgeResponse;
+import org.openautomaker.base.camera.CameraInfo;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.RoboxProfile;
+import org.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
+import org.openautomaker.base.configuration.fileRepresentation.CameraProfile;
+import org.openautomaker.base.configuration.fileRepresentation.CameraSettings;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
+import org.openautomaker.base.configuration.utils.RoboxProfileUtils;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterConnection;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.base.printerControl.model.PrinterListChangesListener;
+import org.openautomaker.base.printerControl.model.Reel;
+import org.openautomaker.base.services.camera.CameraTriggerData;
+import org.openautomaker.base.services.gcodegenerator.GCodeGeneratorResult;
+import org.openautomaker.base.utils.PrintJobUtils;
+import org.openautomaker.base.utils.PrinterUtils;
+import org.openautomaker.base.utils.SystemUtils;
+import org.openautomaker.base.utils.models.PrintableProject;
+import org.openautomaker.base.utils.tasks.TaskResponse;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.preference.SafetyFeaturesPreference;
+import org.openautomaker.environment.preference.SlicerPreference;
+import org.openautomaker.environment.preference.advanced.AdvancedModePreference;
+import org.openautomaker.ui.utils.FXProperty;
 
 import celtech.Lookup;
 import celtech.appManager.ApplicationMode;
@@ -71,33 +101,6 @@ import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.PrinterColourMap;
-import xyz.openautomaker.base.appManager.NotificationType;
-import xyz.openautomaker.base.appManager.PurgeResponse;
-import xyz.openautomaker.base.camera.CameraInfo;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.RoboxProfile;
-import xyz.openautomaker.base.configuration.SlicerType;
-import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.CameraProfile;
-import xyz.openautomaker.base.configuration.fileRepresentation.CameraSettings;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
-import xyz.openautomaker.base.configuration.utils.RoboxProfileUtils;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterConnection;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
-import xyz.openautomaker.base.printerControl.model.PrinterListChangesListener;
-import xyz.openautomaker.base.printerControl.model.Reel;
-import xyz.openautomaker.base.services.camera.CameraTriggerData;
-import xyz.openautomaker.base.services.gcodegenerator.GCodeGeneratorResult;
-import xyz.openautomaker.base.utils.PrintJobUtils;
-import xyz.openautomaker.base.utils.PrinterUtils;
-import xyz.openautomaker.base.utils.SystemUtils;
-import xyz.openautomaker.base.utils.models.PrintableProject;
-import xyz.openautomaker.base.utils.tasks.TaskResponse;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -105,6 +108,9 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  */
 public class LayoutStatusMenuStripController implements PrinterListChangesListener {
 	private static final Logger LOGGER = LogManager.getLogger();
+
+	private final SlicerPreference fSlicerPreference = new SlicerPreference();
+	private final SafetyFeaturesPreference fSafetyFeaturesPreference = new SafetyFeaturesPreference();
 
 	private PrinterSettingsOverrides printerSettings = null;
 	private ApplicationStatus applicationStatus = null;
@@ -342,7 +348,7 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 
 		//TODO: There shoud be no need for this check.  Should be a Project interface.
 		if (currentProject instanceof ModelContainerProject) {
-			Path projectPath = OpenAutoMakerEnv.get().getUserPath(PROJECTS).resolve(currentProject.getProjectName());
+			Path projectPath = OpenAutomakerEnv.get().getUserPath(PROJECTS).resolve(currentProject.getProjectName());
 
 			PrintableProject printableProject = new PrintableProject(currentProject.getProjectName(), currentProject.getPrintQuality(), projectPath);
 
@@ -407,7 +413,7 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 						try {
 							Optional<GCodeGeneratorResult> potentialGCodeGenResult = ((ModelContainerProject) currentProject).getGCodeGenManager().getPrepResult(currentProject.getPrintQuality());
 							if (potentialGCodeGenResult.isPresent()) {
-								printer.printProject(printableProject, potentialGCodeGenResult, Lookup.getUserPreferences().isSafetyFeaturesOn());
+								printer.printProject(printableProject, potentialGCodeGenResult, fSafetyFeaturesPreference.get());
 							}
 							return true;
 						}
@@ -436,7 +442,7 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 			Task<Boolean> fetchGCodeResultAndSave = new Task<>() {
 				@Override
 				protected Boolean call() throws Exception {
-					Path projectPath = OpenAutoMakerEnv.get().getUserPath(PROJECTS).resolve(currentProject.getProjectName());
+					Path projectPath = OpenAutomakerEnv.get().getUserPath(PROJECTS).resolve(currentProject.getProjectName());
 
 					Optional<GCodeGeneratorResult> potentialGCodeGenResult = ((ModelContainerProject) currentProject).getGCodeGenManager().getPrepResult(currentProject.getPrintQuality());
 
@@ -448,7 +454,7 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 
 						Path slicerPath = projectPath.resolve(currentProject.getPrintQuality().toString());
 
-						saveGCodeFileChooser.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.saveGCodeToFile"));
+						saveGCodeFileChooser.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.saveGCodeToFile"));
 						saveGCodeFileChooser.setInitialFileName(currentProject.getProjectName());
 						File dest = saveGCodeFileChooser.showSaveDialog(DisplayManager.getMainStage());
 
@@ -562,7 +568,7 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 			iterator.next();
 			iterator.remove();
 		}
-		String descriptionOfFile = OpenAutoMakerEnv.getI18N().t("dialogs.meshFileChooserDescription");
+		String descriptionOfFile = OpenAutomakerEnv.getI18N().t("dialogs.meshFileChooserDescription");
 
 		Project currentProject = Lookup.getSelectedProjectProperty().get();
 		ProjectMode currentProjectMode = (currentProject == null) ? ProjectMode.NONE : currentProject.getMode();
@@ -630,7 +636,7 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 	@FXML
 	void unlockDoor(ActionEvent event) {
 		try {
-			currentPrinter.goToOpenDoorPosition(null, Lookup.getUserPreferences().isSafetyFeaturesOn());
+			currentPrinter.goToOpenDoorPosition(null, fSafetyFeaturesPreference.get());
 		}
 		catch (PrinterException ex) {
 			LOGGER.error("Error opening door " + ex.getMessage());
@@ -652,19 +658,19 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 				cm1Text = "1: " + printer.reelsProperty().get(0).friendlyFilamentNameProperty().get();
 			}
 			else {
-				cm1Text = "1: " + OpenAutoMakerEnv.getI18N().t("materialComponent.unknown");
+				cm1Text = "1: " + OpenAutomakerEnv.getI18N().t("materialComponent.unknown");
 			}
 
 			if (printer.reelsProperty().containsKey(1)) {
 				cm2Text = "2: " + printer.reelsProperty().get(1).friendlyFilamentNameProperty().get();
 			}
 			else {
-				cm2Text = "2: " + OpenAutoMakerEnv.getI18N().t("materialComponent.unknown");
+				cm2Text = "2: " + OpenAutomakerEnv.getI18N().t("materialComponent.unknown");
 			}
 
 			MenuItem cmItem1 = new MenuItem(cm1Text);
 			MenuItem cmItem2 = new MenuItem(cm2Text);
-			MenuItem bothItem = new MenuItem(OpenAutoMakerEnv.getI18N().t("misc.Both"));
+			MenuItem bothItem = new MenuItem(OpenAutomakerEnv.getI18N().t("misc.Both"));
 			cmItem1.setOnAction((ActionEvent e) -> {
 				ejectFilament(0);
 			});
@@ -758,8 +764,8 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 	void toggleLight(ActionEvent event) {
 		ContextMenu contextMenu = new ContextMenu();
 
-		String cm1Text = OpenAutoMakerEnv.getI18N().t("buttonText.headLights");
-		String cm2Text = OpenAutoMakerEnv.getI18N().t("buttonText.ambientLights");
+		String cm1Text = OpenAutomakerEnv.getI18N().t("buttonText.headLights");
+		String cm2Text = OpenAutomakerEnv.getI18N().t("buttonText.ambientLights");
 
 		MenuItem toggleHeadLight = new MenuItem(cm1Text);
 		MenuItem toggleAmbientLight = new MenuItem(cm2Text);
@@ -841,7 +847,7 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 		try {
 			currentPrinter.removeHead((TaskResponse<Object> taskResponse) -> {
 				removeHeadFinished(taskResponse);
-			}, Lookup.getUserPreferences().isSafetyFeaturesOn());
+			}, fSafetyFeaturesPreference.get());
 		}
 		catch (PrinterException ex) {
 			LOGGER.error("PrinterException whilst invoking remove head: " + ex.getMessage());
@@ -850,11 +856,11 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 
 	private void removeHeadFinished(TaskResponse<?> taskResponse) {
 		if (taskResponse.succeeded()) {
-			BaseLookup.getSystemNotificationHandler().showInformationNotification(OpenAutoMakerEnv.getI18N().t("removeHead.title"), OpenAutoMakerEnv.getI18N().t("removeHead.finished"));
+			BaseLookup.getSystemNotificationHandler().showInformationNotification(OpenAutomakerEnv.getI18N().t("removeHead.title"), OpenAutomakerEnv.getI18N().t("removeHead.finished"));
 			LOGGER.debug("Head remove completed");
 		}
 		else {
-			BaseLookup.getSystemNotificationHandler().showWarningNotification(OpenAutoMakerEnv.getI18N().t("removeHead.title"), OpenAutoMakerEnv.getI18N().t("removeHead.failed"));
+			BaseLookup.getSystemNotificationHandler().showWarningNotification(OpenAutomakerEnv.getI18N().t("removeHead.title"), OpenAutomakerEnv.getI18N().t("removeHead.failed"));
 		}
 	}
 
@@ -875,7 +881,7 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 
 	private final ChangeListener<Boolean> tooManyRoboxAttachedListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 		if (newValue)
-			BaseLookup.getSystemNotificationHandler().showWarningNotification(OpenAutoMakerEnv.getI18N().t("dialogs.toomanyrobox.title"), OpenAutoMakerEnv.getI18N().t("dialogs.toomanyrobox.message"));
+			BaseLookup.getSystemNotificationHandler().showWarningNotification(OpenAutomakerEnv.getI18N().t("dialogs.toomanyrobox.title"), OpenAutomakerEnv.getI18N().t("dialogs.toomanyrobox.message"));
 	};
 
 	private final ChangeListener<PreviewManager.PreviewState> previewStateChangeListener = (observable, oldState, newState) -> {
@@ -1018,8 +1024,8 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 		statusButtonHBox.visibleProperty().bind(applicationStatus.modeProperty().isEqualTo(ApplicationMode.STATUS).and(printerAvailable));
 		layoutButtonHBox.visibleProperty().bind(applicationStatus.modeProperty().isEqualTo(ApplicationMode.LAYOUT));
 		settingsButtonHBox.visibleProperty().bind(applicationStatus.modeProperty().isEqualTo(ApplicationMode.SETTINGS));
-		modelFileChooser.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.modelFileChooser"));
-		modelFileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(OpenAutoMakerEnv.getI18N().t("dialogs.modelFileChooserDescription"), ApplicationConfiguration.getSupportedFileExtensionWildcards(ProjectMode.NONE)));
+		modelFileChooser.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.modelFileChooser"));
+		modelFileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(OpenAutomakerEnv.getI18N().t("dialogs.modelFileChooserDescription"), ApplicationConfiguration.getSupportedFileExtensionWildcards(ProjectMode.NONE)));
 
 		forwardButtonSettings.visibleProperty().bind(applicationStatus.modeProperty().isEqualTo(ApplicationMode.LAYOUT));
 		forwardButtonLayout.visibleProperty().bind((applicationStatus.modeProperty().isEqualTo(ApplicationMode.STATUS)));
@@ -1059,7 +1065,7 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 		}
 
 		doorOpenConditionalNotificationBar
-				.setAppearanceCondition(printer.getPrinterAncillarySystems().doorOpenProperty().and(Lookup.getUserPreferences().safetyFeaturesOnProperty()).and(applicationStatus.modeProperty().isEqualTo(ApplicationMode.SETTINGS)));
+				.setAppearanceCondition(printer.getPrinterAncillarySystems().doorOpenProperty().and(FXProperty.bind(fSafetyFeaturesPreference)).and(applicationStatus.modeProperty().isEqualTo(ApplicationMode.SETTINGS)));
 		chooseACustomProfileNotificationBar.setAppearanceCondition(project.customSettingsNotChosenProperty().and(applicationStatus.modeProperty().isEqualTo(ApplicationMode.SETTINGS)));
 		printHeadPowerOffNotificationBar.setAppearanceCondition(printer.headPowerOnFlagProperty().not().and(applicationStatus.modeProperty().isEqualTo(ApplicationMode.SETTINGS)).and(printer.headProperty().isNotNull()));
 		noHeadNotificationBar.setAppearanceCondition(printer.headProperty().isNull().and(applicationStatus.modeProperty().isEqualTo(ApplicationMode.SETTINGS)));
@@ -1153,12 +1159,14 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 				unlockDoorButton.disableProperty().bind(newValue.canOpenDoorProperty().not().or(printerConnectionOffline));
 				ejectFilamentButton.disableProperty().bind((newValue.extrudersProperty().get(0).canEjectProperty().not().and(newValue.extrudersProperty().get(1).canEjectProperty().not())).or(printerConnectionOffline));
 
+				BooleanProperty advancedmodeProperty = FXProperty.bind(new AdvancedModePreference());
+
 				// These buttons should only be available in advanced mode
-				fineNozzleButton.disableProperty().bind(newValue.canOpenCloseNozzleProperty().not().or(Lookup.getUserPreferences().advancedModeProperty().not()).or(printerConnectionOffline));
-				fillNozzleButton.disableProperty().bind(newValue.canOpenCloseNozzleProperty().not().or(Lookup.getUserPreferences().advancedModeProperty().not()).or(printerConnectionOffline));
-				openNozzleButton.disableProperty().bind(newValue.canOpenCloseNozzleProperty().not().or(Lookup.getUserPreferences().advancedModeProperty().not()).or(printerConnectionOffline));
-				closeNozzleButton.disableProperty().bind(newValue.canOpenCloseNozzleProperty().not().or(Lookup.getUserPreferences().advancedModeProperty().not()).or(printerConnectionOffline));
-				homeButton.disableProperty().bind(newValue.canPrintProperty().not().or(Lookup.getUserPreferences().advancedModeProperty().not()).or(printerConnectionOffline));
+				fineNozzleButton.disableProperty().bind(newValue.canOpenCloseNozzleProperty().not().or(advancedmodeProperty.not()).or(printerConnectionOffline));
+				fillNozzleButton.disableProperty().bind(newValue.canOpenCloseNozzleProperty().not().or(advancedmodeProperty.not()).or(printerConnectionOffline));
+				openNozzleButton.disableProperty().bind(newValue.canOpenCloseNozzleProperty().not().or(advancedmodeProperty.not()).or(printerConnectionOffline));
+				closeNozzleButton.disableProperty().bind(newValue.canOpenCloseNozzleProperty().not().or(advancedmodeProperty.not()).or(printerConnectionOffline));
+				homeButton.disableProperty().bind(newValue.canPrintProperty().not().or(advancedmodeProperty.not()).or(printerConnectionOffline));
 
 				newValue.getPrinterAncillarySystems().headFanOnProperty().addListener(headFanStatusListener);
 
@@ -1289,9 +1297,9 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 			double raftOffset = 0.0;
 
 			if (currentPrinter != null && currentPrinter.headProperty().get() != null) {
-				RoboxProfile profileSettings = selectedProject.getPrinterSettings().getSettings(currentPrinter.headProperty().get().typeCodeProperty().get(), getSlicerType());
+				RoboxProfile profileSettings = selectedProject.getPrinterSettings().getSettings(currentPrinter.headProperty().get().typeCodeProperty().get(), fSlicerPreference.get());
 				if (profileSettings != null)
-					raftOffset = RoboxProfileUtils.calculateRaftOffset(profileSettings, getSlicerType());
+					raftOffset = RoboxProfileUtils.calculateRaftOffset(profileSettings, fSlicerPreference.get());
 
 				// Needed as heads differ in size and will need to adjust print volume for this
 				zReduction = currentPrinter.headProperty().get().getZReductionProperty().get();
@@ -1418,7 +1426,7 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 					BooleanBinding filament1Selected = Bindings.valueAt(printer.effectiveFilamentsProperty(), 1).isNotEqualTo(FilamentContainer.UNKNOWN_FILAMENT);
 
 					canPrintProject.bind(Bindings.isNotEmpty(project.getTopLevelThings()).and(printer.canPrintProperty()).and(project.canPrintProperty()).and(filament0Selected).and(filament1Selected)
-							.and(printer.getPrinterAncillarySystems().doorOpenProperty().not().or(Lookup.getUserPreferences().safetyFeaturesOnProperty().not())).and(printer.extrudersProperty().get(0).filamentLoadedProperty())
+							.and(printer.getPrinterAncillarySystems().doorOpenProperty().not().or(FXProperty.bind(fSafetyFeaturesPreference).not())).and(printer.extrudersProperty().get(0).filamentLoadedProperty())
 							.and(printer.extrudersProperty().get(1).filamentLoadedProperty().and(printer.headPowerOnFlagProperty())).and(modelsOffBed.not()).and(modelsOffBedWithHead.not()).and(modelsOffBedWithRaft.not())
 							.and(modelOffBedWithSpiral.not()).and(headIsSingleX.or(printer.effectiveFilamentsProperty().get(0).getFilledProperty().not().and(printer.effectiveFilamentsProperty().get(1).getFilledProperty().not())))
 							.and(printerConnectionOffline.not()));
@@ -1429,7 +1437,7 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 					BooleanBinding filamentPresentBinding = Bindings.valueAt(printer.effectiveFilamentsProperty(), extruderNumber).isNotEqualTo(FilamentContainer.UNKNOWN_FILAMENT);
 
 					canPrintProject.bind(Bindings.isNotEmpty(project.getTopLevelThings()).and(printer.canPrintProperty()).and(project.canPrintProperty()).and(filamentPresentBinding)
-							.and(printer.getPrinterAncillarySystems().doorOpenProperty().not().or(Lookup.getUserPreferences().safetyFeaturesOnProperty().not()))
+							.and(printer.getPrinterAncillarySystems().doorOpenProperty().not().or(FXProperty.bind(fSafetyFeaturesPreference).not()))
 							.and(printer.extrudersProperty().get(extruderNumber).filamentLoadedProperty().and(printer.headPowerOnFlagProperty())).and(modelsOffBed.not()).and(modelsOffBedWithHead.not()).and(modelsOffBedWithRaft.not())
 							.and(modelOffBedWithSpiral.not()).and(headIsSingleX.or(printer.effectiveFilamentsProperty().get(extruderNumber).getFilledProperty().not())).and(printerConnectionOffline.not()));
 				}
@@ -1561,7 +1569,7 @@ public class LayoutStatusMenuStripController implements PrinterListChangesListen
 		}
 	}
 
-	private SlicerType getSlicerType() {
-		return Lookup.getUserPreferences().getSlicerType();
-	}
+	//	private Slicer getSlicerType() {
+	//		return Lookup.getUserPreferences().getSlicerType();
+	//	}
 }

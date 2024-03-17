@@ -2,6 +2,13 @@ package celtech.roboxbase.comms;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
+import org.openautomaker.base.configuration.datafileaccessors.HeadContainer;
+import org.openautomaker.base.configuration.fileRepresentation.HeadFile;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.HeaterMode;
+import org.openautomaker.base.printerControl.model.Reel;
 
 import celtech.roboxbase.comms.exceptions.RoboxCommsException;
 import celtech.roboxbase.comms.remote.EEPROMState;
@@ -39,13 +46,6 @@ import celtech.roboxbase.comms.tx.WriteHeadEEPROM;
 import celtech.roboxbase.comms.tx.WriteReel0EEPROM;
 import celtech.roboxbase.comms.tx.WriteReel1EEPROM;
 import javafx.scene.paint.Color;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
-import xyz.openautomaker.base.configuration.datafileaccessors.HeadContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.HeadFile;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.HeaterMode;
-import xyz.openautomaker.base.printerControl.model.Reel;
 
 /**
  *

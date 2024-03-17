@@ -1,10 +1,20 @@
 
 package celtech.coreUI.components.material;
 
-import static xyz.openautomaker.base.utils.ColourStringConverter.colourToString;
+import static org.openautomaker.base.utils.ColourStringConverter.colourToString;
 
 import java.io.IOException;
 import java.net.URL;
+
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.MaterialType;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterListChangesListener;
+import org.openautomaker.base.printerControl.model.Reel;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.Lookup;
 import celtech.coreUI.StandardColours;
@@ -18,15 +28,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.MaterialType;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterListChangesListener;
-import xyz.openautomaker.base.printerControl.model.Reel;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -168,7 +169,7 @@ public class MaterialComponent extends VBox implements PrinterListChangesListene
 				&& !printer.extrudersProperty().get(extruderNumber).filamentLoadedProperty().get()) {
 			svgLoaded.setVisible(false);
 			setReelType(ReelType.SOLID_CROSS);
-			String filamentNotLoaded = OpenAutoMakerEnv.getI18N().t("materialComponent.filamentNotLoaded");
+			String filamentNotLoaded = OpenAutomakerEnv.getI18N().t("materialComponent.filamentNotLoaded");
 			showDetails((1 + extruderNumber) + ":", "", filamentNotLoaded, Color.BLACK, false, false);
 		}
 		else {
@@ -177,7 +178,7 @@ public class MaterialComponent extends VBox implements PrinterListChangesListene
 			if (filamentInUse == FilamentContainer.UNKNOWN_FILAMENT) {
 				svgLoaded.setVisible(true);
 				setReelType(ReelType.SOLID_QUESTION);
-				String materialUnknown = OpenAutoMakerEnv.getI18N().t("materialComponent.materialUnknown");
+				String materialUnknown = OpenAutomakerEnv.getI18N().t("materialComponent.materialUnknown");
 				showDetails((1 + extruderNumber) + ":", "", materialUnknown,
 						Color.BLACK, true, true);
 			}
@@ -248,7 +249,7 @@ public class MaterialComponent extends VBox implements PrinterListChangesListene
 		double crossSectionM2 = Math.PI * filamentDiameter * filamentDiameter / 4d * 1e-6;
 		double remainingWeightG = remainingLengthMeters * crossSectionM2 * densityKGM3 * 1000d;
 		String remaining = ((int) remainingLengthMeters) + "m / " + ((int) remainingWeightG)
-				+ "g " + OpenAutoMakerEnv.getI18N().t("materialComponent.remaining");
+				+ "g " + OpenAutomakerEnv.getI18N().t("materialComponent.remaining");
 
 		showDetails(numberMaterial, remaining, materialColourString, colour, filamentLoaded, true);
 	}

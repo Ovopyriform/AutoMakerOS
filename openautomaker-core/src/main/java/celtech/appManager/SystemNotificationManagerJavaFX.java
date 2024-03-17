@@ -11,6 +11,19 @@ import java.util.concurrent.FutureTask;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.SystemErrorHandlerOptions;
+import org.openautomaker.base.appManager.NotificationType;
+import org.openautomaker.base.appManager.PurgeResponse;
+import org.openautomaker.base.appManager.SystemNotificationManager;
+import org.openautomaker.base.configuration.fileRepresentation.HeadFile;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.base.services.firmware.FirmwareLoadResult;
+import org.openautomaker.base.services.firmware.FirmwareLoadService;
+import org.openautomaker.base.utils.tasks.TaskResponder;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.preference.SafetyFeaturesPreference;
 
 import celtech.Lookup;
 import celtech.configuration.ApplicationConfiguration;
@@ -33,19 +46,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.SystemErrorHandlerOptions;
-import xyz.openautomaker.base.appManager.NotificationType;
-import xyz.openautomaker.base.appManager.PurgeResponse;
-import xyz.openautomaker.base.appManager.SystemNotificationManager;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.configuration.fileRepresentation.HeadFile;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
-import xyz.openautomaker.base.services.firmware.FirmwareLoadResult;
-import xyz.openautomaker.base.services.firmware.FirmwareLoadService;
-import xyz.openautomaker.base.utils.tasks.TaskResponder;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -178,12 +178,12 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 						errorChoiceBox = new ChoiceLinkDialogBox(true);
 						String printerName = printer.getPrinterIdentity().printerFriendlyNameProperty().get();
 						if (printerName != null) {
-							errorChoiceBox.setTitle(printerName + ": " + OpenAutoMakerEnv.getI18N().t(error.getErrorTitleKey()));
+							errorChoiceBox.setTitle(printerName + ": " + OpenAutomakerEnv.getI18N().t(error.getErrorTitleKey()));
 						}
 						else {
-							errorChoiceBox.setTitle(OpenAutoMakerEnv.getI18N().t(error.getErrorTitleKey()));
+							errorChoiceBox.setTitle(OpenAutomakerEnv.getI18N().t(error.getErrorTitleKey()));
 						}
-						errorChoiceBox.setMessage(OpenAutoMakerEnv.getI18N().t(error.getErrorMessageKey()));
+						errorChoiceBox.setMessage(OpenAutomakerEnv.getI18N().t(error.getErrorMessageKey()));
 						error.getOptions()
 								.stream()
 								.forEach(option -> errorChoiceBox.addChoiceLink(errorToButtonMap.get(option)));
@@ -215,7 +215,7 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 													printer.pause();
 												}
 												if (printer.canCancelProperty().get()) {
-													printer.cancel(null, Lookup.getUserPreferences().isSafetyFeaturesOn());
+													printer.cancel(null, new SafetyFeaturesPreference().get());
 												}
 											}
 											catch (PrinterException ex) {
@@ -259,8 +259,8 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			errorToButtonMap = new HashMap<>();
 			for (SystemErrorHandlerOptions option : SystemErrorHandlerOptions.values()) {
 				ChoiceLinkButton buttonToAdd = new ChoiceLinkButton();
-				buttonToAdd.setTitle(OpenAutoMakerEnv.getI18N().t(option.getErrorTitleKey()));
-				buttonToAdd.setMessage(OpenAutoMakerEnv.getI18N().t(option.getErrorMessageKey()));
+				buttonToAdd.setTitle(OpenAutomakerEnv.getI18N().t(option.getErrorTitleKey()));
+				buttonToAdd.setMessage(OpenAutomakerEnv.getI18N().t(option.getErrorMessageKey()));
 				errorToButtonMap.put(option, buttonToAdd);
 			}
 		}
@@ -272,13 +272,13 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			calibrateDialogOnDisplay = true;
 			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
-				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.headUpdateCalibrationRequiredTitle"));
-				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
+				choiceLinkDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.headUpdateCalibrationRequiredTitle"));
+				choiceLinkDialogBox.setMessage(OpenAutomakerEnv.getI18N().t(
 						"dialogs.headUpdateCalibrationRequiredInstruction"));
 				ChoiceLinkButton okCalibrateChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.headUpdateCalibrationYes"));
+						OpenAutomakerEnv.getI18N().t("dialogs.headUpdateCalibrationYes"));
 				ChoiceLinkButton dontCalibrateChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.headUpdateCalibrationNo"));
+						OpenAutomakerEnv.getI18N().t("dialogs.headUpdateCalibrationNo"));
 
 				Optional<ChoiceLinkButton> calibrationResponse;
 				try {
@@ -304,8 +304,8 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	public void showHeadUpdatedNotification() {
 		BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 			showInformationNotification(
-					OpenAutoMakerEnv.getI18N().t("notification.headSettingsUpdatedTitle"),
-					OpenAutoMakerEnv.getI18N().t("notification.noActionRequired"));
+					OpenAutomakerEnv.getI18N().t("notification.headSettingsUpdatedTitle"),
+					OpenAutomakerEnv.getI18N().t("notification.noActionRequired"));
 		});
 	}
 
@@ -314,8 +314,8 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 		if (!sdDialogOnDisplay) {
 			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				sdDialogOnDisplay = true;
-				showErrorNotification(OpenAutoMakerEnv.getI18N().t("dialogs.noSDCardTitle"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.noSDCardMessage"));
+				showErrorNotification(OpenAutomakerEnv.getI18N().t("dialogs.noSDCardTitle"),
+						OpenAutomakerEnv.getI18N().t("dialogs.noSDCardMessage"));
 				sdDialogOnDisplay = false;
 			});
 		}
@@ -323,35 +323,35 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 
 	@Override
 	public void showSliceSuccessfulNotification() {
-		showInformationNotification(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutoMakerEnv.getI18N().t(
+		showInformationNotification(OpenAutomakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutomakerEnv.getI18N().t(
 				"notification.sliceSuccessful"));
 	}
 
 	@Override
 	public void showGCodePostProcessSuccessfulNotification() {
-		showInformationNotification(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutoMakerEnv.getI18N().t(
+		showInformationNotification(OpenAutomakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutomakerEnv.getI18N().t(
 				"notification.gcodePostProcessSuccessful"));
 	}
 
 	@Override
 	public void showPrintJobCancelledNotification() {
-		showInformationNotification(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutoMakerEnv.getI18N().t(
+		showInformationNotification(OpenAutomakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutomakerEnv.getI18N().t(
 				"notification.printJobCancelled"));
 	}
 
 	@Override
 	public void showPrintJobFailedNotification() {
-		showErrorNotification(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutoMakerEnv.getI18N().t(
+		showErrorNotification(OpenAutomakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutomakerEnv.getI18N().t(
 				"notification.printJobFailed"));
 	}
 
 	@Override
 	public void showPrintTransferSuccessfulNotification(String printerName) {
-		showInformationNotification(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutoMakerEnv.getI18N().t(
+		showInformationNotification(OpenAutomakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutomakerEnv.getI18N().t(
 				"notification.printTransferredSuccessfully")
 				+ " "
 				+ printerName + "\n"
-				+ OpenAutoMakerEnv.getI18N().t("notification.printTransferredSuccessfullyEnd"));
+				+ OpenAutomakerEnv.getI18N().t("notification.printTransferredSuccessfullyEnd"));
 	}
 
 	/**
@@ -364,11 +364,11 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				if (failedTransferDialogBox == null) {
 					failedTransferDialogBox = new ChoiceLinkDialogBox(false);
-					failedTransferDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"));
-					failedTransferDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
+					failedTransferDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("notification.PrintQueueTitle"));
+					failedTransferDialogBox.setMessage(OpenAutomakerEnv.getI18N().t(
 							"notification.printTransferFailed"));
 
-					failedTransferDialogBox.addChoiceLink(OpenAutoMakerEnv.getI18N().t("misc.OK"));
+					failedTransferDialogBox.addChoiceLink(OpenAutomakerEnv.getI18N().t("misc.OK"));
 
 					try {
 						failedTransferDialogBox.getUserInput();
@@ -396,13 +396,13 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 
 	@Override
 	public void showPrintTransferInitiatedNotification() {
-		showInformationNotification(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutoMakerEnv.getI18N().t(
+		showInformationNotification(OpenAutomakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutomakerEnv.getI18N().t(
 				"notification.printTransferInitiated"));
 	}
 
 	@Override
 	public void showReprintStartedNotification() {
-		showInformationNotification(OpenAutoMakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutoMakerEnv.getI18N().t(
+		showInformationNotification(OpenAutomakerEnv.getI18N().t("notification.PrintQueueTitle"), OpenAutomakerEnv.getI18N().t(
 				"notification.reprintInitiated"));
 	}
 
@@ -411,26 +411,26 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 		if (result != null) {
 			switch (result.getStatus()) {
 				case FirmwareLoadResult.SDCARD_ERROR:
-					showErrorNotification(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedTitle"),
-							OpenAutoMakerEnv.getI18N().t("dialogs.sdCardError"));
+					showErrorNotification(OpenAutomakerEnv.getI18N().t("dialogs.firmwareUpdateFailedTitle"),
+							OpenAutomakerEnv.getI18N().t("dialogs.sdCardError"));
 					break;
 				case FirmwareLoadResult.FILE_ERROR:
-					showErrorNotification(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedTitle"),
-							OpenAutoMakerEnv.getI18N().t("dialogs.firmwareFileError"));
+					showErrorNotification(OpenAutomakerEnv.getI18N().t("dialogs.firmwareUpdateFailedTitle"),
+							OpenAutomakerEnv.getI18N().t("dialogs.firmwareFileError"));
 					break;
 				case FirmwareLoadResult.OTHER_ERROR:
-					showErrorNotification(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedTitle"),
-							OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedMessage"));
+					showErrorNotification(OpenAutomakerEnv.getI18N().t("dialogs.firmwareUpdateFailedTitle"),
+							OpenAutomakerEnv.getI18N().t("dialogs.firmwareUpdateFailedMessage"));
 					break;
 				case FirmwareLoadResult.SUCCESS:
-					showInformationNotification(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateSuccessTitle"),
-							OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateSuccessMessage"));
+					showInformationNotification(OpenAutomakerEnv.getI18N().t("dialogs.firmwareUpdateSuccessTitle"),
+							OpenAutomakerEnv.getI18N().t("dialogs.firmwareUpdateSuccessMessage"));
 					break;
 			}
 		}
 		else {
-			showErrorNotification(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedTitle"),
-					OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateFailedMessage"));
+			showErrorNotification(OpenAutomakerEnv.getI18N().t("dialogs.firmwareUpdateFailedTitle"),
+					OpenAutomakerEnv.getI18N().t("dialogs.firmwareUpdateFailedMessage"));
 		}
 	}
 
@@ -448,14 +448,14 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			public Boolean call() throws Exception {
 				String printerName = printerToUpdate.getPrinterIdentity().printerFriendlyNameProperty().get();
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
-				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateTitle") + printerName);
-				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateError"));
+				choiceLinkDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.firmwareUpdateTitle") + printerName);
+				choiceLinkDialogBox.setMessage(OpenAutomakerEnv.getI18N().t("dialogs.firmwareUpdateError"));
 				ChoiceLinkButton updateFirmwareChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateOKTitle"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateOKMessage"));
+						OpenAutomakerEnv.getI18N().t("dialogs.firmwareUpdateOKTitle"),
+						OpenAutomakerEnv.getI18N().t("dialogs.firmwareUpdateOKMessage"));
 				ChoiceLinkButton dontUpdateFirmwareChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateNotOKTitle"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.firmwareUpdateNotOKMessage"));
+						OpenAutomakerEnv.getI18N().t("dialogs.firmwareUpdateNotOKTitle"),
+						OpenAutomakerEnv.getI18N().t("dialogs.firmwareUpdateNotOKMessage"));
 
 				Optional<ChoiceLinkButton> firmwareUpgradeResponse = choiceLinkDialogBox.getUserInput();
 
@@ -486,14 +486,14 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			public Boolean call() throws Exception {
 				String printerName = printerToUpdate.getPrinterIdentity().printerFriendlyNameProperty().get();
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
-				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareDowngradeTitle") + printerName);
-				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.firmwareDowngradeMessage"));
+				choiceLinkDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.firmwareDowngradeTitle") + printerName);
+				choiceLinkDialogBox.setMessage(OpenAutomakerEnv.getI18N().t("dialogs.firmwareDowngradeMessage"));
 				ChoiceLinkButton downgradeFirmwareChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.firmwareDowngradeOKTitle"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.firmwareDowngradeOKMessage"));
+						OpenAutomakerEnv.getI18N().t("dialogs.firmwareDowngradeOKTitle"),
+						OpenAutomakerEnv.getI18N().t("dialogs.firmwareDowngradeOKMessage"));
 				ChoiceLinkButton dontDownGradeFirmwareChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.firmwareDowngradeNotOKTitle"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.firmwareDowngradeNotOKMessage"));
+						OpenAutomakerEnv.getI18N().t("dialogs.firmwareDowngradeNotOKTitle"),
+						OpenAutomakerEnv.getI18N().t("dialogs.firmwareDowngradeNotOKMessage"));
 
 				Optional<ChoiceLinkButton> firmwareDowngradeResponse = choiceLinkDialogBox.getUserInput();
 
@@ -531,7 +531,7 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 				ResetPrinterIDController controller = null;
 				try {
 					URL fxmlFileName = getClass().getResource(ApplicationConfiguration.fxmlPopupResourcePath + "resetPrinterIDDialog.fxml");
-					FXMLLoader resetDialogLoader = new FXMLLoader(fxmlFileName, BaseLookup.getLanguageBundle());
+					FXMLLoader resetDialogLoader = new FXMLLoader(fxmlFileName, OpenAutomakerEnv.getI18N().getCombinedResourceBundle());
 					VBox resetVBox = (VBox) resetDialogLoader.load();
 					controller = (ResetPrinterIDController) resetVBox.getUserData();
 					resetPrinterIDStage = new Stage(StageStyle.UNDECORATED);
@@ -574,11 +574,11 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			sdDialogOnDisplay = true;
 			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(false);
-				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.noSDCardTitle"));
-				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
+				choiceLinkDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.noSDCardTitle"));
+				choiceLinkDialogBox.setMessage(OpenAutomakerEnv.getI18N().t(
 						"dialogs.noSDCardMessage"));
 				ChoiceLinkButton openTheLidChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("misc.OK"));
+						OpenAutomakerEnv.getI18N().t("misc.OK"));
 
 				try {
 					choiceLinkDialogBox.getUserInput();
@@ -613,14 +613,14 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			@Override
 			public Boolean call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
-				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.openLidPrinterHotTitle"));
-				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
+				choiceLinkDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.openLidPrinterHotTitle"));
+				choiceLinkDialogBox.setMessage(OpenAutomakerEnv.getI18N().t(
 						"dialogs.openLidPrinterHotInfo"));
 				ChoiceLinkButton openTheLidChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.openLidPrinterHotGoAheadHeading"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.openLidPrinterHotGoAheadInfo"));
+						OpenAutomakerEnv.getI18N().t("dialogs.openLidPrinterHotGoAheadHeading"),
+						OpenAutomakerEnv.getI18N().t("dialogs.openLidPrinterHotGoAheadInfo"));
 				ChoiceLinkButton dontOpenTheLidChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.openLidPrinterHotDontOpenHeading"));
+						OpenAutomakerEnv.getI18N().t("dialogs.openLidPrinterHotDontOpenHeading"));
 
 				Optional<ChoiceLinkButton> doorOpenResponse = choiceLinkDialogBox.getUserInput();
 
@@ -657,13 +657,13 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			@Override
 			public Boolean call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(false);
-				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.ModelTooLargeTitle"));
-				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
+				choiceLinkDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.ModelTooLargeTitle"));
+				choiceLinkDialogBox.setMessage(OpenAutomakerEnv.getI18N().t(
 						"dialogs.ModelTooLargeDescription"));
 				ChoiceLinkButton shrinkChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.ShrinkModelToFit"));
+						OpenAutomakerEnv.getI18N().t("dialogs.ShrinkModelToFit"));
 				ChoiceLinkButton dontShrinkChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.dontShrink"));
+						OpenAutomakerEnv.getI18N().t("dialogs.dontShrink"));
 
 				Optional<ChoiceLinkButton> shrinkResponse = choiceLinkDialogBox.getUserInput();
 
@@ -700,18 +700,18 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			@Override
 			public Boolean call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(false);
-				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.updateApplicationTitle"));
-				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.updateApplicationMessagePart1")
+				choiceLinkDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.updateApplicationTitle"));
+				choiceLinkDialogBox.setMessage(OpenAutomakerEnv.getI18N().t("dialogs.updateApplicationMessagePart1")
 						+ " "
 						+ applicationName
 						+ " "
-						+ OpenAutoMakerEnv.getI18N().t("dialogs.updateApplicationMessagePart2"));
+						+ OpenAutomakerEnv.getI18N().t("dialogs.updateApplicationMessagePart2"));
 				ChoiceLinkButton upgradeChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("misc.Yes"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.updateExplanation"));
+						OpenAutomakerEnv.getI18N().t("misc.Yes"),
+						OpenAutomakerEnv.getI18N().t("dialogs.updateExplanation"));
 				ChoiceLinkButton dontUpgradeChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("misc.No"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.updateContinueWithCurrent"));
+						OpenAutomakerEnv.getI18N().t("misc.No"),
+						OpenAutomakerEnv.getI18N().t("dialogs.updateContinueWithCurrent"));
 
 				Optional<ChoiceLinkButton> upgradeResponse = choiceLinkDialogBox.getUserInput();
 
@@ -742,10 +742,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			@Override
 			public Boolean call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(false);
-				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.downgradeWarning"));
-				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.downgradeMessage"));
-				ChoiceLinkButton proceedChoice = choiceLinkDialogBox.addChoiceLink(OpenAutoMakerEnv.getI18N().t("dialogs.downgradeContinue"));
-				ChoiceLinkButton dontDowngradeChoice = choiceLinkDialogBox.addChoiceLink(OpenAutoMakerEnv.getI18N().t("dialogs.Cancel"));
+				choiceLinkDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.downgradeWarning"));
+				choiceLinkDialogBox.setMessage(OpenAutomakerEnv.getI18N().t("dialogs.downgradeMessage"));
+				ChoiceLinkButton proceedChoice = choiceLinkDialogBox.addChoiceLink(OpenAutomakerEnv.getI18N().t("dialogs.downgradeContinue"));
+				ChoiceLinkButton dontDowngradeChoice = choiceLinkDialogBox.addChoiceLink(OpenAutomakerEnv.getI18N().t("dialogs.Cancel"));
 
 				Optional<ChoiceLinkButton> downgradeResponse = choiceLinkDialogBox.getUserInput();
 
@@ -784,22 +784,22 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			@Override
 			public PurgeResponse call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
-				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.purgeRequiredTitle"));
-				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
+				choiceLinkDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.purgeRequiredTitle"));
+				choiceLinkDialogBox.setMessage(OpenAutomakerEnv.getI18N().t(
 						"dialogs.purgeRequiredInstruction"));
 
 				ChoiceLinkButton purge = null;
 				if (allowAutoPrint) {
 					purge = choiceLinkDialogBox.addChoiceLink(
-							OpenAutoMakerEnv.getI18N().t("dialogs.goForPurgeTitle"),
-							OpenAutoMakerEnv.getI18N().t("dialogs.goForPurgeInstruction"));
+							OpenAutomakerEnv.getI18N().t("dialogs.goForPurgeTitle"),
+							OpenAutomakerEnv.getI18N().t("dialogs.goForPurgeInstruction"));
 				}
 				ChoiceLinkButton dontPurge = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.dontGoForPurgeTitle"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.dontGoForPurgeInstruction"));
+						OpenAutomakerEnv.getI18N().t("dialogs.dontGoForPurgeTitle"),
+						OpenAutomakerEnv.getI18N().t("dialogs.dontGoForPurgeInstruction"));
 				ChoiceLinkButton dontPrint = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.dontPrintTitle"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.dontPrintInstruction"));
+						OpenAutomakerEnv.getI18N().t("dialogs.dontPrintTitle"),
+						OpenAutomakerEnv.getI18N().t("dialogs.dontPrintInstruction"));
 
 				Optional<ChoiceLinkButton> purgeResponse = choiceLinkDialogBox.getUserInput();
 
@@ -839,16 +839,16 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			@Override
 			public Boolean call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
-				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t(
+				choiceLinkDialogBox.setTitle(OpenAutomakerEnv.getI18N().t(
 						"dialogs.printJobsAreStillTransferringTitle"));
-				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
+				choiceLinkDialogBox.setMessage(OpenAutomakerEnv.getI18N().t(
 						"dialogs.printJobsAreStillTransferringMessage"));
 				ChoiceLinkButton shutdown = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.shutDownAndTerminateTitle"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.shutDownAndTerminateMessage"));
+						OpenAutomakerEnv.getI18N().t("dialogs.shutDownAndTerminateTitle"),
+						OpenAutomakerEnv.getI18N().t("dialogs.shutDownAndTerminateMessage"));
 				ChoiceLinkButton dontShutdown = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.dontShutDownTitle"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.dontShutDownMessage"));
+						OpenAutomakerEnv.getI18N().t("dialogs.dontShutDownTitle"),
+						OpenAutomakerEnv.getI18N().t("dialogs.dontShutDownMessage"));
 
 				Optional<ChoiceLinkButton> shutdownResponse = choiceLinkDialogBox.getUserInput();
 
@@ -873,7 +873,7 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				try {
 					URL fxmlFileName = getClass().getResource(ApplicationConfiguration.fxmlPopupResourcePath + "resetHeadDialog.fxml");
-					FXMLLoader resetDialogLoader = new FXMLLoader(fxmlFileName, BaseLookup.getLanguageBundle());
+					FXMLLoader resetDialogLoader = new FXMLLoader(fxmlFileName, OpenAutomakerEnv.getI18N().getCombinedResourceBundle());
 					VBox resetDialog = (VBox) resetDialogLoader.load();
 					programInvalidHeadStage = new Stage(StageStyle.UNDECORATED);
 					programInvalidHeadStage.initModality(Modality.APPLICATION_MODAL);
@@ -902,18 +902,18 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			headNotRecognisedDialogOnDisplay = true;
 			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
-				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t(
+				choiceLinkDialogBox.setTitle(OpenAutomakerEnv.getI18N().t(
 						"dialogs.headNotRecognisedTitle"));
-				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.headNotRecognisedMessage1")
+				choiceLinkDialogBox.setMessage(OpenAutomakerEnv.getI18N().t("dialogs.headNotRecognisedMessage1")
 						+ " "
 						+ printerName
 						+ " "
-						+ OpenAutoMakerEnv.getI18N().t("dialogs.headNotRecognisedMessage2")
+						+ OpenAutomakerEnv.getI18N().t("dialogs.headNotRecognisedMessage2")
 						+ " "
-						+ BaseConfiguration.getApplicationName());
+						+ OpenAutomakerEnv.get().getName());
 
 				ChoiceLinkButton openTheLidChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("misc.OK"));
+						OpenAutomakerEnv.getI18N().t("misc.OK"));
 
 				try {
 					choiceLinkDialogBox.getUserInput();
@@ -942,19 +942,19 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 				printerErrorDialogBox.setMessage(message);
 
 				ChoiceLinkButton continueChoice = new ChoiceLinkButton();
-				continueChoice.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.error.continue"));
-				continueChoice.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.error.clearAndContinue"));
+				continueChoice.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.error.continue"));
+				continueChoice.setMessage(OpenAutomakerEnv.getI18N().t("dialogs.error.clearAndContinue"));
 
 				ChoiceLinkButton abortChoice = new ChoiceLinkButton();
-				abortChoice.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.error.abort"));
-				abortChoice.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.error.abortProcess"));
+				abortChoice.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.error.abort"));
+				abortChoice.setMessage(OpenAutomakerEnv.getI18N().t("dialogs.error.abortProcess"));
 
 				ChoiceLinkButton retryChoice = new ChoiceLinkButton();
-				retryChoice.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.error.retry"));
-				retryChoice.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.error.retryProcess"));
+				retryChoice.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.error.retry"));
+				retryChoice.setMessage(OpenAutomakerEnv.getI18N().t("dialogs.error.retryProcess"));
 
 				ChoiceLinkButton okChoice = new ChoiceLinkButton();
-				okChoice.setTitle(OpenAutoMakerEnv.getI18N().t("error.handler.OK.title"));
+				okChoice.setTitle(OpenAutomakerEnv.getI18N().t("error.handler.OK.title"));
 
 				if (showContinueOption) {
 					printerErrorDialogBox.addChoiceLink(continueChoice);
@@ -1011,8 +1011,8 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 	@Override
 	public void showReelUpdatedNotification() {
 		BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
-			showInformationNotification(OpenAutoMakerEnv.getI18N().t("notification.reelDataUpdatedTitle"),
-					OpenAutoMakerEnv.getI18N().t("notification.noActionRequired"));
+			showInformationNotification(OpenAutomakerEnv.getI18N().t("notification.reelDataUpdatedTitle"),
+					OpenAutomakerEnv.getI18N().t("notification.noActionRequired"));
 		});
 	}
 
@@ -1022,16 +1022,16 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			reelNotRecognisedDialogOnDisplay = true;
 			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(true);
-				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.reelNotRecognisedTitle"));
-				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.reelNotRecognisedMessage1")
+				choiceLinkDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.reelNotRecognisedTitle"));
+				choiceLinkDialogBox.setMessage(OpenAutomakerEnv.getI18N().t("dialogs.reelNotRecognisedMessage1")
 						+ " "
 						+ printerName
 						+ " "
-						+ OpenAutoMakerEnv.getI18N().t("dialogs.reelNotRecognisedMessage2")
+						+ OpenAutomakerEnv.getI18N().t("dialogs.reelNotRecognisedMessage2")
 						+ " "
-						+ BaseConfiguration.getApplicationName());
+						+ OpenAutomakerEnv.get().getName());
 
-				choiceLinkDialogBox.addChoiceLink(OpenAutoMakerEnv.getI18N().t("misc.OK"));
+				choiceLinkDialogBox.addChoiceLink(OpenAutomakerEnv.getI18N().t("misc.OK"));
 
 				try {
 					choiceLinkDialogBox.getUserInput();
@@ -1051,10 +1051,10 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			clearBedDialogOnDisplay = true;
 			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(false);
-				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.clearBedTitle"));
-				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.clearBedInstruction"));
+				choiceLinkDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.clearBedTitle"));
+				choiceLinkDialogBox.setMessage(OpenAutomakerEnv.getI18N().t("dialogs.clearBedInstruction"));
 
-				choiceLinkDialogBox.addChoiceLink(OpenAutoMakerEnv.getI18N().t("misc.OK"));
+				choiceLinkDialogBox.addChoiceLink(OpenAutomakerEnv.getI18N().t("misc.OK"));
 
 				try {
 					choiceLinkDialogBox.getUserInput();
@@ -1079,14 +1079,14 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			@Override
 			public Boolean call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(false);
-				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.goToAdvancedModeTitle"));
-				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t("dialogs.goToAdvancedModeMessage"));
+				choiceLinkDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.goToAdvancedModeTitle"));
+				choiceLinkDialogBox.setMessage(OpenAutomakerEnv.getI18N().t("dialogs.goToAdvancedModeMessage"));
 				ChoiceLinkButton goToAdvancedModeChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.goToAdvancedModeYesTitle"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.goToAdvancedModeYesMessage"));
+						OpenAutomakerEnv.getI18N().t("dialogs.goToAdvancedModeYesTitle"),
+						OpenAutomakerEnv.getI18N().t("dialogs.goToAdvancedModeYesMessage"));
 				ChoiceLinkButton dontGoToAdvancedModeChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.goToAdvancedModeNoTitle"),
-						OpenAutoMakerEnv.getI18N().t("dialogs.goToAdvancedModeNoMessage"));
+						OpenAutomakerEnv.getI18N().t("dialogs.goToAdvancedModeNoTitle"),
+						OpenAutomakerEnv.getI18N().t("dialogs.goToAdvancedModeNoMessage"));
 
 				Optional<ChoiceLinkButton> goToAdvancedModeResponse = choiceLinkDialogBox.getUserInput();
 
@@ -1121,9 +1121,9 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			Platform.runLater(() -> {
 				if (keepPushingFilamentDialogBox == null) {
 					keepPushingFilamentDialogBox = new ChoiceLinkDialogBox(true);
-					keepPushingFilamentDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t(
+					keepPushingFilamentDialogBox.setTitle(OpenAutomakerEnv.getI18N().t(
 							"notification.keepPushingFilamentTitle"));
-					keepPushingFilamentDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
+					keepPushingFilamentDialogBox.setMessage(OpenAutomakerEnv.getI18N().t(
 							"notification.keepPushingFilament"));
 					try {
 						keepPushingFilamentDialogBox.getUserInput();
@@ -1159,14 +1159,14 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 		if (failedEjectDialogBox == null) {
 			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				failedEjectDialogBox = new ChoiceLinkDialogBox(true);
-				failedEjectDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("error.ERROR_UNLOAD"));
-				failedEjectDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
+				failedEjectDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("error.ERROR_UNLOAD"));
+				failedEjectDialogBox.setMessage(OpenAutomakerEnv.getI18N().t(
 						"error.ERROR_UNLOAD.message"));
 
 				ChoiceLinkButton ejectStuckMaterial = failedEjectDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("error.ERROR_UNLOAD.action.title"));
+						OpenAutomakerEnv.getI18N().t("error.ERROR_UNLOAD.action.title"));
 				failedEjectDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("error.ERROR_UNLOAD.noaction.title"));
+						OpenAutomakerEnv.getI18N().t("error.ERROR_UNLOAD.noaction.title"));
 
 				boolean runEjectStuckMaterial = false;
 
@@ -1187,7 +1187,7 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 				if (runEjectStuckMaterial) {
 					LOGGER.error("Eject failed - user chose to eject stuck material");
 					try {
-						printer.ejectStuckMaterial(nozzleNumber, false, null, Lookup.getUserPreferences().isSafetyFeaturesOn());
+						printer.ejectStuckMaterial(nozzleNumber, false, null, new SafetyFeaturesPreference().get());
 					}
 					catch (PrinterException ex) {
 						LOGGER.error("Error when automatically invoking eject stuck material");
@@ -1207,12 +1207,12 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 		if (filamentStuckDialogBox == null) {
 			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				filamentStuckDialogBox = new ChoiceLinkDialogBox(true);
-				filamentStuckDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.filamentStuck.title"));
+				filamentStuckDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.filamentStuck.title"));
 				filamentStuckDialogBox.setMessage(
-						OpenAutoMakerEnv.getI18N().t("dialogs.filamentStuck.message"));
+						OpenAutomakerEnv.getI18N().t("dialogs.filamentStuck.message"));
 
 				ChoiceLinkButton ok = filamentStuckDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("misc.OK"));
+						OpenAutomakerEnv.getI18N().t("misc.OK"));
 
 				try {
 					Optional<ChoiceLinkButton> choice = filamentStuckDialogBox.getUserInput();
@@ -1232,12 +1232,12 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 		if (loadFilamentNowDialogBox == null) {
 			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				loadFilamentNowDialogBox = new ChoiceLinkDialogBox(true);
-				loadFilamentNowDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.loadFilamentNow.title"));
+				loadFilamentNowDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.loadFilamentNow.title"));
 				loadFilamentNowDialogBox.setMessage(
-						OpenAutoMakerEnv.getI18N().t("dialogs.loadFilamentNow.message"));
+						OpenAutomakerEnv.getI18N().t("dialogs.loadFilamentNow.message"));
 
 				ChoiceLinkButton ok = loadFilamentNowDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("misc.OK"));
+						OpenAutomakerEnv.getI18N().t("misc.OK"));
 
 				try {
 					Optional<ChoiceLinkButton> choice = loadFilamentNowDialogBox.getUserInput();
@@ -1257,9 +1257,9 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 		if (filamentMotionCheckDialogBox == null) {
 			BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 				filamentMotionCheckDialogBox = new ChoiceLinkDialogBox(true);
-				filamentMotionCheckDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("notification.printManagement.title"));
+				filamentMotionCheckDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("notification.printManagement.title"));
 				filamentMotionCheckDialogBox.setMessage(
-						OpenAutoMakerEnv.getI18N().t("notification.filamentMotionCheck"));
+						OpenAutomakerEnv.getI18N().t("notification.filamentMotionCheck"));
 
 				try {
 					filamentMotionCheckDialogBox.getUserInput();
@@ -1289,8 +1289,8 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 			@Override
 			public Boolean call() throws Exception {
 				ChoiceLinkDialogBox choiceLinkDialogBox = new ChoiceLinkDialogBox(false);
-				choiceLinkDialogBox.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.modelInvalidTitle"));
-				choiceLinkDialogBox.setMessage(OpenAutoMakerEnv.getI18N().t(
+				choiceLinkDialogBox.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.modelInvalidTitle"));
+				choiceLinkDialogBox.setMessage(OpenAutomakerEnv.getI18N().t(
 						"dialogs.modelInvalidDescription"));
 
 				ListView problemModels = new ListView();
@@ -1300,8 +1300,8 @@ public class SystemNotificationManagerJavaFX implements SystemNotificationManage
 				problemModels.setMaxHeight(200);
 
 				ChoiceLinkButton loadChoice = choiceLinkDialogBox.addChoiceLink(
-						OpenAutoMakerEnv.getI18N().t("dialogs.loadModel"));
-				choiceLinkDialogBox.addChoiceLink(OpenAutoMakerEnv.getI18N().t("dialogs.dontLoadModel"));
+						OpenAutomakerEnv.getI18N().t("dialogs.loadModel"));
+				choiceLinkDialogBox.addChoiceLink(OpenAutomakerEnv.getI18N().t("dialogs.dontLoadModel"));
 
 				Optional<ChoiceLinkButton> loadResponse = choiceLinkDialogBox.getUserInput();
 

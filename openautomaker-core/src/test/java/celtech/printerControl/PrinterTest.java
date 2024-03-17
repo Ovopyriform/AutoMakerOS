@@ -4,12 +4,12 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.ClassRule;
 import org.junit.rules.TemporaryFolder;
+import org.openautomaker.base.printerControl.model.HardwarePrinter;
 
 import celtech.JavaFXConfiguredTest;
 import celtech.roboxbase.comms.DetectedDevice;
 import celtech.roboxbase.comms.DeviceDetector;
 import celtech.roboxbase.comms.PrinterStatusConsumer;
-import xyz.openautomaker.base.printerControl.model.HardwarePrinter;
 
 /**
  *

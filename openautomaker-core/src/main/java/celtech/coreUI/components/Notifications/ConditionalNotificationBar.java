@@ -1,12 +1,13 @@
 package celtech.coreUI.components.Notifications;
 
+import org.openautomaker.base.appManager.NotificationType;
+import org.openautomaker.environment.OpenAutomakerEnv;
+
 import celtech.Lookup;
 import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import xyz.openautomaker.base.appManager.NotificationType;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -32,7 +33,7 @@ public class ConditionalNotificationBar extends AppearingNotificationBar {
 	};
 
 	public ConditionalNotificationBar(String message, NotificationType notificationType) {
-		notificationDescription.replaceText(OpenAutoMakerEnv.getI18N().t(message));
+		notificationDescription.replaceText(OpenAutomakerEnv.getI18N().t(message));
 		setType(notificationType);
 	}
 

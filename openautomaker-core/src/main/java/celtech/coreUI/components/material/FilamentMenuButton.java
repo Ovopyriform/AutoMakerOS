@@ -8,15 +8,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
-import celtech.Lookup;
-import javafx.beans.value.ObservableValue;
+import org.openautomaker.base.MaterialType;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
+import org.openautomaker.environment.preference.advanced.AdvancedModePreference;
+
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import xyz.openautomaker.base.MaterialType;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
 
 /**
  *
@@ -82,10 +84,13 @@ public class FilamentMenuButton extends MenuButton implements FilamentSelectionL
 		setGraphic(filamentDisplayNode);
 		getStyleClass().add("filament-menu-button");
 
-		Lookup.getUserPreferences().advancedModeProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-					repopulateFilaments();
-				});
+		new AdvancedModePreference().addChangeListener(new PreferenceChangeListener() {
+			@Override
+			public void preferenceChange(PreferenceChangeEvent evt) {
+				repopulateFilaments();
+			}
+
+		});
 
 		FilamentContainer.getInstance().addFilamentDatabaseChangesListener(this);
 	}

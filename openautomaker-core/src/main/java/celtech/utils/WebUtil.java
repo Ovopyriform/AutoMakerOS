@@ -7,9 +7,8 @@ import java.net.URISyntaxException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
-import xyz.openautomaker.environment.MachineType;
+import org.openautomaker.environment.MachineType;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 /**
  *
@@ -23,7 +22,7 @@ public class WebUtil {
 		if (!Desktop.isDesktopSupported())
 			return;
 
-		MachineType machineType = OpenAutoMakerEnv.get().getMachineType();
+		MachineType machineType = OpenAutomakerEnv.get().getMachineType();
 
 		if (machineType == MachineType.LINUX) {
 			try {

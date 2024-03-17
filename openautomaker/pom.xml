@@ -7,22 +7,22 @@
 	<version>4.03.00</version>
 	<packaging>jar</packaging>
 
-	<name>OpenAutoMaker</name>
+	<name>OpenAutomaker</name>
 
 	<parent>
 		<artifactId>openautomaker-parent</artifactId>
-		<groupId>xyz.openautomaker</groupId>
+		<groupId>org.openautomaker</groupId>
 		<version>1.0</version>
 		<relativePath>../openautomaker-parent</relativePath>
 	</parent>
 
 	<properties>
-		<mainClass>xyz.openautomaker.Main</mainClass>
+		<mainClass>org.openautomaker.Main</mainClass>
 		<assets.common>${project.basedir}/packaging/assets-common</assets.common>
 		<assets.os-specific>${project.basedir}/packaging/assets-os-specific/${os.detected.name}</assets.os-specific>
 		<runtime.modules></runtime.modules>
 		<windows.upgrade.uuid>ddfc953a-1dbc-44fd-b1db-346547702d3a</windows.upgrade.uuid>
-		<windows.vendor>openautomaker.xyz</windows.vendor>
+		<windows.vendor>openautomaker.org</windows.vendor>
 		<macos.sign></macos.sign>
 		<macos.sign.identity></macos.sign.identity>
 	</properties>
@@ -53,7 +53,7 @@
 							<directory>.</directory>
 							<includes>
 								<include>dependency-reduced-pom.xml</include>
-								<include>OpenAutoMaker-*.dmg</include>
+								<include>OpenAutomaker-*.dmg</include>
 							</includes>
 						</fileset>
 					</filesets>
@@ -242,7 +242,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>xyz.openautomaker</groupId>
+			<groupId>org.openautomaker</groupId>
 			<artifactId>openautomaker-environment</artifactId>
 		</dependency>
 		<dependency>
@@ -250,11 +250,11 @@
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>xyz.openautomaker</groupId>
+			<groupId>org.openautomaker</groupId>
 			<artifactId>openautomaker-base</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>xyz.openautomaker</groupId>
+			<groupId>org.openautomaker</groupId>
 			<artifactId>openautomaker-core</artifactId>
 			<type>jar</type>
 		</dependency>

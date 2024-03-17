@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.utils.RectangularBounds;
 
 import celtech.coreUI.visualisation.ScreenExtentsProvider;
 import celtech.utils.threed.ThreeDUtils;
@@ -19,7 +20,6 @@ import javafx.scene.Node;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.MeshView;
 import javafx.scene.transform.Rotate;
-import xyz.openautomaker.base.utils.RectangularBounds;
 
 /**
  * ModelGroup is a ModelContainer that is a group of child ModelContainers or other ModelGroups.

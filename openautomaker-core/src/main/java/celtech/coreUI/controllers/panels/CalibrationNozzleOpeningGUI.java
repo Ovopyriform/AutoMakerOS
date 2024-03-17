@@ -7,16 +7,16 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.printerControl.model.statetransitions.StateTransition;
+import org.openautomaker.base.printerControl.model.statetransitions.StateTransitionManager;
+import org.openautomaker.base.printerControl.model.statetransitions.StateTransitionManager.GUIName;
+import org.openautomaker.base.printerControl.model.statetransitions.calibration.NozzleOpeningCalibrationState;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.configuration.ApplicationConfiguration;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.Region;
-import xyz.openautomaker.base.printerControl.model.statetransitions.StateTransition;
-import xyz.openautomaker.base.printerControl.model.statetransitions.StateTransitionManager;
-import xyz.openautomaker.base.printerControl.model.statetransitions.StateTransitionManager.GUIName;
-import xyz.openautomaker.base.printerControl.model.statetransitions.calibration.NozzleOpeningCalibrationState;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -82,18 +82,18 @@ public class CalibrationNozzleOpeningGUI {
 				stepNo = 2;
 				break;
 			case NO_MATERIAL_CHECK:
-				controller.buttonA.setText(OpenAutoMakerEnv.getI18N().t("misc.Yes"));
-				controller.buttonB.setText(OpenAutoMakerEnv.getI18N().t("misc.No"));
+				controller.buttonA.setText(OpenAutomakerEnv.getI18N().t("misc.Yes"));
+				controller.buttonB.setText(OpenAutomakerEnv.getI18N().t("misc.No"));
 				stepNo = 3;
 				break;
 			case T0_EXTRUDING:
-				controller.buttonA.setText(OpenAutoMakerEnv.getI18N().t("misc.Yes"));
-				controller.buttonB.setText(OpenAutoMakerEnv.getI18N().t("misc.No"));
+				controller.buttonA.setText(OpenAutomakerEnv.getI18N().t("misc.Yes"));
+				controller.buttonB.setText(OpenAutomakerEnv.getI18N().t("misc.No"));
 				stepNo = 4;
 				break;
 			case T1_EXTRUDING:
-				controller.buttonA.setText(OpenAutoMakerEnv.getI18N().t("misc.Yes"));
-				controller.buttonB.setText(OpenAutoMakerEnv.getI18N().t("misc.No"));
+				controller.buttonA.setText(OpenAutomakerEnv.getI18N().t("misc.Yes"));
+				controller.buttonB.setText(OpenAutomakerEnv.getI18N().t("misc.No"));
 				stepNo = 5;
 				break;
 			case HEAD_CLEAN_CHECK_AFTER_EXTRUDE:
@@ -102,13 +102,13 @@ public class CalibrationNozzleOpeningGUI {
 			case PRE_CALIBRATION_PRIMING_FINE:
 				break;
 			case CALIBRATE_FINE_NOZZLE:
-				controller.buttonA.setText(OpenAutoMakerEnv.getI18N().t("calibrationPanel.present"));
-				controller.buttonB.setText(OpenAutoMakerEnv.getI18N().t("calibrationPanel.notPresent"));
+				controller.buttonA.setText(OpenAutomakerEnv.getI18N().t("calibrationPanel.present"));
+				controller.buttonB.setText(OpenAutomakerEnv.getI18N().t("calibrationPanel.notPresent"));
 				stepNo = 7;
 				break;
 			case CALIBRATE_FILL_NOZZLE:
-				controller.buttonA.setText(OpenAutoMakerEnv.getI18N().t("calibrationPanel.present"));
-				controller.buttonB.setText(OpenAutoMakerEnv.getI18N().t("calibrationPanel.notPresent"));
+				controller.buttonA.setText(OpenAutomakerEnv.getI18N().t("calibrationPanel.present"));
+				controller.buttonB.setText(OpenAutomakerEnv.getI18N().t("calibrationPanel.notPresent"));
 				stepNo = 8;
 				break;
 			case HEAD_CLEAN_CHECK_FILL_NOZZLE:
@@ -116,8 +116,8 @@ public class CalibrationNozzleOpeningGUI {
 				break;
 			case CONFIRM_NO_MATERIAL_NO_YESNO_BUTTONS:
 			case CONFIRM_NO_MATERIAL:
-				controller.buttonA.setText(OpenAutoMakerEnv.getI18N().t("misc.Yes"));
-				controller.buttonB.setText(OpenAutoMakerEnv.getI18N().t("misc.No"));
+				controller.buttonA.setText(OpenAutomakerEnv.getI18N().t("misc.Yes"));
+				controller.buttonB.setText(OpenAutomakerEnv.getI18N().t("misc.No"));
 				stepNo = 10;
 				break;
 			case FINISHED:
@@ -131,7 +131,7 @@ public class CalibrationNozzleOpeningGUI {
 				break;
 		}
 		if (stepNo != 0) {
-			controller.stepNumber.setText(String.format(OpenAutoMakerEnv.getI18N().t("calibrationPanel.stepXOf10"), stepNo));
+			controller.stepNumber.setText(String.format(OpenAutomakerEnv.getI18N().t("calibrationPanel.stepXOf10"), stepNo));
 		}
 	}
 

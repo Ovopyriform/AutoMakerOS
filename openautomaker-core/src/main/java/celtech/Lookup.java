@@ -6,11 +6,11 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.printerControl.model.Printer;
 
 import celtech.appManager.Project;
 import celtech.appManager.SystemNotificationManagerJavaFX;
-import celtech.configuration.UserPreferences;
-import celtech.configuration.datafileaccessors.UserPreferenceContainer;
 import celtech.coreUI.ProjectGUIState;
 import celtech.coreUI.SpinnerControl;
 import celtech.coreUI.components.ChoiceLinkDialogBox;
@@ -20,14 +20,13 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.printerControl.model.Printer;
 
 /**
  * This class functions as the global service registry for AutoMaker.
  *
  * @author tony
  */
+//TODO: Deprecate
 public class Lookup {
 
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -47,10 +46,7 @@ public class Lookup {
 		});
 	}
 
-	/**
-	 * The UserPreferences being used by the application.
-	 */
-	private static UserPreferences userPreferences;
+
 	/**
 	 * The SpinnerControl being used by the GUI.
 	 */
@@ -70,7 +66,6 @@ public class Lookup {
 
 	public static void setupDefaultValues() {
 		LOGGER.debug("Starting AutoMaker - get user preferences...");
-		userPreferences = new UserPreferences(UserPreferenceContainer.getUserPreferenceFile());
 		BaseLookup.setupDefaultValues(new SystemNotificationManagerJavaFX());
 	}
 
@@ -96,10 +91,6 @@ public class Lookup {
 		if (currentlySelectedPrinterProperty.get() == null || !currentlySelectedPrinterProperty.get().getPrintEngine().highIntensityCommsInProgressProperty().get()) {
 			currentlySelectedPrinterProperty.set(printerToSelect);
 		}
-	}
-
-	public static UserPreferences getUserPreferences() {
-		return userPreferences;
 	}
 
 	public static ObjectProperty<Project> getSelectedProjectProperty() {

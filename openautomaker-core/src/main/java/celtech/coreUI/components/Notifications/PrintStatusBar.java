@@ -1,7 +1,14 @@
 
 package celtech.coreUI.components.Notifications;
 
-import celtech.Lookup;
+import org.openautomaker.base.configuration.Macro;
+import org.openautomaker.base.printerControl.PrintQueueStatus;
+import org.openautomaker.base.printerControl.PrinterStatus;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.preference.SafetyFeaturesPreference;
+
 import celtech.roboxbase.comms.remote.BusyStatus;
 import celtech.roboxbase.comms.remote.PauseStatus;
 import javafx.beans.property.BooleanProperty;
@@ -11,18 +18,14 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
-import xyz.openautomaker.base.configuration.Macro;
-import xyz.openautomaker.base.printerControl.PrintQueueStatus;
-import xyz.openautomaker.base.printerControl.PrinterStatus;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
  * @author tony
  */
 public class PrintStatusBar extends AppearingProgressBar implements Initializable {
+
+	private final SafetyFeaturesPreference fSafetyFeaturesPreference = new SafetyFeaturesPreference();
 
 	private Printer printer = null;
 
@@ -66,7 +69,7 @@ public class PrintStatusBar extends AppearingProgressBar implements Initializabl
 
 	private final EventHandler<ActionEvent> cancelEventHandler = (ActionEvent t) -> {
 		try {
-			printer.cancel(null, Lookup.getUserPreferences().isSafetyFeaturesOn());
+			printer.cancel(null, fSafetyFeaturesPreference.get());
 		}
 		catch (PrinterException ex) {
 			System.out.println("Couldn't resume print");
@@ -95,7 +98,7 @@ public class PrintStatusBar extends AppearingProgressBar implements Initializabl
 			case UNLOADING_FILAMENT_D:
 				statusProcessed = true;
 				barShouldBeDisplayed = true;
-				largeProgressDescription.setText(OpenAutoMakerEnv.getI18N().t(printer.busyStatusProperty().get().getI18nString()));
+				largeProgressDescription.setText(OpenAutomakerEnv.getI18N().t(printer.busyStatusProperty().get().getI18nString()));
 				progressRequired(false);
 				targetLegendRequired(false);
 				targetValueRequired(false);
@@ -118,7 +121,7 @@ public class PrintStatusBar extends AppearingProgressBar implements Initializabl
 				case SELFIE_PAUSE:
 					statusProcessed = true;
 					barShouldBeDisplayed = true;
-					largeProgressDescription.setText(OpenAutoMakerEnv.getI18N().t(printer.pauseStatusProperty().get().getI18nString()));
+					largeProgressDescription.setText(OpenAutomakerEnv.getI18N().t(printer.pauseStatusProperty().get().getI18nString()));
 					progressRequired(false);
 					targetLegendRequired(false);
 					targetValueRequired(false);
@@ -150,10 +153,10 @@ public class PrintStatusBar extends AppearingProgressBar implements Initializabl
 							currentValue.setText(hoursMinutes);
 						}
 						else {
-							currentValue.setText(OpenAutoMakerEnv.getI18N().t("dialogs.lessThanOneMinute"));
+							currentValue.setText(OpenAutomakerEnv.getI18N().t("dialogs.lessThanOneMinute"));
 						}
 
-						largeTargetLegend.setText(OpenAutoMakerEnv.getI18N().t("dialogs.progressETCLabel"));
+						largeTargetLegend.setText(OpenAutomakerEnv.getI18N().t("dialogs.progressETCLabel"));
 
 						layerN.setText(String.format("%d", printer.getPrintEngine().progressCurrentLayerProperty().get()));
 						layerTotal.setText(String.format("%d", printer.getPrintEngine().progressNumLayersProperty().get()));

@@ -1,14 +1,13 @@
 
 package celtech.roboxbase.comms;
 
-import xyz.openautomaker.base.printerControl.model.HardwarePrinter;
-import xyz.openautomaker.base.printerControl.model.HeaterMode;
-import xyz.openautomaker.base.utils.BaseEnvironmentConfiguredTest;
-
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.ClassRule;
 import org.junit.rules.TemporaryFolder;
+import org.openautomaker.base.printerControl.model.HardwarePrinter;
+import org.openautomaker.base.printerControl.model.HeaterMode;
+import org.openautomaker.base.utils.BaseEnvironmentConfiguredTest;
 
 import celtech.roboxbase.comms.DetectedDevice;
 import celtech.roboxbase.comms.DeviceDetector;

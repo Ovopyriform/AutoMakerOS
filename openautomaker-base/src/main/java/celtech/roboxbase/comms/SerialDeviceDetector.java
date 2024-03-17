@@ -10,8 +10,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 /**
  *
@@ -38,7 +37,7 @@ public class SerialDeviceDetector extends DeviceDetector
 		deviceDetectorStringLinux = pathToBinaries.resolve("RoboxDetector.linux.sh").toString();
 		deviceDetectorStringWindows = pathToBinaries.resolve("RoboxDetector.exe").toString();
 
-		switch (OpenAutoMakerEnv.get().getMachineType())
+		switch (OpenAutomakerEnv.get().getMachineType())
         {
             case WINDOWS:
                 command.add(deviceDetectorStringWindows);

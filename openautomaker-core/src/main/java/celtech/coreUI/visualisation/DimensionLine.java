@@ -1,6 +1,6 @@
 package celtech.coreUI.visualisation;
 
-import static xyz.openautomaker.base.utils.Math.MathUtils.RAD_TO_DEG;
+import static org.openautomaker.base.utils.Math.MathUtils.RAD_TO_DEG;
 
 import java.util.HashSet;
 import java.util.Set;

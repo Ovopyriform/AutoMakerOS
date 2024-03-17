@@ -4,11 +4,11 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.MaterialType;
 
 import celtech.roboxbase.comms.remote.EnumStringConverter;
 import celtech.roboxbase.comms.remote.FixedDecimalFloatFormat;
 import celtech.roboxbase.comms.remote.StringToBase64Encoder;
-import xyz.openautomaker.base.MaterialType;
 
 /**
  *

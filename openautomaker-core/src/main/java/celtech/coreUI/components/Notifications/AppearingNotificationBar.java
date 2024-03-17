@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.openautomaker.base.appManager.NotificationType;
+import org.openautomaker.base.utils.Math.MathUtils;
+import org.openautomaker.environment.OpenAutomakerEnv;
+
 import celtech.coreUI.components.HyperlinkedLabel;
 import javafx.animation.Animation;
 import javafx.animation.Transition;
@@ -19,9 +23,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
-import xyz.openautomaker.base.appManager.NotificationType;
-import xyz.openautomaker.base.utils.Math.MathUtils;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -267,7 +268,7 @@ public abstract class AppearingNotificationBar extends StackPane implements Init
 	}
 
 	public void setXOfY(int step, int ofSteps) {
-		notificationStepXofY.setText(step + " " + OpenAutoMakerEnv.getI18N().t("misc.of") + " " + ofSteps);
+		notificationStepXofY.setText(step + " " + OpenAutomakerEnv.getI18N().t("misc.of") + " " + ofSteps);
 		notificationStepXofY.setVisible(true);
 	}
 

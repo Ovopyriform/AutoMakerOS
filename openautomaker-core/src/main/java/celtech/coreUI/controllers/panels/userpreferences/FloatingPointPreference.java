@@ -1,11 +1,12 @@
 package celtech.coreUI.controllers.panels.userpreferences;
 
+import org.openautomaker.environment.OpenAutomakerEnv;
+
 import celtech.coreUI.components.RestrictedNumberField;
 import celtech.coreUI.controllers.panels.PreferencesInnerPanelController;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Control;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -57,7 +58,7 @@ public class FloatingPointPreference implements PreferencesInnerPanelController.
 
 	@Override
 	public String getDescription() {
-		return OpenAutoMakerEnv.getI18N().t(caption);
+		return OpenAutomakerEnv.getI18N().t(caption);
 	}
 
 	@Override

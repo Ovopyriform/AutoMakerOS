@@ -1,7 +1,6 @@
 package celtech.appManager;
 
 import celtech.configuration.ApplicationConfiguration;
-import celtech.coreUI.controllers.MyMiniFactoryLoaderController;
 import celtech.coreUI.controllers.panels.AboutPanelController;
 import celtech.coreUI.controllers.panels.CalibrationInsetPanelController;
 import celtech.coreUI.controllers.panels.ExtrasMenuPanelController;
@@ -33,7 +32,7 @@ public enum ApplicationMode {
 	 */
 	LAYOUT(null, null),
 	ADD_MODEL("loadModel", LoadModelInsetPanelController.class),
-	MY_MINI_FACTORY("myMiniFactoryLoader", MyMiniFactoryLoaderController.class),
+	//MY_MINI_FACTORY("myMiniFactoryLoader", MyMiniFactoryLoaderController.class),
 	/**
 	 *
 	 */

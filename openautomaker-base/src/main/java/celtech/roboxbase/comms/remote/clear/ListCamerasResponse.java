@@ -2,9 +2,9 @@ package celtech.roboxbase.comms.remote.clear;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.openautomaker.base.camera.CameraInfo;
 
-import xyz.openautomaker.base.camera.CameraInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *

@@ -1,7 +1,8 @@
 package celtech.utils;
 
+import org.openautomaker.base.utils.PercentProgressReceiver;
+
 import javafx.concurrent.Task;
-import xyz.openautomaker.base.utils.PercentProgressReceiver;
 
 /**
  *

@@ -9,8 +9,17 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.configuration.datafileaccessors.HeadContainer;
+import org.openautomaker.base.configuration.fileRepresentation.HeadFile;
+import org.openautomaker.base.configuration.fileRepresentation.NozzleData;
+import org.openautomaker.base.configuration.profilesettings.PrintProfileSetting;
+import org.openautomaker.base.configuration.profilesettings.PrintProfileSettings;
+import org.openautomaker.base.configuration.profilesettings.PrintProfileSettingsTab;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.Slicer;
+import org.openautomaker.environment.preference.SlicerPreference;
 
-import celtech.Lookup;
 import celtech.coreUI.components.GraphicTab;
 import celtech.coreUI.components.HideableTooltip;
 import celtech.coreUI.components.RestrictedNumberField;
@@ -32,15 +41,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
-import xyz.openautomaker.base.configuration.SlicerType;
-import xyz.openautomaker.base.configuration.datafileaccessors.HeadContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.HeadFile;
-import xyz.openautomaker.base.configuration.fileRepresentation.NozzleData;
-import xyz.openautomaker.base.configuration.profilesettings.PrintProfileSetting;
-import xyz.openautomaker.base.configuration.profilesettings.PrintProfileSettings;
-import xyz.openautomaker.base.configuration.profilesettings.PrintProfileSettingsTab;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  * Class to provide methods for adding generated settings to the FXML print profile pages.
@@ -175,7 +175,7 @@ public class ProfileDetailsGenerator {
 
 	private void generateProfileSettingsTab(PrintProfileSettingsTab printProfileSettingsTab) {
 		Optional<Tab> currentTab = tabPane.getTabs().stream()
-				.filter(tab -> tab.getId().equals(OpenAutoMakerEnv.getI18N().t(printProfileSettingsTab.getTabName())))
+				.filter(tab -> tab.getId().equals(OpenAutomakerEnv.getI18N().t(printProfileSettingsTab.getTabName())))
 				.findFirst();
 
 		if (currentTab.isPresent()) {
@@ -192,7 +192,7 @@ public class ProfileDetailsGenerator {
 	}
 
 	private GraphicTab generateProfileSettingsForTab(PrintProfileSettingsTab printProfileSettingsTab, GraphicTab graphicTab) {
-		String tabName = OpenAutoMakerEnv.getI18N().t(printProfileSettingsTab.getTabName());
+		String tabName = OpenAutomakerEnv.getI18N().t(printProfileSettingsTab.getTabName());
 		Label tabTitle = new Label(tabName);
 		tabTitle.getStyleClass().add(TAB_TITLE_STYLE_CLASS);
 
@@ -444,7 +444,7 @@ public class ProfileDetailsGenerator {
 	 * @return the Label
 	 */
 	private Label createLabelElement(String labelText, boolean addColon) {
-		String translation = OpenAutoMakerEnv.getI18N().t(labelText);
+		String translation = OpenAutomakerEnv.getI18N().t(labelText);
 		Label label = new Label(translation);
 		if (addColon) {
 			label.getStyleClass().add("colon");
@@ -461,7 +461,7 @@ public class ProfileDetailsGenerator {
 	 */
 	private HideableTooltip createTooltipElement(String text) {
 		HideableTooltip tooltip = new HideableTooltip();
-		tooltip.setText(OpenAutoMakerEnv.getI18N().t(text));
+		tooltip.setText(OpenAutomakerEnv.getI18N().t(text));
 		return tooltip;
 	}
 
@@ -581,10 +581,10 @@ public class ProfileDetailsGenerator {
 		List<String> nozzles = new ArrayList<>();
 		nozzles.addAll(nozzleOptions);
 
-		SlicerType slicerType = Lookup.getUserPreferences().getSlicerType();
+		Slicer slicerType = new SlicerPreference().get();
 
 		HeadFile currentHead = HeadContainer.getHeadByID(headType);
-		if (currentHead.getNozzleHeaters().size() == 2 && slicerType != SlicerType.Cura) {
+		if (currentHead.getNozzleHeaters().size() == 2 && slicerType != Slicer.CURA) {
 			nozzles.set(0, nozzleOptions.get(0) + " (Material 2)");
 			nozzles.set(1, nozzleOptions.get(1) + " (Material 1)");
 
@@ -597,7 +597,7 @@ public class ProfileDetailsGenerator {
 			comboBox.setDisable(true);
 		}
 
-		if (slicerType != SlicerType.Cura && printProfileSetting.getId().equals("firstLayerNozzle"))
+		if (slicerType != Slicer.CURA && printProfileSetting.getId().equals("firstLayerNozzle"))
 			comboBox.setDisable(true);
 
 		comboBox.setItems(FXCollections.observableList(nozzles));

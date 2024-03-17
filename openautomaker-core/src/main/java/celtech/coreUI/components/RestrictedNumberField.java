@@ -3,9 +3,11 @@ package celtech.coreUI.components;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.openautomaker.base.utils.Math.MathUtils;
+import org.openautomaker.environment.preference.LocalePreference;
 
 import celtech.coreUI.DisplayManager;
 import javafx.beans.property.BooleanProperty;
@@ -22,8 +24,6 @@ import javafx.scene.control.IndexRange;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.utils.Math.MathUtils;
 
 /**
  *
@@ -333,25 +333,18 @@ public class RestrictedNumberField extends TextField {
 	}
 
 	private NumberFormat getNumberFormatter() {
-		if (numberFormatter == null) {
-			Locale usersLocale = null;
-			try {
-				Locale applicationLocale = BaseLookup.getApplicationLocale();
-				if (applicationLocale == null) {
-					usersLocale = Locale.getDefault();
-				}
-				else {
-					usersLocale = applicationLocale;
-				}
-				numberFormatter = NumberFormat.getInstance(usersLocale);
-			}
-			catch (NoClassDefFoundError ex) {
-				//We should only be here if we're being loaded by Scene Builder
-				numberFormatter = NumberFormat.getInstance();
-			}
-			numberFormatter.setMaximumFractionDigits(allowedDecimalPlaces.get());
-			numberFormatter.setMinimumFractionDigits(allowedDecimalPlaces.get());
+		if (numberFormatter != null)
+			return numberFormatter;
+
+		try {
+			numberFormatter = NumberFormat.getInstance(new LocalePreference().get());
 		}
+		catch (NoClassDefFoundError ex) {
+			//We should only be here if we're being loaded by Scene Builder
+			numberFormatter = NumberFormat.getInstance();
+		}
+		numberFormatter.setMaximumFractionDigits(allowedDecimalPlaces.get());
+		numberFormatter.setMinimumFractionDigits(allowedDecimalPlaces.get());
 
 		return numberFormatter;
 	}
@@ -359,7 +352,7 @@ public class RestrictedNumberField extends TextField {
 	private String getDecimalSeparator() {
 		if (decimalSeparator == null) {
 			try {
-				decimalSeparator = Character.toString(new DecimalFormatSymbols(BaseLookup.getApplicationLocale()).getDecimalSeparator());
+				decimalSeparator = Character.toString(new DecimalFormatSymbols(new LocalePreference().get()).getDecimalSeparator());
 			}
 			catch (NoClassDefFoundError ex) {
 				//We should only be here if we're being loaded by Scene Builder

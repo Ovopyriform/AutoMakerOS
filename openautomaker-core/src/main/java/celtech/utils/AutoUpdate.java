@@ -14,13 +14,12 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.configuration.CoreMemory;
+import org.openautomaker.environment.MachineType;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import javafx.application.Platform;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.configuration.CoreMemory;
-import xyz.openautomaker.environment.MachineType;
 
 /**
  *
@@ -84,8 +83,8 @@ public class AutoUpdate extends Thread {
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-							BaseLookup.getSystemNotificationHandler().showInformationNotification(OpenAutoMakerEnv.getI18N().t("dialogs.updateApplicationTitle"),
-									OpenAutoMakerEnv.getI18N().t("dialogs.updateApplicationNotAvailableForThisRelease")
+							BaseLookup.getSystemNotificationHandler().showInformationNotification(OpenAutomakerEnv.getI18N().t("dialogs.updateApplicationTitle"),
+									OpenAutomakerEnv.getI18N().t("dialogs.updateApplicationNotAvailableForThisRelease")
 											+ " " + applicationName);
 						}
 					});
@@ -109,7 +108,7 @@ public class AutoUpdate extends Thread {
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-							BaseLookup.getSystemNotificationHandler().showErrorNotification(OpenAutoMakerEnv.getI18N().t("dialogs.updateApplicationTitle"), OpenAutoMakerEnv.getI18N().t("dialogs.updateFailedToContact"));
+							BaseLookup.getSystemNotificationHandler().showErrorNotification(OpenAutomakerEnv.getI18N().t("dialogs.updateApplicationTitle"), OpenAutomakerEnv.getI18N().t("dialogs.updateFailedToContact"));
 						}
 					});
 					try {
@@ -138,7 +137,7 @@ public class AutoUpdate extends Thread {
 
 		String encodedSwVersion = null;
 		try {
-			encodedSwVersion = URLEncoder.encode(BaseConfiguration.getApplicationVersion(), "UTF-8");
+			encodedSwVersion = URLEncoder.encode(OpenAutomakerEnv.get().getVersion(), "UTF-8");
 			url += "?sw=" + encodedSwVersion;
 		}
 		catch (UnsupportedEncodingException ex) {
@@ -170,7 +169,7 @@ public class AutoUpdate extends Thread {
 			con.setRequestMethod("GET");
 
 			//add request header
-			con.setRequestProperty("User-Agent", BaseConfiguration.getApplicationName());
+			con.setRequestProperty("User-Agent", OpenAutomakerEnv.get().getName());
 
 			con.setConnectTimeout(5000);
 			con.setReadTimeout(5000);
@@ -192,7 +191,7 @@ public class AutoUpdate extends Thread {
 
 				if (versionMatcher.find()) {
 					String concatenatedServerVersionField = versionMatcher.group(1).replaceAll("\\.", "");
-					String concatenatedAppVersionField = BaseConfiguration.getApplicationVersion().replaceAll("\\.", "");
+					String concatenatedAppVersionField = OpenAutomakerEnv.get().getVersion().replaceAll("\\.", "");
 
 					int serverVersionNumber = Integer.valueOf(concatenatedServerVersionField);
 					try {
@@ -221,7 +220,7 @@ public class AutoUpdate extends Thread {
 	private void startUpdate() {
 		String osName = System.getProperty("os.name");
 
-		MachineType machineType = OpenAutoMakerEnv.get().getMachineType();
+		MachineType machineType = OpenAutomakerEnv.get().getMachineType();
 
 		ArrayList<String> commands = new ArrayList<>();
 
@@ -240,16 +239,16 @@ public class AutoUpdate extends Thread {
 				//			if (BaseConfiguration.isWindows32Bit())
 				//				commands.add("\"\"" + BaseConfiguration.getApplicationInstallDirectory(parentClass) + applicationName + "-update-windows.exe\"\"");
 				//			else
-				commands.add("\"\"" + BaseConfiguration.getApplicationInstallDirectory(parentClass) + applicationName + "-update-windows-x64.exe\"\"");
+				commands.add("\"\"" + OpenAutomakerEnv.get().getApplicationPath() + applicationName + "-update-windows-x64.exe\"\"");
 				break;
 			case MAC:
-				commands.add(BaseConfiguration.getApplicationInstallDirectory(parentClass) + applicationName + "-update-osx.app/Contents/MacOS/installbuilder.sh");
+				commands.add(OpenAutomakerEnv.get().getApplicationPath() + applicationName + "-update-osx.app/Contents/MacOS/installbuilder.sh");
 				break;
 			//		case LINUX_X86:
 			//			commands.add(BaseConfiguration.getApplicationInstallDirectory(parentClass) + applicationName + "-update-linux.run");
 			//			break;
 			case LINUX:
-				commands.add(BaseConfiguration.getApplicationInstallDirectory(parentClass) + applicationName + "-update-linux-x64.run");
+				commands.add(OpenAutomakerEnv.get().getApplicationPath() + applicationName + "-update-linux-x64.run");
 				break;
 		}
 		/*

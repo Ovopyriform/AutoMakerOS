@@ -19,6 +19,13 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.configuration.datafileaccessors.PrinterContainer;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterDefinitionFile;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterEdition;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.base.printerControl.model.PrinterIdentity;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.coreUI.components.HyperlinkedLabel;
 import celtech.coreUI.components.RestrictedTextField;
@@ -39,13 +46,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import xyz.openautomaker.base.configuration.datafileaccessors.PrinterContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterDefinitionFile;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterEdition;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
-import xyz.openautomaker.base.printerControl.model.PrinterIdentity;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -184,7 +184,7 @@ public class ResetPrinterIDController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		resetInstructionLabel.replaceText(OpenAutoMakerEnv.getI18N().t("resetPIDD.resetInstructions"));
+		resetInstructionLabel.replaceText(OpenAutomakerEnv.getI18N().t("resetPIDD.resetInstructions"));
 		resetInstructionLabel.setTextAlignment(TextAlignment.LEFT); // Ignores this in the FXML for some reason.
 		printerIDLabel.disableProperty().bind(tempSetRadioButton.selectedProperty());
 		printerResetCodeLabel.disableProperty().bind(tempSetRadioButton.selectedProperty());

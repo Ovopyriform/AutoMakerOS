@@ -5,12 +5,12 @@ import java.text.ParseException;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.openautomaker.base.printerControl.model.HeadEEPROMData;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import celtech.roboxbase.comms.remote.FixedDecimalFloatFormat;
 import celtech.roboxbase.comms.tx.WriteHeadEEPROM;
-import xyz.openautomaker.base.printerControl.model.HeadEEPROMData;
 
 /**
  *

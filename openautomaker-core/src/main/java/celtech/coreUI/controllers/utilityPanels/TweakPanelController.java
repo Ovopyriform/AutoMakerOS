@@ -5,6 +5,17 @@ import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.postprocessor.PrintJobStatistics;
+import org.openautomaker.base.printerControl.PrintJob;
+import org.openautomaker.base.printerControl.PrintQueueStatus;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.HeaterMode;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.base.printerControl.model.PrinterListChangesListener;
+import org.openautomaker.base.printerControl.model.Reel;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.Lookup;
 import celtech.coreUI.controllers.StatusInsetController;
@@ -15,17 +26,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.VBox;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.postprocessor.PrintJobStatistics;
-import xyz.openautomaker.base.printerControl.PrintJob;
-import xyz.openautomaker.base.printerControl.PrintQueueStatus;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.HeaterMode;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
-import xyz.openautomaker.base.printerControl.model.PrinterListChangesListener;
-import xyz.openautomaker.base.printerControl.model.Reel;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  * FXML Controller class
@@ -514,7 +514,7 @@ public class TweakPanelController implements Initializable, StatusInsetControlle
 				currentPrinter.headProperty().get().getNozzleHeaters().get(0).heaterModeProperty().addListener(heaterModeListener);
 				currentPrinter.headProperty().get().getNozzleHeaters().get(0).lastFilamentTemperatureProperty().addListener(lastFilamentTempChangeListener);
 			}
-			material1Text.setText(OpenAutoMakerEnv.getI18N().t("printAdjustments.nozzleTemperature"));
+			material1Text.setText(OpenAutomakerEnv.getI18N().t("printAdjustments.nozzleTemperature"));
 		}
 	}
 

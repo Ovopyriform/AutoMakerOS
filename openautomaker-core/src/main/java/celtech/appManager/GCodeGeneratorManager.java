@@ -3,7 +3,7 @@
  */
 package celtech.appManager;
 
-import static xyz.openautomaker.environment.OpenAutoMakerEnv.PROJECTS;
+import static org.openautomaker.environment.OpenAutomakerEnv.PROJECTS;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -22,11 +22,36 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.RoboxProfile;
+import org.openautomaker.base.configuration.datafileaccessors.HeadContainer;
+import org.openautomaker.base.configuration.datafileaccessors.RoboxProfileSettingsContainer;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
+import org.openautomaker.base.configuration.utils.RoboxProfileUtils;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterListChangesAdapter;
+import org.openautomaker.base.printerControl.model.PrinterListChangesListener;
+import org.openautomaker.base.services.camera.CameraTriggerData;
+import org.openautomaker.base.services.gcodegenerator.GCodeGeneratorResult;
+import org.openautomaker.base.services.gcodegenerator.GCodeGeneratorTask;
+import org.openautomaker.base.services.slicer.PrintQualityEnumeration;
+import org.openautomaker.base.utils.models.MeshForProcessing;
+import org.openautomaker.base.utils.models.PrintableMeshes;
+import org.openautomaker.base.utils.tasks.Cancellable;
+import org.openautomaker.base.utils.tasks.SimpleCancellable;
+import org.openautomaker.base.utils.threed.CentreCalculations;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.Slicer;
+import org.openautomaker.environment.preference.SafetyFeaturesPreference;
+import org.openautomaker.environment.preference.SlicerPreference;
 
 import celtech.Lookup;
 import celtech.modelcontrol.ModelContainer;
@@ -48,27 +73,6 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.concurrent.Task;
 import javafx.geometry.Bounds;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.RoboxProfile;
-import xyz.openautomaker.base.configuration.SlicerType;
-import xyz.openautomaker.base.configuration.datafileaccessors.HeadContainer;
-import xyz.openautomaker.base.configuration.datafileaccessors.RoboxProfileSettingsContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
-import xyz.openautomaker.base.configuration.utils.RoboxProfileUtils;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterListChangesAdapter;
-import xyz.openautomaker.base.printerControl.model.PrinterListChangesListener;
-import xyz.openautomaker.base.services.camera.CameraTriggerData;
-import xyz.openautomaker.base.services.gcodegenerator.GCodeGeneratorResult;
-import xyz.openautomaker.base.services.gcodegenerator.GCodeGeneratorTask;
-import xyz.openautomaker.base.services.slicer.PrintQualityEnumeration;
-import xyz.openautomaker.base.utils.models.MeshForProcessing;
-import xyz.openautomaker.base.utils.models.PrintableMeshes;
-import xyz.openautomaker.base.utils.tasks.Cancellable;
-import xyz.openautomaker.base.utils.tasks.SimpleCancellable;
-import xyz.openautomaker.base.utils.threed.CentreCalculations;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  * GCodePreparationManager deals with {@link GCodeGeneratorTask}s. It's job is to restart and cancel the tasks when appropriate and to also keep track of the currently selected task.
@@ -77,6 +81,9 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  */
 public class GCodeGeneratorManager implements ModelContainerProject.ProjectChangesListener {
 	private static final Logger LOGGER = LogManager.getLogger(GCodeGeneratorManager.class.getName());
+
+	private final SlicerPreference fSlicerPreference;
+	private final SafetyFeaturesPreference fSafetyFeaturesPreference;
 
 	private final ExecutorService slicingExecutorService;
 	private final ExecutorService printOrSaveExecutorService;
@@ -119,7 +126,12 @@ public class GCodeGeneratorManager implements ModelContainerProject.ProjectChang
 
 	private ReentrantLock taskMapLock = new ReentrantLock();
 
+
+
 	public GCodeGeneratorManager(Project project) {
+		fSlicerPreference = new SlicerPreference();
+		fSafetyFeaturesPreference = new SafetyFeaturesPreference();
+
 		this.project = project;
 		ThreadFactory threadFactory = (Runnable runnable) -> {
 			Thread thread = Executors.defaultThreadFactory().newThread(runnable);
@@ -233,8 +245,11 @@ public class GCodeGeneratorManager implements ModelContainerProject.ProjectChang
 			}
 		};
 
-		Lookup.getUserPreferences().getSlicerTypeProperty().addListener((observable, oldValue, newValue) -> {
-			reactToChange(true);
+		fSlicerPreference.addChangeListener(new PreferenceChangeListener() {
+			@Override
+			public void preferenceChange(PreferenceChangeEvent evt) {
+				reactToChange(true);
+			}
 		});
 
 		ApplicationStatus.getInstance().modeProperty().addListener(applicationModeChangeListener);
@@ -319,7 +334,7 @@ public class GCodeGeneratorManager implements ModelContainerProject.ProjectChang
 			slicingOrder.forEach(printQuality -> {
 				if (modelIsSuitable(printQuality)) {
 					String headType = HeadContainer.defaultHeadID;
-					SlicerType slicerType = Lookup.getUserPreferences().getSlicerType();
+					Slicer slicerType = fSlicerPreference.get();
 
 					if (currentPrinter != null && currentPrinter.headProperty().get() != null) {
 						headType = currentPrinter.headProperty().get().typeCodeProperty().get();
@@ -387,7 +402,7 @@ public class GCodeGeneratorManager implements ModelContainerProject.ProjectChang
 									printQuality,
 									slicerType,
 									centreOfPrintedObject,
-									Lookup.getUserPreferences().isSafetyFeaturesOn(),
+									fSafetyFeaturesPreference.get(),
 									cameraTriggerData != null,
 									cameraTriggerData);
 						};
@@ -415,7 +430,7 @@ public class GCodeGeneratorManager implements ModelContainerProject.ProjectChang
 	}
 
 	public Path getGCodeDirectory(PrintQualityEnumeration printQuality) {
-		Path gcodePath = OpenAutoMakerEnv.get().getUserPath(PROJECTS).resolve(project.getProjectName()).resolve(printQuality.getFriendlyName());
+		Path gcodePath = OpenAutomakerEnv.get().getUserPath(PROJECTS).resolve(project.getProjectName()).resolve(printQuality.getFriendlyName());
 
 		File dirHandle = gcodePath.toFile();
 		if (!dirHandle.exists())
@@ -458,7 +473,7 @@ public class GCodeGeneratorManager implements ModelContainerProject.ProjectChang
 				if (currentPrinter != null && currentPrinter.headProperty().get() != null) {
 					headType = currentPrinter.headProperty().get().typeCodeProperty().get();
 				}
-				slicerParameters = project.getPrinterSettings().getSettings(headType, Lookup.getUserPreferences().getSlicerType(), printQuality);
+				slicerParameters = project.getPrinterSettings().getSettings(headType, fSlicerPreference.get(), printQuality);
 			}
 			if (slicerParameters != null) {
 				// NOTE - this needs to change if raft settings in slicermapping.dat is changed
@@ -468,7 +483,7 @@ public class GCodeGeneratorManager implements ModelContainerProject.ProjectChang
 					zReduction = currentPrinter.headProperty().get().getZReductionProperty().get();
 				}
 
-				double raftOffset = RoboxProfileUtils.calculateRaftOffset(slicerParameters, getSlicerType());
+				double raftOffset = RoboxProfileUtils.calculateRaftOffset(slicerParameters, fSlicerPreference.get());
 
 				for (ProjectifiableThing projectifiableThing : project.getTopLevelThings()) {
 					if (projectifiableThing instanceof ModelContainer) {
@@ -661,7 +676,4 @@ public class GCodeGeneratorManager implements ModelContainerProject.ProjectChang
 		printOrSaveExecutorService.shutdown();
 	}
 
-	private SlicerType getSlicerType() {
-		return Lookup.getUserPreferences().getSlicerType();
-	}
 }

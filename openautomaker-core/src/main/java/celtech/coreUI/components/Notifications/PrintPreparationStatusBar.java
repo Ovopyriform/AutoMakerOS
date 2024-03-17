@@ -4,7 +4,11 @@ package celtech.coreUI.components.Notifications;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import celtech.Lookup;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.preference.SafetyFeaturesPreference;
+
 import celtech.appManager.GCodeGeneratorManager;
 import celtech.appManager.ModelContainerProject;
 import celtech.appManager.Project;
@@ -13,9 +17,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -42,7 +43,7 @@ public class PrintPreparationStatusBar extends AppearingProgressBar implements I
 				if (gCodeGenManager != null)
 					gCodeGenManager.cancelPrintOrSaveTask();
 				if (printer.canCancelProperty().get())
-					printer.cancel(null, Lookup.getUserPreferences().isSafetyFeaturesOn());
+					printer.cancel(null, new SafetyFeaturesPreference().get());
 			}
 			catch (PrinterException ex) {
 				System.out.println("Couldn't resume print");
@@ -108,7 +109,7 @@ public class PrintPreparationStatusBar extends AppearingProgressBar implements I
 		}
 
 		if (printer != null && printer.getPrintEngine().transferGCodeToPrinterService.runningProperty().get()) {
-			largeProgressDescription.setText(OpenAutoMakerEnv.getI18N().t("printerStatus.sendingToPrinter"));
+			largeProgressDescription.setText(OpenAutomakerEnv.getI18N().t("printerStatus.sendingToPrinter"));
 			progressBar.setProgress(printer.getPrintEngine().transferGCodeToPrinterService.getProgress());
 			//Cancel is provided from the print bar in this mode
 			cancelButton.visibleProperty().set(false);

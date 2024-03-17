@@ -3,7 +3,7 @@ package celtech.roboxbase.comms.rx;
 import static celtech.roboxbase.comms.tx.WriteReel0EEPROM.FRIENDLY_NAME_LENGTH;
 import static celtech.roboxbase.comms.tx.WriteReel0EEPROM.MATERIAL_TYPE_LENGTH;
 import static celtech.roboxbase.comms.tx.WriteReel0EEPROM.REEL_EEPROM_PADDING_LENGTH;
-import static xyz.openautomaker.base.utils.ColourStringConverter.stringToColor;
+import static org.openautomaker.base.utils.ColourStringConverter.stringToColor;
 
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
@@ -12,13 +12,13 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.MaterialType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import celtech.roboxbase.comms.remote.EnumStringConverter;
 import celtech.roboxbase.comms.remote.FixedDecimalFloatFormat;
 import celtech.roboxbase.comms.remote.StringToBase64Encoder;
-import xyz.openautomaker.base.MaterialType;
 
 /**
  *

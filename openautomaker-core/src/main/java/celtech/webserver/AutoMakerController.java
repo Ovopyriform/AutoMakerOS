@@ -6,15 +6,14 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.environment.preference.SafetyFeaturesPreference;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-
-import celtech.Lookup;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
 
 /**
  *
@@ -25,8 +24,9 @@ public class AutoMakerController implements HttpHandler {
 	private static String abortPrintPage = "/abortPrint";
 	private static String printSample1Page = "/printSample1";
 
-	private static final Logger LOGGER = LogManager.getLogger(
-			AutoMakerController.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger();
+
+	private final SafetyFeaturesPreference fSafetyFeaturesPreference = new SafetyFeaturesPreference();
 
 	@Override
 	public void handle(HttpExchange t) throws IOException {
@@ -45,7 +45,7 @@ public class AutoMakerController implements HttpHandler {
 			statusResponse = "<h3>OK</h3>";
 			if (connectedPrinters.size() > 0) {
 				try {
-					connectedPrinters.get(0).cancel(null, Lookup.getUserPreferences().isSafetyFeaturesOn());
+					connectedPrinters.get(0).cancel(null, fSafetyFeaturesPreference.get());
 				}
 				catch (PrinterException ex) {
 					LOGGER.error("Error attempting to abort");

@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.appManager.ApplicationStatus;
 import celtech.coreUI.components.VerticalMenu;
@@ -20,7 +21,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 public abstract class MenuPanelController implements Initializable {
 
@@ -123,10 +123,10 @@ public abstract class MenuPanelController implements Initializable {
 	 * For each InnerPanel, create a menu item that will open it.
 	 */
 	private void buildExtras() {
-		panelMenu.setTitle(OpenAutoMakerEnv.getI18N().t(paneli18Name));
+		panelMenu.setTitle(OpenAutomakerEnv.getI18N().t(paneli18Name));
 
 		for (InnerPanelDetails innerPanelDetails : innerPanelDetails) {
-			panelMenu.addItem(OpenAutoMakerEnv.getI18N().t(innerPanelDetails.innerPanel.getMenuTitle()), () -> {
+			panelMenu.addItem(OpenAutomakerEnv.getI18N().t(innerPanelDetails.innerPanel.getMenuTitle()), () -> {
 				openInnerPanel(innerPanelDetails);
 			}, null);
 		}

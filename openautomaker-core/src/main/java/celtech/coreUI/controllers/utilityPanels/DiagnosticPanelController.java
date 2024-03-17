@@ -3,8 +3,13 @@ package celtech.coreUI.controllers.utilityPanels;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.environment.preference.DetectLoadedFilamentPreference;
+import org.openautomaker.ui.utils.FXProperty;
+
 import celtech.Lookup;
 import celtech.coreUI.controllers.StatusInsetController;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -12,7 +17,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
-import xyz.openautomaker.base.printerControl.model.Printer;
 
 /**
  * FXML Controller class
@@ -20,6 +24,8 @@ import xyz.openautomaker.base.printerControl.model.Printer;
  * @author Ian
  */
 public class DiagnosticPanelController implements Initializable, StatusInsetController {
+
+	private final DetectLoadedFilamentPreference fDetectLoadedFilamentPreference = new DetectLoadedFilamentPreference();
 
 	private Printer connectedPrinter = null;
 
@@ -145,6 +151,8 @@ public class DiagnosticPanelController implements Initializable, StatusInsetCont
 		if (connectedPrinter == null) {
 			connectedPrinter = printer;
 
+			BooleanProperty detectLoadedFilament = FXProperty.bind(fDetectLoadedFilamentPreference);
+
 			rbXLimit.selectedProperty().bind(printer.getPrinterAncillarySystems().xStopSwitchProperty());
 			rbYLimit.selectedProperty().bind(printer.getPrinterAncillarySystems().yStopSwitchProperty());
 			rbZLimit.selectedProperty().bind(printer.getPrinterAncillarySystems().zStopSwitchProperty());
@@ -155,14 +163,12 @@ public class DiagnosticPanelController implements Initializable, StatusInsetCont
 
 			rbLoaded0.selectedProperty().bind(
 					printer.extrudersProperty().get(0).filamentLoadedProperty());
-			rbLoaded0.disableProperty().bind(
-					Lookup.getUserPreferences().detectLoadedFilamentProperty());
+			rbLoaded0.disableProperty().bind(detectLoadedFilament);
 			rbIndex0.selectedProperty().bind(printer.extrudersProperty().get(0).indexWheelStateProperty());
 
 			rbLoaded1.selectedProperty().bind(
 					printer.extrudersProperty().get(1).filamentLoadedProperty());
-			rbLoaded1.disableProperty().bind(
-					Lookup.getUserPreferences().detectLoadedFilamentProperty());
+			rbLoaded1.disableProperty().bind(detectLoadedFilament);
 			rbIndex1.selectedProperty().bind(printer.extrudersProperty().get(1).indexWheelStateProperty());
 
 			ReadOnlyBooleanProperty extruder0Visible = printer.extrudersProperty().get(0).isFittedProperty();

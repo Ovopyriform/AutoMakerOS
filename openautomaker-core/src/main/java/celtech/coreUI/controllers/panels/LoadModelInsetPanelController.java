@@ -17,6 +17,9 @@ import java.util.zip.ZipFile;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.configuration.BaseConfiguration;
+import org.openautomaker.base.utils.SystemUtils;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.Lookup;
 import celtech.appManager.ApplicationMode;
@@ -41,9 +44,6 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import netscape.javascript.JSObject;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.utils.SystemUtils;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -81,7 +81,7 @@ public class LoadModelInsetPanelController implements Initializable {
 				iterator.remove();
 			}
 
-			String descriptionOfFile = OpenAutoMakerEnv.getI18N().t("dialogs.meshFileChooserDescription");
+			String descriptionOfFile = OpenAutomakerEnv.getI18N().t("dialogs.meshFileChooserDescription");
 
 			modelFileChooser.getExtensionFilters().addAll(
 					new FileChooser.ExtensionFilter(descriptionOfFile,
@@ -108,20 +108,20 @@ public class LoadModelInsetPanelController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		displayManager = DisplayManager.getInstance();
 
-		menu.setTitle(OpenAutoMakerEnv.getI18N().t("loadModel.menuTitle"));
+		menu.setTitle(OpenAutomakerEnv.getI18N().t("loadModel.menuTitle"));
 
 		InsetPanelMenuItem myComputerItem = new InsetPanelMenuItem();
-		myComputerItem.setTitle(OpenAutoMakerEnv.getI18N().t("loadModel.myComputer"));
+		myComputerItem.setTitle(OpenAutomakerEnv.getI18N().t("loadModel.myComputer"));
 
 		InsetPanelMenuItem myMiniFactoryItem = new InsetPanelMenuItem();
-		myMiniFactoryItem.setTitle(OpenAutoMakerEnv.getI18N().t("loadModel.myMiniFactory"));
+		myMiniFactoryItem.setTitle(OpenAutomakerEnv.getI18N().t("loadModel.myMiniFactory"));
 
 		menu.addMenuItem(myComputerItem);
 		menu.addMenuItem(myMiniFactoryItem);
 
-		modelFileChooser.setTitle(OpenAutoMakerEnv.getI18N().t("dialogs.modelFileChooser"));
+		modelFileChooser.setTitle(OpenAutomakerEnv.getI18N().t("dialogs.modelFileChooser"));
 		modelFileChooser.getExtensionFilters().addAll(
-				new FileChooser.ExtensionFilter(OpenAutoMakerEnv.getI18N().t("dialogs.modelFileChooserDescription"),
+				new FileChooser.ExtensionFilter(OpenAutomakerEnv.getI18N().t("dialogs.modelFileChooserDescription"),
 						ApplicationConfiguration.getSupportedFileExtensionWildcards(
 								ProjectMode.NONE)));
 
@@ -166,8 +166,7 @@ public class LoadModelInsetPanelController implements Initializable {
 				URL downloadURL = new URL(fileURL);
 
 				String extension = FilenameUtils.getExtension(fileURL);
-				final String tempFilename = BaseConfiguration.getApplicationStorageDirectory()
-						+ File.separator + tempID + "." + extension;
+				final String tempFilename = OpenAutomakerEnv.get().getApplicationPath().resolve(tempID + "." + extension).toString();
 
 				URLConnection urlConn = downloadURL.openConnection();
 

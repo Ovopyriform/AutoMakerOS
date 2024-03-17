@@ -12,6 +12,8 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.appManager.ModelContainerProject;
 import celtech.modelcontrol.Groupable;
@@ -24,8 +26,6 @@ import celtech.utils.threed.MeshDebug;
 import javafx.scene.shape.CullFace;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -202,7 +202,7 @@ public class CutCommand extends Command {
 			cutWorked = false;
 			LOGGER.error("an error occurred during cutting ", ex);
 			BaseLookup.getSystemNotificationHandler().showErrorNotification(
-					OpenAutoMakerEnv.getI18N().t("cutOperation.title"), OpenAutoMakerEnv.getI18N().t("cutOperation.message"));
+					OpenAutomakerEnv.getI18N().t("cutOperation.title"), OpenAutomakerEnv.getI18N().t("cutOperation.message"));
 			return;
 		}
 		cutWorked = true;

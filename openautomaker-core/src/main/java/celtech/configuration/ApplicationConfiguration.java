@@ -1,23 +1,20 @@
 package celtech.configuration;
 
-import static xyz.openautomaker.environment.OpenAutoMakerEnv.OPENAUTOMAKER_LAST_NEWS_RETRIEVAL;
-import static xyz.openautomaker.environment.OpenAutoMakerEnv.OPENAUTOMAKER_LEGACY;
+import static org.openautomaker.environment.OpenAutomakerEnv.OPENAUTOMAKER_LEGACY;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.environment.MachineType;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.appManager.ProjectMode;
 import javafx.geometry.Pos;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.environment.MachineType;
 
 /**
  *
@@ -116,7 +113,7 @@ public class ApplicationConfiguration {
 		extensionList.add(extension);
 
 		//Yuk - linux is case sensitive when looking at extensions
-		if (OpenAutoMakerEnv.get().getMachineType() == MachineType.LINUX) {
+		if (OpenAutomakerEnv.get().getMachineType() == MachineType.LINUX) {
 			extensionList.add(extension.toUpperCase());
 		}
 	}
@@ -183,25 +180,14 @@ public class ApplicationConfiguration {
 		return returnVal;
 	}
 
-	public static Locale getUserPreferredLocale() {
-		return OpenAutoMakerEnv.get().getLocale();
-	}
-
-	public static void setUserPreferredLocale(Locale locale) {
-		if (locale == null)
-			return;
-
-		OpenAutoMakerEnv.get().setLocale(locale);
-	}
-
 	public static String resetLastDirectoryToDefaults(DirectoryMemoryProperty whichProperty) {
-		String defaultDirectory = OpenAutoMakerEnv.get().getUserPath().toString();
+		String defaultDirectory = OpenAutomakerEnv.get().getUserPath().toString();
 		setLastDirectory(whichProperty, defaultDirectory);
 		return defaultDirectory;
 	}
 
 	private static String getLastDirectory(DirectoryMemoryProperty memoryProperty) {
-		String dir = OpenAutoMakerEnv.get().getProperty(OPENAUTOMAKER_LEGACY + "." + memoryProperty.name());
+		String dir = OpenAutomakerEnv.get().getProperty(OPENAUTOMAKER_LEGACY + "." + memoryProperty.name());
 
 		if (dir == null)
 			dir = resetLastDirectoryToDefaults(memoryProperty);
@@ -220,15 +206,7 @@ public class ApplicationConfiguration {
 	}
 
 	public static void setLastDirectory(DirectoryMemoryProperty memoryProperty, String value) {
-		OpenAutoMakerEnv.get().setProperty(OPENAUTOMAKER_LEGACY + "." + memoryProperty.name(), value);
-	}
-
-	public static String getLastNewsRetrievalTimeAsString() {
-		return OpenAutoMakerEnv.get().getProperty(OPENAUTOMAKER_LAST_NEWS_RETRIEVAL);
-	}
-
-	public static void setLastNewsRetrievalTime(String dateString) {
-		OpenAutoMakerEnv.get().setProperty(OPENAUTOMAKER_LAST_NEWS_RETRIEVAL, dateString);
+		OpenAutomakerEnv.get().setProperty(OPENAUTOMAKER_LEGACY + "." + memoryProperty.name(), value);
 	}
 
 	/**
@@ -260,19 +238,5 @@ public class ApplicationConfiguration {
 
 	public static String getDialogsCSSFile() {
 		return ApplicationConfiguration.class.getResource(dialogsCSSFile).toExternalForm();
-	}
-
-	public static String getMyMiniFactoryDownloadDirectory() {
-		if (myMiniFactoryDownloadsDirectory == null) {
-			myMiniFactoryDownloadsDirectory = BaseConfiguration.getUserStorageDirectory() + "MyMiniFactory" + '/';
-
-			File dirHandle = new File(myMiniFactoryDownloadsDirectory);
-
-			if (!dirHandle.exists()) {
-				dirHandle.mkdirs();
-			}
-		}
-
-		return myMiniFactoryDownloadsDirectory;
 	}
 }

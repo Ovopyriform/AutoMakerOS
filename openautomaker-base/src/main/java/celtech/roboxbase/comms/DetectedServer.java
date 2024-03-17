@@ -14,6 +14,16 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.camera.CameraInfo;
+import org.openautomaker.base.configuration.ApplicationVersion;
+import org.openautomaker.base.configuration.CoreMemory;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.fileRepresentation.CameraSettings;
+import org.openautomaker.base.services.printing.SFTPUtils;
+import org.openautomaker.base.utils.PercentProgressReceiver;
+import org.openautomaker.base.utils.SystemUtils;
+import org.openautomaker.base.utils.net.MultipartUtility;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -46,16 +56,6 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
-import xyz.openautomaker.base.camera.CameraInfo;
-import xyz.openautomaker.base.configuration.ApplicationVersion;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.configuration.CoreMemory;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.fileRepresentation.CameraSettings;
-import xyz.openautomaker.base.services.printing.SFTPUtils;
-import xyz.openautomaker.base.utils.PercentProgressReceiver;
-import xyz.openautomaker.base.utils.SystemUtils;
-import xyz.openautomaker.base.utils.net.MultipartUtility;
 
 /**
  *
@@ -548,8 +548,8 @@ public final class DetectedServer
                 int response = getData(LIST_PRINTERS_COMMAND);
                 if (response == 200)
                 {
-                    if (!version.getVersionString().equalsIgnoreCase(BaseConfiguration.getApplicationVersion()) &&
-                    !(BaseConfiguration.getApplicationVersion().startsWith("tadev") && version.getVersionString().startsWith("tadev"))) // Debug hack to allow mismatching development versions to operate.
+					if (!version.getVersionString().equalsIgnoreCase(OpenAutomakerEnv.get().getVersion()) &&
+							!(OpenAutomakerEnv.get().getVersion().startsWith("tadev") && version.getVersionString().startsWith("tadev"))) // Debug hack to allow mismatching development versions to operate.
                     {
 						LOGGER.debug("Setting status to WRONG_VERSION");
                         setServerStatus(ServerStatus.WRONG_VERSION);
@@ -613,7 +613,7 @@ public final class DetectedServer
             con.setRequestMethod("GET");
 
             //add request header
-            con.setRequestProperty("User-Agent", BaseConfiguration.getApplicationName());
+			con.setRequestProperty("User-Agent", OpenAutomakerEnv.get().getName());
                     //+ BaseConfiguration.getApplicationVersion());
 
             con.setConnectTimeout(CONNECT_TIMEOUT_SHORT);
@@ -698,7 +698,7 @@ public final class DetectedServer
             con.setRequestMethod("GET");
 
             //add request header
-            con.setRequestProperty("User-Agent", BaseConfiguration.getApplicationName());
+			con.setRequestProperty("User-Agent", OpenAutomakerEnv.get().getName());
             con.setRequestProperty("Authorization", "Basic " + StringToBase64Encoder.encode("root:" + getPin()));
 
             con.setConnectTimeout(CONNECT_TIMEOUT_SHORT);
@@ -771,7 +771,7 @@ public final class DetectedServer
             con.setRequestMethod("GET");
 
             //add request header
-            con.setRequestProperty("User-Agent", BaseConfiguration.getApplicationName());
+			con.setRequestProperty("User-Agent", OpenAutomakerEnv.get().getName());
             con.setRequestProperty("Authorization", "Basic " + StringToBase64Encoder.encode("root:" + getPin()));
 
             con.setConnectTimeout(CONNECT_TIMEOUT_SHORT);
@@ -837,7 +837,7 @@ public final class DetectedServer
             con.setRequestMethod("POST");
 
             //add request header
-            con.setRequestProperty("User-Agent", BaseConfiguration.getApplicationName());
+			con.setRequestProperty("User-Agent", OpenAutomakerEnv.get().getName());
             con.setRequestProperty("Authorization", "Basic " + StringToBase64Encoder.encode("root:" + getPin()));
             
             String jsonifiedData = SystemUtils.jsonEscape(mapper.writeValueAsString(settings));
@@ -893,7 +893,7 @@ public final class DetectedServer
             con.setRequestMethod("POST");
 
             //add request header
-            con.setRequestProperty("User-Agent", BaseConfiguration.getApplicationName());
+			con.setRequestProperty("User-Agent", OpenAutomakerEnv.get().getName());
             con.setRequestProperty("Authorization", "Basic " + StringToBase64Encoder.encode("root:" + getPin()));
 
             con.setConnectTimeout(CONNECT_TIMEOUT_LONG);
@@ -943,7 +943,7 @@ public final class DetectedServer
             con.setRequestMethod("POST");
 
             //add request header
-            con.setRequestProperty("User-Agent", BaseConfiguration.getApplicationName());
+			con.setRequestProperty("User-Agent", OpenAutomakerEnv.get().getName());
             con.setRequestProperty("Authorization", "Basic " + StringToBase64Encoder.encode("root:" + getPin()));
 
             con.setReadTimeout(READ_TIMEOUT_LONG);
@@ -979,7 +979,7 @@ public final class DetectedServer
             con.setRequestMethod("GET");
 
             //add request header
-            con.setRequestProperty("User-Agent", BaseConfiguration.getApplicationName());
+			con.setRequestProperty("User-Agent", OpenAutomakerEnv.get().getName());
             con.setRequestProperty("Authorization", "Basic " + StringToBase64Encoder.encode("root:" + getPin()));
 
             con.setConnectTimeout(CONNECT_TIMEOUT_LONG);

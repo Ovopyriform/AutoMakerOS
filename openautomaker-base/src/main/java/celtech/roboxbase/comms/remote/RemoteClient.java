@@ -7,6 +7,10 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.fileRepresentation.CameraSettings;
+import org.openautomaker.base.postprocessor.PrintJobStatistics;
+import org.openautomaker.base.utils.SystemUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,10 +20,6 @@ import celtech.roboxbase.comms.exceptions.RoboxCommsException;
 import celtech.roboxbase.comms.rx.FirmwareError;
 import celtech.roboxbase.comms.rx.RoboxRxPacket;
 import celtech.roboxbase.comms.tx.RoboxTxPacket;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.fileRepresentation.CameraSettings;
-import xyz.openautomaker.base.postprocessor.PrintJobStatistics;
-import xyz.openautomaker.base.utils.SystemUtils;
 
 /**
  *

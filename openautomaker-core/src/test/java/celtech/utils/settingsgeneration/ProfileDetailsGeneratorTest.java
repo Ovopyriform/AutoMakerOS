@@ -14,6 +14,11 @@ import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.openautomaker.base.configuration.datafileaccessors.PrintProfileSettingsContainer;
+import org.openautomaker.base.configuration.profilesettings.PrintProfileSetting;
+import org.openautomaker.base.configuration.profilesettings.PrintProfileSettings;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.Slicer;
 
 import celtech.FXTest;
 import celtech.JavaFXConfiguredTest;
@@ -28,11 +33,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
-import xyz.openautomaker.base.configuration.SlicerType;
-import xyz.openautomaker.base.configuration.datafileaccessors.PrintProfileSettingsContainer;
-import xyz.openautomaker.base.configuration.profilesettings.PrintProfileSetting;
-import xyz.openautomaker.base.configuration.profilesettings.PrintProfileSettings;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  * Test class for the {@link ProfileDetailsGenerator}
@@ -69,7 +69,7 @@ public class ProfileDetailsGeneratorTest extends JavaFXConfiguredTest {
 	GridPane gridPane;
 
 	private void setup() {
-		printProfileSettings = PrintProfileSettingsContainer.getInstance().getPrintProfileSettingsForSlicer(SlicerType.Cura);
+		printProfileSettings = PrintProfileSettingsContainer.getInstance().getPrintProfileSettingsForSlicer(Slicer.CURA);
 		profileDetailsGenerator = new ProfileDetailsGenerator(printProfileSettings, new SimpleBooleanProperty(false));
 
 		List<String> nozzleList = new ArrayList<>();
@@ -182,7 +182,7 @@ public class ProfileDetailsGeneratorTest extends JavaFXConfiguredTest {
 		assertThat(label.getText(), is(equalTo(SLICER_SETTING_NAME)));
 		assertTrue(label.getStyleClass().contains(COLON_STYLE));
 
-		assertThat(boxLabel.getText(), is(equalTo(OpenAutoMakerEnv.getI18N().t("extrusion.nozzle"))));
+		assertThat(boxLabel.getText(), is(equalTo(OpenAutomakerEnv.getI18N().t("extrusion.nozzle"))));
 		assertThat(combo.getItems().size(), is(equalTo(2)));
 		assertThat(combo.getItems().get(0), is(equalTo(NOZZLE_OPTION_1)));
 		assertThat(combo.getItems().get(1), is(equalTo(NOZZLE_OPTION_2)));

@@ -6,12 +6,23 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.configuration.RoboxProfile;
+import org.openautomaker.base.configuration.datafileaccessors.HeadContainer;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
+import org.openautomaker.base.configuration.utils.RoboxProfileUtils;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.services.slicer.PrintQualityEnumeration;
+import org.openautomaker.base.utils.tasks.Cancellable;
+import org.openautomaker.base.utils.tasks.SimpleCancellable;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.preference.SlicerPreference;
 
 import celtech.Lookup;
 import celtech.appManager.ApplicationMode;
@@ -31,17 +42,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.configuration.RoboxProfile;
-import xyz.openautomaker.base.configuration.SlicerType;
-import xyz.openautomaker.base.configuration.datafileaccessors.HeadContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
-import xyz.openautomaker.base.configuration.utils.RoboxProfileUtils;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.services.slicer.PrintQualityEnumeration;
-import xyz.openautomaker.base.utils.tasks.Cancellable;
-import xyz.openautomaker.base.utils.tasks.SimpleCancellable;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  * FXML Controller class
@@ -50,8 +50,9 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  */
 public class TimeCostInsetPanelController implements Initializable, ProjectAwareController {
 
-	private static final Logger LOGGER = LogManager.getLogger(
-			TimeCostInsetPanelController.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger();
+
+	private final SlicerPreference fSlicerPreference = new SlicerPreference();
 
 	@FXML
 	private HBox timeCostInsetRoot;
@@ -106,7 +107,7 @@ public class TimeCostInsetPanelController implements Initializable, ProjectAware
 			PrintQualityEnumeration.CUSTOM));
 
 	private final TimeCostThreadManager timeCostThreadManager = TimeCostThreadManager.getInstance();
-	private final ExecutorService executorService = Executors.newFixedThreadPool(4);
+	//private final ExecutorService executorService = Executors.newFixedThreadPool(4);
 
 	private final ChangeListener<Boolean> gCodePrepChangeListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 		currentPrinter = Lookup.getSelectedPrinterProperty().get();
@@ -149,8 +150,11 @@ public class TimeCostInsetPanelController implements Initializable, ProjectAware
 
 			setupQualityRadioButtons();
 
-			Lookup.getUserPreferences().getSlicerTypeProperty().addListener((observable, oldValue, newValue) -> {
-				updateHeadAndSlicerType();
+			new SlicerPreference().addChangeListener(new PreferenceChangeListener() {
+				@Override
+				public void preferenceChange(PreferenceChangeEvent evt) {
+					updateHeadAndSlicerType();
+				}
 			});
 		}
 		catch (Exception ex) {
@@ -174,11 +178,11 @@ public class TimeCostInsetPanelController implements Initializable, ProjectAware
 	}
 
 	private void updateHeadAndSlicerType() {
-		headAndSlicerType.setText(OpenAutoMakerEnv.getI18N().t("Estimates for head type: "
+		headAndSlicerType.setText(OpenAutomakerEnv.getI18N().t("Estimates for head type: "
 				+ currentHeadType
 				+ "   -   "
 				+ "Slicing with: "
-				+ getSlicerType()));
+				+ fSlicerPreference.get()));
 	}
 
 	private void setupQualityRadioButtons() {
@@ -280,6 +284,7 @@ public class TimeCostInsetPanelController implements Initializable, ProjectAware
 
 		Cancellable cancellable = new SimpleCancellable();
 
+		//TODO: Looks like this should be typed to PrintQualityEnumeration
 		Runnable runUpdateFields = () -> {
 			List<Future> futureList = new ArrayList<>();
 			for (PrintQualityEnumeration printQuality : sliceOrder) {
@@ -337,7 +342,7 @@ public class TimeCostInsetPanelController implements Initializable, ProjectAware
 			Label lblTime, Label lblWeight, Label lblCost, Cancellable cancellable) {
 		if (!modelOutOfBounds(project, printQuality)) {
 			if (project instanceof ModelContainerProject) {
-				String working = OpenAutoMakerEnv.getI18N().t("timeCost.working");
+				String working = OpenAutomakerEnv.getI18N().t("timeCost.working");
 				BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 					lblTime.setText(working);
 					lblWeight.setText(working);
@@ -361,7 +366,7 @@ public class TimeCostInsetPanelController implements Initializable, ProjectAware
 
 		RoboxProfile profileSettings = null;
 		if (project != null && project.getNumberOfProjectifiableElements() > 0) {
-			profileSettings = project.getPrinterSettings().getSettings(headTypeToUse, getSlicerType(), printQuality);
+			profileSettings = project.getPrinterSettings().getSettings(headTypeToUse, fSlicerPreference.get(), printQuality);
 		}
 
 		double zReduction = 0.0;
@@ -369,7 +374,7 @@ public class TimeCostInsetPanelController implements Initializable, ProjectAware
 			zReduction = currentPrinter.headProperty().get().getZReductionProperty().get();
 		}
 
-		double raftOffset = profileSettings == null ? 0.0 : RoboxProfileUtils.calculateRaftOffset(profileSettings, getSlicerType());
+		double raftOffset = profileSettings == null ? 0.0 : RoboxProfileUtils.calculateRaftOffset(profileSettings, fSlicerPreference.get());
 
 		boolean aModelIsOffTheBed = false;
 		if (project != null && project.getTopLevelThings() != null) {
@@ -419,9 +424,5 @@ public class TimeCostInsetPanelController implements Initializable, ProjectAware
 
 		ApplicationStatus.getInstance()
 				.modeProperty().removeListener(applicationModeChangeListener);
-	}
-
-	private SlicerType getSlicerType() {
-		return Lookup.getUserPreferences().getSlicerType();
 	}
 }

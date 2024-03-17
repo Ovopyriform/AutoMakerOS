@@ -1,12 +1,20 @@
 package celtech.coreUI.controllers.panels;
 
-import static xyz.openautomaker.environment.OpenAutoMakerEnv.PROJECTS;
+import static org.openautomaker.environment.OpenAutomakerEnv.PROJECTS;
 
 import java.nio.file.Path;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.services.gcodegenerator.GCodeGeneratorResult;
+import org.openautomaker.base.services.slicer.PrintQualityEnumeration;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.preference.ShowGCodePreviewPreference;
 
 import celtech.Lookup;
 import celtech.appManager.ApplicationMode;
@@ -23,13 +31,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Color;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.services.gcodegenerator.GCodeGeneratorResult;
-import xyz.openautomaker.base.services.slicer.PrintQualityEnumeration;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  * FXML Controller class
@@ -37,7 +38,9 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  * @author Ian Hudson @ Liberty Systems Limited
  */
 public class PreviewManager {
-	private static final Logger LOGGER = LogManager.getLogger(PreviewManager.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger();
+
+	private final ShowGCodePreviewPreference fShowGCodePreviewPreference;
 
 	public enum PreviewState {
 		CLOSED,
@@ -77,6 +80,7 @@ public class PreviewManager {
 	};
 
 	public PreviewManager() {
+		fShowGCodePreviewPreference = new ShowGCodePreviewPreference();
 		//		if(BaseConfiguration.isWindows32Bit())
 		//		{
 		//			//LOGGER.info("Setting previewState to NOT_SUPPORTED");
@@ -189,7 +193,7 @@ public class PreviewManager {
 			if (printer != null)
 				printerType = printer.printerConfigurationProperty().get().getTypeCode();
 
-			Path projectPath = OpenAutoMakerEnv.get().getUserPath(PROJECTS).resolve(currentProject.getProjectName());
+			Path projectPath = OpenAutomakerEnv.get().getUserPath(PROJECTS).resolve(currentProject.getProjectName());
 
 			Rectangle2D nRectangle = new Rectangle2D(0.25, 0.25, 0.5, 0.5);
 			previewTask = new GCodePreviewTask(projectPath.toString(), printerType, nRectangle);
@@ -204,7 +208,7 @@ public class PreviewManager {
 		if (previewState.get() == PreviewState.OPEN ||
 				previewState.get() == PreviewState.LOADING ||
 				previewState.get() == PreviewState.SLICE_UNAVAILABLE ||
-				(Lookup.getUserPreferences().isAutoGCodePreview())) {
+				fShowGCodePreviewPreference.get()) {
 			//LOGGER.info("autoStartAndUpdatePreview calling updatePreview");
 			updatePreview();
 		}
@@ -280,7 +284,7 @@ public class PreviewManager {
 					previewTask.setToolColour(0, t0Colour);
 					previewTask.setToolColour(1, t1Colour);
 					previewTask.loadGCodeFile(resultOpt.get().getPostProcOutputFileName());
-					if (Lookup.getUserPreferences().isAutoGCodePreview())
+					if (fShowGCodePreviewPreference.get())
 						previewTask.giveFocus();
 
 					//LOGGER.info("Setting previewState to OPEN ...");

@@ -1,13 +1,15 @@
 
 package celtech.coreUI.visualisation;
 
-import static xyz.openautomaker.base.utils.DeDuplicator.suggestNonDuplicateName;
+import static org.openautomaker.base.utils.DeDuplicator.suggestNonDuplicateName;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import org.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
 
 import celtech.appManager.Project;
 import celtech.appManager.Project.ProjectChangesListener;
@@ -28,7 +30,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
 
 /**
  * ProjectSelection captures all required state about the currently selected ModelContainers.

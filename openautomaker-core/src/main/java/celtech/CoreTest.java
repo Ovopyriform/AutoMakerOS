@@ -1,16 +1,6 @@
 package celtech;
 
-/**
- *
- * @author Ian Hudson @ Liberty Systems Limited
- */
-public class CoreTest {
+//TODO:  This is used all over the shop for a resource lookup.  Shouldn't do that.
+public abstract class CoreTest {
 
-	/**
-	 *
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		System.out.println("OK");
-	}
 }

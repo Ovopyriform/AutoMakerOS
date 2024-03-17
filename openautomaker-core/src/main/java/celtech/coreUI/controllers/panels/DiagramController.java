@@ -6,6 +6,11 @@ import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.printerControl.model.statetransitions.StateTransitionManager;
+import org.openautomaker.base.printerControl.model.statetransitions.calibration.NozzleHeightStateTransitionManager;
+import org.openautomaker.base.printerControl.model.statetransitions.calibration.NozzleOpeningStateTransitionManager;
+import org.openautomaker.base.printerControl.model.statetransitions.calibration.SingleNozzleHeightStateTransitionManager;
+import org.openautomaker.base.printerControl.model.statetransitions.calibration.XAndYStateTransitionManager;
 
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyFloatProperty;
@@ -20,11 +25,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import xyz.openautomaker.base.printerControl.model.statetransitions.StateTransitionManager;
-import xyz.openautomaker.base.printerControl.model.statetransitions.calibration.NozzleHeightStateTransitionManager;
-import xyz.openautomaker.base.printerControl.model.statetransitions.calibration.NozzleOpeningStateTransitionManager;
-import xyz.openautomaker.base.printerControl.model.statetransitions.calibration.SingleNozzleHeightStateTransitionManager;
-import xyz.openautomaker.base.printerControl.model.statetransitions.calibration.XAndYStateTransitionManager;
 
 /**
  *

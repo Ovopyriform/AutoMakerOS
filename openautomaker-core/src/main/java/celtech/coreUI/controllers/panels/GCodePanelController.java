@@ -1,6 +1,6 @@
 package celtech.coreUI.controllers.panels;
 
-import static xyz.openautomaker.environment.OpenAutoMakerEnv.MACROS;
+import static org.openautomaker.environment.OpenAutomakerEnv.MACROS;
 
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -11,10 +11,17 @@ import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.printerControl.comms.commands.GCodeMacros;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.preference.advanced.AdvancedModePreference;
+import org.openautomaker.ui.utils.FXProperty;
 
 import celtech.Lookup;
 import celtech.coreUI.components.RestrictedTextField;
 import celtech.coreUI.controllers.StatusInsetController;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -30,10 +37,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import xyz.openautomaker.base.printerControl.comms.commands.GCodeMacros;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -106,10 +109,10 @@ public class GCodePanelController implements Initializable, StatusInsetControlle
 		}
 		else {
 			macroFilename = text.substring(1);
-			gcodeFileWithPathApp = OpenAutoMakerEnv.get().getApplicationPath(MACROS).resolve(macroFilename + ".gcode");
+			gcodeFileWithPathApp = OpenAutomakerEnv.get().getApplicationPath(MACROS).resolve(macroFilename + ".gcode");
 		}
 
-		Path gcodeFileWithPathUser = OpenAutoMakerEnv.get().getUserPath(MACROS).resolve(macroFilename + ".gcode");
+		Path gcodeFileWithPathUser = OpenAutomakerEnv.get().getUserPath(MACROS).resolve(macroFilename + ".gcode");
 
 		if (gcodeFileWithPathUser.toFile().exists())
 			return Optional.of(gcodeFileWithPathUser.toString());
@@ -156,10 +159,10 @@ public class GCodePanelController implements Initializable, StatusInsetControlle
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		gcodeEntryField.disableProperty().bind(
-				Lookup.getUserPreferences().advancedModeProperty().not());
-		sendGCodeButton.disableProperty().bind(
-				Lookup.getUserPreferences().advancedModeProperty().not());
+		BooleanProperty advancedModeProperty = FXProperty.bind(new AdvancedModePreference());
+
+		gcodeEntryField.disableProperty().bind(advancedModeProperty.not());
+		sendGCodeButton.disableProperty().bind(advancedModeProperty.not());
 
 		gcodeTranscriptListener = (ListChangeListener.Change<? extends String> change) -> {
 			while (change.next()) {

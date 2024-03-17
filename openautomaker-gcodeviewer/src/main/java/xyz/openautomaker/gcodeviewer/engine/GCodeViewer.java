@@ -61,10 +61,10 @@ import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.opengl.KHRDebug;
 import org.lwjgl.system.Callback;
 import org.lwjgl.system.MemoryStack;
+import org.openautomaker.environment.OpenAutoMakerEnv;
 
 import com.beust.jcommander.JCommander;
 
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 import xyz.openautomaker.gcodeviewer.comms.CommandHandler;
 
 

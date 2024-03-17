@@ -1,6 +1,8 @@
 
 package celtech.coreUI.components;
 
+import org.openautomaker.base.utils.AxisSpecifier;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.IntegerProperty;
@@ -10,7 +12,6 @@ import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Button;
-import xyz.openautomaker.base.utils.AxisSpecifier;
 
 /**
  *

@@ -11,6 +11,16 @@ import java.util.ResourceBundle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.validation.ValidationSupport;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.base.printerControl.model.PrinterListChangesListener;
+import org.openautomaker.base.printerControl.model.Reel;
+import org.openautomaker.base.utils.PrinterUtils;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.preference.advanced.AdvancedModePreference;
+import org.openautomaker.ui.utils.FXProperty;
 
 import celtech.CoreTest;
 import celtech.Lookup;
@@ -34,14 +44,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
-import xyz.openautomaker.base.printerControl.model.PrinterListChangesListener;
-import xyz.openautomaker.base.printerControl.model.Reel;
-import xyz.openautomaker.base.utils.PrinterUtils;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -222,7 +224,7 @@ public class HeadEEPROMController implements Initializable, PrinterListChangesLi
 		}
 		catch (RoboxCommsException ex) {
 			LOGGER.error("Error writing head EEPROM");
-			eepromCommsError.setMessage(OpenAutoMakerEnv.getI18N().t(
+			eepromCommsError.setMessage(OpenAutomakerEnv.getI18N().t(
 					"eeprom.headWriteError"));
 			eepromCommsError.show();
 		}
@@ -247,8 +249,8 @@ public class HeadEEPROMController implements Initializable, PrinterListChangesLi
 	public void initialize(URL url, ResourceBundle rb) {
 		try {
 			eepromCommsError = new ModalDialog();
-			eepromCommsError.setTitle(OpenAutoMakerEnv.getI18N().t("eeprom.error"));
-			eepromCommsError.addButton(OpenAutoMakerEnv.getI18N().t("dialogs.OK"));
+			eepromCommsError.setTitle(OpenAutomakerEnv.getI18N().t("eeprom.error"));
+			eepromCommsError.addButton(OpenAutomakerEnv.getI18N().t("dialogs.OK"));
 
 			ChangeListener offsetsChangedListener = (ChangeListener<String>) (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
 				offsetFieldsDirty.set(true);
@@ -506,7 +508,7 @@ public class HeadEEPROMController implements Initializable, PrinterListChangesLi
 	@Override
 	public void whenPrinterAdded(Printer printer) {
 		headEEPROMOffsets.disableProperty().bind(
-				Lookup.getUserPreferences().advancedModeProperty().not());
+				FXProperty.bind(new AdvancedModePreference()).not());
 	}
 
 	@Override

@@ -3,7 +3,7 @@
  */
 package celtech.appManager;
 
-import static xyz.openautomaker.environment.OpenAutoMakerEnv.PROJECTS;
+import static org.openautomaker.environment.OpenAutomakerEnv.PROJECTS;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +15,10 @@ import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
+import org.openautomaker.base.configuration.fileRepresentation.SupportType;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,10 +32,6 @@ import celtech.modelcontrol.ModelGroup;
 import celtech.modelcontrol.ProjectifiableThing;
 import celtech.modelcontrol.TranslateableTwoD;
 import javafx.util.Pair;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.SupportType;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -151,7 +151,7 @@ public class ProjectTest extends ConfiguredTest {
 
 		ModelContainerProject.saveProject(project);
 
-		ModelContainerProject newProject = (ModelContainerProject) Project.loadProject(OpenAutoMakerEnv.get().getUserPath(PROJECTS).resolve(project.getProjectName()).toString());
+		ModelContainerProject newProject = (ModelContainerProject) Project.loadProject(OpenAutomakerEnv.get().getUserPath(PROJECTS).resolve(project.getProjectName()).toString());
 
 		Assert.assertEquals(2, newProject.getTopLevelThings().size());
 
@@ -174,7 +174,7 @@ public class ProjectTest extends ConfiguredTest {
 
 		ModelContainerProject.saveProject(project);
 
-		ModelContainerProject newProject = (ModelContainerProject) Project.loadProject(OpenAutoMakerEnv.get().getUserPath(PROJECTS).resolve(project.getProjectName()).toString());
+		ModelContainerProject newProject = (ModelContainerProject) Project.loadProject(OpenAutomakerEnv.get().getUserPath(PROJECTS).resolve(project.getProjectName()).toString());
 
 		Assert.assertEquals(1, newProject.getTopLevelThings().size());
 
@@ -210,7 +210,7 @@ public class ProjectTest extends ConfiguredTest {
 
 		ModelContainerProject.saveProject(project);
 
-		ModelContainerProject newProject = (ModelContainerProject) Project.loadProject(OpenAutoMakerEnv.get().getUserPath(PROJECTS).resolve(project.getProjectName()).toString());
+		ModelContainerProject newProject = (ModelContainerProject) Project.loadProject(OpenAutomakerEnv.get().getUserPath(PROJECTS).resolve(project.getProjectName()).toString());
 
 		Set<ModelGroup> modelGroups = newProject.getTopLevelThings().stream().filter(x -> x instanceof ModelGroup).map(x -> (ModelGroup) x).collect(Collectors.toSet());
 

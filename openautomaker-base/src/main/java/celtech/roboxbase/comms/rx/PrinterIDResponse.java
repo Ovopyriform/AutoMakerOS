@@ -1,11 +1,13 @@
 package celtech.roboxbase.comms.rx;
 
-import static xyz.openautomaker.base.utils.ColourStringConverter.stringToColor;
+import static org.openautomaker.base.utils.ColourStringConverter.stringToColor;
 
 import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.openautomaker.base.utils.InvalidChecksumException;
+import org.openautomaker.base.utils.SystemUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -13,8 +15,6 @@ import celtech.roboxbase.comms.remote.PrinterIDDataStructure;
 import celtech.roboxbase.comms.remote.StringToBase64Encoder;
 import celtech.roboxbase.comms.tx.WritePrinterID;
 import javafx.scene.paint.Color;
-import xyz.openautomaker.base.utils.InvalidChecksumException;
-import xyz.openautomaker.base.utils.SystemUtils;
 
 /**
  *

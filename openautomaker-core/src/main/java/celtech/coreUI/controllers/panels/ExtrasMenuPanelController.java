@@ -1,11 +1,10 @@
 package celtech.coreUI.controllers.panels;
 
-import celtech.Lookup;
 import celtech.configuration.ApplicationConfiguration;
-import celtech.configuration.UserPreferences;
 import celtech.coreUI.controllers.panels.userpreferences.Preferences;
 import celtech.coreUI.controllers.utilityPanels.HeadEEPROMController;
 
+//TODO: Look at this binding of FXML to classes
 public class ExtrasMenuPanelController extends MenuPanelController {
 
 	public ExtrasMenuPanelController() {
@@ -21,17 +20,15 @@ public class ExtrasMenuPanelController extends MenuPanelController {
 				ApplicationConfiguration.fxmlUtilityPanelResourcePath + "headEEPROM.fxml",
 				new HeadEEPROMController());
 
-		UserPreferences userPreferences = Lookup.getUserPreferences();
+		//UserPreferences userPreferences = Lookup.getUserPreferences();
 		loadInnerPanel(
 				ApplicationConfiguration.fxmlPanelResourcePath + "preferencesPanel.fxml",
 				new PreferencesInnerPanelController("preferences.environment",
-						Preferences.createEnvironmentPreferences(
-								userPreferences)));
+						Preferences.createEnvironmentPreferences()));
 		loadInnerPanel(
 				ApplicationConfiguration.fxmlPanelResourcePath + "preferencesPanel.fxml",
 				new PreferencesInnerPanelController("preferences.printing",
-						Preferences.createPrintingPreferences(
-								userPreferences)));
+						Preferences.createPrintingPreferences()));
 		//        loadInnerPanel(
 		//                ApplicationConfiguration.fxmlPanelResourcePath + "preferencesPanel.fxml",
 		//                new PreferencesInnerPanelController("preferences.timelapse",
@@ -48,12 +45,10 @@ public class ExtrasMenuPanelController extends MenuPanelController {
 		loadInnerPanel(
 				ApplicationConfiguration.fxmlPanelResourcePath + "preferencesPanel.fxml",
 				new PreferencesInnerPanelController("preferences.advanced",
-						Preferences.createAdvancedPreferences(
-								userPreferences)));
+						Preferences.createAdvancedPreferences()));
 		loadInnerPanel(
 				ApplicationConfiguration.fxmlPanelResourcePath + "preferencesPanel.fxml",
 				new PreferencesInnerPanelController("preferences.customPrinter",
-						Preferences.createCustomPrinterPreferences(
-								userPreferences)));
+						Preferences.createCustomPrinterPreferences()));
 	}
 }

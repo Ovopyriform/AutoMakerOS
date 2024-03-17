@@ -2,6 +2,7 @@ package celtech.coreUI.visualisation;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.utils.Math.MathUtils;
 
 import celtech.appManager.ApplicationMode;
 import celtech.appManager.ApplicationStatus;
@@ -15,7 +16,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
-import xyz.openautomaker.base.utils.Math.MathUtils;
 
 /**
  *

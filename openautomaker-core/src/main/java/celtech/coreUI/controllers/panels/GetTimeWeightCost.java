@@ -7,20 +7,22 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
+import org.openautomaker.base.postprocessor.PrintJobStatistics;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.services.gcodegenerator.GCodeGeneratorResult;
+import org.openautomaker.base.services.slicer.PrintQualityEnumeration;
+import org.openautomaker.base.utils.tasks.Cancellable;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.preference.CurrencySymbolPreference;
+import org.openautomaker.environment.preference.GBPToLocalMultiplierPreference;
 
 import celtech.Lookup;
 import celtech.appManager.ModelContainerProject;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
-import xyz.openautomaker.base.postprocessor.PrintJobStatistics;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.services.gcodegenerator.GCodeGeneratorResult;
-import xyz.openautomaker.base.services.slicer.PrintQualityEnumeration;
-import xyz.openautomaker.base.utils.tasks.Cancellable;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  * This class uses SlicerTask and PostProcessorTask to get the estimated time, weight and cost for the given project and settings.
@@ -34,8 +36,11 @@ public class GetTimeWeightCost {
 		FAILED
 	}
 
-	private static final Logger LOGGER = LogManager.getLogger(
-			GetTimeWeightCost.class.getName());
+	GBPToLocalMultiplierPreference fGBPToLocalMultiplier;
+
+	private static final Logger LOGGER = LogManager.getLogger();
+
+	private final CurrencySymbolPreference fCurrencySymbolPreference;
 
 	//We are allowed to use ModelContainerProject here since this class can only run calcs for projects with meshes
 	private final ModelContainerProject project;
@@ -47,6 +52,10 @@ public class GetTimeWeightCost {
 
 	public GetTimeWeightCost(ModelContainerProject project,
 			Label lblTime, Label lblWeight, Label lblCost, Cancellable cancellable) {
+
+		fCurrencySymbolPreference = new CurrencySymbolPreference();
+		fGBPToLocalMultiplier = new GBPToLocalMultiplierPreference();
+
 		this.project = project;
 		this.lblTime = lblTime;
 		this.lblWeight = lblWeight;
@@ -60,7 +69,7 @@ public class GetTimeWeightCost {
 	}
 
 	private void showCancelled() {
-		String cancelled = OpenAutoMakerEnv.getI18N().t("timeCost.cancelled");
+		String cancelled = OpenAutomakerEnv.getI18N().t("timeCost.cancelled");
 		BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 			lblTime.setText(cancelled);
 			lblWeight.setText(cancelled);
@@ -88,7 +97,7 @@ public class GetTimeWeightCost {
 			else if (!isCancelled()) {
 				// Result failed. Note that the fields are already updated in response to a cancel.
 				LOGGER.error("Error with gCode preparation");
-				String failed = OpenAutoMakerEnv.getI18N().t("timeCost.failed");
+				String failed = OpenAutomakerEnv.getI18N().t("timeCost.failed");
 				BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
 					lblTime.setText(failed);
 					lblWeight.setText(failed);
@@ -131,7 +140,7 @@ public class GetTimeWeightCost {
 		if (filament0 == FilamentContainer.UNKNOWN_FILAMENT
 				&& filament1 == FilamentContainer.UNKNOWN_FILAMENT) {
 			// If there is no filament loaded...
-			String noFilament = OpenAutoMakerEnv.getI18N().t("timeCost.noFilament");
+			String noFilament = OpenAutomakerEnv.getI18N().t("timeCost.noFilament");
 			lblWeight.setText(noFilament);
 			lblCost.setText(noFilament);
 		}
@@ -174,10 +183,10 @@ public class GetTimeWeightCost {
 	 * Take the cost in pounds and return a string in the format £1.43.
 	 */
 	private String formatCost(final double cost) {
-		double convertedCost = cost * Lookup.getUserPreferences().getcurrencyGBPToLocalMultiplier();
+		double convertedCost = cost * fGBPToLocalMultiplier.get();
 		int numPounds = (int) convertedCost;
 		int numPence = (int) ((convertedCost - numPounds) * 100);
-		return String.format(Lookup.getUserPreferences().getCurrencySymbol().getDisplayString() + "%s.%02d", numPounds, numPence);
+		return String.format(fCurrencySymbolPreference.get().getDisplayString() + "%s.%02d", numPounds, numPence);
 	}
 
 }

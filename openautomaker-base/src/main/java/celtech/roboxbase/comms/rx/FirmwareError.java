@@ -1,16 +1,16 @@
 package celtech.roboxbase.comms.rx;
 
-import static xyz.openautomaker.base.SystemErrorHandlerOptions.ABORT;
-import static xyz.openautomaker.base.SystemErrorHandlerOptions.CLEAR_CONTINUE;
-import static xyz.openautomaker.base.SystemErrorHandlerOptions.OK;
-import static xyz.openautomaker.base.SystemErrorHandlerOptions.OK_ABORT;
-import static xyz.openautomaker.base.SystemErrorHandlerOptions.OK_CONTINUE;
+import static org.openautomaker.base.SystemErrorHandlerOptions.ABORT;
+import static org.openautomaker.base.SystemErrorHandlerOptions.CLEAR_CONTINUE;
+import static org.openautomaker.base.SystemErrorHandlerOptions.OK;
+import static org.openautomaker.base.SystemErrorHandlerOptions.OK_ABORT;
+import static org.openautomaker.base.SystemErrorHandlerOptions.OK_CONTINUE;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import xyz.openautomaker.base.SystemErrorHandlerOptions;
+import org.openautomaker.base.SystemErrorHandlerOptions;
 
 /**
  *

@@ -1,6 +1,6 @@
 package celtech.appManager;
 
-import static xyz.openautomaker.environment.OpenAutoMakerEnv.PROJECTS;
+import static org.openautomaker.environment.OpenAutomakerEnv.PROJECTS;
 
 import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
@@ -24,6 +24,23 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.RoboxProfile;
+import org.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
+import org.openautomaker.base.configuration.datafileaccessors.PrinterContainer;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterDefinitionFile;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
+import org.openautomaker.base.configuration.fileRepresentation.SupportType;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.Head.HeadType;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.utils.RectangularBounds;
+import org.openautomaker.base.utils.Math.packing.core.Bin;
+import org.openautomaker.base.utils.Math.packing.core.BinPacking;
+import org.openautomaker.base.utils.Math.packing.primitives.MArea;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.Slicer;
+import org.openautomaker.environment.preference.SlicerPreference;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -52,22 +69,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.RoboxProfile;
-import xyz.openautomaker.base.configuration.SlicerType;
-import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
-import xyz.openautomaker.base.configuration.datafileaccessors.PrinterContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterDefinitionFile;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
-import xyz.openautomaker.base.configuration.fileRepresentation.SupportType;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.Head.HeadType;
-import xyz.openautomaker.base.utils.RectangularBounds;
-import xyz.openautomaker.base.utils.Math.packing.core.Bin;
-import xyz.openautomaker.base.utils.Math.packing.core.BinPacking;
-import xyz.openautomaker.base.utils.Math.packing.primitives.MArea;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -219,12 +220,12 @@ public class ModelContainerProject extends Project {
 	}
 
 	public static void saveProject(ModelContainerProject project) {
-		Path projectPath = OpenAutoMakerEnv.get().getUserPath(PROJECTS).resolve(project.getProjectName());
+		Path projectPath = OpenAutomakerEnv.get().getUserPath(PROJECTS).resolve(project.getProjectName());
 		project.save(projectPath);
 	}
 
 	public Path getProjectLocation() {
-		return OpenAutoMakerEnv.get().getUserPath(PROJECTS).resolve(projectNameProperty.get());
+		return OpenAutomakerEnv.get().getUserPath(PROJECTS).resolve(projectNameProperty.get());
 	}
 
 	private void saveModels(Path path) throws IOException {
@@ -361,7 +362,7 @@ public class ModelContainerProject extends Project {
 					else {
 						// Here we must check the actual profile settings for the support nozzles and
 						// determine manually which extruders are being used. It's not a neat solution.
-						RoboxProfile settings = printerSettings.getSettings(head.typeCodeProperty().get(), SlicerType.Cura4);
+						RoboxProfile settings = printerSettings.getSettings(head.typeCodeProperty().get(), Slicer.CURA_4);
 
 						if (printerSettings.getPrintSupportOverride()) {
 							int supportNoz = settings.getSpecificIntSettingWithDefault("supportNozzle", 0);
@@ -939,7 +940,7 @@ public class ModelContainerProject extends Project {
 		}
 
 		if (!usingDifferentExtruders) {
-			if (Lookup.getUserPreferences().getSlicerType() == SlicerType.Cura4) {
+			if (new SlicerPreference().get() == Slicer.CURA_4) {
 				printerSettings.getPrintSupportTypeOverrideProperty().set(SupportType.AS_PROFILE);
 			}
 			else {

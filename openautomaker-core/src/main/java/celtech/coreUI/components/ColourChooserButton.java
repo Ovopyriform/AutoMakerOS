@@ -1,12 +1,13 @@
 
 package celtech.coreUI.components;
 
+import org.openautomaker.base.utils.AxisSpecifier;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import xyz.openautomaker.base.utils.AxisSpecifier;
 
 /**
  *

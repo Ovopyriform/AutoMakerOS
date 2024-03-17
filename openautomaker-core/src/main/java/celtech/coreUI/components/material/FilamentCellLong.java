@@ -3,9 +3,9 @@
  */
 package celtech.coreUI.components.material;
 
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 /**
  *
@@ -43,7 +43,7 @@ public class FilamentCellLong extends FilamentCell {
 		}
 		else {
 			setGraphic(null);
-			label.setText(OpenAutoMakerEnv.getI18N().t("materialComponent.unknown"));
+			label.setText(OpenAutomakerEnv.getI18N().t("materialComponent.unknown"));
 		}
 	}
 }

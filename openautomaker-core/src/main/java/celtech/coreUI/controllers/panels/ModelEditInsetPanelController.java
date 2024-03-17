@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.utils.Math.MathUtils;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.Lookup;
 import celtech.appManager.ApplicationMode;
@@ -54,8 +56,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import jfxtras.styles.jmetro8.ToggleSwitch;
-import xyz.openautomaker.base.utils.Math.MathUtils;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -353,7 +353,7 @@ public class ModelEditInsetPanelController implements Initializable, ProjectAwar
 			Set<ProjectifiableThing> selectedModels = Lookup.getProjectGUIState(currentProject).getProjectSelection().getSelectedModelsSnapshot();
 
 			if (selectedModels.size() > 1) {
-				modelName.setText(OpenAutoMakerEnv.getI18N().t("modelEdit.MultipleModelsSelected"));
+				modelName.setText(OpenAutomakerEnv.getI18N().t("modelEdit.MultipleModelsSelected"));
 				modelName.setTooltip(null);
 				showDisplay = true;
 			}

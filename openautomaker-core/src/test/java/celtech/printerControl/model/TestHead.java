@@ -3,11 +3,12 @@
  */
 package celtech.printerControl.model;
 
+import org.openautomaker.base.configuration.fileRepresentation.HeadFile;
+import org.openautomaker.base.configuration.fileRepresentation.NozzleHeaterData;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.NozzleHeater;
+
 import javafx.beans.property.FloatProperty;
-import xyz.openautomaker.base.configuration.fileRepresentation.HeadFile;
-import xyz.openautomaker.base.configuration.fileRepresentation.NozzleHeaterData;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.NozzleHeater;
 
 /**
  *

@@ -8,6 +8,9 @@ import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.postprocessor.PrintJobStatistics;
+import org.openautomaker.base.printerControl.PrintJob;
+import org.openautomaker.base.printerControl.model.Printer;
 
 import celtech.Lookup;
 import celtech.coreUI.controllers.StatusInsetController;
@@ -17,9 +20,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import xyz.openautomaker.base.postprocessor.PrintJobStatistics;
-import xyz.openautomaker.base.printerControl.PrintJob;
-import xyz.openautomaker.base.printerControl.model.Printer;
 
 /**
  * FXML Controller class

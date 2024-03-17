@@ -83,11 +83,11 @@ import org.lwjgl.nuklear.NkStyleScrollbar;
 import org.lwjgl.nuklear.NkVec2;
 import org.lwjgl.nuklear.Nuklear;
 import org.lwjgl.system.MemoryStack;
+import org.openautomaker.environment.OpenAutoMakerEnv;
+import org.openautomaker.i18n.OpenAutoMakerI18N;
 
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 import xyz.openautomaker.gcodeviewer.engine.LayerDetails;
 import xyz.openautomaker.gcodeviewer.engine.RenderParameters;
-import xyz.openautomaker.i18n.OpenAutoMakerI18N;
 
 public class GCVGCodePanel extends GCVPanel {
 

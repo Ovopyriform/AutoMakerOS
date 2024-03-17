@@ -2,12 +2,13 @@ package celtech.coreUI.components.material;
 
 import java.io.IOException;
 
+import org.openautomaker.base.configuration.Filament;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
-import xyz.openautomaker.base.configuration.Filament;
 
 /**
  *

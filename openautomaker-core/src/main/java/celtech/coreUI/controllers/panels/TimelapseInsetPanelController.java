@@ -7,6 +7,11 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.camera.CameraInfo;
+import org.openautomaker.base.configuration.datafileaccessors.CameraProfileContainer;
+import org.openautomaker.base.configuration.fileRepresentation.CameraProfile;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
+import org.openautomaker.base.printerControl.model.Printer;
 
 import celtech.Lookup;
 import celtech.appManager.ApplicationMode;
@@ -28,11 +33,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.GridPane;
-import xyz.openautomaker.base.camera.CameraInfo;
-import xyz.openautomaker.base.configuration.datafileaccessors.CameraProfileContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.CameraProfile;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
-import xyz.openautomaker.base.printerControl.model.Printer;
 
 /**
  * FXML Controller class

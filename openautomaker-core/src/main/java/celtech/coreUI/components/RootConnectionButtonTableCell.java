@@ -1,5 +1,7 @@
 package celtech.coreUI.components;
 
+import static org.openautomaker.environment.OpenAutomakerEnv.TEMP;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -12,6 +14,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.appManager.NotificationType;
+import org.openautomaker.base.configuration.ApplicationVersion;
+import org.openautomaker.base.utils.SystemUtils;
+import org.openautomaker.environment.I18N;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.Lookup;
 import celtech.coreUI.components.Notifications.GenericProgressBar;
@@ -34,12 +43,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.appManager.NotificationType;
-import xyz.openautomaker.base.configuration.ApplicationVersion;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.utils.SystemUtils;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -130,7 +133,7 @@ public class RootConnectionButtonTableCell extends TableCell<DetectedServer, Det
 					Optional<File> rootFileOptional = getRootDownloadFuture(path, filename).get();
 					if (rootFileOptional.isPresent()) {
 						BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
-							rootSoftwareUploadProgress = Lookup.getProgressDisplay().addGenericProgressBarToDisplay(OpenAutoMakerEnv.getI18N().t("rootScanner.rootUploadTitle"),
+							rootSoftwareUploadProgress = Lookup.getProgressDisplay().addGenericProgressBarToDisplay(OpenAutomakerEnv.getI18N().t("rootScanner.rootUploadTitle"),
 									runningProperty(),
 									progressProperty());
 						});
@@ -154,7 +157,7 @@ public class RootConnectionButtonTableCell extends TableCell<DetectedServer, Det
 			});
 
 			rootUploader.setOnFailed((event) -> {
-				BaseLookup.getSystemNotificationHandler().showErrorNotification(OpenAutoMakerEnv.getI18N().t("rootScanner.rootUploadTitle"), OpenAutoMakerEnv.getI18N().t("rootScanner.failedUploadMessage"));
+				BaseLookup.getSystemNotificationHandler().showErrorNotification(OpenAutomakerEnv.getI18N().t("rootScanner.rootUploadTitle"), OpenAutomakerEnv.getI18N().t("rootScanner.failedUploadMessage"));
 				Lookup.getProgressDisplay().removeGenericProgressBarFromDisplay(rootSoftwareUploadProgress);
 				rootSoftwareUploadProgress = null;
 				inhibitUpdate.set(false);
@@ -162,10 +165,10 @@ public class RootConnectionButtonTableCell extends TableCell<DetectedServer, Det
 
 			rootUploader.setOnSucceeded((event) -> {
 				if ((boolean) event.getSource().getValue()) {
-					BaseLookup.getSystemNotificationHandler().showDismissableNotification(OpenAutoMakerEnv.getI18N().t("rootScanner.successfulUploadMessage"), OpenAutoMakerEnv.getI18N().t("dialogs.OK"), NotificationType.NOTE);
+					BaseLookup.getSystemNotificationHandler().showDismissableNotification(OpenAutomakerEnv.getI18N().t("rootScanner.successfulUploadMessage"), OpenAutomakerEnv.getI18N().t("dialogs.OK"), NotificationType.NOTE);
 				}
 				else {
-					BaseLookup.getSystemNotificationHandler().showErrorNotification(OpenAutoMakerEnv.getI18N().t("rootScanner.rootUploadTitle"), OpenAutoMakerEnv.getI18N().t("rootScanner.failedUploadMessage"));
+					BaseLookup.getSystemNotificationHandler().showErrorNotification(OpenAutomakerEnv.getI18N().t("rootScanner.rootUploadTitle"), OpenAutomakerEnv.getI18N().t("rootScanner.failedUploadMessage"));
 				}
 				Lookup.getProgressDisplay().removeGenericProgressBarFromDisplay(rootSoftwareUploadProgress);
 				rootSoftwareUploadProgress = null;
@@ -218,7 +221,7 @@ public class RootConnectionButtonTableCell extends TableCell<DetectedServer, Det
 					}
 					else {
 						BaseLookup.getTaskExecutor().runOnGUIThread(() -> {
-							rootSoftwareDownloadProgress = Lookup.getProgressDisplay().addGenericProgressBarToDisplay(OpenAutoMakerEnv.getI18N().t("rootScanner.rootDownloadTitle"),
+							rootSoftwareDownloadProgress = Lookup.getProgressDisplay().addGenericProgressBarToDisplay(OpenAutomakerEnv.getI18N().t("rootScanner.rootDownloadTitle"),
 									runningProperty(),
 									progressProperty());
 
@@ -244,14 +247,14 @@ public class RootConnectionButtonTableCell extends TableCell<DetectedServer, Det
 			rootDownloader.setOnSucceeded((result) -> {
 				tidyRootFiles(rootFileDirectory, rootFileName);
 				if (rootSoftwareDownloadProgress != null) {
-					BaseLookup.getSystemNotificationHandler().showInformationNotification(OpenAutoMakerEnv.getI18N().t("rootScanner.rootDownloadTitle"), OpenAutoMakerEnv.getI18N().t("rootScanner.successfulDownloadMessage"));
+					BaseLookup.getSystemNotificationHandler().showInformationNotification(OpenAutomakerEnv.getI18N().t("rootScanner.rootDownloadTitle"), OpenAutomakerEnv.getI18N().t("rootScanner.successfulDownloadMessage"));
 					Lookup.getProgressDisplay().removeGenericProgressBarFromDisplay(rootSoftwareDownloadProgress);
 					rootSoftwareDownloadProgress = null;
 				}
 			});
 
 			rootDownloader.setOnFailed((result) -> {
-				BaseLookup.getSystemNotificationHandler().showErrorNotification(OpenAutoMakerEnv.getI18N().t("rootScanner.rootDownloadTitle"), OpenAutoMakerEnv.getI18N().t("rootScanner.failedDownloadMessage"));
+				BaseLookup.getSystemNotificationHandler().showErrorNotification(OpenAutomakerEnv.getI18N().t("rootScanner.rootDownloadTitle"), OpenAutomakerEnv.getI18N().t("rootScanner.failedDownloadMessage"));
 				Lookup.getProgressDisplay().removeGenericProgressBarFromDisplay(rootSoftwareDownloadProgress);
 				rootSoftwareDownloadProgress = null;
 			});
@@ -264,8 +267,8 @@ public class RootConnectionButtonTableCell extends TableCell<DetectedServer, Det
 
 	@FXML
 	void updateRoot(ActionEvent event) {
-		Path pathToRootFile = BaseConfiguration.getUserTempDirectory();
-		Path rootFile = Paths.get(ROOT_UPGRADE_FILE_PREFIX + BaseConfiguration.getApplicationVersion() + ".zip");
+		Path pathToRootFile = OpenAutomakerEnv.get().getUserPath(TEMP);
+		Path rootFile = Paths.get(ROOT_UPGRADE_FILE_PREFIX + OpenAutomakerEnv.get().getVersion() + ".zip");
 		upgradeRootWithFile(pathToRootFile, rootFile);
 	}
 
@@ -295,7 +298,7 @@ public class RootConnectionButtonTableCell extends TableCell<DetectedServer, Det
 	public RootConnectionButtonTableCell() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
 				"/celtech/resources/fxml/components/RootConnectionButtonTableCell.fxml"),
-				BaseLookup.getLanguageBundle());
+				new I18N().getResourceBundle());
 		fxmlLoader.setController(this);
 
 		fxmlLoader.setClassLoader(this.getClass().getClassLoader());
@@ -356,7 +359,7 @@ public class RootConnectionButtonTableCell extends TableCell<DetectedServer, Det
 				break;
 			case WRONG_PIN:
 				if (userEnteredPin) {
-					BaseLookup.getSystemNotificationHandler().showErrorNotification(OpenAutoMakerEnv.getI18N().t("rootScanner.PIN"), OpenAutoMakerEnv.getI18N().t("rootScanner.incorrectPIN"));
+					BaseLookup.getSystemNotificationHandler().showErrorNotification(OpenAutomakerEnv.getI18N().t("rootScanner.PIN"), OpenAutomakerEnv.getI18N().t("rootScanner.incorrectPIN"));
 					userEnteredPin = false;
 				}
 				associatedServer.setServerStatus(ServerStatus.NOT_CONNECTED);
@@ -373,7 +376,7 @@ public class RootConnectionButtonTableCell extends TableCell<DetectedServer, Det
 	}
 
 	private void handleWrongVersionCase() {
-		ApplicationVersion localVersion = new ApplicationVersion(BaseConfiguration.getApplicationVersion());
+		ApplicationVersion localVersion = new ApplicationVersion(OpenAutomakerEnv.get().getVersion());
 		ApplicationVersion serverVersion = associatedServer.getVersion();
 
 		int comparison = localVersion.compareTo(serverVersion);

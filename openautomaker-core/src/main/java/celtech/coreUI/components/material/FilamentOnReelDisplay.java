@@ -1,10 +1,11 @@
 package celtech.coreUI.components.material;
 
+import org.openautomaker.base.configuration.Filament;
+
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
-import xyz.openautomaker.base.configuration.Filament;
 
 /**
  *

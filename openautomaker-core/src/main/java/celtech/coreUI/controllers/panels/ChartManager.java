@@ -5,6 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.openautomaker.base.configuration.BaseConfiguration;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.HeaterMode;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterAncillarySystems;
+import org.openautomaker.environment.OpenAutomakerEnv;
+
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -15,12 +22,6 @@ import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.HeaterMode;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterAncillarySystems;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  * ChartManager is an auxiliary class to PrinterStatusSidePanelController and manages the temperature chart.
@@ -346,9 +347,9 @@ class ChartManager {
 	}
 
 	private void updateLegend() {
-		String degreesC = OpenAutoMakerEnv.getI18N().t("misc.degreesC");
-		String legendBedText = OpenAutoMakerEnv.getI18N().t("printerStatus.temperatureGraphBedLabel");
-		String legendAmbientText = OpenAutoMakerEnv.getI18N().t("printerStatus.temperatureGraphAmbientLabel");
+		String degreesC = OpenAutomakerEnv.getI18N().t("misc.degreesC");
+		String legendBedText = OpenAutomakerEnv.getI18N().t("printerStatus.temperatureGraphBedLabel");
+		String legendAmbientText = OpenAutomakerEnv.getI18N().t("printerStatus.temperatureGraphAmbientLabel");
 
 		if (legendBed != null && bedTemperatureProperty != null) {
 			legendBedText += String.format(" %s%s", bedTemperatureProperty.get(), degreesC);

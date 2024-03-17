@@ -7,6 +7,14 @@ import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.printerControl.PrinterStatus;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.environment.OpenAutomakerEnv;
+import org.openautomaker.environment.preference.SafetyFeaturesPreference;
+import org.openautomaker.environment.preference.advanced.AdvancedModePreference;
+import org.openautomaker.ui.utils.FXProperty;
 
 import celtech.Lookup;
 import celtech.configuration.ApplicationConfiguration;
@@ -23,11 +31,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import xyz.openautomaker.base.printerControl.PrinterStatus;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  * FXML Controller class
@@ -36,7 +39,10 @@ import xyz.openautomaker.environment.OpenAutoMakerEnv;
  */
 public class MaintenanceInsetPanelController implements Initializable, MenuInnerPanel {
 
-	private static final Logger LOGGER = LogManager.getLogger(MaintenanceInsetPanelController.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger();
+
+	private final SafetyFeaturesPreference fSafetyFeaturesPreference = new SafetyFeaturesPreference();
+
 	private Printer connectedPrinter;
 
 	private final FileChooser firmwareFileChooser = new FileChooser();
@@ -102,7 +108,7 @@ public class MaintenanceInsetPanelController implements Initializable, MenuInner
 				if (connectedPrinter.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD)
 					nozzleNumber = 1;
 
-				connectedPrinter.ejectStuckMaterial(nozzleNumber, false, null, Lookup.getUserPreferences().isSafetyFeaturesOn());
+				connectedPrinter.ejectStuckMaterial(nozzleNumber, false, null, fSafetyFeaturesPreference.get());
 			}
 			catch (PrinterException ex) {
 				LOGGER.info("Error attempting to run eject stuck material E");
@@ -116,7 +122,7 @@ public class MaintenanceInsetPanelController implements Initializable, MenuInner
 				connectedPrinter.headProperty().get() != null &&
 				connectedPrinter.headProperty().get().headTypeProperty().get() == Head.HeadType.DUAL_MATERIAL_HEAD) {
 			try {
-				connectedPrinter.ejectStuckMaterial(0, false, null, Lookup.getUserPreferences().isSafetyFeaturesOn());
+				connectedPrinter.ejectStuckMaterial(0, false, null, fSafetyFeaturesPreference.get());
 			}
 			catch (PrinterException ex) {
 				LOGGER.info("Error attempting to run eject stuck material D");
@@ -167,7 +173,7 @@ public class MaintenanceInsetPanelController implements Initializable, MenuInner
 	@FXML
 	void cleanNozzleT0(ActionEvent event) {
 		try {
-			connectedPrinter.cleanNozzle(0, false, null, Lookup.getUserPreferences().isSafetyFeaturesOn());
+			connectedPrinter.cleanNozzle(0, false, null, fSafetyFeaturesPreference.get());
 		}
 		catch (PrinterException ex) {
 			LOGGER.error("Couldn't clean left nozzle");
@@ -177,7 +183,7 @@ public class MaintenanceInsetPanelController implements Initializable, MenuInner
 	@FXML
 	void cleanNozzleT1(ActionEvent event) {
 		try {
-			connectedPrinter.cleanNozzle(1, false, null, Lookup.getUserPreferences().isSafetyFeaturesOn());
+			connectedPrinter.cleanNozzle(1, false, null, fSafetyFeaturesPreference.get());
 		}
 		catch (PrinterException ex) {
 			LOGGER.error("Couldn't clean right nozzle");
@@ -264,21 +270,24 @@ public class MaintenanceInsetPanelController implements Initializable, MenuInner
 
 			LevelGantryButton.disableProperty().bind(printingDisabled);
 			ZTestButton.disableProperty().bind(printingDisabled);
-			sendGCodeSDButton.disableProperty().bind(printingDisabled.or(Lookup.getUserPreferences().advancedModeProperty().not()));
+			
+			BooleanProperty advancedmodeProperty = FXProperty.bind(new AdvancedModePreference());
+			
+			sendGCodeSDButton.disableProperty().bind(printingDisabled.or(advancedmodeProperty).not());
 
 			currentFirmwareField.setStyle("-fx-font-weight: bold;");
 
-			gcodeFileChooser.setTitle(OpenAutoMakerEnv.getI18N().t("maintenancePanel.gcodeFileChooserTitle"));
+			gcodeFileChooser.setTitle(OpenAutomakerEnv.getI18N().t("maintenancePanel.gcodeFileChooserTitle"));
 			gcodeFileChooser.getExtensionFilters()
 					.addAll(
-							new FileChooser.ExtensionFilter(OpenAutoMakerEnv.getI18N().t(
+							new FileChooser.ExtensionFilter(OpenAutomakerEnv.getI18N().t(
 									"maintenancePanel.gcodeFileDescription"),
 									"*.gcode"));
 
-			firmwareFileChooser.setTitle(OpenAutoMakerEnv.getI18N().t("maintenancePanel.firmwareFileChooserTitle"));
+			firmwareFileChooser.setTitle(OpenAutomakerEnv.getI18N().t("maintenancePanel.firmwareFileChooserTitle"));
 			firmwareFileChooser.getExtensionFilters()
 					.addAll(
-							new FileChooser.ExtensionFilter(OpenAutoMakerEnv.getI18N().t(
+							new FileChooser.ExtensionFilter(OpenAutomakerEnv.getI18N().t(
 									"maintenancePanel.firmwareFileDescription"), "*.bin"));
 
 			Lookup.getSelectedPrinterProperty().addListener(
@@ -312,8 +321,7 @@ public class MaintenanceInsetPanelController implements Initializable, MenuInner
 						if (connectedPrinter != null) {
 							currentFirmwareField.textProperty().bind(connectedPrinter.getPrinterIdentity().firmwareVersionProperty());
 							loadFirmwareButton.disableProperty()
-									.bind(printingDisabled.or(Lookup.getUserPreferences()
-											.advancedModeProperty()
+									.bind(printingDisabled.or(advancedmodeProperty
 											.not()
 											.or(connectedPrinter.getPrinterIdentity()
 													.validIDProperty()

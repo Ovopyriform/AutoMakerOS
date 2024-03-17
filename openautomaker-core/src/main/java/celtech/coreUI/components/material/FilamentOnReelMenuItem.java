@@ -2,8 +2,9 @@ package celtech.coreUI.components.material;
 
 import static javafx.scene.layout.Region.USE_PREF_SIZE;
 
+import org.openautomaker.base.configuration.Filament;
+
 import javafx.scene.control.CustomMenuItem;
-import xyz.openautomaker.base.configuration.Filament;
 
 /**
  *

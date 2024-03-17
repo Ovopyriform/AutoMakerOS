@@ -3,6 +3,11 @@ package celtech.coreUI.controllers.panels;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterIdentity;
+import org.openautomaker.environment.OpenAutomakerEnv;
+
 import celtech.Lookup;
 import celtech.appManager.ApplicationMode;
 import celtech.appManager.ApplicationStatus;
@@ -17,10 +22,6 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterIdentity;
 
 /**
  *
@@ -107,7 +108,7 @@ public class AboutPanelController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		version.setText(BaseConfiguration.getApplicationVersion());
+		version.setText(OpenAutomakerEnv.get().getVersion());
 
 		DisplayManager.getInstance().getDisplayScalingModeProperty().addListener(new ChangeListener<DisplayManager.DisplayScalingMode>() {
 			@Override

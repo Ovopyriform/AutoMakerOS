@@ -10,6 +10,8 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterDefinitionFile;
+import org.openautomaker.environment.I18N;
 
 import celtech.FXTest;
 import celtech.JavaFXConfiguredTest;
@@ -18,8 +20,6 @@ import celtech.configuration.ApplicationConfiguration;
 import celtech.printerControl.model.TestPrinter;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.VBox;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterDefinitionFile;
 
 /**
  *
@@ -42,7 +42,7 @@ public class GCodePanelControllerTest extends JavaFXConfiguredTest {
 
 		URL fxmlFileName = getClass().getResource(
 				ApplicationConfiguration.fxmlUtilityPanelResourcePath + "GCodePanel.fxml");
-		FXMLLoader loader = new FXMLLoader(fxmlFileName, BaseLookup.getLanguageBundle());
+		FXMLLoader loader = new FXMLLoader(fxmlFileName, new I18N().getResourceBundle());
 
 		try {
 			VBox layout = (VBox) loader.load();

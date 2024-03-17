@@ -3,11 +3,12 @@ package celtech.appManager;
 
 import java.util.Optional;
 
+import org.openautomaker.base.camera.CameraInfo;
+import org.openautomaker.base.configuration.fileRepresentation.CameraProfile;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import xyz.openautomaker.base.camera.CameraInfo;
-import xyz.openautomaker.base.configuration.fileRepresentation.CameraProfile;
 
 /**
  *

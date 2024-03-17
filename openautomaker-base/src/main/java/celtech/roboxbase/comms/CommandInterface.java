@@ -1,9 +1,21 @@
 package celtech.roboxbase.comms;
 
-import static xyz.openautomaker.environment.OpenAutoMakerEnv.FIRMWARE;
+import static org.openautomaker.environment.OpenAutomakerEnv.FIRMWARE;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.configuration.CoreMemory;
+import org.openautomaker.base.configuration.datafileaccessors.PrinterContainer;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterDefinitionFile;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterEdition;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.base.services.firmware.FirmwareLoadResult;
+import org.openautomaker.base.services.firmware.FirmwareLoadService;
+import org.openautomaker.base.utils.PrinterUtils;
+import org.openautomaker.environment.MachineType;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.roboxbase.comms.async.AsyncWriteThread;
 import celtech.roboxbase.comms.async.CommandPacket;
@@ -22,20 +34,6 @@ import celtech.roboxbase.comms.tx.TxPacketTypeEnum;
 import javafx.application.Platform;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.scene.paint.Color;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
-import xyz.openautomaker.base.ApplicationFeature;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.configuration.CoreMemory;
-import xyz.openautomaker.base.configuration.datafileaccessors.PrinterContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterDefinitionFile;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterEdition;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
-import xyz.openautomaker.base.services.firmware.FirmwareLoadResult;
-import xyz.openautomaker.base.services.firmware.FirmwareLoadService;
-import xyz.openautomaker.base.utils.PrinterUtils;
-import xyz.openautomaker.environment.MachineType;
 
 /**
  *
@@ -101,7 +99,7 @@ public abstract class CommandInterface extends Thread {
 		asyncWriteThread = new AsyncWriteThread(this, printerHandle.getConnectionHandle());
 
 		// TODO: Always force firmware version to a long?
-		requiredFirmwareVersionString = OpenAutoMakerEnv.get().getRequiredFirmwareVersion();
+		requiredFirmwareVersionString = OpenAutomakerEnv.get().getRequiredFirmwareVersion();
 		LOGGER.debug("Firmware property value:" + requiredFirmwareVersionString);
 		requiredFirmwareVersion = Float.valueOf(requiredFirmwareVersionString);
 
@@ -136,7 +134,7 @@ public abstract class CommandInterface extends Thread {
 	@Override
 	public void run() {
 
-		OpenAutoMakerEnv env = OpenAutoMakerEnv.get();
+		OpenAutomakerEnv env = OpenAutomakerEnv.get();
 
 		while (keepRunning) {
 			switch (commsState) {
@@ -198,7 +196,6 @@ public abstract class CommandInterface extends Thread {
 								break;
 							}
 
-							if (BaseConfiguration.isApplicationFeatureEnabled(ApplicationFeature.AUTO_UPDATE_FIRMWARE)) {
 								if (firmwareVersionInUse >= 691) {
 									// Is the SD card present?
 									try {
@@ -230,8 +227,6 @@ public abstract class CommandInterface extends Thread {
 									loadRequiredFirmware = BaseLookup.getSystemNotificationHandler()
 											.showDowngradeFirmwareDialog(printerToUse);
 								}
-
-							}
 						}
 
 						if (loadRequiredFirmware) {
@@ -301,10 +296,10 @@ public abstract class CommandInterface extends Thread {
 				case RESETTING_ID:
 					LOGGER.debug("Resetting identity for " + printerHandle);
 					RoboxResetIDResult resetResult = RoboxResetIDResult.RESET_NOT_DONE;
-					if (BaseConfiguration.isApplicationFeatureEnabled(ApplicationFeature.RESET_PRINTER_ID)) {
-						resetResult = BaseLookup.getSystemNotificationHandler()
-								.askUserToResetPrinterID(printerToUse, lastPrinterIDResponse);
-					}
+
+					resetResult = BaseLookup.getSystemNotificationHandler()
+							.askUserToResetPrinterID(printerToUse, lastPrinterIDResponse);
+
 					switch (resetResult) {
 						case RESET_SUCCESSFUL: // Reset of printer id successful
 							LOGGER.debug("Reset ID of " + printerHandle);

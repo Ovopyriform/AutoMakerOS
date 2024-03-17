@@ -7,9 +7,29 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.MaterialType;
+import org.openautomaker.base.appManager.NotificationType;
+import org.openautomaker.base.configuration.BaseConfiguration;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.RoboxProfile;
+import org.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
+import org.openautomaker.base.configuration.datafileaccessors.HeadContainer;
+import org.openautomaker.base.configuration.datafileaccessors.RoboxProfileSettingsContainer;
+import org.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
+import org.openautomaker.base.configuration.fileRepresentation.SupportType;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterListChangesAdapter;
+import org.openautomaker.base.printerControl.model.PrinterListChangesListener;
+import org.openautomaker.base.services.slicer.PrintQualityEnumeration;
+import org.openautomaker.environment.Slicer;
+import org.openautomaker.environment.preference.SlicerPreference;
 
 import celtech.Lookup;
 import celtech.appManager.ApplicationMode;
@@ -40,23 +60,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.MaterialType;
-import xyz.openautomaker.base.appManager.NotificationType;
-import xyz.openautomaker.base.configuration.BaseConfiguration;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.RoboxProfile;
-import xyz.openautomaker.base.configuration.SlicerType;
-import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
-import xyz.openautomaker.base.configuration.datafileaccessors.HeadContainer;
-import xyz.openautomaker.base.configuration.datafileaccessors.RoboxProfileSettingsContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.PrinterSettingsOverrides;
-import xyz.openautomaker.base.configuration.fileRepresentation.SupportType;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterListChangesAdapter;
-import xyz.openautomaker.base.printerControl.model.PrinterListChangesListener;
-import xyz.openautomaker.base.services.slicer.PrintQualityEnumeration;
 
 /**
  * FXML Controller class
@@ -65,8 +68,7 @@ import xyz.openautomaker.base.services.slicer.PrintQualityEnumeration;
  */
 public class SettingsInsetPanelController implements Initializable, ProjectAwareController, ModelContainerProject.ProjectChangesListener {
 
-	private static final Logger LOGGER = LogManager.getLogger(
-			SettingsInsetPanelController.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	private static final RoboxProfileSettingsContainer ROBOX_PROFILE_SETTINGS_CONTAINER = RoboxProfileSettingsContainer.getInstance();
 
@@ -177,7 +179,7 @@ public class SettingsInsetPanelController implements Initializable, ProjectAware
 		}
 	};
 
-	private final ChangeListener<SlicerType> slicerTypeChangeListener = (ObservableValue<? extends SlicerType> observable, SlicerType oldValue, SlicerType newValue) -> {
+	private final ChangeListener<Slicer> slicerTypeChangeListener = (ObservableValue<? extends Slicer> observable, Slicer oldValue, Slicer newValue) -> {
 		populateCustomProfileChooser();
 		populateSupportChooser();
 		showPleaseCreateProfile(customProfileChooser.getItems().isEmpty());
@@ -226,7 +228,7 @@ public class SettingsInsetPanelController implements Initializable, ProjectAware
 
 			setupOverrides();
 
-			if (getSlicerType() == SlicerType.Cura)
+			if (new SlicerPreference().get() == Slicer.CURA)
 				supportComboBox.getSelectionModel().select(SupportType.MATERIAL_2);
 			else
 				supportComboBox.getSelectionModel().select(SupportType.AS_PROFILE);
@@ -236,7 +238,16 @@ public class SettingsInsetPanelController implements Initializable, ProjectAware
 			ApplicationStatus.getInstance().modeProperty().addListener(applicationModeChangeListener);
 
 			ROBOX_PROFILE_SETTINGS_CONTAINER.addProfileChangeListener(roboxProfileChangeListener);
-			Lookup.getUserPreferences().getSlicerTypeProperty().addListener(slicerTypeChangeListener);
+
+			new SlicerPreference().addChangeListener(new PreferenceChangeListener() {
+				@Override
+				public void preferenceChange(PreferenceChangeEvent evt) {
+					populateCustomProfileChooser();
+					populateSupportChooser();
+					showPleaseCreateProfile(customProfileChooser.getItems().isEmpty());
+					clearSettingsIfNoCustomProfileAvailable();
+				}
+			});
 
 			showPleaseCreateProfile(customProfileChooser.getItems().isEmpty());
 
@@ -312,7 +323,7 @@ public class SettingsInsetPanelController implements Initializable, ProjectAware
 	}
 
 	private void populateCustomProfileChooser() {
-		SlicerType slicerType = Lookup.getUserPreferences().getSlicerType();
+		Slicer slicerType = new SlicerPreference().get();
 		ObservableList<RoboxProfile> filesForHeadType = ROBOX_PROFILE_SETTINGS_CONTAINER.getCustomRoboxProfilesForSlicer(slicerType).getOrDefault(currentHeadType, FXCollections.emptyObservableList());
 		customProfileChooser.setItems(filesForHeadType);
 		if (currentProject != null
@@ -333,7 +344,7 @@ public class SettingsInsetPanelController implements Initializable, ProjectAware
 
 		if (HeadContainer.getHeadByID(currentHeadType).getType() == Head.HeadType.DUAL_MATERIAL_HEAD
 				&& printerSettings != null) {
-			if (getSlicerType() == SlicerType.Cura) {
+			if (new SlicerPreference().get() == Slicer.CURA) {
 				// For a dual material head and old Cura default to Material 2, there is no as profile
 				supportComboBox.getItems().remove(SupportType.AS_PROFILE);
 				typeToSelect = SupportType.MATERIAL_2;
@@ -422,7 +433,7 @@ public class SettingsInsetPanelController implements Initializable, ProjectAware
 					|| now.doubleValue() >= fillDensitySlider.getMax()
 					|| now.doubleValue() <= fillDensitySlider.getMin()) {
 
-				if (getSlicerType() == SlicerType.Cura)
+				if (new SlicerPreference().get() == Slicer.CURA)
 					printerSettings.setFillDensityOverride(now.floatValue() / 100.0f);
 				else
 					printerSettings.setFillDensityOverride(now.floatValue());
@@ -575,7 +586,7 @@ public class SettingsInsetPanelController implements Initializable, ProjectAware
 
 		brimSlider.setValue(saveBrim);
 
-		if (getSlicerType() == SlicerType.Cura)
+		if (new SlicerPreference().get() == Slicer.CURA)
 			fillDensitySlider.setValue(saveFillDensity * 100);
 		else
 			fillDensitySlider.setValue(saveFillDensity);
@@ -596,7 +607,7 @@ public class SettingsInsetPanelController implements Initializable, ProjectAware
 		supportButton.setSelected(autoSupport);
 
 		if (savePrinterSettingsName.length() > 0) {
-			List<RoboxProfile> profiles = ROBOX_PROFILE_SETTINGS_CONTAINER.getRoboxProfilesForSlicer(getSlicerType()).get(currentHeadType);
+			List<RoboxProfile> profiles = ROBOX_PROFILE_SETTINGS_CONTAINER.getRoboxProfilesForSlicer(new SlicerPreference().get()).get(currentHeadType);
 			Optional<RoboxProfile> chosenProfile = profiles.stream()
 					.filter(profile -> profile.getName().equals(savePrinterSettingsName))
 					.findFirst();
@@ -645,7 +656,7 @@ public class SettingsInsetPanelController implements Initializable, ProjectAware
 					&& !(currentPrinter.effectiveFilamentsProperty().get(0).getMaterial() != currentPrinter.effectiveFilamentsProperty().get(1).getMaterial()
 							&& !((ModelContainerProject) currentProject).getPrintingExtruders(currentPrinter).get(supportComboBox.getSelectionModel().getSelectedItem().getExtruderNumber()));
 
-			if (getSlicerType() == SlicerType.Cura) {
+			if (new SlicerPreference().get() == Slicer.CURA) {
 				supportGapButton.setSelected(supportGapEnabledDriver);
 			}
 		}
@@ -683,7 +694,7 @@ public class SettingsInsetPanelController implements Initializable, ProjectAware
 			if (currentHead != null) {
 				headType = currentHead.typeCodeProperty().get();
 			}
-			RoboxProfile customSettings = printerSettings.getSettings(headType, getSlicerType());
+			RoboxProfile customSettings = printerSettings.getSettings(headType, new SlicerPreference().get());
 			customProfileChooser.getSelectionModel().select(customSettings);
 		}
 	}
@@ -703,17 +714,17 @@ public class SettingsInsetPanelController implements Initializable, ProjectAware
 		switch (quality) {
 			case DRAFT:
 				settings = ROBOX_PROFILE_SETTINGS_CONTAINER
-						.getRoboxProfileWithName(BaseConfiguration.draftSettingsProfileName, getSlicerType(), currentHeadType);
+						.getRoboxProfileWithName(BaseConfiguration.draftSettingsProfileName, new SlicerPreference().get(), currentHeadType);
 				enableCustomChooser(false);
 				break;
 			case NORMAL:
 				settings = ROBOX_PROFILE_SETTINGS_CONTAINER
-						.getRoboxProfileWithName(BaseConfiguration.normalSettingsProfileName, getSlicerType(), currentHeadType);
+						.getRoboxProfileWithName(BaseConfiguration.normalSettingsProfileName, new SlicerPreference().get(), currentHeadType);
 				enableCustomChooser(false);
 				break;
 			case FINE:
 				settings = ROBOX_PROFILE_SETTINGS_CONTAINER
-						.getRoboxProfileWithName(BaseConfiguration.fineSettingsProfileName, getSlicerType(), currentHeadType);
+						.getRoboxProfileWithName(BaseConfiguration.fineSettingsProfileName, new SlicerPreference().get(), currentHeadType);
 				enableCustomChooser(false);
 				break;
 			case CUSTOM:
@@ -726,7 +737,7 @@ public class SettingsInsetPanelController implements Initializable, ProjectAware
 
 		if (currentProject != null) {
 			if (settings.isPresent() && !printerSettings.isFillDensityChangedByUser()) {
-				if (getSlicerType() == SlicerType.Cura) {
+				if (new SlicerPreference().get() == Slicer.CURA) {
 					float fillDensity = settings.get().getSpecificFloatSetting("fillDensity_normalised");
 					printerSettings.setFillDensityOverride(fillDensity);
 					fillDensitySlider.setValue(fillDensity * 100.0);
@@ -746,7 +757,7 @@ public class SettingsInsetPanelController implements Initializable, ProjectAware
 			return Optional.empty();
 		}
 		else {
-			return ROBOX_PROFILE_SETTINGS_CONTAINER.getRoboxProfileWithName(customSettingsName, getSlicerType(), currentHeadType);
+			return ROBOX_PROFILE_SETTINGS_CONTAINER.getRoboxProfileWithName(customSettingsName, new SlicerPreference().get(), currentHeadType);
 		}
 	}
 
@@ -801,10 +812,6 @@ public class SettingsInsetPanelController implements Initializable, ProjectAware
 		BaseLookup.getPrinterListChangesNotifier().removeListener(printerListChangesListener);
 
 		PLACompatibilityModeNotificationBar.destroyBar();
-	}
-
-	private SlicerType getSlicerType() {
-		return Lookup.getUserPreferences().getSlicerType();
 	}
 
 }

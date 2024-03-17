@@ -1,7 +1,7 @@
 package celtech.coreUI.controllers.panels;
 
-import static xyz.openautomaker.base.utils.ColourStringConverter.colourToString;
-import static xyz.openautomaker.base.utils.ColourStringConverter.stringToColor;
+import static org.openautomaker.base.utils.ColourStringConverter.colourToString;
+import static org.openautomaker.base.utils.ColourStringConverter.stringToColor;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -10,6 +10,17 @@ import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.MaterialType;
+import org.openautomaker.base.configuration.Filament;
+import org.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.base.printerControl.model.PrinterListChangesAdapter;
+import org.openautomaker.base.printerControl.model.PrinterListChangesListener;
+import org.openautomaker.base.printerControl.model.Reel;
+import org.openautomaker.environment.preference.advanced.AdvancedModePreference;
+import org.openautomaker.ui.utils.FXProperty;
 
 import celtech.Lookup;
 import celtech.coreUI.components.RestrictedNumberField;
@@ -39,15 +50,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.MaterialType;
-import xyz.openautomaker.base.configuration.Filament;
-import xyz.openautomaker.base.configuration.datafileaccessors.FilamentContainer;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
-import xyz.openautomaker.base.printerControl.model.PrinterListChangesAdapter;
-import xyz.openautomaker.base.printerControl.model.PrinterListChangesListener;
-import xyz.openautomaker.base.printerControl.model.Reel;
 
 public class FilamentLibraryPanelController implements Initializable, MenuInnerPanel, FilamentSelectionListener, SpecialItemSelectionListener {
 
@@ -185,11 +187,13 @@ public class FilamentLibraryPanelController implements Initializable, MenuInnerP
 
 		updateSaveBindings();
 
-		canSaveAs.bind(state.isNotEqualTo(State.NEW).and(Lookup.getUserPreferences().advancedModeProperty()));
+		BooleanProperty advancedModeProperty = FXProperty.bind(new AdvancedModePreference());
 
-		canDelete.bind(state.isNotEqualTo(State.ROBOX).and(Lookup.getUserPreferences().advancedModeProperty()));
+		canSaveAs.bind(state.isNotEqualTo(State.NEW).and(advancedModeProperty));
 
-		isEditable.bind(state.isNotEqualTo(State.ROBOX).and(Lookup.getUserPreferences().advancedModeProperty()));
+		canDelete.bind(state.isNotEqualTo(State.ROBOX).and(advancedModeProperty));
+
+		isEditable.bind(state.isNotEqualTo(State.ROBOX).and(advancedModeProperty));
 
 		isValid.bind(isNameValid.and(isNozzleTempValid));
 
@@ -276,15 +280,17 @@ public class FilamentLibraryPanelController implements Initializable, MenuInnerP
 				filament1OfDifferentID = !loadedFilamentID1.get().equals(currentFilamentID);
 			}
 
+			AdvancedModePreference advancedModePreference = new AdvancedModePreference();
+
 			if ((currentPrinter.get().reelsProperty().containsKey(0)
-					&& (Lookup.getUserPreferences().isAdvancedMode() || state.get() == State.ROBOX)
+					&& (advancedModePreference.get() || state.get() == State.ROBOX)
 					&& (filament0OfDifferentID || !currentFilament.equals(currentFilamentAsEdited)
 							|| !remainingOnReelM.getText().equals(REMAINING_ON_REEL_UNCHANGED)))
 					|| currentPrinter.get().getReelEEPROMStateProperty().get(0) == EEPROMState.NOT_PROGRAMMED) {
 				canWriteToReel1.set(true);
 			}
 			if ((currentPrinter.get().reelsProperty().containsKey(1)
-					&& (Lookup.getUserPreferences().isAdvancedMode() || state.get() == State.ROBOX)
+					&& (advancedModePreference.get() || state.get() == State.ROBOX)
 					&& (filament1OfDifferentID || !currentFilament.equals(currentFilamentAsEdited)
 							|| !remainingOnReelM.getText().equals(REMAINING_ON_REEL_UNCHANGED)))
 					|| currentPrinter.get().getReelEEPROMStateProperty().get(1) == EEPROMState.NOT_PROGRAMMED) {

@@ -7,6 +7,13 @@ import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openautomaker.base.BaseLookup;
+import org.openautomaker.base.configuration.datafileaccessors.HeadContainer;
+import org.openautomaker.base.configuration.fileRepresentation.HeadFile;
+import org.openautomaker.base.printerControl.model.Head;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.printerControl.model.PrinterException;
+import org.openautomaker.environment.OpenAutomakerEnv;
 
 import celtech.Lookup;
 import celtech.configuration.ApplicationConfiguration;
@@ -21,13 +28,6 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
-import xyz.openautomaker.base.BaseLookup;
-import xyz.openautomaker.base.configuration.datafileaccessors.HeadContainer;
-import xyz.openautomaker.base.configuration.fileRepresentation.HeadFile;
-import xyz.openautomaker.base.printerControl.model.Head;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.printerControl.model.PrinterException;
-import xyz.openautomaker.environment.OpenAutoMakerEnv;
 
 /**
  *
@@ -70,8 +70,8 @@ public class ResetHeadController implements Initializable {
 			String headNameBold = headNamePrefix + ".titleBold";
 			String headNameLight = headNamePrefix + ".titleLight";
 			String buttonText = "Unknown";
-			if (OpenAutoMakerEnv.getI18N().t(headNameBold) != null && OpenAutoMakerEnv.getI18N().t(headNameLight) != null) {
-				buttonText = OpenAutoMakerEnv.getI18N().t(headNameBold) + OpenAutoMakerEnv.getI18N().t(headNameLight);
+			if (OpenAutomakerEnv.getI18N().t(headNameBold) != null && OpenAutomakerEnv.getI18N().t(headNameLight) != null) {
+				buttonText = OpenAutomakerEnv.getI18N().t(headNameBold) + OpenAutomakerEnv.getI18N().t(headNameLight);
 			}
 			Button imageButton = new Button(buttonText, image);
 			imageButton.setPrefWidth(350);

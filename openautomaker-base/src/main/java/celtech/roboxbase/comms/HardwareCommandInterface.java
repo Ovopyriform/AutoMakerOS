@@ -1,5 +1,7 @@
 package celtech.roboxbase.comms;
 
+import org.openautomaker.base.printerControl.model.Printer;
+
 import celtech.roboxbase.comms.exceptions.ConnectionLostException;
 import celtech.roboxbase.comms.exceptions.InvalidCommandByteException;
 import celtech.roboxbase.comms.exceptions.InvalidResponseFromPrinterException;
@@ -12,7 +14,6 @@ import celtech.roboxbase.comms.rx.RoboxRxPacket;
 import celtech.roboxbase.comms.rx.RoboxRxPacketFactory;
 import celtech.roboxbase.comms.rx.RxPacketTypeEnum;
 import celtech.roboxbase.comms.tx.RoboxTxPacket;
-import xyz.openautomaker.base.printerControl.model.Printer;
 
 /**
  *

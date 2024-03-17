@@ -3,17 +3,18 @@ package celtech.appManager;
 import java.util.Optional;
 import java.util.Set;
 
+import org.openautomaker.base.appManager.NotificationType;
+import org.openautomaker.base.appManager.PurgeResponse;
+import org.openautomaker.base.appManager.SystemNotificationManager;
+import org.openautomaker.base.configuration.fileRepresentation.HeadFile;
+import org.openautomaker.base.printerControl.model.Printer;
+import org.openautomaker.base.services.firmware.FirmwareLoadResult;
+import org.openautomaker.base.services.firmware.FirmwareLoadService;
+import org.openautomaker.base.utils.tasks.TaskResponder;
+
 import celtech.roboxbase.comms.RoboxResetIDResult;
 import celtech.roboxbase.comms.rx.FirmwareError;
 import celtech.roboxbase.comms.rx.PrinterIDResponse;
-import xyz.openautomaker.base.appManager.NotificationType;
-import xyz.openautomaker.base.appManager.PurgeResponse;
-import xyz.openautomaker.base.appManager.SystemNotificationManager;
-import xyz.openautomaker.base.configuration.fileRepresentation.HeadFile;
-import xyz.openautomaker.base.printerControl.model.Printer;
-import xyz.openautomaker.base.services.firmware.FirmwareLoadResult;
-import xyz.openautomaker.base.services.firmware.FirmwareLoadService;
-import xyz.openautomaker.base.utils.tasks.TaskResponder;
 
 /**
  *

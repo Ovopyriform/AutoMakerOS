@@ -3,6 +3,11 @@ package celtech.coreUI.controllers.utilityPanels;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.openautomaker.base.camera.CameraInfo;
+import org.openautomaker.base.configuration.CoreMemory;
+import org.openautomaker.base.configuration.fileRepresentation.CameraProfile;
+import org.openautomaker.base.printerControl.model.Printer;
+
 import celtech.Lookup;
 import celtech.appManager.ApplicationMode;
 import celtech.appManager.ApplicationStatus;
@@ -11,10 +16,6 @@ import celtech.roboxbase.comms.DetectedServer.CameraTag;
 import celtech.roboxbase.comms.remote.RoboxRemoteCommandInterface;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import xyz.openautomaker.base.camera.CameraInfo;
-import xyz.openautomaker.base.configuration.CoreMemory;
-import xyz.openautomaker.base.configuration.fileRepresentation.CameraProfile;
-import xyz.openautomaker.base.printerControl.model.Printer;
 
 /**
  * FXML Controller class

@@ -7,8 +7,9 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openautomaker.base.camera.CameraInfo;
+
 import javafx.util.StringConverter;
-import xyz.openautomaker.base.camera.CameraInfo;
 
 /**
  *

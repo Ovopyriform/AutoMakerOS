@@ -2,8 +2,9 @@ package celtech.configuration.fileRepresentation;
 
 import java.util.Date;
 
+import org.openautomaker.base.configuration.fileRepresentation.CameraProfile;
+
 import celtech.appManager.Project;
-import xyz.openautomaker.base.configuration.fileRepresentation.CameraProfile;
 
 //@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 //@JsonDeserialize(using = ProjectFileDeserialiser.class)
